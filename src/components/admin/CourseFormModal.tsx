@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { X } from 'lucide-react';
 import api from '@/lib/api';
 import type { Course } from '@/types';
-import Image from 'next/image';
+
 const LEVELS = ['beginner', 'intermediate', 'advanced'] as const;
 const LEVEL_LABELS: Record<string, string> = {
   beginner: 'مبتدئ', intermediate: 'متوسط', advanced: 'متقدم',
@@ -19,15 +19,16 @@ interface Props {
 export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
   const isEdit = !!course;
   const [form, setForm] = useState({
-    title:           course?.title            ?? '',
-    description:     course?.description      ?? '',
-    cover_image:     course?.cover_image      ?? '',
-    level:           course?.level            ?? 'beginner',
-    status:          (course as any)?.status  ?? 'published',
-    instructor_name: (course as any)?.instructor_name ?? '',
-    rating:          (course as any)?.rating  ?? 4.5,
-      is_popular:      (course as any)?.is_popular ?? course?.hot ?? false, 
-    total_duration:  course?.total_duration   ?? 0,
+    title:           course?.title                                          ?? '',
+    description:     course?.description                                    ?? '',
+    cover_image:     course?.cover_image                                    ?? '',
+    level:           course?.level                                          ?? 'beginner',
+    status:          (course as any)?.status                                ?? 'published',
+    instructor_name: (course as any)?.instructor_name ?? (course as any)?.instructor ?? '',
+    rating:          (course as any)?.rating                                ?? 4.5,
+    is_popular:      (course as any)?.is_popular ?? course?.hot             ?? false,
+    total_duration:  course?.total_duration                                 ?? 0,
+    price:           (course as any)?.price                                 ?? 0,
   });
   const [loading, setLoading] = useState(false);
   const [error,   setError]   = useState('');
@@ -121,7 +122,7 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
             </div>
           </div>
 
-          {/* التقييم + المدة */}
+          {/* التقييم + السعر */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <label className="text-sm font-medium">التقييم (1-5)</label>
@@ -135,15 +136,27 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-sm font-medium">المدة (بالثواني)</label>
+              <label className="text-sm font-medium">السعر ($)</label>
               <input
                 type="number"
-                min="0"
-                value={form.total_duration}
-                onChange={e => set('total_duration', parseInt(e.target.value))}
+                min="0" step="0.01"
+                value={form.price}
+                onChange={e => set('price', parseFloat(e.target.value))}
                 className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none"
               />
             </div>
+          </div>
+
+          {/* المدة */}
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium">المدة (بالثواني)</label>
+            <input
+              type="number"
+              min="0"
+              value={form.total_duration}
+              onChange={e => set('total_duration', parseInt(e.target.value))}
+              className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none"
+            />
           </div>
 
           {/* رابط صورة الغلاف */}
