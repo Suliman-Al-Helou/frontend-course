@@ -130,7 +130,7 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
                 type="number"
                 min="1" max="5" step="0.1"
                 value={form.rating}
-                onChange={e => set('rating', parseFloat(e.target.value))}
+                onChange={e => set('rating', parseFloat(e.target.value) || 0)}
                 className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none"
               />
             </div>
@@ -141,7 +141,7 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
                 type="number"
                 min="0" step="0.01"
                 value={form.price}
-                onChange={e => set('price', parseFloat(e.target.value))}
+                onChange={e => set('price', parseFloat(e.target.value) || 0)}
                 className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none"
               />
             </div>
@@ -154,7 +154,7 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
               type="number"
               min="0"
               value={form.total_duration}
-              onChange={e => set('total_duration', parseInt(e.target.value))}
+              onChange={e => set('total_duration', parseInt(e.target.value) || 0)}
               className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none"
             />
           </div>
