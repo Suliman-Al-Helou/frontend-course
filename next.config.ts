@@ -1,12 +1,13 @@
 import type { NextConfig } from "next";
-module.exports = {
-  output: 'standalone', // مهم للـ deployment
-}
+
 const nextConfig: NextConfig = {
-  
+  output: 'standalone',
   images: {
     remotePatterns: [
-      { protocol: 'https', hostname: 'images.unsplash.com' },
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
     ],
     formats: ['image/avif', 'image/webp'],
   },
@@ -21,8 +22,6 @@ const nextConfig: NextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
-  
-  // ✅ أضف هذا فقط
   transpilePackages: [],
 };
 
