@@ -1,12 +1,8 @@
 import { useEffect, useState } from "react";
 import api from "@/lib/api";
 import { Course } from "@/types";
-import {
-  COURSE_UI_EXTRAS,
-  CourseUIExtra,
-} from "@/components/landing/_data/coursesData";
 
-export type CourseCard = Omit<Course, 'hot'> & CourseUIExtra;
+export type CourseCard = Course & { hot: boolean };
 
 const LEVEL_COLOR: Record<Course["level"], string> = {
   beginner: "bg-green-100 text-green-700",
@@ -34,18 +30,10 @@ export function useCoursesSection(): CourseCard[] {
     api
       .get<Course[]>("/courses")
       .then(({ data }) => {
-        const merged = data.map((course) => ({
+        setCourses(data.map(course => ({
           ...course,
-          ...(COURSE_UI_EXTRAS.find((e) => e.id === course.id) ?? {
-            instructor: "",
-            students: 0, // ✅ number
-            rating: 0,
-            price: 0,
-            tags: [],
-            hot: false,
-          }),
-        }));
-        setCourses(merged);
+          hot: course.hot ?? false,
+        })));
       })
       .catch(() => setCourses([]));
   }, []);
