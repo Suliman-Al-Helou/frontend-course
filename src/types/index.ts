@@ -70,12 +70,17 @@ export interface Question {
 export interface TaskResult {
   score: number;
   passed: boolean;
-  feedback: {
-    question_id: string;
+  pass_score: number;
+  message?: string;
+  // Backend returns results as object keyed by question_id
+  results: Record<string, {
     correct: boolean;
+    your_answer: string;
     correct_answer: string;
-    explanation: string;
-  }[];
+    explanation: string | null;
+    type?: string;
+    pending?: boolean;
+  }>;
 }
 
 export interface LessonProgress {
@@ -86,8 +91,9 @@ export interface LessonProgress {
 
 export interface CourseProgress {
   total_lessons: number;
-  completed_lessons: number;
-  percentage: number;
+  completed_count: number;
+  percent: number;
+  course_complete: boolean;
 }
 // أضف للـ types الموجودة
 export interface Enrollment {

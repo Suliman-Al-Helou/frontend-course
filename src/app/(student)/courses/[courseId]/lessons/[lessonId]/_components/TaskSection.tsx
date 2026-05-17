@@ -66,7 +66,7 @@ export default function TaskSection({ task, lessonId, onPassed }: TaskSectionPro
         {/* التغذية الراجعة */}
         <div className="space-y-4">
           {task.questions.map((q, i) => {
-            const fb = result.feedback.find(f => f.question_id === q.id);
+            const fb = result.results?.[q.id];
             return (
               <div key={q.id} className={`rounded-xl p-4 border ${
                 fb?.correct

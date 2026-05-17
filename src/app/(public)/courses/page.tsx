@@ -26,12 +26,7 @@ const LEVEL_COLORS: Record<string, string> = {
   advanced:     'bg-purple-100 text-purple-700',
 };
 
-// بيانات إضافية مؤقتة — تُستبدل لما الـ API يرجعها
-const COURSE_EXTRAS: Record<number, { instructor: string; rating: string; students: string; hot: boolean }> = {
-  1: { instructor: 'أ. محمد الشمري', rating: '٤.٩', students: '٣,٢٤٠', hot: true  },
-  2: { instructor: 'أ. سارة العمري',  rating: '٤.٨', students: '٢,١٠٠', hot: false },
-  3: { instructor: 'د. خالد البكر',   rating: '٤.٩', students: '١,٨٥٠', hot: true  },
-};
+// Removed mock COURSE_EXTRAS object
 
 const cardVariants = {
   hidden:  { opacity: 0, y: 30 },
@@ -107,12 +102,17 @@ function SkeletonCard() {
 }
 
 function CourseCard({ course, index }: { course: Course; index: number }) {
-  const extras  = COURSE_EXTRAS[course.id];
   const level   = LEVEL_LABELS[course.level ?? ''] ?? course.level;
   const color   = LEVEL_COLORS[course.level ?? ''] ?? 'bg-gray-100 text-gray-600';
-const hours = course.total_duration 
-  ? Math.round(Number(course.total_duration) / 60) 
-  : null;
+  const hours = course.total_duration 
+    ? Math.round(Number(course.total_duration) / 60) 
+    : null;
+
+  // Use values from API, with fallbacks if needed
+  const instructor = (course as any).instructor ?? '';
+  const rating = (course as any).rating;
+  const students = (course as any).students_count;
+  const hot = (course as any).hot;
 
   return (
     <motion.div
@@ -126,6 +126,8 @@ const hours = course.total_duration
           <Image
             src={course.cover_image}
             alt={course.title}
+            width={400}
+            height={225}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
@@ -136,7 +138,7 @@ const hours = course.total_duration
         <div className="absolute inset-0 bg-gradient-to-t from-blue-deep/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
         {/* Hot badge */}
-        {extras?.hot && (
+        {hot && (
           <div className="absolute top-3 right-3 bg-orange-500 text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
             <Zap className="w-3 h-3" /> الأكثر طلباً
           </div>
@@ -161,24 +163,24 @@ const hours = course.total_duration
           {course.title}
         </h3>
 
-        {extras?.instructor && (
-          <p className="text-sm text-muted-foreground mb-3">{extras.instructor}</p>
+        {instructor && (
+          <p className="text-sm text-muted-foreground mb-3">{instructor}</p>
         )}
 
         {/* Stats */}
         <div className="flex items-center gap-6 text-xs text-muted-foreground mb-4">
-          {extras?.rating && (
+          {rating ? (
             <span className="flex items-center gap-1">
               <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
-              {extras.rating}
+              {rating}
             </span>
-          )}
-          {extras?.students && (
+          ) : null}
+          {students ? (
             <span className="flex items-center gap-1">
               <Users className="w-3.5 h-3.5 text-blue-light" />
-              {extras.students}
+              {students}
             </span>
-          )}
+          ) : null}
           {hours && (
             <span className="flex items-center gap-1">
               <Clock className="w-3.5 h-3.5 text-blue-light" />

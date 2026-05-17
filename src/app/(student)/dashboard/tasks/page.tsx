@@ -161,7 +161,7 @@ function InlineTask({ task }: { task: TaskItem }) {
       {/* التغذية الراجعة */}
       <div className="space-y-3">
         {task.questions.map((q: any, i: number) => {
-          const fb = result.feedback.find((f: any) => f.question_id === q.id);
+          const fb = result.results?.[q.id];
           return (
             <div key={q.id} className={`rounded-xl p-3 border text-sm ${
               fb?.correct ? 'border-green-500/20 bg-green-500/5' : 'border-red-500/20 bg-red-500/5'
