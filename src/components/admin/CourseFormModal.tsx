@@ -26,7 +26,7 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
     status:          (course as any)?.status  ?? 'published',
     instructor_name: (course as any)?.instructor_name ?? '',
     rating:          (course as any)?.rating  ?? 4.5,
-    is_popular:      (course as any)?.is_popular ?? false,
+      is_popular:      (course as any)?.is_popular ?? course?.hot ?? false, 
     total_duration:  course?.total_duration   ?? 0,
   });
   const [loading, setLoading] = useState(false);
