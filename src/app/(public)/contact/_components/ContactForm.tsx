@@ -1,7 +1,5 @@
 'use client';
 
-// src/app/(public)/contact/_components/ContactForm.tsx
-
 import { Send } from 'lucide-react';
 import { useContactForm } from '../_hooks/useContact';
 
@@ -10,12 +8,12 @@ export function ContactForm() {
 
   if (sent) {
     return (
-      <div className="bg-white rounded-2xl border border-blue-100 shadow-sm p-8">
+      <div className="bg-white dark:bg-card rounded-2xl border border-blue-100 dark:border-border shadow-sm p-8">
         <div className="text-center py-10">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-green-100 dark:bg-green-950/50 rounded-full flex items-center justify-center mx-auto mb-4">
             <Send className="w-8 h-8 text-green-500" />
           </div>
-          <h3 className="font-bold text-blue-deep text-xl mb-2">تم الإرسال بنجاح!</h3>
+          <h3 className="font-bold text-blue-deep dark:text-foreground text-xl mb-2">تم الإرسال بنجاح!</h3>
           <p className="text-muted-foreground">سنرد عليك في أقرب وقت ممكن</p>
         </div>
       </div>
@@ -23,8 +21,8 @@ export function ContactForm() {
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-blue-100 shadow-sm p-8">
-      <h2 className="text-xl font-bold text-blue-deep mb-6">أرسل رسالة</h2>
+    <div className="bg-white dark:bg-card rounded-2xl border border-blue-100 dark:border-border shadow-sm p-8">
+      <h2 className="text-xl font-bold text-blue-deep dark:text-foreground mb-6">أرسل رسالة</h2>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="space-y-2">
@@ -63,19 +61,14 @@ export function ContactForm() {
           />
         </div>
 
-        {error && (
-          <p className="text-sm text-red-500">{error}</p>
-        )}
+        {error && <p className="text-sm text-red-500">{error}</p>}
 
         <button
           type="submit"
           disabled={loading}
           className="w-full h-11 inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 disabled:opacity-60 text-white rounded-xl font-semibold transition-colors"
         >
-          {loading
-            ? 'جارٍ الإرسال...'
-            : <><Send className="w-4 h-4" />إرسال الرسالة</>
-          }
+          {loading ? 'جارٍ الإرسال...' : <><Send className="w-4 h-4" />إرسال الرسالة</>}
         </button>
       </form>
     </div>

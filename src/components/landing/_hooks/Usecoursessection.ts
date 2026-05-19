@@ -23,20 +23,24 @@ export function useLevelStyle(level: Course["level"]) {
   };
 }
 
-export function useCoursesSection(): CourseCard[] {
+export function useCoursesSection(): { courses: CourseCard[]; loading: boolean } {
   const [courses, setCourses] = useState<CourseCard[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     api
       .get<Course[]>("/courses")
       .then(({ data }) => {
-        setCourses(data.map(course => ({
-          ...course,
-          hot: course.hot ?? false,
-        })));
+        setCourses(
+          data.map((course) => ({
+            ...course,
+            hot: course.hot ?? false,
+          }))
+        );
       })
-      .catch(() => setCourses([]));
+      .catch(() => setCourses([]))
+      .finally(() => setLoading(false));
   }, []);
 
-  return courses;
+  return { courses, loading };
 }

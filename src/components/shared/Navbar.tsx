@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
+import ThemeToggle from "./Themetoggle";
 
 export default function Navbar() {
   const { user, logout, isAuthenticated } = useAuthStore();

@@ -1,13 +1,15 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { X } from 'lucide-react';
-import api from '@/lib/api';
-import type { Course } from '@/types';
+import { useState } from "react";
+import { X } from "lucide-react";
+import api from "@/lib/api";
+import type { Course } from "@/types";
 
-const LEVELS = ['beginner', 'intermediate', 'advanced'] as const;
+const LEVELS = ["beginner", "intermediate", "advanced"] as const;
 const LEVEL_LABELS: Record<string, string> = {
-  beginner: 'مبتدئ', intermediate: 'متوسط', advanced: 'متقدم',
+  beginner: "مبتدئ",
+  intermediate: "متوسط",
+  advanced: "متقدم",
 };
 
 interface Props {
@@ -19,63 +21,68 @@ interface Props {
 export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
   const isEdit = !!course;
   const [form, setForm] = useState({
-    title:           course?.title                                          ?? '',
-    description:     course?.description                                    ?? '',
-    cover_image:     course?.cover_image                                    ?? '',
-    level:           course?.level                                          ?? 'beginner',
-    status:          (course as any)?.status                                ?? 'published',
-    instructor_name: (course as any)?.instructor_name ?? (course as any)?.instructor ?? '',
-    rating:          (course as any)?.rating                                ?? 4.5,
-    is_popular:      (course as any)?.is_popular ?? course?.hot             ?? false,
-    total_duration:  course?.total_duration                                 ?? 0,
-    price:           (course as any)?.price                                 ?? 0,
+    title: course?.title ?? "",
+    description: course?.description ?? "",
+    cover_image: course?.cover_image ?? "",
+    level: course?.level ?? "beginner",
+    status: (course as any)?.status ?? "published",
+    instructor_name:
+      (course as any)?.instructor_name ?? (course as any)?.instructor ?? "",
+    rating: (course as any)?.rating ?? 4.5,
+    is_popular: (course as any)?.is_popular ?? course?.hot ?? false,
+    total_duration: course?.total_duration ?? 0,
+    price: (course as any)?.price ?? 0,
   });
   const [loading, setLoading] = useState(false);
-  const [error,   setError]   = useState('');
+  const [error, setError] = useState("");
 
-  const set = (key: string, val: any) => setForm(f => ({ ...f, [key]: val }));
+  const set = (key: string, val: any) => setForm((f) => ({ ...f, [key]: val }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
     try {
       if (isEdit) {
         await api.put(`/admin/courses/${course!.id}`, form);
       } else {
-        await api.post('/admin/courses', form);
+        await api.post("/admin/courses", form);
       }
       onSuccess();
     } catch {
-      setError('حدث خطأ، حاول مجدداً');
+      setError("حدث خطأ، حاول مجدداً");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" dir="rtl">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+      dir="rtl"
+    >
       <div className="bg-card rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-border">
           <h2 className="font-bold text-foreground text-base">
-            {isEdit ? 'تعديل الكورس' : 'إضافة كورس جديد'}
+            {isEdit ? "تعديل الكورس" : "إضافة كورس جديد"}
           </h2>
-          <button onClick={onClose} className="p-2 rounded-xl hover:bg-muted transition-colors">
+          <button
+            onClick={onClose}
+            className="p-2 rounded-xl hover:bg-muted transition-colors"
+          >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-5 space-y-4">
-
           {/* عنوان الكورس */}
           <div className="space-y-1.5">
             <label className="text-sm font-medium">عنوان الكورس *</label>
             <input
               placeholder="Python من الصفر إلى الاحتراف"
               value={form.title}
-              onChange={e => set('title', e.target.value)}
+              onChange={(e) => set("title", e.target.value)}
               required
               className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
             />
@@ -87,7 +94,7 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
             <input
               placeholder="أ. أحمد المطيري"
               value={form.instructor_name}
-              onChange={e => set('instructor_name', e.target.value)}
+              onChange={(e) => set("instructor_name", e.target.value)}
               required
               className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
             />
@@ -99,11 +106,13 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
               <label className="text-sm font-medium">المستوى *</label>
               <select
                 value={form.level}
-                onChange={e => set('level', e.target.value)}
+                onChange={(e) => set("level", e.target.value)}
                 className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none"
               >
-                {LEVELS.map(l => (
-                  <option key={l} value={l}>{LEVEL_LABELS[l]}</option>
+                {LEVELS.map((l) => (
+                  <option key={l} value={l}>
+                    {LEVEL_LABELS[l]}
+                  </option>
                 ))}
               </select>
             </div>
@@ -112,7 +121,7 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
               <label className="text-sm font-medium">الحالة</label>
               <select
                 value={form.status}
-                onChange={e => set('status', e.target.value)}
+                onChange={(e) => set("status", e.target.value)}
                 className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none"
               >
                 <option value="published">منشور</option>
@@ -128,9 +137,11 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
               <label className="text-sm font-medium">التقييم (1-5)</label>
               <input
                 type="number"
-                min="1" max="5" step="0.1"
+                min="1"
+                max="5"
+                step="0.1"
                 value={form.rating}
-                onChange={e => set('rating', parseFloat(e.target.value) || 0)}
+                onChange={(e) => set("rating", parseFloat(e.target.value) || 0)}
                 className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none"
               />
             </div>
@@ -139,9 +150,10 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
               <label className="text-sm font-medium">السعر ($)</label>
               <input
                 type="number"
-                min="0" step="0.01"
+                min="0"
+                step="0.01"
                 value={form.price}
-                onChange={e => set('price', parseFloat(e.target.value) || 0)}
+                onChange={(e) => set("price", parseFloat(e.target.value) || 0)}
                 className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none"
               />
             </div>
@@ -154,7 +166,9 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
               type="number"
               min="0"
               value={form.total_duration}
-              onChange={e => set('total_duration', parseInt(e.target.value) || 0)}
+              onChange={(e) =>
+                set("total_duration", parseInt(e.target.value) || 0)
+              }
               className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none"
             />
           </div>
@@ -165,7 +179,7 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
             <input
               placeholder="https://images.unsplash.com/..."
               value={form.cover_image}
-              onChange={e => set('cover_image', e.target.value)}
+              onChange={(e) => set("cover_image", e.target.value)}
               className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none"
             />
             {form.cover_image && (
@@ -173,7 +187,7 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
                 src={form.cover_image}
                 alt="preview"
                 className="w-full h-32 object-cover rounded-lg mt-1"
-                onError={e => (e.currentTarget.style.display = 'none')}
+                onError={(e) => (e.currentTarget.style.display = "none")}
               />
             )}
           </div>
@@ -184,7 +198,7 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
             <textarea
               placeholder="اكتب وصفاً مختصراً للكورس..."
               value={form.description}
-              onChange={e => set('description', e.target.value)}
+              onChange={(e) => set("description", e.target.value)}
               rows={3}
               className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm focus:outline-none resize-none"
             />
@@ -196,10 +210,13 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
               type="checkbox"
               id="is_popular"
               checked={form.is_popular}
-              onChange={e => set('is_popular', e.target.checked)}
+              onChange={(e) => set("is_popular", e.target.checked)}
               className="w-4 h-4 rounded"
             />
-            <label htmlFor="is_popular" className="text-sm font-medium cursor-pointer">
+            <label
+              htmlFor="is_popular"
+              className="text-sm font-medium cursor-pointer"
+            >
               🔥 الأكثر طلباً
             </label>
           </div>
@@ -220,7 +237,11 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
               disabled={loading}
               className="flex-1 h-10 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary/90 disabled:opacity-60 transition-colors"
             >
-              {loading ? 'جارٍ الحفظ...' : isEdit ? 'حفظ التعديلات' : 'إضافة الكورس'}
+              {loading
+                ? "جارٍ الحفظ..."
+                : isEdit
+                  ? "حفظ التعديلات"
+                  : "إضافة الكورس"}
             </button>
           </div>
         </form>

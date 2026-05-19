@@ -21,7 +21,10 @@ export interface CourseSectionUI {
   lessons: CourseLessonUI[];
 }
 
-export type CourseDetail = Omit<Course, 'sections' | 'requirements' | 'target_audience'> & {
+export type CourseDetail = Omit<
+  Course,
+  "sections" | "requirements" | "target_audience"
+> & {
   sections: CourseSectionUI[];
   what_you_learn: string[];
   requirements: string[];
@@ -79,6 +82,12 @@ export function useCourseDetail(id: number) {
           target_audience: Array.isArray(data.target_audience)
             ? data.target_audience
             : [],
+          // ← أضف هاد
+          instructor: (data as any).instructor_name ?? "",
+          instructorBio: (data as any).instructor_bio ?? "",
+          students: (data as any).students_count ?? 0,
+          reviews: (data as any).reviews_count ?? 0,
+          lessons: sections.reduce((acc, s) => acc + s.lessons.length, 0),
         });
       } catch {
         setError("تعذّر تحميل بيانات الكورس");

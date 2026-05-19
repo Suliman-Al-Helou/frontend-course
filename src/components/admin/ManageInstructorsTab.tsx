@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import api from '@/lib/api';
 import InstructorFormModal from './InstructorFormModal';
 import type { Instructor } from '@/types';
-import Image from 'next/image';
 export default function ManageInstructorsTab() {
   const [instructors, setInstructors] = useState<Instructor[]>([]);
   const [loading, setLoading] = useState(true);
@@ -75,7 +74,7 @@ export default function ManageInstructorsTab() {
             >
               <div className="flex items-start gap-3 mb-3">
                 {ins.avatar_url ? (
-                  <Image src={ins.avatar_url} alt={ins.name} className="w-12 h-12 rounded-xl object-cover flex-shrink-0 border border-border" />
+<img src={ins.avatar_url} alt={ins.name} className="w-12 h-12 rounded-xl object-cover flex-shrink-0 border border-border" />
                 ) : (
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
                     <Users className="w-6 h-6 text-primary" />

@@ -1,38 +1,59 @@
-'use client';
+"use client";
 
-// src/app/(public)/instructors/page.tsx
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { Star, Users, BookOpen, Award } from "lucide-react";
+import Navbar from "@/components/landing/Navbar";
+import Footer from "@/components/landing/Footer";
+import api from "@/lib/api";
 
-// 1. Imports
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { Star, Users, BookOpen, Award } from 'lucide-react';
-import Navbar from '@/components/landing/Navbar';
-import Footer from '@/components/landing/Footer';
-import Image from 'next/image';
-// 2. Types & Data
 interface Instructor {
-  id:               number;
-  name:             string;
-  title:            string;
-  avatar:           string;
-  specializations:  string[];
-  totalStudents:    number;
-  totalCourses:     number;
-  rating:           number;
-  yearsExperience:  number;
+  id: number;
+  name: string;
+  title?: string;
+  avatar_url?: string;
+  specializations?: string;
+  years_experience?: number;
+  rating?: number;
+  courses_count?: number;
+  students_count?: number;
 }
 
-const INSTRUCTORS: Instructor[] = [
-  { id: 1, name: 'أ. محمد الشمري',  title: 'مهندس برمجيات متقدم',         avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face', specializations: ['Python', 'ML', 'Flask'],          totalStudents: 5840, totalCourses: 4, rating: 4.9, yearsExperience: 10 },
-  { id: 2, name: 'أ. سارة العمري',   title: 'مطورة واجهات أمامية متقدمة',  avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&crop=face', specializations: ['React', 'Next.js', 'TypeScript'], totalStudents: 3100, totalCourses: 3, rating: 4.8, yearsExperience: 7  },
-  { id: 3, name: 'د. خالد البكر',    title: 'باحث في الذكاء الاصطناعي',    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face', specializations: ['AI', 'Deep Learning', 'NLP'],    totalStudents: 2600, totalCourses: 2, rating: 4.9, yearsExperience: 12 },
-  { id: 4, name: 'أ. فيصل الدوسري', title: 'مهندس قواعد بيانات',           avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&h=200&fit=crop&crop=face', specializations: ['SQL', 'NoSQL', 'PostgreSQL'],     totalStudents: 1800, totalCourses: 2, rating: 4.7, yearsExperience: 8  },
-  { id: 5, name: 'أ. نورة القحطاني', title: 'مطورة تطبيقات جوال',          avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face', specializations: ['Flutter', 'Dart', 'Firebase'],   totalStudents:  980, totalCourses: 1, rating: 4.8, yearsExperience: 5  },
-  { id: 6, name: 'أ. عمر الشهري',    title: 'خبير أمن معلومات',            avatar: 'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=200&h=200&fit=crop&crop=face', specializations: ['Security', 'Ethical Hacking', 'Network'], totalStudents: 760, totalCourses: 1, rating: 4.9, yearsExperience: 9 },
-];
+function SkeletonCard() {
+  return (
+    <div className="bg-card border border-border rounded-2xl overflow-hidden animate-pulse">
+      <div className="bg-muted/30 p-6 pb-4 text-center">
+        <div className="w-20 h-20 rounded-2xl bg-muted mx-auto mb-3" />
+        <div className="h-4 bg-muted rounded w-32 mx-auto mb-2" />
+        <div className="h-3 bg-muted rounded w-24 mx-auto mt-1" />
+        <div className="h-3 bg-muted rounded w-16 mx-auto mt-2" />
+      </div>
+      <div className="px-6 pb-4">
+        <div className="flex gap-1.5 mb-4">
+          {[1, 2, 3].map(i => <div key={i} className="h-6 w-16 bg-muted rounded-lg" />)}
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          {[1, 2, 3].map(i => <div key={i} className="h-16 bg-muted rounded-xl" />)}
+        </div>
+      </div>
+    </div>
+  );
+}
 
-// 3. Sub Components
 function InstructorCard({ ins, index }: { ins: Instructor; index: number }) {
+  const specs = ins.specializations
+    ? ins.specializations.split(",").map(s => s.trim()).slice(0, 3)
+    : [];
+
+  const rating = Number(ins.rating ?? 4.5);
+
+  const studentsDisplay = ins.students_count
+    ? ins.students_count >= 1000
+      ? `${(ins.students_count / 1000).toFixed(1)}k`
+      : ins.students_count
+    : 0;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -42,41 +63,54 @@ function InstructorCard({ ins, index }: { ins: Instructor; index: number }) {
       <Link href={`/instructors/${ins.id}`} className="group block h-full">
         <div className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-primary/10 transition-all h-full flex flex-col">
 
-          {/* Avatar */}
-          <div className="bg-gradient-to-br from-blue-deep/10 to-primary/5 p-6 pb-4 text-center">
-            <Image
-              src={ins.avatar} alt={ins.name}
-              className="w-20 h-20 rounded-2xl object-cover mx-auto mb-3 border-4 border-background shadow-md group-hover:scale-105 transition-transform"
-            />
+          {/* Header */}
+          <div className="bg-gradient-to-br from-primary/10 to-primary/5 p-6 pb-4 text-center">
+            {ins.avatar_url ? (
+              <img
+                src={ins.avatar_url}
+                alt={ins.name}
+                className="w-20 h-20 rounded-2xl object-cover mx-auto mb-3 border-4 border-background shadow-md group-hover:scale-105 transition-transform"
+              />
+            ) : (
+              <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3 border-4 border-background">
+                <Users className="w-10 h-10 text-primary" strokeWidth={1.5} />
+              </div>
+            )}
             <h3 className="font-bold text-foreground text-base">{ins.name}</h3>
-            <p className="text-muted-foreground text-xs mt-1">{ins.title}</p>
+            {ins.title && <p className="text-muted-foreground text-xs mt-1">{ins.title}</p>}
             <div className="flex items-center justify-center gap-1 mt-2">
               <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
-              <span className="text-sm font-semibold text-foreground">{ins.rating}</span>
+              <span className="text-sm font-semibold text-foreground">{rating.toFixed(1)}</span>
             </div>
           </div>
 
           <div className="px-6 pb-4 flex-1 flex flex-col">
             {/* Specializations */}
-            <div className="flex flex-wrap gap-1.5 mb-4">
-              {ins.specializations.map(s => (
-                <span key={s} className="bg-primary/10 text-primary text-xs px-2.5 py-1 rounded-lg font-medium">{s}</span>
-              ))}
-            </div>
+            {specs.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                {specs.map(s => (
+                  <span key={s} className="bg-primary/10 text-primary text-xs px-2.5 py-1 rounded-lg font-medium">{s}</span>
+                ))}
+              </div>
+            )}
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-2 mt-auto">
-              {[
-                { icon: Users,    value: ins.totalStudents.toLocaleString(), label: 'طالب'    },
-                { icon: BookOpen, value: ins.totalCourses,                   label: 'كورسات'  },
-                { icon: Award,    value: ins.yearsExperience,                label: 'سنوات'   },
-              ].map(({ icon: Icon, value, label }) => (
-                <div key={label} className="bg-muted rounded-xl p-2.5 text-center">
-                  <Icon className="w-4 h-4 text-primary mx-auto mb-1" />
-                  <p className="text-xs font-bold text-foreground">{value}</p>
-                  <p className="text-xs text-muted-foreground">{label}</p>
-                </div>
-              ))}
+              <div className="bg-muted rounded-xl p-2.5 text-center">
+                <Users className="w-4 h-4 text-primary mx-auto mb-1" />
+                <p className="text-xs font-bold text-foreground">{studentsDisplay}</p>
+                <p className="text-xs text-muted-foreground">طالب</p>
+              </div>
+              <div className="bg-muted rounded-xl p-2.5 text-center">
+                <BookOpen className="w-4 h-4 text-primary mx-auto mb-1" />
+                <p className="text-xs font-bold text-foreground">{ins.courses_count ?? 0}</p>
+                <p className="text-xs text-muted-foreground">كورسات</p>
+              </div>
+              <div className="bg-muted rounded-xl p-2.5 text-center">
+                <Award className="w-4 h-4 text-primary mx-auto mb-1" />
+                <p className="text-xs font-bold text-foreground">{ins.years_experience ?? 0}</p>
+                <p className="text-xs text-muted-foreground">سنوات</p>
+              </div>
             </div>
 
             <div className="mt-4 py-3 border-t border-border text-center">
@@ -91,14 +125,23 @@ function InstructorCard({ ins, index }: { ins: Instructor; index: number }) {
   );
 }
 
-// 4. Main Component
 export default function InstructorsPage() {
+  const [instructors, setInstructors] = useState<Instructor[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.get("/instructors")
+      .then(res => setInstructors(res.data.data ?? res.data))
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <div className="min-h-screen bg-background font-arabic" dir="rtl">
       <Navbar />
 
-      {/* Header */}
-      <div className="bg-gradient-to-br from-blue-deep to-blue-mid pt-28 pb-16 px-4 text-center">
+      {/* Hero */}
+      <div className="bg-gradient-to-br from-primary/90 to-primary/60 pt-28 pb-16 px-4 text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <div className="inline-flex items-center gap-2 bg-white/10 text-white rounded-full px-4 py-1.5 text-sm font-medium mb-4">
             <Award className="w-4 h-4" /> فريق المدربين
@@ -108,12 +151,24 @@ export default function InstructorsPage() {
         </motion.div>
       </div>
 
+      {/* Grid */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {INSTRUCTORS.map((ins, i) => (
-            <InstructorCard key={ins.id} ins={ins} index={i} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map(i => <SkeletonCard key={i} />)}
+          </div>
+        ) : instructors.length === 0 ? (
+          <div className="text-center py-16 text-muted-foreground">
+            <Users className="w-12 h-12 mx-auto mb-4 opacity-30" />
+            <p>لا يوجد مدربون بعد</p>
+          </div>
+        ) : (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {instructors.map((ins, i) => (
+              <InstructorCard key={ins.id} ins={ins} index={i} />
+            ))}
+          </div>
+        )}
       </div>
 
       <Footer />

@@ -51,6 +51,8 @@ function CourseCard({ course }: { course: EnrolledCourse }) {
         <Image
           src={course.image}
           alt={course.title}
+          width={240}
+          height={160}
           className="w-24 h-16 rounded-xl object-cover flex-shrink-0"
         />
 

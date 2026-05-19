@@ -24,7 +24,7 @@ export default function ManageCoursesTab({
   const fetchCourses = async () => {
     setLoading(true);
     try {
-      const res = await api.get("/courses");
+      const res = await api.get("/admin/courses"); // ← غيّر هاد
       setCourses(res.data.data ?? res.data);
     } catch (err) {
       console.error(err);
@@ -32,7 +32,6 @@ export default function ManageCoursesTab({
       setLoading(false);
     }
   };
-
   useEffect(() => {
     fetchCourses();
   }, []);
