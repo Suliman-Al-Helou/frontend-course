@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Star, Users, BookOpen, Award } from "lucide-react";
+import { Star, Users, BookOpen, Award, MessageSquare } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import api from "@/lib/api";
@@ -16,6 +16,7 @@ interface Instructor {
   specializations?: string;
   years_experience?: number;
   rating?: number;
+  total_reviews?: number;
   courses_count?: number;
   students_count?: number;
 }
@@ -33,8 +34,8 @@ function SkeletonCard() {
         <div className="flex gap-1.5 mb-4">
           {[1, 2, 3].map(i => <div key={i} className="h-6 w-16 bg-muted rounded-lg" />)}
         </div>
-        <div className="grid grid-cols-3 gap-2">
-          {[1, 2, 3].map(i => <div key={i} className="h-16 bg-muted rounded-xl" />)}
+        <div className="grid grid-cols-2 gap-2">
+          {[1, 2].map(i => <div key={i} className="h-16 bg-muted rounded-xl" />)}
         </div>
       </div>
     </div>
@@ -48,11 +49,8 @@ function InstructorCard({ ins, index }: { ins: Instructor; index: number }) {
 
   const rating = Number(ins.rating ?? 4.5);
 
-  const studentsDisplay = ins.students_count
-    ? ins.students_count >= 1000
-      ? `${(ins.students_count / 1000).toFixed(1)}k`
-      : ins.students_count
-    : 0;
+  const fmt = (n?: number) =>
+    !n ? "0" : n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n);
 
   return (
     <motion.div
@@ -78,9 +76,14 @@ function InstructorCard({ ins, index }: { ins: Instructor; index: number }) {
             )}
             <h3 className="font-bold text-foreground text-base">{ins.name}</h3>
             {ins.title && <p className="text-muted-foreground text-xs mt-1">{ins.title}</p>}
-            <div className="flex items-center justify-center gap-1 mt-2">
+
+            {/* Rating + reviews */}
+            <div className="flex items-center justify-center gap-1.5 mt-2">
               <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
               <span className="text-sm font-semibold text-foreground">{rating.toFixed(1)}</span>
+              {ins.total_reviews ? (
+                <span className="text-xs text-muted-foreground">({fmt(ins.total_reviews)} تقييم)</span>
+              ) : null}
             </div>
           </div>
 
@@ -94,11 +97,11 @@ function InstructorCard({ ins, index }: { ins: Instructor; index: number }) {
               </div>
             )}
 
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-2 mt-auto">
+            {/* Stats — 2 cols */}
+            <div className="grid grid-cols-2 gap-2 mt-auto">
               <div className="bg-muted rounded-xl p-2.5 text-center">
                 <Users className="w-4 h-4 text-primary mx-auto mb-1" />
-                <p className="text-xs font-bold text-foreground">{studentsDisplay}</p>
+                <p className="text-xs font-bold text-foreground">{fmt(ins.students_count)}</p>
                 <p className="text-xs text-muted-foreground">طالب</p>
               </div>
               <div className="bg-muted rounded-xl p-2.5 text-center">
@@ -109,7 +112,12 @@ function InstructorCard({ ins, index }: { ins: Instructor; index: number }) {
               <div className="bg-muted rounded-xl p-2.5 text-center">
                 <Award className="w-4 h-4 text-primary mx-auto mb-1" />
                 <p className="text-xs font-bold text-foreground">{ins.years_experience ?? 0}</p>
-                <p className="text-xs text-muted-foreground">سنوات</p>
+                <p className="text-xs text-muted-foreground">سنوات خبرة</p>
+              </div>
+              <div className="bg-muted rounded-xl p-2.5 text-center">
+                <MessageSquare className="w-4 h-4 text-primary mx-auto mb-1" />
+                <p className="text-xs font-bold text-foreground">{fmt(ins.total_reviews)}</p>
+                <p className="text-xs text-muted-foreground">تقييم</p>
               </div>
             </div>
 

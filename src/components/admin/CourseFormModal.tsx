@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X } from "lucide-react";
+import { X, Plus } from "lucide-react";
 import api from "@/lib/api";
 import type { Course } from "@/types";
 
@@ -33,20 +33,60 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
     total_duration: course?.total_duration ?? 0,
     price: (course as any)?.price ?? 0,
   });
+
+  const [whatYouLearn, setWhatYouLearn] = useState<string[]>(
+    (course as any)?.what_you_learn ?? []
+  );
+  const [requirements, setRequirements] = useState<string[]>(
+    (course as any)?.requirements ?? []
+  );
+  const [targetAudience, setTargetAudience] = useState<string[]>(
+    (course as any)?.target_audience ?? []
+  );
+
+  const [newLearn, setNewLearn] = useState('');
+  const [newReq, setNewReq] = useState('');
+  const [newTarget, setNewTarget] = useState('');
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const set = (key: string, val: any) => setForm((f) => ({ ...f, [key]: val }));
+
+  const addToList = (
+    list: string[],
+    setList: (v: string[]) => void,
+    value: string,
+    setValue: (v: string) => void
+  ) => {
+    if (!value.trim()) return;
+    setList([...list, value.trim()]);
+    setValue('');
+  };
+
+  const removeFromList = (
+    list: string[],
+    setList: (v: string[]) => void,
+    i: number
+  ) => {
+    setList(list.filter((_, idx) => idx !== i));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
     try {
+      const data = {
+        ...form,
+        what_you_learn: whatYouLearn,
+        requirements: requirements,
+        target_audience: targetAudience,
+      };
       if (isEdit) {
-        await api.put(`/admin/courses/${course!.id}`, form);
+        await api.put(`/admin/courses/${course!.id}`, data);
       } else {
-        await api.post("/admin/courses", form);
+        await api.post("/admin/courses", data);
       }
       onSuccess();
     } catch {
@@ -166,9 +206,7 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
               type="number"
               min="0"
               value={form.total_duration}
-              onChange={(e) =>
-                set("total_duration", parseInt(e.target.value) || 0)
-              }
+              onChange={(e) => set("total_duration", parseInt(e.target.value) || 0)}
               className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none"
             />
           </div>
@@ -204,6 +242,96 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
             />
           </div>
 
+          {/* ستتعلم في هذا الكورس */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium">ستتعلم في هذا الكورس</label>
+            <div className="space-y-2">
+              {whatYouLearn.map((item, i) => (
+                <div key={i} className="flex items-center gap-2 bg-muted/50 rounded-xl px-3 py-2">
+                  <span className="flex-1 text-sm">✅ {item}</span>
+                  <button type="button" onClick={() => removeFromList(whatYouLearn, setWhatYouLearn, i)}
+                    className="text-destructive hover:opacity-70">
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
+              <div className="flex gap-2">
+                <input
+                  placeholder="مثال: بناء REST API باستخدام Laravel"
+                  value={newLearn}
+                  onChange={e => setNewLearn(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addToList(whatYouLearn, setWhatYouLearn, newLearn, setNewLearn))}
+                  className="flex-1 h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none"
+                />
+                <button type="button"
+                  onClick={() => addToList(whatYouLearn, setWhatYouLearn, newLearn, setNewLearn)}
+                  className="h-9 px-3 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* المتطلبات */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium">المتطلبات</label>
+            <div className="space-y-2">
+              {requirements.map((item, i) => (
+                <div key={i} className="flex items-center gap-2 bg-muted/50 rounded-xl px-3 py-2">
+                  <span className="flex-1 text-sm">📌 {item}</span>
+                  <button type="button" onClick={() => removeFromList(requirements, setRequirements, i)}
+                    className="text-destructive hover:opacity-70">
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
+              <div className="flex gap-2">
+                <input
+                  placeholder="مثال: معرفة أساسيات البرمجة"
+                  value={newReq}
+                  onChange={e => setNewReq(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addToList(requirements, setRequirements, newReq, setNewReq))}
+                  className="flex-1 h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none"
+                />
+                <button type="button"
+                  onClick={() => addToList(requirements, setRequirements, newReq, setNewReq)}
+                  className="h-9 px-3 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* الجمهور المستهدف */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium">هذا الكورس لك إذا كنت...</label>
+            <div className="space-y-2">
+              {targetAudience.map((item, i) => (
+                <div key={i} className="flex items-center gap-2 bg-muted/50 rounded-xl px-3 py-2">
+                  <span className="flex-1 text-sm">🎯 {item}</span>
+                  <button type="button" onClick={() => removeFromList(targetAudience, setTargetAudience, i)}
+                    className="text-destructive hover:opacity-70">
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
+              <div className="flex gap-2">
+                <input
+                  placeholder="مثال: مبتدئ يريد تعلم البرمجة"
+                  value={newTarget}
+                  onChange={e => setNewTarget(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addToList(targetAudience, setTargetAudience, newTarget, setNewTarget))}
+                  className="flex-1 h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none"
+                />
+                <button type="button"
+                  onClick={() => addToList(targetAudience, setTargetAudience, newTarget, setNewTarget)}
+                  className="h-9 px-3 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+
           {/* الأكثر طلباً */}
           <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
             <input
@@ -237,11 +365,7 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
               disabled={loading}
               className="flex-1 h-10 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary/90 disabled:opacity-60 transition-colors"
             >
-              {loading
-                ? "جارٍ الحفظ..."
-                : isEdit
-                  ? "حفظ التعديلات"
-                  : "إضافة الكورس"}
+              {loading ? "جارٍ الحفظ..." : isEdit ? "حفظ التعديلات" : "إضافة الكورس"}
             </button>
           </div>
         </form>

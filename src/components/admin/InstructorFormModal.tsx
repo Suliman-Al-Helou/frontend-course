@@ -40,7 +40,7 @@ export default function InstructorFormModal({ instructor, onClose, onSuccess }: 
   );
   const [newAchievement, setNewAchievement] = useState('');
 
-  // Courses state
+  // Courses
   const [allCourses, setAllCourses] = useState<Course[]>([]);
   const [selectedCourseIds, setSelectedCourseIds] = useState<number[]>(
     instructor?.courses ?? []
@@ -53,7 +53,6 @@ export default function InstructorFormModal({ instructor, onClose, onSuccess }: 
 
   const set = (key: string, val: string) => setForm(f => ({ ...f, [key]: val }));
 
-  // Fetch courses on mount
   useEffect(() => {
     const fetchCourses = async () => {
       setCoursesLoading(true);
@@ -61,7 +60,7 @@ export default function InstructorFormModal({ instructor, onClose, onSuccess }: 
         const res = await api.get('/admin/courses');
         setAllCourses(res.data.data ?? res.data ?? []);
       } catch {
-        // silently fail — list stays empty
+        // silently fail
       } finally {
         setCoursesLoading(false);
       }
@@ -73,16 +72,10 @@ export default function InstructorFormModal({ instructor, onClose, onSuccess }: 
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    try {
-      const reader = new FileReader();
-      reader.onload = () => {
-        set('avatar_url', reader.result as string);
-        setUploading(false);
-      };
-      reader.readAsDataURL(file);
-    } catch {
-      setUploading(false);
-    }
+    const reader = new FileReader();
+    reader.onload = () => { set('avatar_url', reader.result as string); setUploading(false); };
+    reader.onerror = () => setUploading(false);
+    reader.readAsDataURL(file);
   };
 
   const addAchievement = () => {
@@ -91,15 +84,13 @@ export default function InstructorFormModal({ instructor, onClose, onSuccess }: 
     setNewAchievement('');
   };
 
-  const removeAchievement = (i: number) => {
+  const removeAchievement = (i: number) =>
     setAchievements(p => p.filter((_, idx) => idx !== i));
-  };
 
-  const toggleCourse = (id: number) => {
+  const toggleCourse = (id: number) =>
     setSelectedCourseIds(prev =>
       prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]
     );
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,14 +114,22 @@ export default function InstructorFormModal({ instructor, onClose, onSuccess }: 
         achievements,
         courses:          selectedCourseIds,
       };
+
+      // Debug: يساعدك تعرف هل الداتا بتوصل صح للـ backend
+      console.log('[InstructorForm] Payload being sent:', JSON.stringify(data, null, 2));
+
+      let response;
       if (isEdit) {
-        await api.put(`/admin/instructors/${instructor!.id}`, data);
+        response = await api.put(`/admin/instructors/${instructor!.id}`, data);
       } else {
-        await api.post('/admin/instructors', data);
+        response = await api.post('/admin/instructors', data);
       }
+      console.log('[InstructorForm] Server response:', response.data);
       onSuccess();
-    } catch {
-      setError('حدث خطأ، حاول مجدداً');
+    } catch (err: any) {
+      console.error('[InstructorForm] Error:', err?.response?.data ?? err);
+      const serverMsg = err?.response?.data?.message ?? err?.response?.data?.error;
+      setError(serverMsg ? `خطأ من السيرفر: ${serverMsg}` : 'حدث خطأ، حاول مجدداً');
     } finally {
       setLoading(false);
     }
@@ -264,7 +263,6 @@ export default function InstructorFormModal({ instructor, onClose, onSuccess }: 
               الكورسات المرتبطة
             </Label>
 
-            {/* Selected badges */}
             {selectedCourseIds.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {allCourses
@@ -273,8 +271,7 @@ export default function InstructorFormModal({ instructor, onClose, onSuccess }: 
                     <span key={c.id}
                       className="inline-flex items-center gap-1 bg-primary/10 text-primary text-xs px-2.5 py-1 rounded-lg">
                       {c.title}
-                      <button type="button" onClick={() => toggleCourse(c.id)}
-                        className="hover:opacity-70 mr-1">
+                      <button type="button" onClick={() => toggleCourse(c.id)} className="hover:opacity-70 mr-1">
                         <X className="w-3 h-3" />
                       </button>
                     </span>
@@ -282,21 +279,17 @@ export default function InstructorFormModal({ instructor, onClose, onSuccess }: 
               </div>
             )}
 
-            {/* Dropdown toggle */}
             <button
               type="button"
               onClick={() => setCoursesOpen(o => !o)}
               className="w-full flex items-center justify-between h-9 px-3 rounded-xl border border-border text-sm hover:bg-muted transition-colors text-right"
             >
               <span className="text-muted-foreground">
-                {selectedCourseIds.length === 0
-                  ? 'اختر كورساً أو أكثر...'
-                  : `${selectedCourseIds.length} كورس محدد`}
+                {selectedCourseIds.length === 0 ? 'اختر كورساً أو أكثر...' : `${selectedCourseIds.length} كورس محدد`}
               </span>
               <span className="text-muted-foreground text-xs">{coursesOpen ? '▲' : '▼'}</span>
             </button>
 
-            {/* Dropdown list */}
             {coursesOpen && (
               <div className="border border-border rounded-xl overflow-hidden bg-card shadow-lg max-h-48 overflow-y-auto">
                 {coursesLoading ? (
@@ -309,16 +302,10 @@ export default function InstructorFormModal({ instructor, onClose, onSuccess }: 
                   allCourses.map(course => {
                     const checked = selectedCourseIds.includes(course.id);
                     return (
-                      <label
-                        key={course.id}
-                        className="flex items-center gap-3 px-4 py-2.5 hover:bg-muted/60 cursor-pointer transition-colors border-b border-border/50 last:border-0"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={() => toggleCourse(course.id)}
-                          className="w-4 h-4 accent-primary flex-shrink-0"
-                        />
+                      <label key={course.id}
+                        className="flex items-center gap-3 px-4 py-2.5 hover:bg-muted/60 cursor-pointer transition-colors border-b border-border/50 last:border-0">
+                        <input type="checkbox" checked={checked} onChange={() => toggleCourse(course.id)}
+                          className="w-4 h-4 accent-primary flex-shrink-0" />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-foreground truncate">{course.title}</p>
                           {course.level && (
@@ -352,7 +339,12 @@ export default function InstructorFormModal({ instructor, onClose, onSuccess }: 
             </div>
           </div>
 
-          {error && <p className="text-destructive text-sm">{error}</p>}
+          {error && (
+            <div className="bg-destructive/10 border border-destructive/30 rounded-xl px-4 py-3">
+              <p className="text-destructive text-sm">{error}</p>
+              <p className="text-destructive/70 text-xs mt-1">افتح Developer Tools (F12) &rarr; Console لرؤية تفاصيل الخطأ</p>
+            </div>
+          )}
 
           <div className="flex gap-3 pt-2">
             <Button type="button" variant="outline" className="flex-1 rounded-xl" onClick={onClose}>إلغاء</Button>
