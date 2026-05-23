@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { X, Plus, Trash2, Upload, Loader2 } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { X, Plus, Trash2, Upload, Loader2, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import api from '@/lib/api';
-import type { Instructor } from '@/types';
+import type { Instructor, Course } from '@/types';
 
 interface Props {
   instructor?: Instructor | null;
@@ -24,33 +24,56 @@ export default function InstructorFormModal({ instructor, onClose, onSuccess }: 
     title:            instructor?.title            ?? '',
     bio:              instructor?.bio              ?? '',
     avatar_url:       instructor?.avatar_url       ?? '',
-    cover_url:        (instructor as any)?.cover_url ?? '',
+    cover_url:        instructor?.cover_url        ?? '',
     specializations:  instructor?.specializations  ?? '',
     years_experience: instructor?.years_experience?.toString() ?? '',
-    rating:           (instructor as any)?.rating?.toString() ?? '4.5',
-    total_reviews:    (instructor as any)?.total_reviews?.toString() ?? '0',
-    students_count:   (instructor as any)?.students_count?.toString() ?? '0',
+    rating:           instructor?.rating?.toString()           ?? '4.5',
+    total_reviews:    instructor?.total_reviews?.toString()    ?? '0',
+    students_count:   instructor?.students_count?.toString()   ?? '0',
     twitter:          instructor?.twitter          ?? '',
     linkedin:         instructor?.linkedin         ?? '',
     youtube:          instructor?.youtube          ?? '',
   });
 
   const [achievements, setAchievements] = useState<string[]>(
-    (instructor as any)?.achievements ?? []
+    instructor?.achievements ?? []
   );
   const [newAchievement, setNewAchievement] = useState('');
+
+  // Courses state
+  const [allCourses, setAllCourses] = useState<Course[]>([]);
+  const [selectedCourseIds, setSelectedCourseIds] = useState<number[]>(
+    instructor?.courses ?? []
+  );
+  const [coursesOpen, setCoursesOpen] = useState(false);
+  const [coursesLoading, setCoursesLoading] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const set = (key: string, val: string) => setForm(f => ({ ...f, [key]: val }));
 
-  // رفع صورة — base64 مؤقتاً (لو ما عندك storage endpoint)
+  // Fetch courses on mount
+  useEffect(() => {
+    const fetchCourses = async () => {
+      setCoursesLoading(true);
+      try {
+        const res = await api.get('/admin/courses');
+        setAllCourses(res.data.data ?? res.data ?? []);
+      } catch {
+        // silently fail — list stays empty
+      } finally {
+        setCoursesLoading(false);
+      }
+    };
+    fetchCourses();
+  }, []);
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
     try {
-      // تحويل لـ base64 Data URL مؤقتاً
       const reader = new FileReader();
       reader.onload = () => {
         set('avatar_url', reader.result as string);
@@ -72,18 +95,33 @@ export default function InstructorFormModal({ instructor, onClose, onSuccess }: 
     setAchievements(p => p.filter((_, idx) => idx !== i));
   };
 
+  const toggleCourse = (id: number) => {
+    setSelectedCourseIds(prev =>
+      prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
     try {
       const data = {
-        ...form,
-        years_experience: Number(form.years_experience),
-        rating:           Number(form.rating),
-        total_reviews:    Number(form.total_reviews),
-        students_count:   Number(form.students_count),
+        name:             form.name,
+        title:            form.title,
+        bio:              form.bio,
+        avatar_url:       form.avatar_url,
+        cover_url:        form.cover_url,
+        specializations:  form.specializations,
+        years_experience: Number(form.years_experience) || 0,
+        rating:           Number(form.rating)           || 4.5,
+        total_reviews:    Number(form.total_reviews)    || 0,
+        students_count:   Number(form.students_count)   || 0,
+        twitter:          form.twitter,
+        linkedin:         form.linkedin,
+        youtube:          form.youtube,
         achievements,
+        courses:          selectedCourseIds,
       };
       if (isEdit) {
         await api.put(`/admin/instructors/${instructor!.id}`, data);
@@ -156,7 +194,7 @@ export default function InstructorFormModal({ instructor, onClose, onSuccess }: 
               className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none" />
           </div>
 
-          {/* التخصصات + الخبرة */}
+          {/* التخصصات + الخبرة + رابط الغلاف */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5 col-span-2">
               <Label>التخصصات (مفصولة بفاصلة)</Label>
@@ -217,6 +255,85 @@ export default function InstructorFormModal({ instructor, onClose, onSuccess }: 
                 </button>
               </div>
             </div>
+          </div>
+
+          {/* الكورسات */}
+          <div className="space-y-2">
+            <Label className="flex items-center gap-1.5">
+              <BookOpen className="w-4 h-4" />
+              الكورسات المرتبطة
+            </Label>
+
+            {/* Selected badges */}
+            {selectedCourseIds.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {allCourses
+                  .filter(c => selectedCourseIds.includes(c.id))
+                  .map(c => (
+                    <span key={c.id}
+                      className="inline-flex items-center gap-1 bg-primary/10 text-primary text-xs px-2.5 py-1 rounded-lg">
+                      {c.title}
+                      <button type="button" onClick={() => toggleCourse(c.id)}
+                        className="hover:opacity-70 mr-1">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+              </div>
+            )}
+
+            {/* Dropdown toggle */}
+            <button
+              type="button"
+              onClick={() => setCoursesOpen(o => !o)}
+              className="w-full flex items-center justify-between h-9 px-3 rounded-xl border border-border text-sm hover:bg-muted transition-colors text-right"
+            >
+              <span className="text-muted-foreground">
+                {selectedCourseIds.length === 0
+                  ? 'اختر كورساً أو أكثر...'
+                  : `${selectedCourseIds.length} كورس محدد`}
+              </span>
+              <span className="text-muted-foreground text-xs">{coursesOpen ? '▲' : '▼'}</span>
+            </button>
+
+            {/* Dropdown list */}
+            {coursesOpen && (
+              <div className="border border-border rounded-xl overflow-hidden bg-card shadow-lg max-h-48 overflow-y-auto">
+                {coursesLoading ? (
+                  <div className="flex items-center justify-center py-6">
+                    <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                  </div>
+                ) : allCourses.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-4">لا توجد كورسات متاحة</p>
+                ) : (
+                  allCourses.map(course => {
+                    const checked = selectedCourseIds.includes(course.id);
+                    return (
+                      <label
+                        key={course.id}
+                        className="flex items-center gap-3 px-4 py-2.5 hover:bg-muted/60 cursor-pointer transition-colors border-b border-border/50 last:border-0"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => toggleCourse(course.id)}
+                          className="w-4 h-4 accent-primary flex-shrink-0"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-foreground truncate">{course.title}</p>
+                          {course.level && (
+                            <p className="text-xs text-muted-foreground">
+                              {course.level === 'beginner' ? 'مبتدئ' : course.level === 'intermediate' ? 'متوسط' : 'متقدم'}
+                            </p>
+                          )}
+                        </div>
+                        {checked && <span className="text-primary text-xs flex-shrink-0">✓</span>}
+                      </label>
+                    );
+                  })
+                )}
+              </div>
+            )}
           </div>
 
           {/* السوشيال */}

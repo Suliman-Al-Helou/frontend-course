@@ -132,11 +132,17 @@ export interface Instructor {
   title?: string;
   bio?: string;
   avatar_url?: string;
+  cover_url?: string;
   specializations?: string;
   years_experience?: number;
+  rating?: number;
+  total_reviews?: number;
+  students_count?: number;
+  achievements?: string[];
   twitter?: string;
   linkedin?: string;
   youtube?: string;
+  courses?: number[]; // IDs of assigned courses
 }
 
 export interface AdminStats {
