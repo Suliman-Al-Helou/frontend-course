@@ -18,6 +18,19 @@ interface Props {
   onSuccess: () => void;
 }
 
+const toArray = (val: any): string[] => {
+  if (Array.isArray(val)) return val;
+  if (typeof val === 'string' && val.trim()) {
+    try {
+      const parsed = JSON.parse(val);
+      return Array.isArray(parsed) ? parsed : [val];
+    } catch {
+      return val.split('\n').filter(Boolean);
+    }
+  }
+  return [];
+};
+
 export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
   const isEdit = !!course;
   const [form, setForm] = useState({
@@ -35,13 +48,15 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
   });
 
   const [whatYouLearn, setWhatYouLearn] = useState<string[]>(
-    (course as any)?.what_you_learn ?? []
+    toArray((course as any)?.what_you_learn)
   );
+
   const [requirements, setRequirements] = useState<string[]>(
-    (course as any)?.requirements ?? []
+    toArray((course as any)?.requirements)
   );
+
   const [targetAudience, setTargetAudience] = useState<string[]>(
-    (course as any)?.target_audience ?? []
+    toArray((course as any)?.target_audience)
   );
 
   const [newLearn, setNewLearn] = useState('');
@@ -341,10 +356,7 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
               onChange={(e) => set("is_popular", e.target.checked)}
               className="w-4 h-4 rounded"
             />
-            <label
-              htmlFor="is_popular"
-              className="text-sm font-medium cursor-pointer"
-            >
+            <label htmlFor="is_popular" className="text-sm font-medium cursor-pointer">
               🔥 الأكثر طلباً
             </label>
           </div>

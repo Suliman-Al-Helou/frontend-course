@@ -21,17 +21,23 @@ export default function ManageCoursesTab({
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [managingCourse, setManagingCourse] = useState<Course | null>(null);
-  const fetchCourses = async () => {
-    setLoading(true);
-    try {
-      const res = await api.get("/admin/courses"); // ← غيّر هاد
-      setCourses(res.data.data ?? res.data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
+const fetchCourses = async () => {
+  setLoading(true);
+  try {
+    const res = await api.get("/admin/courses");
+    const data = res.data.data ?? res.data;
+    setCourses(data);
+    // حدّث editingCourse إذا كان مفتوحاً
+    if (editingCourse) {
+      const updated = data.find((c: Course) => c.id === editingCourse.id);
+      if (updated) setEditingCourse(updated);
     }
-  };
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setLoading(false);
+  }
+};
   useEffect(() => {
     fetchCourses();
   }, []);
@@ -168,6 +174,7 @@ export default function ManageCoursesTab({
 
       {showModal && (
         <CourseFormModal
+         key={editingCourse?.id ?? 'new'}
           course={editingCourse}
           onClose={() => setShowModal(false)}
           onSuccess={() => {

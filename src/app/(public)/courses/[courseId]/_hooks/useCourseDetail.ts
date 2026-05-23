@@ -8,7 +8,7 @@ import { Course } from "@/types";
 export interface CourseLessonUI {
   id: number;
   title: string;
-  duration: string; // مُنسَّق: "١٥ د"
+  duration: string;
   is_preview: boolean;
   video_id: string | null;
   order: number;
@@ -30,6 +30,20 @@ export type CourseDetail = Omit<
   requirements: string[];
   target_audience: string[];
 };
+
+/* ─── helper: string | array → array ─────────────────────── */
+function toArray(val: any): string[] {
+  if (Array.isArray(val)) return val;
+  if (typeof val === 'string' && val.trim()) {
+    try {
+      const parsed = JSON.parse(val);
+      return Array.isArray(parsed) ? parsed : [val];
+    } catch {
+      return val.split('\n').filter(Boolean);
+    }
+  }
+  return [];
+}
 
 /* ─── helper: ثواني → "X د" ──────────────────────────────── */
 function formatDuration(seconds: number): string {
@@ -56,7 +70,7 @@ export function useCourseDetail(id: number) {
           (s: any) => ({
             id: s.id,
             title: s.title,
-            order: s.order, // ← أضف هاد
+            order: s.order,
             lessons: (s.lessons ?? []).map(
               (l: any): CourseLessonUI => ({
                 id: l.id,
@@ -73,20 +87,13 @@ export function useCourseDetail(id: number) {
         setCourse({
           ...data,
           sections,
-          what_you_learn: Array.isArray(data.what_you_learn)
-            ? data.what_you_learn
-            : [],
-          requirements: Array.isArray(data.requirements)
-            ? data.requirements
-            : [],
-          target_audience: Array.isArray(data.target_audience)
-            ? data.target_audience
-            : [],
-          // ← أضف هاد
-          instructor: (data as any).instructor_name ?? "",
-          instructorBio: (data as any).instructor_bio ?? "",
-          students: (data as any).students_count ?? 0,
-          reviews: (data as any).reviews_count ?? 0,
+          what_you_learn:  toArray((data as any).what_you_learn),
+          requirements:    toArray((data as any).requirements),
+          target_audience: toArray((data as any).target_audience),
+          instructor:    (data as any).instructor_name ?? "",
+          instructorBio: (data as any).instructor_bio  ?? "",
+          students:      (data as any).students_count  ?? 0,
+          reviews:       (data as any).reviews_count   ?? 0,
           lessons: sections.reduce((acc, s) => acc + s.lessons.length, 0),
         });
       } catch {
