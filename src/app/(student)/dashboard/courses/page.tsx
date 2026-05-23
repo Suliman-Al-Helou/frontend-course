@@ -43,7 +43,7 @@ api.get('/my-courses')
         {courses.map((enrollment: any) => (
           <div key={enrollment.id} className="bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition border border-border">
             {enrollment.course?.cover_image && (
-              <Image src={enrollment.course.cover_image} alt={enrollment.course.title} className="w-full h-36 object-cover" />
+            <img src={enrollment.course.cover_image} alt={enrollment.course.title} className="w-full h-36 object-cover" />
             )}
             <div className="p-4">
               <h3 className="font-bold text-foreground mb-2">{enrollment.course?.title}</h3>
@@ -58,7 +58,7 @@ api.get('/my-courses')
                 </span>
               </div>
               <Link
-                href={`/courses/${enrollment.course?.id}`}
+               href={`/dashboard/videos?course=${enrollment.course?.id}`}
                 className="w-full flex items-center justify-center bg-primary/10 text-primary py-2 rounded-xl text-sm font-medium hover:bg-primary/20 transition"
               >
                 عرض الكورس

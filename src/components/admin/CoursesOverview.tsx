@@ -2,15 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Users, DollarSign, Star } from 'lucide-react';
+import { Users, DollarSign } from 'lucide-react';
 import api from '@/lib/api';
-import type { Course, Enrollment } from '@/types';
+import type { Enrollment } from '@/types';
 
 export default function CoursesOverview({ enrollments }: { enrollments: Enrollment[] }) {
-  const [courses, setCourses] = useState<Course[]>([]);
+  const [courses, setCourses] = useState<any[]>([]);
 
   useEffect(() => {
-    api.get('/courses').then(res => {
+    // admin/courses بترجع price بعكس public /courses
+    api.get('/admin/courses').then(res => {
       setCourses(res.data.data ?? res.data);
     }).catch(console.error);
   }, []);
@@ -37,10 +38,14 @@ export default function CoursesOverview({ enrollments }: { enrollments: Enrollme
               <p className="font-semibold text-foreground text-sm">{course.title}</p>
               <p className="text-xs text-muted-foreground mt-0.5">{course.level}</p>
             </div>
-            <div className="flex items-center gap-4 text-sm flex-shrink-0">
+            <div className="flex items-center gap-3 flex-shrink-0">
               <span className="flex items-center gap-1.5 text-primary bg-primary/10 px-3 py-1 rounded-full text-xs font-semibold">
                 <Users className="w-3.5 h-3.5" />
                 {getCount(course.id)} طالب
+              </span>
+              <span className="flex items-center gap-1.5 text-emerald-600 bg-emerald-500/10 px-3 py-1 rounded-full text-xs font-semibold">
+                <DollarSign className="w-3.5 h-3.5" />
+                {Number(course.price) > 0 ? `${course.price}$` : 'مجاني'}
               </span>
             </div>
           </motion.div>
