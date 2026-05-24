@@ -272,20 +272,7 @@ export default function RegisterPage() {
                 {loading ? 'جارٍ إنشاء الحساب...' : 'إنشاء الحساب مجاناً'}
               </button>
 
-              <div className="relative my-2">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-border" />
-                </div>
-                <div className="relative flex justify-center text-xs text-muted-foreground">
-                  <span className="bg-background px-3">أو</span>
-                </div>
-              </div>
-
-              <button type="button" disabled
-                className="w-full h-11 rounded-xl border-2 border-input inline-flex items-center justify-center gap-2 text-sm text-muted-foreground opacity-50 cursor-not-allowed">
-                <img src="https://www.google.com/favicon.ico" className="w-4 h-4" alt="Google" />
-                التسجيل بـ Google
-              </button>
+  
             </form>
 
           ) : (

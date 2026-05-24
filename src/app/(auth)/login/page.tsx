@@ -155,24 +155,6 @@ export default function LoginPage() {
             >
               {loading ? 'جارٍ الدخول...' : 'تسجيل الدخول'}
             </button>
-
-            {/* Divider */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-border" />
-              </div>
-              <div className="relative flex justify-center text-xs text-muted-foreground bg-white px-3">أو</div>
-            </div>
-
-            {/* Google — مؤقت: Google OAuth يحتاج إعداد في Laravel لاحقاً */}
-            <button
-              type="button"
-              disabled
-              className="w-full h-11 rounded-xl border-2 border-input inline-flex items-center justify-center gap-2 text-sm text-muted-foreground opacity-50 cursor-not-allowed"
-            >
-              <img src="https://www.google.com/favicon.ico" className="w-4 h-4" alt="Google" />
-              المتابعة بـ Google
-            </button>
           </form>
 
           <p className="text-center text-sm text-muted-foreground mt-6">
