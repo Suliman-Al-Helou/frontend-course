@@ -13,7 +13,7 @@ export function useMyEnrolledCourses() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get<Enrollment[]>('/enrollments')
+  api.get<Enrollment[]>('/my-courses')
       .then(({ data }) => {
         const approved = data
           .filter(e => e.status === 'approved')
