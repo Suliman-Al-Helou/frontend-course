@@ -1,8 +1,5 @@
 'use client';
 
-// src/app/(auth)/login/page.tsx
-
-// 1. Imports
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -11,20 +8,19 @@ import { Code2, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/authStore';
 import Image from 'next/image';
-// 2. Types
+
 interface LoginForm {
   email:    string;
   password: string;
 }
 
-// 3. Sub Components
 function Logo() {
   return (
     <Link href="/" className="inline-flex items-center gap-2 mb-4">
       <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-mid to-blue-light flex items-center justify-center">
         <Code2 className="w-5 h-5 text-white" />
       </div>
-      <span className="text-xl font-bold text-blue-deep">
+      <span className="text-xl font-bold text-foreground">
         future<span className="text-primary">house</span>
       </span>
     </Link>
@@ -61,7 +57,6 @@ function PasswordField({ value, onChange }: PasswordFieldProps) {
   );
 }
 
-// 4. Main Component
 export default function LoginPage() {
   const router   = useRouter();
   const setAuth  = useAuthStore(state => state.setAuth);
@@ -79,9 +74,8 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
     try {
-      // POST /api/auth/login → { token, user }
       const { data } = await api.post('/auth/login', form);
-      setAuth(data.user, data.token);       // حفظ في Zustand + localStorage
+      setAuth(data.user, data.token);
       router.push('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.message || 'بيانات الدخول غير صحيحة');
@@ -92,7 +86,7 @@ export default function LoginPage() {
 
   return (
     <div
-      className="min-h-screen bg-gradient-to-br from-blue-pale via-white to-blue-50 flex items-center justify-center p-4"
+      className="min-h-screen bg-gradient-to-br from-background via-background to-muted flex items-center justify-center p-4"
       dir="rtl"
     >
       <motion.div
@@ -103,12 +97,12 @@ export default function LoginPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <Logo />
-          <h1 className="text-2xl font-bold text-blue-deep">أهلاً بعودتك!</h1>
+          <h1 className="text-2xl font-bold text-foreground">أهلاً بعودتك!</h1>
           <p className="text-muted-foreground mt-1">سجّل دخولك لمتابعة رحلة التعلم</p>
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-2xl shadow-xl shadow-blue-100/60 border border-blue-100 p-8">
+        <div className="bg-card rounded-2xl shadow-xl border border-border p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
 
             {/* Email */}
@@ -142,7 +136,7 @@ export default function LoginPage() {
 
             {/* Error */}
             {error && (
-              <div className="bg-red-50 text-red-600 text-sm rounded-lg px-4 py-3 border border-red-100">
+              <div className="bg-destructive/10 text-destructive text-sm rounded-lg px-4 py-3 border border-destructive/20">
                 {error}
               </div>
             )}
