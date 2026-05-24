@@ -275,9 +275,9 @@ export default function InstructorProfile() {
                     <motion.div key={course.id}
                       initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}>
                       <Link href={`/courses/${course.id}`} className="group block">
-                        <div className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg hover:shadow-primary/10 transition-all">
+                      <div className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg hover:shadow-primary/10 transition-all sm:h-40">
                           <div className="flex flex-col sm:flex-row">
-                            <div className="relative sm:w-52 h-40 sm:h-auto flex-shrink-0 overflow-hidden">
+                            <div className="relative sm:w-52 sm:h-40 h-40 flex-shrink-0 overflow-hidden">
                               {course.cover_image ? (
                                 <img src={course.cover_image} alt={course.title}
                                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />

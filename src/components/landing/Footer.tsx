@@ -45,7 +45,7 @@ function Brand() {
       <div className="flex items-center gap-2 mb-4">
         <LogoIcon size={36} className="brightness-0 invert"/>
         <span className="text-xl font-bold">
-         Future<span className="text-background pl-1">House</span>
+         Future<span className="text-white pl-1">House</span>
         </span>
       </div>
       <p className="text-white/60 text-sm leading-relaxed mb-5">

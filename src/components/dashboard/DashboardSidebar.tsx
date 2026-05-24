@@ -77,9 +77,9 @@ export default function DashboardSidebar({ open, onClose }: Props) {
       `}
       >
         <div className="flex items-center justify-between p-5 border-b border-border">
-          <div className="font-bold text-primary text-lg">
-            لوحة<span className="text-blue-400">التحكم</span>
-          </div>
+<div className="font-bold text-primary text-lg">
+  لوحة<span className="text-primary dark:text-white mr-1">الطالب</span>
+</div>
           <button
             onClick={onClose}
             className="lg:hidden p-1 rounded-lg hover:bg-muted"

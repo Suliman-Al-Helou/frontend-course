@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { ClipboardList, ChevronDown, ChevronUp, CheckCircle2, XCircle, RefreshCw, ChevronLeft } from 'lucide-react';
 import api, { lessonApi } from '@/lib/api';
-import type { Task, TaskResult } from '@/types';
+import type { TaskResult } from '@/types';
 
 interface TaskItem {
   id: number;
@@ -14,57 +15,89 @@ interface TaskItem {
   course: { id: number; title: string };
 }
 
-export default function TasksPage() {
-  const [tasks,   setTasks]   = useState<TaskItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [openId,  setOpenId]  = useState<number | null>(null);
+interface CourseOption {
+  id: number;
+  title: string;
+}
 
-useEffect(() => {
-  api.get('/my-courses').then(async res => {
-    const approved = res.data.filter((e: any) => e.status === 'approved');
+function TasksContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
-    // جيب كل الكورسات بالـ parallel
-    const courses = await Promise.all(
-      approved.map((e: any) => api.get(`/courses/${e.course.id}`).then(r => r.data))
-    );
+  const [enrolledCourses, setEnrolledCourses] = useState<CourseOption[]>([]);
+  const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
+  const [tasks, setTasks] = useState<TaskItem[]>([]);
+  const [loadingCourses, setLoadingCourses] = useState(true);
+  const [loadingTasks, setLoadingTasks] = useState(false);
+  const [openId, setOpenId] = useState<number | null>(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-    const allLessons = courses.flatMap(course =>
-      (course.sections ?? []).flatMap((s: any) =>
+  // جلب الكورسات أولاً
+  useEffect(() => {
+    api.get('/my-courses')
+      .then(res => {
+        const approved = res.data
+          .filter((e: any) => e.status === 'approved')
+          .map((e: any) => ({ id: e.course.id, title: e.course.title }));
+        setEnrolledCourses(approved);
+
+        const urlId = searchParams.get('course');
+        const defaultId = urlId ? Number(urlId) : approved[0]?.id ?? null;
+        setSelectedCourseId(defaultId);
+      })
+      .catch(() => {})
+      .finally(() => setLoadingCourses(false));
+  }, []);
+
+  // جلب مهام الكورس المحدد
+  useEffect(() => {
+    if (!selectedCourseId) return;
+    setLoadingTasks(true);
+    setTasks([]);
+    setOpenId(null);
+
+    api.get(`/courses/${selectedCourseId}`).then(async fullCourse => {
+      const course = fullCourse.data;
+      const allLessons = (course.sections ?? []).flatMap((s: any) =>
         (s.lessons ?? []).map((l: any) => ({ ...l, course }))
-      )
-    );
+      );
 
-    // جيب كل الـ progress بالـ parallel
-    const progressResults = await Promise.allSettled(
-      allLessons.map(l => api.get(`/lessons/${l.id}/progress`))
-    );
+      const progressResults = await Promise.allSettled(
+        allLessons.map((l: any) => api.get(`/lessons/${l.id}/progress`))
+      );
 
-    const completedLessons = allLessons.filter((_, i) => {
-      const r = progressResults[i];
-      return r.status === 'fulfilled' && r.value.data.completed;
-    });
+      const completedLessons = allLessons.filter((_: any, i: number) => {
+        const r = progressResults[i];
+        return r.status === 'fulfilled' && (r as any).value.data.completed;
+      });
 
-    // جيب كل المهام بالـ parallel
-    const taskResults = await Promise.allSettled(
-      completedLessons.map(l => api.get(`/lessons/${l.id}/task`))
-    );
+      const taskResults = await Promise.allSettled(
+        completedLessons.map((l: any) => api.get(`/lessons/${l.id}/task`))
+      );
 
-    const result: TaskItem[] = [];
-    taskResults.forEach((r, i) => {
-      if (r.status === 'fulfilled') {
-        result.push({ ...r.value.data, lesson: completedLessons[i], course: completedLessons[i].course });
-      }
-    });
+      const result: TaskItem[] = [];
+      taskResults.forEach((r, i) => {
+        if (r.status === 'fulfilled') {
+          result.push({ ...(r as any).value.data, lesson: completedLessons[i], course: completedLessons[i].course });
+        }
+      });
 
-    setTasks(result);
-  }).finally(() => setLoading(false));
-}, []);
+      setTasks(result);
+    }).finally(() => setLoadingTasks(false));
+  }, [selectedCourseId]);
 
-  if (loading) return (
+  const handleSelect = (id: number) => {
+    setSelectedCourseId(id);
+    setDropdownOpen(false);
+    router.replace(`?course=${id}`, { scroll: false });
+  };
+
+  const selectedCourse = enrolledCourses.find(c => c.id === selectedCourseId);
+  const showDropdown = enrolledCourses.length > 1;
+
+  if (loadingCourses) return (
     <div className="space-y-3">
-      {[1,2,3].map(i => (
-        <div key={i} className="bg-card rounded-2xl h-16 border border-border animate-pulse" />
-      ))}
+      {[1,2,3].map(i => <div key={i} className="bg-card rounded-2xl h-16 border border-border animate-pulse" />)}
     </div>
   );
 
@@ -72,39 +105,72 @@ useEffect(() => {
     <div>
       <h1 className="text-2xl font-bold text-foreground mb-6">المهام</h1>
 
-      {tasks.length === 0 ? (
+      {/* Course Dropdown — يظهر فقط إذا في أكثر من كورس */}
+      {showDropdown && (
+        <div className="relative mb-6">
+          <button
+            onClick={() => setDropdownOpen(o => !o)}
+            className="w-full flex items-center justify-between bg-card border border-border rounded-2xl px-4 py-3 text-sm font-medium text-foreground hover:bg-muted/50 transition"
+          >
+            <span>{selectedCourse?.title ?? 'اختر كورساً'}</span>
+            <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
+          </button>
+
+          {dropdownOpen && (
+            <div className="absolute top-full mt-1 w-full bg-card border border-border rounded-2xl shadow-lg z-10 overflow-hidden">
+              {enrolledCourses.map(course => (
+                <button
+                  key={course.id}
+                  onClick={() => handleSelect(course.id)}
+                  className={`w-full text-right px-4 py-3 text-sm transition hover:bg-muted/60 border-b border-border/50 last:border-0 ${
+                    course.id === selectedCourseId ? 'text-primary font-semibold bg-primary/5' : 'text-foreground'
+                  }`}
+                >
+                  {course.title}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Tasks */}
+      {loadingTasks ? (
+        <div className="space-y-3">
+          {[1,2,3].map(i => <div key={i} className="bg-card rounded-2xl h-16 border border-border animate-pulse" />)}
+        </div>
+      ) : tasks.length === 0 ? (
         <div className="text-center py-16 bg-card border border-border rounded-2xl">
           <ClipboardList className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
           <p className="text-muted-foreground">لا توجد مهام بعد — أكمل دروسك أولاً</p>
         </div>
       ) : (
         <div className="space-y-3">
-{tasks.map((task, i) => (
-  <div key={`${task.id}-${task.lesson.id}`} className="bg-card border border-border rounded-2xl overflow-hidden">
-    {/* Header */}
-    <button
-      onClick={() => setOpenId(openId === i ? null : i)}
-      className="w-full flex items-center gap-4 p-4 hover:bg-muted/30 transition-colors text-right"
-    >
-      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-        <ClipboardList className="w-5 h-5 text-primary" />
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="font-medium text-foreground truncate">{task.lesson.title}</p>
-        <p className="text-xs text-muted-foreground">{task.course.title}</p>
-      </div>
-      {openId === i
-        ? <ChevronUp className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-        : <ChevronDown className="w-4 h-4 text-muted-foreground flex-shrink-0" />}
-    </button>
+          {tasks.map((task, i) => (
+            <div key={`${task.id}-${task.lesson.id}`} className="bg-card border border-border rounded-2xl overflow-hidden">
+              <button
+                onClick={() => setOpenId(openId === i ? null : i)}
+                className="w-full flex items-center gap-4 p-4 hover:bg-muted/30 transition-colors text-right"
+              >
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <ClipboardList className="w-5 h-5 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-foreground truncate">{task.lesson.title}</p>
+                  <p className="text-xs text-muted-foreground">{task.course.title}</p>
+                </div>
+                {openId === i
+                  ? <ChevronUp className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                  : <ChevronDown className="w-4 h-4 text-muted-foreground flex-shrink-0" />}
+              </button>
 
-    {openId === i && (
-      <div className="border-t border-border p-4">
-        <InlineTask task={task} />
-      </div>
-    )}
-  </div>
-))}
+              {openId === i && (
+                <div className="border-t border-border p-4">
+                  <InlineTask task={task} />
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       )}
     </div>
@@ -127,19 +193,13 @@ function InlineTask({ task }: { task: TaskItem }) {
       const res = await lessonApi.submitTask(task.lesson.id, answers);
       setResult(res.data);
       setAttempts(prev => prev + 1);
-    } catch {
-      // handle error
-    } finally {
+    } catch {} finally {
       setLoading(false);
     }
   };
 
-  const handleRetry = () => {
-    setResult(null);
-    setAnswers({});
-  };
+  const handleRetry = () => { setResult(null); setAnswers({}); };
 
-  /* النتيجة */
   if (result) return (
     <div className="space-y-4">
       <div className={`rounded-xl p-4 flex items-center gap-3 ${
@@ -147,7 +207,7 @@ function InlineTask({ task }: { task: TaskItem }) {
       }`}>
         {result.passed
           ? <CheckCircle2 className="w-8 h-8 text-green-500 flex-shrink-0" />
-          : <XCircle      className="w-8 h-8 text-red-400 flex-shrink-0"   />}
+          : <XCircle className="w-8 h-8 text-red-400 flex-shrink-0" />}
         <div>
           <p className={`font-bold ${result.passed ? 'text-green-500' : 'text-red-400'}`}>
             {result.passed ? 'أحسنت! اجتزت المهمة 🎉' : 'لم تجتز المهمة'}
@@ -158,7 +218,6 @@ function InlineTask({ task }: { task: TaskItem }) {
         </div>
       </div>
 
-      {/* التغذية الراجعة */}
       <div className="space-y-3">
         {task.questions.map((q: any, i: number) => {
           const fb = result.results?.[q.id];
@@ -187,15 +246,12 @@ function InlineTask({ task }: { task: TaskItem }) {
     </div>
   );
 
-  /* الأسئلة */
   return (
     <div className="space-y-5">
       <p className="text-sm text-muted-foreground">أجب على جميع الأسئلة — المطلوب {task.pass_percentage}% للنجاح</p>
-
       {task.questions.map((q: any, i: number) => (
         <div key={q.id} className="space-y-2">
           <p className="text-sm font-medium text-foreground">{i + 1}. {q.text}</p>
-
           {q.type === 'mcq' && q.options && (
             <div className="space-y-2">
               {q.options.map((opt: string) => (
@@ -211,7 +267,6 @@ function InlineTask({ task }: { task: TaskItem }) {
               ))}
             </div>
           )}
-
           {q.type === 'true_false' && (
             <div className="flex gap-2">
               {['صح', 'خطأ'].map(opt => (
@@ -227,7 +282,6 @@ function InlineTask({ task }: { task: TaskItem }) {
               ))}
             </div>
           )}
-
           {q.type === 'open' && (
             <textarea rows={3} value={answers[q.id] ?? ''}
               onChange={e => setAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
@@ -236,12 +290,23 @@ function InlineTask({ task }: { task: TaskItem }) {
           )}
         </div>
       ))}
-
       <button onClick={handleSubmit} disabled={!allAnswered || loading}
         className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
         {loading ? 'جاري التصحيح...' : 'تسليم المهمة'}
         {!loading && <ChevronLeft className="w-4 h-4" />}
       </button>
     </div>
+  );
+}
+
+export default function TasksPage() {
+  return (
+    <Suspense fallback={
+      <div className="space-y-3">
+        {[1,2,3].map(i => <div key={i} className="bg-card rounded-2xl h-16 border border-border animate-pulse" />)}
+      </div>
+    }>
+      <TasksContent />
+    </Suspense>
   );
 }

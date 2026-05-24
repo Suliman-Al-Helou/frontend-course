@@ -52,11 +52,11 @@ function TestimonialCard({ testimonial, index }: TestimonialCardProps) {
       transition={{ delay: index * 0.15 }}
       className="bg-card rounded-2xl p-6 border border-border relative"
     >
-      <Quote className="absolute top-4 left-4 w-8 h-8 text-primary/10" />
+      <Quote className="absolute top-4 left-4 w-8 h-8 text-primary/50" />
 
       <div className="flex items-center gap-1 mb-4">
         {Array.from({ length: testimonial.rating }).map((_, j) => (
-          <Star key={j} className="w-4 h-4 fill-warning text-warning" />
+          <Star key={j} className="w-4 h-4 text-warning text-yellow-400  fill-yellow-400" />
         ))}
       </div>
 
@@ -92,7 +92,7 @@ export default function TestimonialsSection() {
           className="text-center mb-16"
         >
           <div className="inline-flex items-center gap-2 bg-primary/10 text-primary rounded-full px-4 py-1.5 text-sm font-semibold mb-4">
-            <Star className="w-4 h-4 fill-primary" />
+            <Star className="w-4 h-4  text-yellow-400 fill-yellow-400" />
             قصص نجاح حقيقية
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">

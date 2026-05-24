@@ -1,17 +1,16 @@
 'use client';
 
-// 1. Imports
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, HelpCircle } from 'lucide-react';
+import api from '@/lib/api';
 
-// 2. Types & Data
 interface FAQItem {
   q: string;
   a: string;
 }
 
-const FAQS: FAQItem[] = [
+const STATIC_FAQS: FAQItem[] = [
   { q: 'هل التسجيل في المنصة مجاني؟',      a: 'نعم، التسجيل مجاني تماماً. يمكنك إنشاء حسابك والوصول للكورسات فور التسجيل.' },
   { q: 'كيف يعمل نظام التقدم المحكوم؟',    a: 'كل درس يُفتح فقط بعد إتمام الدرس السابق — يجب مشاهدة ≥٨٠٪ من الفيديو واجتياز المهمة للانتقال للدرس التالي. هذا يضمن فهمك الحقيقي قبل المضي قدماً.' },
   { q: 'هل يمكنني التعلم من الجوال؟',       a: 'بالتأكيد! المنصة مصممة بالكامل للموبايل وتعمل بكفاءة على جميع الأجهزة — هاتف، تابلت، أو كمبيوتر.' },
@@ -21,7 +20,6 @@ const FAQS: FAQItem[] = [
   { q: 'كم من الوقت يستغرق إكمال الكورس؟', a: 'يعتمد على الكورس ووتيرة دراستك. معظم طلابنا يكملون الكورس بتخصيص ساعة إلى ساعتين يومياً.' },
 ];
 
-// 3. Sub Components
 interface FAQItemProps {
   faq: FAQItem;
   index: number;
@@ -70,9 +68,25 @@ function FAQItemCard({ faq, index, isOpen, onToggle }: FAQItemProps) {
   );
 }
 
-// 4. Main Component
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [dynamicFaqs, setDynamicFaqs] = useState<FAQItem[]>([]);
+
+  useEffect(() => {
+    api.get('/faqs')
+      .then(res => {
+        const data = res.data.data ?? res.data;
+        if (Array.isArray(data) && data.length > 0) {
+          setDynamicFaqs(data.map((f: any) => ({ q: f.question, a: f.answer })));
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // الأسئلة الديناميكية أولاً ثم الثابتة
+  const allFaqs = dynamicFaqs.length > 0
+    ? [...dynamicFaqs, ...STATIC_FAQS]
+    : STATIC_FAQS;
 
   const handleToggle = (index: number) =>
     setOpenIndex(prev => (prev === index ? null : index));
@@ -81,7 +95,6 @@ export default function FAQSection() {
     <section id="faq" className="py-24 bg-gradient-to-b from-background to-secondary/30">
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
 
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -100,9 +113,8 @@ export default function FAQSection() {
           </p>
         </motion.div>
 
-        {/* FAQ List */}
         <div className="space-y-3">
-          {FAQS.map((faq, i) => (
+          {allFaqs.map((faq, i) => (
             <FAQItemCard
               key={i}
               faq={faq}

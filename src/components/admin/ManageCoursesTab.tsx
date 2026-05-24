@@ -10,6 +10,7 @@ import type { Course, Enrollment } from "@/types";
 import CourseSectionsModal from "@/components/admin/CourseSectionsModal";
 import { LayoutList } from "lucide-react";
 import Image from "next/image";
+
 export default function ManageCoursesTab({
   enrollments,
 }: {
@@ -21,23 +22,36 @@ export default function ManageCoursesTab({
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [managingCourse, setManagingCourse] = useState<Course | null>(null);
-const fetchCourses = async () => {
-  setLoading(true);
-  try {
-    const res = await api.get("/admin/courses");
-    const data = res.data.data ?? res.data;
-    setCourses(data);
-    // حدّث editingCourse إذا كان مفتوحاً
-    if (editingCourse) {
-      const updated = data.find((c: Course) => c.id === editingCourse.id);
-      if (updated) setEditingCourse(updated);
+
+  const fetchCourses = async () => {
+    setLoading(true);
+    try {
+      const res = await api.get("/admin/courses");
+      const data = res.data.data ?? res.data;
+      setCourses(data);
+      if (editingCourse) {
+        const updated = data.find((c: Course) => c.id === editingCourse.id);
+        if (updated) setEditingCourse(updated);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    console.error(err);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
+
+  // 👇 أضف هذه الدالة
+  const handleEdit = async (course: Course) => {
+    try {
+      const res = await api.get(`/admin/courses/${course.id}`);
+      setEditingCourse(res.data);
+      setShowModal(true);
+    } catch {
+      setEditingCourse(course);
+      setShowModal(true);
+    }
+  };
+
   useEffect(() => {
     fetchCourses();
   }, []);
@@ -144,10 +158,7 @@ const fetchCourses = async () => {
                     variant="outline"
                     size="sm"
                     className="flex-1 rounded-xl h-8 text-xs"
-                    onClick={() => {
-                      setEditingCourse(course);
-                      setShowModal(true);
-                    }}
+                    onClick={() => handleEdit(course)} // 👈 تم التعديل
                   >
                     <Pencil className="w-3.5 h-3.5 ml-1" /> تعديل
                   </Button>
@@ -174,7 +185,7 @@ const fetchCourses = async () => {
 
       {showModal && (
         <CourseFormModal
-         key={editingCourse?.id ?? 'new'}
+          key={editingCourse?.id ?? 'new'}
           course={editingCourse}
           onClose={() => setShowModal(false)}
           onSuccess={() => {
@@ -183,6 +194,7 @@ const fetchCourses = async () => {
           }}
         />
       )}
+
       {deleteId && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"

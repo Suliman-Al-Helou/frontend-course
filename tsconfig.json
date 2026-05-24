@@ -35,7 +35,7 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "src/app/Loading.tsz"  ],
   "exclude": [
     "node_modules"
   ]

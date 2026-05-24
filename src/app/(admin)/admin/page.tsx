@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import {
   Shield, Plus, LogOut, LayoutDashboard,
   Users, BookOpen, ClipboardList, GraduationCap,
-  Moon, Sun, ChevronDown,
+  Moon, Sun, ChevronDown, MessageCircleQuestion,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/authStore";
@@ -19,15 +19,17 @@ import CoursesOverview        from "@/components/admin/CoursesOverview";
 import AddEnrollmentModal     from "@/components/admin/AddEnrollmentModal";
 import ManageCoursesTab       from "@/components/admin/ManageCoursesTab";
 import ManageInstructorsTab   from "@/components/admin/ManageInstructorsTab";
-import type { Enrollment, AdminUser, AdminStats, Course, Instructor } from "@/types";
+import ManageFaqTab           from "@/components/admin/ManageFaqTab";
+import type { Enrollment, AdminUser, AdminStats } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const TABS = [
-  { id: "overview",     label: "نظرة عامة",       icon: LayoutDashboard },
-  { id: "enrollments",  label: "طلبات التسجيل",   icon: ClipboardList   },
-  { id: "students",     label: "الطلاب",           icon: Users           },
-  { id: "courses",      label: "الكورسات",         icon: BookOpen        },
-  { id: "instructors",  label: "المدربون",         icon: GraduationCap   },
+  { id: "overview",     label: "نظرة عامة",         icon: LayoutDashboard       },
+  { id: "enrollments",  label: "طلبات التسجيل",     icon: ClipboardList         },
+  { id: "students",     label: "الطلاب",             icon: Users                 },
+  { id: "courses",      label: "الكورسات",           icon: BookOpen              },
+  { id: "instructors",  label: "المدربون",           icon: GraduationCap         },
+  { id: "faqs",         label: "الأسئلة الشائعة",   icon: MessageCircleQuestion },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
@@ -38,6 +40,7 @@ const TAB_LABELS: Record<TabId, string> = {
   students:    "الطلاب",
   courses:     "الكورسات",
   instructors: "المدربون",
+  faqs:        "الأسئلة الشائعة",
 };
 
 function ThemeToggle() {
@@ -64,27 +67,36 @@ function AdminContent() {
     setMobileMenuOpen(false);
   };
 
-  const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
-  const [users,       setUsers]       = useState<AdminUser[]>([]);
-  const [courses,     setCourses]     = useState<Course[]>([]);
-  const [instructors, setInstructors] = useState<Instructor[]>([]);
-  const [showModal,   setShowModal]   = useState(false);
-  const [loading,     setLoading]     = useState(true);
+  const [enrollments,    setEnrollments]    = useState<Enrollment[]>([]);
+  const [users,          setUsers]          = useState<AdminUser[]>([]);
+  const [stats,          setStats]          = useState<AdminStats>({
+    totalStudents: 0, totalCourses: 0, totalInstructors: 0, pendingEnrollments: 0,
+  });
+  const [showModal,      setShowModal]      = useState(false);
+  const [loading,        setLoading]        = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [enrRes, usrRes, crsRes, insRes] = await Promise.allSettled([
+      const [enrRes, usrRes, coursesRes, instructorsRes] = await Promise.all([
         api.get("/admin/enrollments"),
         api.get("/admin/users"),
         api.get("/admin/courses"),
         api.get("/admin/instructors"),
       ]);
-      if (enrRes.status === "fulfilled") setEnrollments(enrRes.value.data.data ?? enrRes.value.data);
-      if (usrRes.status === "fulfilled") setUsers(usrRes.value.data.data ?? usrRes.value.data);
-      if (crsRes.status === "fulfilled") setCourses(crsRes.value.data.data ?? crsRes.value.data);
-      if (insRes.status === "fulfilled") setInstructors(insRes.value.data.data ?? insRes.value.data);
+      const enrData = enrRes.data.data       ?? enrRes.data;
+      const usrData = usrRes.data.data        ?? usrRes.data;
+      const crsData = coursesRes.data.data     ?? coursesRes.data;
+      const insData = instructorsRes.data.data ?? instructorsRes.data;
+      setEnrollments(enrData);
+      setUsers(usrData);
+      setStats({
+        totalStudents:      usrData.filter((u: any) => u.role !== "admin").length,
+        totalCourses:       Array.isArray(crsData) ? crsData.length : 0,
+        totalInstructors:   Array.isArray(insData) ? insData.length : 0,
+        pendingEnrollments: enrData.filter((e: any) => e.status === "pending").length,
+      });
     } catch (err) {
       console.error(err);
     } finally {
@@ -111,13 +123,6 @@ function AdminContent() {
       </div>
     );
   }
-
-  const stats: AdminStats = {
-    totalStudents:      users.filter(u => u.role !== "admin").length,
-    totalCourses:       courses.length,
-    totalInstructors:   instructors.length,
-    pendingEnrollments: enrollments.filter(e => e.status === "pending").length,
-  };
 
   const currentTab = TABS.find(t => t.id === tab);
 
@@ -191,14 +196,7 @@ function AdminContent() {
             </div>
             <div className="flex items-center gap-3">
               <div className="lg:hidden"><ThemeToggle /></div>
-              <Button
-                size="sm"
-                className="bg-primary hover:bg-primary/90 text-white rounded-xl h-9"
-                onClick={() => setShowModal(true)}
-              >
-                <Plus className="w-4 h-4 ml-1" />
-                <span className="hidden sm:inline">تسجيل طالب</span>
-              </Button>
+
             </div>
           </header>
 
@@ -244,7 +242,6 @@ function AdminContent() {
                     )}
                   </button>
                 ))}
-
                 <button
                   onClick={handleLogout}
                   className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors border-t border-border mt-1"
@@ -268,7 +265,7 @@ function AdminContent() {
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                     <AdminStatsCards stats={stats} />
                     <div className="grid lg:grid-cols-2 gap-6">
-                      <EnrollmentRequests enrollments={enrollments.filter(e => e.status === "pending")} onRefresh={fetchData} />
+                      <EnrollmentRequests enrollments={enrollments} onRefresh={fetchData} />
                       <CoursesOverview enrollments={enrollments} />
                     </div>
                   </motion.div>
@@ -293,25 +290,29 @@ function AdminContent() {
                     <ManageInstructorsTab />
                   </motion.div>
                 )}
+                {tab === "faqs" && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <ManageFaqTab />
+                  </motion.div>
+                )}
               </>
             )}
           </div>
         </main>
       </div>
 
-      {showModal && (
-        <AddEnrollmentModal
-          onClose={() => setShowModal(false)}
-          onSuccess={() => { setShowModal(false); fetchData(); }}
-        />
-      )}
+
     </div>
   );
 }
 
 export default function AdminPage() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+      </div>
+    }>
       <AdminContent />
     </Suspense>
   );

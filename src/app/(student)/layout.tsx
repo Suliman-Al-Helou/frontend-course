@@ -5,6 +5,7 @@ import { Menu } from 'lucide-react';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import { useAuthStore } from '@/store/authStore';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function StudentLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -46,9 +47,17 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
               >
                 <Menu className="w-5 h-5" />
               </button>
-              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-sm font-bold">
-                {user?.name?.charAt(0) ?? 'T'}
-              </div>
+<Link href="/dashboard/profile">
+  <div className="w-8 h-8 rounded-full bg-white overflow-hidden border border-border">
+    <Image
+      src="/logo.jpg"
+      alt="logo"
+      width={32}
+      height={32}
+      className="w-full h-full object-contain"
+    />
+  </div>
+</Link>
             </div>
           </header>
 

@@ -28,9 +28,9 @@ function NavLogo() {
   return (
     <Link href="/" className="flex items-center gap-2">
       <LogoIcon size={40} />
-      <span className="text-xl font-bold text-white tracking-tight">
-        Future <span className="text-primary">House</span>
-      </span>
+<span className="text-xl font-bold tracking-tight text-primary dark:text-white">
+  Future <span className="dark:text-primary">House</span>
+</span>
     </Link>
   );
 }
