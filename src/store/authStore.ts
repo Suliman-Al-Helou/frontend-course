@@ -28,11 +28,8 @@ export const useAuthStore = create<AuthStore>()(
         set({ user, token, isAuthenticated: true });
 
         // ← هذا هو الإضافة: احفظ في cookie عشان middleware يقدر يقرأ
-        Cookies.set("auth-token", token, { expires: 30, sameSite: "Lax" });
-        Cookies.set("user-role", user.role ?? "student", {
-          expires: 30,
-          sameSite: "Lax",
-        });
+   Cookies.set("auth-token", token, { expires: 30, sameSite: "Strict", secure: true });
+Cookies.set("user-role", user.role ?? "student", { expires: 30, sameSite: "Strict", secure: true });
       },
 
 logout: () => {
