@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { IBM_Plex_Sans_Arabic } from "next/font/google";
 import Script from "next/script";
+import AuthBootstrap from "@/components/shared/AuthBootstrap";
+import { Toaster } from "sonner";
+
 
 const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
   subsets: ["arabic", "latin"],
@@ -50,7 +53,12 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+
+        <AuthBootstrap />
+          <Toaster position="top-center" dir="rtl" richColors />
+
+        {children}</body>
     </html>
   );
 }

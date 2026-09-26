@@ -1,3 +1,23 @@
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: 'admin' | 'student';
+}
+
+
+export interface LessonProgress {
+  watched_percent: number;
+  completed: boolean;
+  last_position: number;
+}
+
+export interface Task {
+  id: number;
+  questions: Question[];
+  pass_percentage: number;
+  max_attempts: number;
+}
 export interface Course {
   id: number;
   title: string;
@@ -39,25 +59,12 @@ export interface Lesson {
   is_preview: boolean;
 }
 
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-  role?: "admin" | "student";
-}
-// أضف في نهاية الملف
-
 export interface LessonDetail extends Lesson {
   video_id: string;
   task?: Task;
 }
 
-export interface Task {
-  id: number;
-  questions: Question[];
-  pass_percentage: number;
-  max_attempts: number;
-}
+
 
 export interface Question {
   id: string;
@@ -83,11 +90,6 @@ export interface TaskResult {
   }>;
 }
 
-export interface LessonProgress {
-  watched_percent: number;
-  completed: boolean;
-  last_position: number;
-}
 
 export interface CourseProgress {
   total_lessons: number;

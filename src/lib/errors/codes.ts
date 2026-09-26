@@ -1,0 +1,24 @@
+// أكواد فقط — بدون أي نص، بدون أي منطق. مصدر الحقيقة الوحيد للـ type-safety.
+export const ERROR_CODES = {
+  // Auth
+  AUTH_FIELDS_REQUIRED: "AUTH_400_FIELDS_REQUIRED",
+  AUTH_INVALID_CREDENTIALS: "AUTH_401_INVALID_CREDENTIALS",
+  AUTH_SESSION_EXPIRED: "AUTH_401_SESSION_EXPIRED",
+  AUTH_EMAIL_TAKEN: "AUTH_422_EMAIL_TAKEN",
+  AUTH_UNAUTHORIZED_ROLE: "AUTH_403_ROLE_FORBIDDEN",
+
+  // System (مش خاص بميزة معيّنة)
+  SYS_SERVER_DOWN: "SYS_502_SERVER_DOWN",
+  SYS_UNKNOWN: "SYS_500_UNKNOWN",
+  SYS_VALIDATION: "SYS_422_VALIDATION",
+} as const;
+
+export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];
+
+export const SUCCESS_CODES = {
+  AUTH_LOGIN_OK: "AUTH_LOGIN_OK",
+  AUTH_REGISTER_OK: "AUTH_REGISTER_OK",
+  AUTH_LOGOUT_OK: "AUTH_LOGOUT_OK",
+} as const;
+
+export type SuccessCode = (typeof SUCCESS_CODES)[keyof typeof SUCCESS_CODES];

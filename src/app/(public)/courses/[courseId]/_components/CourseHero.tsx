@@ -44,7 +44,7 @@ function Toast({ message, onClose }: { message: string; onClose: () => void }) {
 
 // ─── CTA Card ────────────────────────────────────────────
 function EnrollCard({ course }: { course: CourseDetail }) {
-  const token = useAuthStore((state) => state.token);
+  const token = useAuthStore((state) => state.isAuthenticated);
   const user = useAuthStore((state) => state.user);
   const [enrolled, setEnrolled] = useState(false);
   const [loading, setLoading] = useState(false);

@@ -10,7 +10,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/authStore";
 import { useThemeStore } from "@/store/themeStore";
-import Cookies from "js-cookie";
 import api from "@/lib/api";
 import AdminStatsCards        from "@/components/admin/AdminStatsCards";
 import EnrollmentRequests     from "@/components/admin/EnrollmentRequests";
@@ -108,8 +107,6 @@ function AdminContent() {
 
   const handleLogout = () => {
     logout();
-    Cookies.remove("auth-token");
-    router.push("/");
   };
 
   if (user && user.role !== "admin") {
