@@ -40,7 +40,7 @@ export default function LessonPage() {
 
     try {
       setLoadingTask(true);
-      const { lessonApi } = await import("@/lib/api");
+      const { lessonApi } = await import("@/lib/axios");
       const res = await lessonApi.getTask(Number(lessonId));
       setTask(res.data);
     } catch {

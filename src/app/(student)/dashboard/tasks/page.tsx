@@ -3,8 +3,9 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ClipboardList, ChevronDown, ChevronUp, CheckCircle2, XCircle, RefreshCw, ChevronLeft } from 'lucide-react';
-import api, { lessonApi } from '@/lib/api';
+import api from '@/lib/api';
 import type { TaskResult } from '@/types';
+import {lessonApi} from '@/lib/axios';
 
 interface TaskItem {
   id: number;

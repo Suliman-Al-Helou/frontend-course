@@ -14,8 +14,8 @@ export interface RegisterForm {
   password: string;
   confirm: string;
 }
-
-export function useRegisterForm(onOtpRequired: (email: string) => void) {
+// onOtpRequired: (email: string) => void
+export function useRegisterForm() {
   const router = useRouter();
   const setAuth = useAuthStore(state => state.setAuth);
 

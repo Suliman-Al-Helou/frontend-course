@@ -1,5 +1,5 @@
+import 'server-only';
 import { LARAVEL_API_URL } from '@/lib/session';
-
 interface FetchOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
   body?: any;

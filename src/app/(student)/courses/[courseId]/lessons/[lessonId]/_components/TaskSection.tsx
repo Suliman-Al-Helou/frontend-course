@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { CheckCircle2, XCircle, RefreshCw, ChevronLeft } from 'lucide-react';
-import { lessonApi } from '@/lib/api';
+import { lessonApi } from '@/lib/axios';
 import type { Task, TaskResult } from '@/types';
 
 interface TaskSectionProps {

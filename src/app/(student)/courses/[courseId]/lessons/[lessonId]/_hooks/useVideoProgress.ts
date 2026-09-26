@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { lessonApi } from '@/lib/api';
+import { lessonApi } from '@/lib/axios';
 
 interface UseVideoProgressOptions {
   lessonId:        number;

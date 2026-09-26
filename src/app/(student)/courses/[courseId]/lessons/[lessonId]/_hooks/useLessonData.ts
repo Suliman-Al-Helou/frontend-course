@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import api, { lessonApi } from '@/lib/api';
+import  { lessonApi } from '@/lib/axios';
 import type { Course, LessonDetail, LessonProgress } from '@/types';
+import api from '@/lib/api';
 
 interface UseLessonDataResult {
   course:    Course | null;
