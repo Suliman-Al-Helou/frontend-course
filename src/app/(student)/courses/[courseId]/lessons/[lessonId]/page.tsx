@@ -8,6 +8,7 @@ import {
   Loader2,
   AlertCircle,
   CheckCircle2,
+  Lock,
 } from "lucide-react";
 import Link from "next/link";
 import { useLessonData } from "./_hooks/useLessonData";
@@ -23,8 +24,15 @@ export default function LessonPage() {
   const courseId = params.courseId as string;
   const lessonId = params.lessonId as string;
 
-  const { course, lesson, progress, loading, error, refetchProgress } =
-    useLessonData(courseId, lessonId);
+  const {
+    course,
+    lesson,
+    progress,
+    loading,
+    error,
+    accessError,
+    refetchProgress,
+  } = useLessonData(courseId, lessonId);
 
   const [videoCompleted, setVideoCompleted] = useState(false);
   const [taskPassed, setTaskPassed] = useState(false);
@@ -82,6 +90,32 @@ export default function LessonPage() {
       </div>
     );
 
+  if (accessError) {
+    const lessonPath = `/courses/${courseId}/lessons/${lessonId}`;
+    return (
+      <div
+        className="min-h-screen flex flex-col items-center justify-center gap-4 bg-background"
+        dir="rtl"
+      >
+        <Lock className="w-12 h-12 text-muted-foreground" />
+        <p className="text-muted-foreground text-center max-w-sm">
+          {accessError === "login"
+            ? "سجّل دخولك لمشاهدة هذا الدرس"
+            : "هذا الدرس غير متاح لك بعد. أكمل الدرس السابق أو تأكد من اشتراكك بالكورس."}
+        </p>
+        <Link
+          href={
+            accessError === "login"
+              ? `/login?redirect=${encodeURIComponent(lessonPath)}`
+              : `/courses/${courseId}`
+          }
+          className="text-primary hover:underline text-sm"
+        >
+          {accessError === "login" ? "تسجيل الدخول" : "العودة للكورس"}
+        </Link>
+      </div>
+    );
+  }
   if (error || !course || !lesson)
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-background">
@@ -128,7 +162,6 @@ export default function LessonPage() {
                 <ArrowLeft className="w-3.5 h-3.5" />
               </Link>
             )}
-            
           </div>
         </div>
       </div>
@@ -146,11 +179,20 @@ export default function LessonPage() {
             </p>
           </div>
 
-          <VideoPlayer
-            videoId={lesson.video_id ?? "dQw4w9WgXcQ"}
-            onProgress={() => {}}
-            onComplete={handleVideoComplete}
-          />
+          {lesson.video_id ? (
+            <VideoPlayer
+              videoId={lesson.video_id}
+              onProgress={() => {}}
+              onComplete={handleVideoComplete}
+            />
+          ) : (
+            <div
+              className="w-full bg-muted rounded-2xl flex items-center justify-center text-sm text-muted-foreground"
+              style={{ aspectRatio: "16/9" }}
+            >
+              لم يُضف فيديو لهذا الدرس بعد
+            </div>
+          )}
 
           {videoCompleted && !task && !loadingTask && (
             <div className="flex items-center gap-3 p-4 bg-success/10 border border-success/20 rounded-xl">
