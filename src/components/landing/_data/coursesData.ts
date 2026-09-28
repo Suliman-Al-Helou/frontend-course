@@ -26,6 +26,7 @@ export const FEATURED_COURSES: Course[] = [
     lessons: 0,
     tags: [],
     price: 0,
+    is_public:true,
   },
   {
     id: 2,
@@ -47,6 +48,8 @@ export const FEATURED_COURSES: Course[] = [
     lessons: 0,
     tags: [],
     price: 0,
+        is_public:true,
+
   },
   {
     id: 3,
@@ -68,6 +71,8 @@ export const FEATURED_COURSES: Course[] = [
     lessons: 0,
     tags: [],
     price: 0,
+        is_public:false,
+
   },
 ];
 
