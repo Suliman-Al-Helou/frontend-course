@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import {
   Shield, Plus, LogOut, LayoutDashboard,
   Users, BookOpen, ClipboardList, GraduationCap,
-  Moon, Sun, ChevronDown, MessageCircleQuestion,
+  Moon, Sun, ChevronDown, MessageCircleQuestion, Video,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/authStore";
@@ -19,6 +19,7 @@ import AddEnrollmentModal     from "@/components/admin/AddEnrollmentModal";
 import ManageCoursesTab       from "@/components/admin/ManageCoursesTab";
 import ManageInstructorsTab   from "@/components/admin/ManageInstructorsTab";
 import ManageFaqTab           from "@/components/admin/ManageFaqTab";
+import ManageZoomTab          from "@/components/admin/ManageZoomTab";
 import type { Enrollment, AdminUser, AdminStats } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -29,6 +30,7 @@ const TABS = [
   { id: "courses",      label: "الكورسات",           icon: BookOpen              },
   { id: "instructors",  label: "المدربون",           icon: GraduationCap         },
   { id: "faqs",         label: "الأسئلة الشائعة",   icon: MessageCircleQuestion },
+  { id: "zoom",         label: "لقاءات Zoom",       icon: Video                 },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
@@ -40,6 +42,7 @@ const TAB_LABELS: Record<TabId, string> = {
   courses:     "الكورسات",
   instructors: "المدربون",
   faqs:        "الأسئلة الشائعة",
+  zoom:        "لقاءات Zoom",
 };
 
 function ThemeToggle() {
@@ -103,7 +106,7 @@ function AdminContent() {
     }
   };
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => { void fetchData(); }, []);
 
   const handleLogout = () => {
     logout();
@@ -290,6 +293,11 @@ function AdminContent() {
                 {tab === "faqs" && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                     <ManageFaqTab />
+                  </motion.div>
+                )}
+                {tab === "zoom" && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <ManageZoomTab />
                   </motion.div>
                 )}
               </>

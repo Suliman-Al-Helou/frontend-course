@@ -6,6 +6,7 @@ import api from '@/lib/api';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import StatsCards from '@/components/dashboard/StatsCards';
 import ExamResults from '@/components/dashboard/ExamResults';
+import ZoomCalendar from '@/components/student/ZoomCalendar';
 
 export default function DashboardPage() {
   const user = useAuthStore(state => state.user);
@@ -25,6 +26,10 @@ export default function DashboardPage() {
       </div>
       <div className="mt-6">
         <ExamResults />
+      </div>
+
+      <div className="mt-6">
+        <ZoomCalendar />
       </div>
     </div>
   );
