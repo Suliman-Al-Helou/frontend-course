@@ -45,7 +45,6 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
     is_popular: (course as any)?.is_popular ?? course?.hot ?? false,
     total_duration: course?.total_duration ?? 0,
     price: (course as any)?.price ?? 0,
-    is_public:course?.is_public ?? false
   });
 
   const [whatYouLearn, setWhatYouLearn] = useState<string[]>(
@@ -362,20 +361,6 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
             </label>
           </div>
 
-
-          {/* مجاني  */}
-          <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
-            <input
-              type="checkbox"
-              id="is_public"
-              checked={form.is_public}
-              onChange={(e) => set("is_public", e.target.checked)}
-              className="w-4 h-4 rounded"
-            />
-            <label htmlFor="is_public" className="text-sm font-medium cursor-pointer">
-               مجاني
-            </label>
-          </div>
           {error && <p className="text-destructive text-sm">{error}</p>}
 
           {/* Buttons */}

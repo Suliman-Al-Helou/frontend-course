@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import api from "@/lib/api";
-import { useAuthStore } from "@/store/authStore";
-import { loginSchema } from "@/lib/validations/auth";
-import { flattenZodErrors } from "@/lib/validations/flattenZodErrors";
-import { handleFormError } from "@/lib/errors/handleFormError";
-import { notify } from "@/lib/toast";
-import { SUCCESS_CODES } from "@/lib/errors/codes";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import api from '@/lib/api';
+import { useAuthStore } from '@/store/authStore';
+import { loginSchema } from '@/lib/validations/auth';
+import { flattenZodErrors } from '@/lib/validations/flattenZodErrors';
+import { handleFormError } from '@/lib/errors/handleFormError';
+import { notify } from '@/lib/toast';
+import { SUCCESS_CODES } from '@/lib/errors/codes';
 
 export interface LoginForm {
   email: string;
@@ -15,24 +15,24 @@ export interface LoginForm {
 
 export function useLoginForm() {
   const router = useRouter();
-  const setAuth = useAuthStore((state) => state.setAuth);
+  const setAuth = useAuthStore(state => state.setAuth);
 
-  const [form, setForm] = useState<LoginForm>({ email: "", password: "" });
+  const [form, setForm] = useState<LoginForm>({ email: '', password: '' });
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const updateField =
-    (field: keyof LoginForm) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      setForm((prev) => ({ ...prev, [field]: e.target.value }));
-      setFieldErrors((prev) => ({ ...prev, [field]: "" }));
+  const updateField = (field: keyof LoginForm) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setForm(prev => ({ ...prev, [field]: e.target.value }));
+      setFieldErrors(prev => ({ ...prev, [field]: '' }));
     };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (loading) return; // 👈 جديد
+      if (loading) return; // 👈 جديد
 
-    setError("");
+    setError('');
     setFieldErrors({});
 
     const result = loginSchema.safeParse(form);
@@ -43,20 +43,10 @@ export function useLoginForm() {
 
     setLoading(true);
     try {
-      const { data } = await api.post("/auth/login", form);
+      const { data } = await api.post('/auth/login', form);
       setAuth(data.user);
       notify.success(SUCCESS_CODES.AUTH_LOGIN_OK);
-
-      const redirect =
-        new URLSearchParams(window.location.search).get("redirect") ?? "";
-      const target =
-        redirect.startsWith("/") &&
-        !redirect.startsWith("//") &&
-        !redirect.startsWith("/\\")
-          ? redirect
-          : "/dashboard";
-      router.push(target);
-      
+      router.push('/dashboard');
     } catch (err) {
       handleFormError(err, setFieldErrors, setError);
     } finally {

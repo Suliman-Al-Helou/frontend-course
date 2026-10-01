@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { LessonContent, LessonProgress, Task, TaskResult } from '@/types';
+import type { LessonProgress, Task, TaskResult } from '@/types';
 
 import api from '@/lib/api';
 // الـ APIs الخاصة بالدروس والمهام (تستدعى داخل الـ Client Components)
@@ -15,6 +15,4 @@ export const lessonApi = {
 
   submitTask: (lessonId: number, answers: Record<string, string>) =>
     api.post<TaskResult>(`/lessons/${lessonId}/task`, { answers }),
-  getLesson: (lessonId: number) =>
-  api.get<LessonContent>(`/lessons/${lessonId}`),
 };

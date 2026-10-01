@@ -108,6 +108,7 @@ export default function Footer() {
           <p className="text-white/70 text-sm">
             © 2026 Future House. جميع الحقوق محفوظة.
           </p>
+          <p className="text-white/70 text-sm">صُنع بـ ❤️ للمتعلمين العرب</p>
         </div>
       </div>
     </footer>

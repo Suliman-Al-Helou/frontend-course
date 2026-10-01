@@ -14,12 +14,7 @@ import { sessionOptions, SessionData, LARAVEL_API_URL } from '@/lib/session';
 async function forward(request: NextRequest, path: string[]) {
   const session = await getIronSession<SessionData>(await cookies(), sessionOptions);
 
-  const base = new URL(LARAVEL_API_URL.endsWith('/') ? LARAVEL_API_URL : LARAVEL_API_URL + '/');
-const target = new URL(path.map(encodeURIComponent).join('/') + request.nextUrl.search, base);
-if (target.origin !== base.origin || !target.pathname.startsWith(base.pathname)) {
-  return NextResponse.json({ message: 'Invalid path' }, { status: 400 });
-}
-const targetUrl = target.toString();
+  const targetUrl = `${LARAVEL_API_URL}/${path.join('/')}${request.nextUrl.search}`;
 
   const headers: Record<string, string> = { Accept: 'application/json' };
   if (session.token) {
