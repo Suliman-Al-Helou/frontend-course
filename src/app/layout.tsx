@@ -4,6 +4,8 @@ import { IBM_Plex_Sans_Arabic } from "next/font/google";
 import Script from "next/script";
 import AuthBootstrap from "@/components/shared/AuthBootstrap";
 import { Toaster } from "sonner";
+import { getLocale } from "next-intl/server";
+
 
 
 const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
@@ -18,11 +20,12 @@ export const metadata: Metadata = {
   description: "منصة تعليمية محكومة لتعلم البرمجة والتقنية باحترافية.",
 };
 
-export default function RootLayout({
+export default async  function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+   const locale = await getLocale(); 
   return (
     <html
       lang="ar"

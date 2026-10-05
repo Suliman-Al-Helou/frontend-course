@@ -13,6 +13,7 @@ import {
   LogOut,
   Moon,
   Sun,
+  LifeBuoy,
 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 
@@ -24,6 +25,7 @@ const MENU = [
   { label: "الفيديوهات", href: "/dashboard/videos", icon: Video },
   { label: "المهام", href: "/dashboard/tasks", icon: ClipboardList },
   { label: "ملفي الشخصي", href: "/dashboard/profile", icon: User },
+  { label: "تواصل معنا", href: "/dashboard/contact", icon: LifeBuoy},
 ];
 
 interface Props {

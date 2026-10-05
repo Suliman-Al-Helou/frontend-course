@@ -1,85 +1,91 @@
+@import "tailwindcss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@custom-variant dark (&:where(.dark, .dark *));
 
-@layer base {
-  :root {
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+:root {
+  --background: #ffffff;
+  --foreground: #11192c;
+  --card: #ffffff;
+  --muted: #f2f4f8;
+  --muted-foreground: #546178;
+  --border: #dfe4ec;
+  --primary: #6d5ef0;
+  --primary-foreground: #ffffff;
+  --success: #1d8778;
+  --warning: #dc8f09;
+  --destructive: #dc2828;
+  --ring: #6d5ef0;
 
-    /* الألوان الجديدة - Light Mode */
-    --primary: 221 100% 29%;          /* #003995 */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 204 56% 48%;         /* #358ABF */
-    --secondary-foreground: 0 0% 100%;
-    --accent: 172 100% 60%;           /* #93E0FF */
-    --accent-foreground: 222 47% 11%;
+  --destructive-foreground: #ffffff;
+  --primary-hover: #5d4fe0;
 
-    --muted: 214 32% 91%;
-    --muted-foreground: 215 16% 47%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 221 100% 29%;
-    --radius: 0.75rem;
 
-    /* Custom tokens */
-    --blue-deep:  221 100% 29%;       /* #003995 */
-    --blue-mid:   204 56% 48%;        /* #358ABF */
-    --blue-light: 172 100% 60%;       /* #93E0FF */
-    --blue-pale:  214 100% 97%;
-    --gold: 38 92% 50%;
-  }
+}
 
-  .dark {
-    --background: 224 71% 4%;
-    --foreground: 213 31% 91%;
-    --card: 224 71% 8%;
-    --card-foreground: 213 31% 91%;
-    --popover: 224 71% 4%;
-    --popover-foreground: 213 31% 91%;
+.dark {
+  --background: #0c0f18;
+  --foreground: #eff2f5;
+  --card: #10141e;
+  --muted: #161b27;
+  --muted-foreground: #98a3b3;
+  --border: #222939;
+  --primary: #8b7cf6;
+  --primary-foreground: #0c0f18;
+  --success: #2eb8a5;
+  --warning: #f6a823;
+  --destructive: #e64d4d;
+  --ring: #8b7cf6;
 
-    /* الألوان الجديدة - Dark Mode */
-    --primary: 221 100% 29%;          /* #003995 */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 204 56% 48%;         /* #358ABF */
-    --secondary-foreground: 0 0% 100%;
-    --accent: 258 100% 56%;           /* #8220FF */
-    --accent-foreground: 213 31% 91%;
+  --destructive-foreground: #0b111e;
+  --primary-hover: #7a6aee;
 
-    --muted: 222 47% 15%;
-    --muted-foreground: 215 20% 65%;
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 213 31% 91%;
-    --border: 222 47% 18%;
-    --input: 222 47% 18%;
-    --ring: 204 56% 48%;
 
-    /* Custom tokens */
-    --blue-deep:  221 100% 29%;       /* #003995 */
-    --blue-mid:   204 56% 48%;        /* #358ABF */
-    --blue-light: 258 100% 56%;       /* #8220FF */
-    --blue-pale:  224 71% 10%;
-  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-destructive: var(--destructive);
+  --color-ring: var(--ring);
+
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-primary-hover: var(--primary-hover);
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+
+  --font-arabic: var(--font-ibm-plex-sans-arabic), ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-
   body {
     @apply bg-background text-foreground font-arabic;
-    direction: rtl;
   }
+}
 
-  html {
-    direction: rtl;
+
+@layer utilities {
+ .mask-fade-left {
+    mask-image: linear-gradient(to left, black 40%, transparent 90%);
+    -webkit-mask-image: linear-gradient(to left, black 40%, transparent 90%);
+  }
+ .mask-fade-right {
+    mask-image: linear-gradient(to right, black 40%, transparent 90%);
+    -webkit-mask-image: linear-gradient(to right, black 40%, transparent 90%);
+  }
+ .mask-fade-center {
+    mask-image: radial-gradient(ellipse at center, black 50%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 50%, transparent 80%);
   }
 }

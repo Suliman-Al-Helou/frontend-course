@@ -1,4 +1,6 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
+
 const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "DENY" },
@@ -35,5 +37,6 @@ const nextConfig: NextConfig = {
   },
   transpilePackages: [],
 };
+const withNextIntl = createNextIntlPlugin();
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

@@ -7,7 +7,6 @@ import {
   Users, BookOpen, ClipboardList, GraduationCap,
   Moon, Sun, ChevronDown, MessageCircleQuestion, Video,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/authStore";
 import { useThemeStore } from "@/store/themeStore";
 import api from "@/lib/api";

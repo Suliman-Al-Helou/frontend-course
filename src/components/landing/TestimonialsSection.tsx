@@ -8,7 +8,7 @@ import Image from 'next/image';
 interface Testimonial {
   name: string;
   role: string;
-  avatar: string;
+  // avatar: string;
   rating: number;
   text: string;
 }
@@ -17,21 +17,21 @@ const TESTIMONIALS: Testimonial[] = [
   {
     name:   'عبدالله الحربي',
     role:   'مطور Frontend — وظّفه بعد ٦ أشهر',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face',
+    // avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face',
     rating: 5,
     text:   'كنت أبحث عن منصة تُعلّم البرمجة بالعربية بشكل جاد. وجدت ما أريد هنا. الكورسات منظمة، والاختبارات تُثبّت المعلومة، والمدربون يردون على كل سؤال.',
   },
   {
     name:   'ريم القحطاني',
     role:   'مهندسة بيانات — انتقلت من المحاسبة',
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face',
+    // avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face',
     rating: 5,
     text:   'تغيير مساري المهني بدا مستحيلاً حتى وجدت المنصة. بعد سنة كاملة من التعلم المنتظم، أعمل الآن كمهندسة بيانات. الشهادة ساعدتني كثيراً في المقابلات.',
   },
   {
     name:   'أحمد السالم',
     role:   'مطور تطبيقات — طالب جامعي',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face',
+    // avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face',
     rating: 5,
     text:   'أفضل استثمار في نفسي. الفيديوهات عالية الجودة، الشرح بالعربية الواضحة، وطريقة التقدم المحكوم جعلتني أفهم فعلاً لا مجرد أحفظ.',
   },
@@ -63,12 +63,12 @@ function TestimonialCard({ testimonial, index }: TestimonialCardProps) {
       <p className="text-foreground/80 leading-relaxed mb-6 text-sm">{testimonial.text}</p>
 
       <div className="flex items-center gap-3">
-        <Image
+        {/* <Image
           src={testimonial.avatar}
           alt={testimonial.name}
           className="w-11 h-11 rounded-full object-cover border-2 border-border"
        width={48} height={48} 
-       />
+       /> */}
         <div>
           <div className="font-bold text-foreground text-sm">{testimonial.name}</div>
           <div className="text-xs text-muted-foreground">{testimonial.role}</div>
