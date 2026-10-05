@@ -31,7 +31,7 @@ export interface Course {
   target_audience: string;
   students_count: number;
   sections?: Section[];
-
+  is_public:Boolean;
   rating: number;
   reviews: number;
   students: number;

@@ -1,14 +1,12 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { Sun, Moon } from "lucide-react";
-import { useThemeStore } from "@/store/themeStore";
+import { useEffect, useState } from 'react';
+import { Sun, Moon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useThemeStore } from '@/store/themeStore';
+import { cn } from '@/lib/utils';
 
-interface ThemeToggleProps {
-  className?: string;
-}
-
-export default function ThemeToggle({ className }: ThemeToggleProps) {
+export default function ThemeToggle({ className }: { className?: string }) {
   const { theme, toggleTheme } = useThemeStore();
   const [mounted, setMounted] = useState(false);
 
@@ -16,26 +14,12 @@ export default function ThemeToggle({ className }: ThemeToggleProps) {
     setMounted(true);
   }, []);
 
-  // قبل الـ mount نعرض placeholder بنفس الحجم عشان ما يصير layout shift
-  if (!mounted) {
-    return (
-      <div
-        className={`p-2 rounded-xl border border-border w-8 h-8 ${className ?? ""}`}
-      />
-    );
-  }
+  // مكان محجوز بنفس الحجم قبل الـ mount لمنع layout shift
+  if (!mounted) return <div className={cn('h-10 w-10', className)} aria-hidden />;
 
   return (
-    <button
-      onClick={toggleTheme}
-      aria-label="تبديل الوضع"
-      className={`p-2 rounded-xl border border-border hover:bg-muted transition-colors text-foreground/70 hover:text-foreground ${className ?? ""}`}
-    >
-      {theme === "dark" ? (
-        <Sun className="w-4 h-4" />
-      ) : (
-        <Moon className="w-4 h-4" />
-      )}
-    </button>
+    <Button variant="ghost" size="icon" className={className} onClick={toggleTheme} aria-label="تبديل الوضع">
+      {theme === 'dark' ? <Sun /> : <Moon />}
+    </Button>
   );
 }

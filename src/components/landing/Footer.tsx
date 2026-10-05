@@ -6,6 +6,7 @@ import {
   Linkedin,
   Instagram,
   LucideIcon,
+  MessageCircle,
 } from "lucide-react";
 import LogoIcon from "@/components/Logo";
 // 2. Types & Data
@@ -28,9 +29,7 @@ const FOOTER_LINKS: Record<string, string[]> = {
 };
 
 const SOCIALS: SocialLink[] = [
-  { icon: Twitter, href: "#", label: "Twitter" },
-  { icon: Youtube, href: "#", label: "YouTube" },
-  { icon: Linkedin, href: "#", label: "LinkedIn" },
+  { icon: MessageCircle, href: "#", label: "WhatsApp" },
   { icon: Instagram, href: "#", label: "Instagram" },
 ];
 
@@ -96,7 +95,7 @@ function LinkColumn({ category, items }: LinkColumnProps) {
 export default function Footer() {
   return (
     <footer className="bg-blue-deep text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 p-16">
         <div className="grid md:grid-cols-4 gap-10 mb-12">
           <Brand />
           {Object.entries(FOOTER_LINKS).map(([category, items]) => (
@@ -108,7 +107,6 @@ export default function Footer() {
           <p className="text-white/70 text-sm">
             © 2026 Future House. جميع الحقوق محفوظة.
           </p>
-          <p className="text-white/70 text-sm">صُنع بـ ❤️ للمتعلمين العرب</p>
         </div>
       </div>
     </footer>
