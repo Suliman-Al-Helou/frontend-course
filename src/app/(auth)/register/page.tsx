@@ -27,7 +27,7 @@ export default function RegisterPage() {
             </Link>
           </div>
 
-          <div className="mb-8">
+          <div className="mb-8 text-center md:text-start">
             <h1 className="text-2xl font-bold text-foreground">إنشاء حساب جديد</h1>
             <p className="text-muted-foreground mt-1 text-sm">انضم مجاناً وابدأ التعلم فوراً</p>
           </div>

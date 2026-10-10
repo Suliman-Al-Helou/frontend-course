@@ -4,6 +4,8 @@
 import { motion } from 'framer-motion';
 import { CheckCircle, XCircle, Clock } from 'lucide-react';
 import { useExamResults, scoreColorClass, ExamResult } from '@/components/dashboard/_hooks/Useexamresults';
+import { QueryState } from '@/components/shared/QueryState';
+import { EmptyState } from '@/components/shared/states/EmptyState';
 
 // 2. Types
 interface ExamRowProps {
@@ -68,22 +70,57 @@ function SummaryBar({ passRate }: SummaryBarProps) {
   );
 }
 
+function ExamResultsSkeleton() {
+  return (
+    <div className="divide-y divide-border animate-pulse">
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="flex items-center justify-between px-4 py-3.5">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-lg bg-muted" />
+            <div className="space-y-2">
+              <div className="h-3 w-40 rounded bg-muted" />
+              <div className="h-3 w-24 rounded bg-muted" />
+            </div>
+          </div>
+          <div className="h-7 w-12 rounded-lg bg-muted" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // 4. Main Component
 export default function ExamResults() {
-  const { results, passRate } = useExamResults();
+  const query = useExamResults();
 
   return (
     <div>
       <h2 className="text-xl font-bold text-foreground mb-5">نتائج الامتحانات</h2>
 
       <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
-        <div className="divide-y divide-border">
-          {results.map((exam, i) => (
-            <ExamRow key={i} exam={exam} index={i} />
-          ))}
-        </div>
+        <QueryState
+          query={query}
+          skeleton={<ExamResultsSkeleton />}
+          isEmpty={(d) => d.results.length === 0}
+          empty={
+            <EmptyState
+              title="لا توجد نتائج امتحانات بعد"
+              description="ستظهر نتائجك هنا بعد أن تحلّ أول مهمة في أحد الدروس."
+            />
+          }
+        >
+          {({ results, passRate }) => (
+            <>
+              <div className="divide-y divide-border">
+                {results.map((exam, i) => (
+                  <ExamRow key={i} exam={exam} index={i} />
+                ))}
+              </div>
 
-        <SummaryBar passRate={passRate} />
+              <SummaryBar passRate={passRate} />
+            </>
+          )}
+        </QueryState>
       </div>
     </div>
   );

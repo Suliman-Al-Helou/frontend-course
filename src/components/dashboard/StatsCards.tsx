@@ -7,6 +7,7 @@ import {
   StatCard,
 } from "@/components/dashboard/_hooks/Usestatscards";
 import { cn } from "@/lib/utils";
+import { QueryState } from "@/components/shared/QueryState";
 
 // 2. Types
 interface StatCardItemProps {
@@ -45,15 +46,38 @@ function StatCardItem({ stat, index }: StatCardItemProps) {
   );
 }
 
-// 4. Main Component
-export default function StatsCards() {
-  const stats = useStatsCards();
-
+function StatsCardsSkeleton() {
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      {stats.map((stat, i) => (
-        <StatCardItem key={i} stat={stat} index={i} />
+      {[1, 2, 3, 4].map((i) => (
+        <div
+          key={i}
+          className="bg-card rounded-2xl border border-border p-5 shadow-sm animate-pulse"
+        >
+          <div className="flex items-center justify-between border-b border-border pb-3">
+            <div className="h-3 w-20 rounded bg-muted" />
+            <div className="h-7 w-7 rounded-sm bg-muted" />
+          </div>
+          <div className="mt-3 h-7 w-12 rounded bg-muted" />
+        </div>
       ))}
     </div>
+  );
+}
+
+// 4. Main Component
+export default function StatsCards() {
+  const query = useStatsCards();
+
+  return (
+    <QueryState query={query} skeleton={<StatsCardsSkeleton />}>
+      {(stats) => (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {stats.map((stat, i) => (
+            <StatCardItem key={stat.label} stat={stat} index={i} />
+          ))}
+        </div>
+      )}
+    </QueryState>
   );
 }

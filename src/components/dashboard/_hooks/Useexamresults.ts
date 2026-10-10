@@ -1,27 +1,17 @@
-import { useEffect, useState, useMemo } from 'react';
-import api from '@/lib/api';
-import { getDashboardStats } from '@/lib/dashboardStats';
+import type { DashboardStatsResponse } from '@/lib/dashboardStats';
+import { useDashboardStats } from './Usedashboardstats';
 
-export interface ExamResult {
-  lesson: string;
-  course: string;
-  score: number;
-  passed: boolean;
-  date: string;
-}
+// الـ type صار معرّف مرة وحدة في lib/dashboardStats، وهون إعادة تصدير عشان ما ينكسر أي import قديم
+export type { ExamResult } from '@/lib/dashboardStats';
 
+const toExamData = (data: DashboardStatsResponse) => ({
+  results: data.exam_results,
+  passRate: data.pass_rate,
+});
+
+// بيرجّع UseQueryResult<{ results, passRate }> — الحالات (تحميل/خطأ/فاضي) بيقررها <QueryState>
 export function useExamResults() {
-  const [results, setResults] = useState<ExamResult[]>([]);
-  const [passRate, setPassRate] = useState(0);
-
-  useEffect(() => {
-    getDashboardStats().then((data) => {
-      setResults(data.exam_results);
-      setPassRate(data.pass_rate);
-    });
-  }, []);
-
-  return { results, passRate };
+  return useDashboardStats(toExamData);
 }
 
 export function scoreColorClass(score: number): string {

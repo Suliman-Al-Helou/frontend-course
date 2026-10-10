@@ -16,13 +16,16 @@
   --destructive: #dc2828;
   --ring: #6d5ef0;
 
+  
   --destructive-foreground: #ffffff;
   --primary-hover: #5d4fe0;
 
-
-}
-
-.dark {
+    --login-signup-background: #0c0f18;
+    
+  }
+  
+  .dark {
+  --login-signup-background: #0c0f18;
   --background: #0c0f18;
   --foreground: #eff2f5;
   --card: #10141e;
@@ -43,6 +46,10 @@
 }
 
 @theme inline {
+
+
+  --color-login-signup-background: var(--login-signup-background);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);

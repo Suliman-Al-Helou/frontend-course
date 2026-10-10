@@ -1,23 +1,17 @@
 "use client";
 
 import { useAuthStore } from "@/store/authStore";
-import { useEffect, useState } from "react";
-import api from "@/lib/api";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import StatsCards from "@/components/dashboard/StatsCards";
 import ExamResults from "@/components/dashboard/ExamResults";
 import ZoomCalendar from "@/components/student/ZoomCalendar";
-import { getDashboardStats } from "@/lib/dashboardStats";
+import { useDashboardStats } from "@/components/dashboard/_hooks/Usedashboardstats";
 
 export default function DashboardPage() {
   const user = useAuthStore((state) => state.user);
-  const [streak, setStreak] = useState(0);
-
-  useEffect(() => {
-    getDashboardStats()
-      .then((data) => setStreak(data.stats?.streak ?? 0))
-      .catch(() => {});
-  }, []);
+  // نفس الـ query تبع StatsCards و ExamResults ← طلب واحد مشترك، بدون state ولا useEffect
+  const { data } = useDashboardStats();
+  const streak = data?.stats.streak ?? 0;
 
   return (
     <div>

@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
-import { AuthLogo } from '../_components/AuthLogo';
 import { LoginForm } from './_components/LoginForm';
 import { useLoginForm } from './_hooks/useLoginForm';
 
@@ -17,11 +16,10 @@ export default function LoginPage() {
     >
       <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="mb-4"><AuthLogo /></div>
           <h1 className="text-2xl font-bold text-foreground">أهلاً بعودتك!</h1>
           <p className="text-muted-foreground mt-1">سجّل دخولك لمتابعة رحلة التعلم</p>
         </div>
-
+      
         <div className="bg-card rounded-2xl shadow-xl border border-border p-8">
           <LoginForm
             form={loginForm.form}
