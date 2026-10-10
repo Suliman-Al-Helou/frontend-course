@@ -61,7 +61,7 @@ interface SummaryBarProps {
 
 function SummaryBar({ passRate }: SummaryBarProps) {
   return (
-    <div className="px-4 py-3 bg-muted/50 border-t border-border flex items-center justify-between">
+    <div className="px-4 py-3  bg-muted/50 border-t border-border flex items-center justify-between">
       <span className="text-xs text-muted-foreground">معدل النجاح الكلي</span>
       <span className="text-sm font-bold text-primary">{passRate}٪</span>
     </div>

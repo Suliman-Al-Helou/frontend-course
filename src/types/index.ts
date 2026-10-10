@@ -2,9 +2,8 @@ export interface User {
   id: number;
   name: string;
   email: string;
-  role: 'admin' | 'student';
+  role: "admin" | "student";
 }
-
 
 export interface LessonProgress {
   watched_percent: number;
@@ -31,7 +30,7 @@ export interface Course {
   target_audience: string;
   students_count: number;
   sections?: Section[];
-  is_public:Boolean;
+  is_public: Boolean;
   rating: number;
   reviews: number;
   students: number;
@@ -42,6 +41,7 @@ export interface Course {
   tags: string[];
   price: number;
   hot?: boolean;
+  next_lesson_id?: number | null;
 }
 
 export interface Section {
@@ -64,8 +64,6 @@ export interface LessonDetail extends Lesson {
   task?: Task;
 }
 
-
-
 export interface Question {
   id: string;
   type: "mcq" | "true_false" | "open";
@@ -80,16 +78,18 @@ export interface TaskResult {
   pass_score: number;
   message?: string;
   // Backend returns results as object keyed by question_id
-  results: Record<string, {
-    correct: boolean;
-    your_answer: string;
-    correct_answer: string;
-    explanation: string | null;
-    type?: string;
-    pending?: boolean;
-  }>;
+  results: Record<
+    string,
+    {
+      correct: boolean;
+      your_answer: string;
+      correct_answer: string;
+      explanation: string | null;
+      type?: string;
+      pending?: boolean;
+    }
+  >;
 }
-
 
 export interface CourseProgress {
   total_lessons: number;

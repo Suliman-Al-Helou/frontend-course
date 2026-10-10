@@ -5,8 +5,7 @@ import Script from "next/script";
 import AuthBootstrap from "@/components/shared/AuthBootstrap";
 import { Toaster } from "sonner";
 import { getLocale } from "next-intl/server";
-
-
+import QueryProvider from "@/components/shared/QueryProvider";
 
 const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
   subsets: ["arabic", "latin"],
@@ -20,12 +19,12 @@ export const metadata: Metadata = {
   description: "منصة تعليمية محكومة لتعلم البرمجة والتقنية باحترافية.",
 };
 
-export default async  function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-   const locale = await getLocale(); 
+  const locale = await getLocale();
   return (
     <html
       lang="ar"
@@ -57,11 +56,10 @@ export default async  function RootLayout({
         />
       </head>
       <body suppressHydrationWarning>
-
         <AuthBootstrap />
-          <Toaster position="top-center" dir="rtl" richColors />
-
-        {children}</body>
+        <Toaster position="top-center" dir="rtl" richColors />
+        <QueryProvider>{children}</QueryProvider>
+      </body>
     </html>
   );
 }

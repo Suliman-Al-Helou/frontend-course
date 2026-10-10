@@ -25,7 +25,7 @@ const MENU = [
   { label: "الفيديوهات", href: "/dashboard/videos", icon: Video },
   { label: "المهام", href: "/dashboard/tasks", icon: ClipboardList },
   { label: "ملفي الشخصي", href: "/dashboard/profile", icon: User },
-  { label: "تواصل معنا", href: "/dashboard/contact", icon: LifeBuoy},
+  { label: "تواصل معنا", href: "/dashboard/contact", icon: LifeBuoy },
 ];
 
 interface Props {
@@ -51,15 +51,16 @@ function ThemeToggle() {
 export default function DashboardSidebar({ open, onClose }: Props) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, logout , isLoading} = useAuthStore();
-  
-if (isLoading) {
-  return <div className="text-gray-400 text-sm animate-pulse">جارٍ التحقق...</div>;
-}
+  const { user, logout, isLoading } = useAuthStore();
+
+  if (isLoading) {
+    return (
+      <div className="text-gray-400 text-sm animate-pulse">جارٍ التحقق...</div>
+    );
+  }
 
   const handleLogout = () => {
     logout();
-   
   };
 
   return (
@@ -80,9 +81,10 @@ if (isLoading) {
       `}
       >
         <div className="flex items-center justify-between p-5 border-b border-border">
-<div className="font-bold text-primary text-lg">
-  لوحة<span className="text-primary dark:text-white mr-1">الطالب</span>
-</div>
+          <div className="font-bold text-primary text-lg">
+            لوحة
+            <span className="text-primary dark:text-white mr-1">الطالب</span>
+          </div>
           <button
             onClick={onClose}
             className="lg:hidden p-1 rounded-lg hover:bg-muted"

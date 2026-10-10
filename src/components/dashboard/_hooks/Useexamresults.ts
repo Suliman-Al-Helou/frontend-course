@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import api from '@/lib/api';
+import { getDashboardStats } from '@/lib/dashboardStats';
 
 export interface ExamResult {
   lesson: string;
@@ -14,7 +15,7 @@ export function useExamResults() {
   const [passRate, setPassRate] = useState(0);
 
   useEffect(() => {
-    api.get('/dashboard/stats').then(({ data }) => {
+    getDashboardStats().then((data) => {
       setResults(data.exam_results);
       setPassRate(data.pass_rate);
     });

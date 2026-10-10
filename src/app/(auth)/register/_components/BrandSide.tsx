@@ -4,7 +4,7 @@ import { HIGHLIGHTS } from '../_data/highlights';
 
 export function BrandSide() {
   return (
-    <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-blue-deep via-blue-mid to-blue-light flex-col justify-between p-12">
+    <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-blue-deep via-blue-mid to-blue-light flex-col justify-between p-12 bg-primary dark:bg-background">
       <div className="absolute inset-0 opacity-10 pointer-events-none">
         <div className="absolute top-16 right-16 w-64 h-64 rounded-full bg-white blur-3xl" />
         <div className="absolute bottom-24 left-10 w-80 h-80 rounded-full bg-white blur-3xl" />

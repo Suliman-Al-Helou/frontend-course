@@ -3,7 +3,8 @@
 // 1. Imports
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Sparkles } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
+import { Button } from '../ui/button';
 
 // 2. Sub Components
 function BackgroundEffects() {
@@ -26,7 +27,7 @@ function BackgroundEffects() {
 // 3. Main Component
 export default function CTASection() {
   return (
-    <section className="py-24 relative overflow-hidden">
+    <section className="py-24 relative overflow-hidden bg-primary dark:bg-background">
       <BackgroundEffects />
 
       <div className="relative max-w-4xl mx-auto px-4 sm:px-6 text-center">
@@ -37,10 +38,7 @@ export default function CTASection() {
           transition={{ duration: 0.7 }}
         >
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-white/10 text-white rounded-full px-4 py-1.5 text-sm font-medium mb-6">
-            <Sparkles className="w-4 h-4" />
-            ابدأ اليوم — الأول خطوة الأصعب
-          </div>
+          
 
           {/* Heading */}
           <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6 leading-tight">
@@ -56,20 +54,22 @@ export default function CTASection() {
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
+          <div className="flex flex-col sm:flex-row gap-4 justify-center ">
+            <Button
               href="/register"
-              className="inline-flex items-center justify-center gap-2 bg-white text-primary hover:bg-blue-50 rounded-xl px-10 py-4 text-base font-bold shadow-2xl hover:shadow-white/20 transition-all"
-            >
+              size={"lg"}
+              
+              >
               ابدأ رحلتك مجاناً
               <ArrowLeft className="w-5 h-5 mr-2" />
-            </Link>
-            <Link
+            </Button>
+            <Button
               href="/courses"
-              className="inline-flex items-center justify-center border-2 border-white/30 text-white hover:bg-white/10 rounded-xl px-10 py-4 text-base font-semibold transition-colors"
+              size={"lg"}
+              variant={"outline"}
             >
               تصفح الكورسات
-            </Link>
+            </Button>
           </div>
 
           {/* Trust line */}

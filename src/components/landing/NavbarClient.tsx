@@ -10,6 +10,7 @@ import { useAuthStore } from '@/store/authStore';
 import { cn } from '@/lib/utils';
 
 const NAV_LINKS = [
+  { label: 'الرئيسة', href: '/' },
   { label: 'الكورسات', href: '/courses' },
   { label: 'المدربون', href: '/instructors' },
 ];

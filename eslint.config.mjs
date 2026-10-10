@@ -25,6 +25,8 @@ export default [
           selector: "JSXOpeningElement[name.name='input']",
           message: "استخدم <Input> من @/components/ui/input",
         },
+            { selector: "Literal[value=/^#([0-9a-fA-F]{3}){1,2}$/]", message: "HEX colors are FORBIDDEN. Use semantic tokens." },
+
       ],
     },
   },
