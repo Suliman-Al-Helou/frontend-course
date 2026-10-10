@@ -22,8 +22,9 @@ import { SkeletonCard } from "@/components/courses/CourseCardSkeleton";
 import { LEVELS, LEVEL_LABELS } from "@/components/courses/courseLevel";
 import { useMyEnrolledCourses } from "@/components/landing/_hooks/UseMyEnrolledCourses";
 import { useAuthStore } from "@/store/authStore";
+import { Button } from "@/components/ui/button";
 // Removed mock COURSE_EXTRAS object
-
+import { getCourseLinks } from "@/components/courses/courseLinks";
 // ─── Sub Components ───────────────────────────────────────
 function HeroSection({
   search,
@@ -33,7 +34,7 @@ function HeroSection({
   onSearch: (v: string) => void;
 }) {
   return (
-    <div className="bg-gradient-to-br from-blue-deep via-blue-mid to-blue-light pt-28 pb-16 px-4 text-center">
+    <div className="bg-gradient-to-br from-blue-deep via-blue-mid to-blue-light pt-28 pb-16 px-4 text-center bg-primary dark:bg-background">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -78,17 +79,18 @@ function LevelFilters({
       <Filter className="text-muted-foreground w-4 h-4 flex-shrink-0" />
       <span className="text-sm text-muted-foreground ml-1">المستوى:</span>
       {LEVELS.map((l) => (
-        <button
+        <Button
+          variant={"outline"}
           key={l}
           onClick={() => onChange(l)}
           className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
             level === l
-              ? "bg-primary text-white shadow-md shadow-primary/30 dark:shadow-primary/20"
-              : "bg-white dark:bg-muted border border-blue-100 dark:border-border text-foreground/70 hover:border-primary hover:text-primary"
+              ? "bg-primary hover:bg-primary"
+              : "bg-white dark:bg-muted border border-blue-100 dark:border-border text-foreground/70 hover:border-primary "
           }`}
         >
           {LEVEL_LABELS[l] ?? l}
-        </button>
+        </Button>
       ))}
     </div>
   );
@@ -180,14 +182,7 @@ export default function CoursesPage() {
                   course={course}
                   index={i}
                   isEnrolled={isEnrolled}
-                  href={
-                    isEnrolled
-                      ? "/dashboard/courses"
-                      : isAuthenticated
-                        ? `/courses/${course.id}`
-                        : "/register"
-                  }
-                  ctaLabel={isEnrolled ? "متابعة التعلم" : "عرض الكورس"} // TODO: translate
+                  {...getCourseLinks(course, isEnrolled, isAuthenticated)}
                 />
               );
             })}

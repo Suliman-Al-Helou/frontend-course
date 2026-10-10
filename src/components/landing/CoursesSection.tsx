@@ -8,6 +8,7 @@ import { useMyEnrolledCourses } from "@/components/landing/_hooks/UseMyEnrolledC
 import { useAuthStore } from "@/store/authStore";
 import CourseCard from "@/components/courses/CourseCard";
 import { SkeletonCard } from "@/components/courses/CourseCardSkeleton";
+import { getCourseLinks } from "../courses/courseLinks";
 
 export default function CoursesSection() {
   const { courses, loading } = useCoursesSection();
@@ -29,25 +30,18 @@ export default function CoursesSection() {
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {loading
             ? [1, 2, 3].map((i) => <SkeletonCard key={i} />)
-            : courses.map((course, index) => {
-                const isEnrolled = enrolledIds.has(course.id);
-                return (
-                  <CourseCard
-                    key={course.id}
-                    course={course}
-                    index={index}
-                    isEnrolled={isEnrolled}
-                    href={
-                      isEnrolled
-                        ? "/dashboard/courses"
-                        : isAuthenticated
-                          ? `/courses/${course.id}`
-                          : "/register"
-                    }
-                    ctaLabel={isEnrolled ? "متابعة التعلم" : "عرض الكورس"} // TODO: translate
-                  />
-                );
-              })}
+           : courses.map((course, index) => {
+    const isEnrolled = enrolledIds.has(course.id);
+    return (
+      <CourseCard
+        key={course.id}
+        course={course}
+        index={index}
+        isEnrolled={isEnrolled}
+        {...getCourseLinks(course, isEnrolled, isAuthenticated)}
+      />
+    );
+  })}
         </div>
 
         {/* Footer link: نفس الكود الحالي، مع تغيير mr-2 إلى ms-2 */}

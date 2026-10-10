@@ -64,13 +64,13 @@ export default function HeroSection() {
             </p>
 
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-              <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl shadow-sm transition-all">
+              <Button asChild size="lg" >
                 <Link href="/register">
                   {t("ctaPrimary")}
                   <ArrowLeft size={16} aria-hidden="true" className="mr-2" />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="border-border text-foreground hover:bg-muted/50 transition-colors">
+              <Button asChild size="lg" variant="outline">
                 <Link href="/#courses">{t("ctaSecondary")}</Link>
               </Button>
             </div>

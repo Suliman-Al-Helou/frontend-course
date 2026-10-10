@@ -5,8 +5,7 @@ import Navbar  from '@/components/landing/Navbar';
 import Footer  from '@/components/landing/Footer';
 import { ContactInfo } from '@/app/(public)/contact/_components/ContactInfo';
 import { ContactForm }  from '@/app/(public)/contact/_components/ContactForm';
-import { ContactFAQ }   from '@/app/(public)/contact/_components/ContactFAQ';
-import { CONTACT_FAQS } from '@/app/(public)/contact/_data/contactData';
+// import { ContactFAQ }   from '@/app/(public)/contact/_components/ContactFAQ';
 
 // export const metadata = {
 //   title:       'تواصل معنا — تِقنيار',
@@ -35,7 +34,6 @@ export default function ContactPage() {
           <ContactForm />
         </div>
 
-        <ContactFAQ faqs={CONTACT_FAQS} />
       </div>
 
       <Footer />

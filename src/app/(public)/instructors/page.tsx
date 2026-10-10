@@ -151,9 +151,7 @@ export default function InstructorsPage() {
       {/* Hero */}
       <div className="bg-gradient-to-br from-primary/90 to-primary/60 pt-28 pb-16 px-4 text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <div className="inline-flex items-center gap-2 bg-white/10 text-white rounded-full px-4 py-1.5 text-sm font-medium mb-4">
-            <Award className="w-4 h-4" /> فريق المدربين
-          </div>
+      
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">تعرّف على مدربينا</h1>
           <p className="text-white/70 text-lg">خبراء ومتخصصون يجمعهم شغف التعليم وبناء الجيل التقني العربي</p>
         </motion.div>

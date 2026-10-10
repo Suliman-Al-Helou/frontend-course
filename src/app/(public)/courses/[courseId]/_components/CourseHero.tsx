@@ -138,7 +138,7 @@ function EnrollCard({ course }: { course: CourseDetail }) {
           {/* إذا مسجل دخول */}
           {!!token ? (
             <>
-              {!enrolled ? (
+              {!enrolled && (
                 // زر التسجيل
                 <button
                   onClick={handleEnroll}
@@ -150,9 +150,9 @@ function EnrollCard({ course }: { course: CourseDetail }) {
                   ) : null}
                   سجّل الآن
                 </button>
-              ) : (
-                // زر سحب التسجيل (لون مختلف)
-                <button
+              // ) : (
+              )}
+                 {/* <button
                   onClick={handleWithdraw}
                   disabled={loading}
                   className="w-full h-12 mb-3 inline-flex items-center justify-center gap-2 bg-muted hover:bg-destructive/10 border-2 border-border hover:border-destructive/40 disabled:opacity-60 text-muted-foreground hover:text-destructive rounded-xl font-bold text-base transition-all"
@@ -161,8 +161,7 @@ function EnrollCard({ course }: { course: CourseDetail }) {
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : null}
                   سحب التسجيل
-                </button>
-              )}
+                </button> */}
 
               {enrolled && (
                 <div className="flex items-center gap-2 mb-3">
@@ -179,12 +178,12 @@ function EnrollCard({ course }: { course: CourseDetail }) {
                   <span className="text-sm text-green-700 dark:text-green-400 font-medium">
                     ضمان استرداد ٧ أيام
                   </span>
-                </div>
-              )}
-
               <p className="text-center text-xs text-muted-foreground">
                 الوصول الكامل بعد التسجيل والدفع
               </p>
+                </div>
+              )}
+  
             </>
           ) : (
             // غير مسجل دخول
