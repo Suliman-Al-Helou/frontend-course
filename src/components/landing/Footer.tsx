@@ -1,15 +1,13 @@
+'use client';
+
 // 1. Imports
-import Link from "next/link";
-import {
-  Twitter,
-  Youtube,
-  Linkedin,
-  Instagram,
-  LucideIcon,
-  MessageCircle,
-} from "lucide-react";
-import LogoIcon from "@/components/Logo";
-import { Button } from "../ui/button";
+import Link from 'next/link';
+import { Instagram, LucideIcon, MessageCircle } from 'lucide-react';
+import LogoIcon from '@/components/Logo';
+import { Button } from '@/components/ui/button';
+import { useCourses } from '@/hooks/useCourses';
+import { WHATSAPP_URL } from '@/lib/contact';
+
 // 2. Types & Data
 interface SocialLink {
   icon: LucideIcon;
@@ -17,51 +15,54 @@ interface SocialLink {
   label: string;
 }
 
-const FOOTER_LINKS: Record<string, string[]> = {
-  الكورسات: [
-    "Python",
-    "JavaScript",
-    "React",
-    "الذكاء الاصطناعي",
-    "قواعد البيانات",
-  ],
-  المنصة: ["كيف تعمل؟", "الأسعار", "المدربون", "الشهادات"],
-  الدعم: ["مركز المساعدة", "تواصل معنا", "سياسة الخصوصية", "الشروط والأحكام"],
-};
+interface LinkItem {
+  label: string;
+  href: string;
+}
 
 const SOCIALS: SocialLink[] = [
-  { icon: MessageCircle, href: "#", label: "WhatsApp"  },
-  { icon: Instagram, href: "https://www.instagram.com/future.house2?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw==", label: "Instagram" },
+  { icon: MessageCircle, href: WHATSAPP_URL, label: 'WhatsApp' },
+  {
+    icon: Instagram,
+    href: 'https://www.instagram.com/future.house2?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw==',
+    label: 'Instagram',
+  },
+];
+
+const PLATFORM_LINKS: LinkItem[] = [
+  { label: 'المدربون', href: '/instructors' },
+  { label: 'الكورسات', href: '/courses' },
+];
+
+const SUPPORT_LINKS: LinkItem[] = [
+  { label: 'تواصل معنا', href: '/#contact' },
 ];
 
 // 3. Sub Components
-// أضف الـ import
-
-
-// عدّل Brand()
 function Brand() {
   return (
     <div>
       <div className="flex items-center gap-2 mb-4">
-        <LogoIcon size={36} className="brightness-0 invert"/>
+        <LogoIcon size={36} className="brightness-0 invert" />
         <span className="text-xl font-bold">
-         Future<span className="text-white pl-1">House</span>
+          Future<span className="text-white ps-1">House</span>
         </span>
       </div>
-      <p className="text-white/60 text-sm leading-relaxed mb-5">
+      <p className="text-white/60 text-sm leading-relaxed mb-4">
         منصة تعليمية عربية متكاملة لتعلم البرمجة والتقنية باحترافية.
       </p>
-      <div className="flex  gap-3">
+      <div className="flex gap-3">
         {SOCIALS.map(({ icon: Icon, href, label }) => (
           <Button
             key={label}
             href={href}
             aria-label={label}
             target="_blank"
-            size={"sm"}
-            // className="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+            rel="noopener noreferrer"
+            size="sm"
+            variant="secondary"
           >
-            <Icon className="w-4 h-4 " />
+            <Icon size={16} />
           </Button>
         ))}
       </div>
@@ -69,23 +70,60 @@ function Brand() {
   );
 }
 
-interface LinkColumnProps {
-  category: string;
-  items: string[];
-}
+function CoursesColumn() {
+  const { data: courses = [], isPending } = useCourses();
+  const topCourses = courses.slice(0, 5);
 
-function LinkColumn({ category, items }: LinkColumnProps) {
   return (
     <div>
-      <h3 className="font-bold text-white mb-4 ">{category}</h3>
-      <ul className="space-y-2.5">
+      <h3 className="font-bold text-white mb-4">الكورسات</h3>
+      {isPending ? (
+        <div className="space-y-3" aria-hidden="true">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div
+              key={i}
+              className="h-4 w-28 bg-white/10 rounded animate-pulse"
+            />
+          ))}
+        </div>
+      ) : topCourses.length > 0 ? (
+        <ul className="space-y-3">
+          {topCourses.map((course) => (
+            <li key={course.id}>
+              <Link
+                href={`/courses/${course.id}`}
+                className="text-white/60 hover:text-white text-sm transition-colors block truncate"
+                title={course.title}
+              >
+                {course.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-white/40 text-sm">لا توجد كورسات حالياً</p>
+      )}
+    </div>
+  );
+}
+
+interface LinkColumnProps {
+  title: string;
+  items: LinkItem[];
+}
+
+function LinkColumn({ title, items }: LinkColumnProps) {
+  return (
+    <div>
+      <h3 className="font-bold text-white mb-4">{title}</h3>
+      <ul className="space-y-3">
         {items.map((item) => (
-          <li key={item}>
+          <li key={item.href + item.label}>
             <Link
-              href="#"
-              className="text-white/60 hover:text-white text-sm transition-colors"
+              href={item.href}
+              className="text-white/60 hover:text-white text-sm transition-colors block"
             >
-              {item}
+              {item.label}
             </Link>
           </li>
         ))}
@@ -97,13 +135,13 @@ function LinkColumn({ category, items }: LinkColumnProps) {
 // 4. Main Component
 export default function Footer() {
   return (
-    <footer className="bg-primary dark:bg-background text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 p-16">
-        <div className="grid md:grid-cols-4 gap-10 mb-12 ">
+    <footer className="bg-primary dark:bg-background text-white py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-12">
           <Brand />
-          {Object.entries(FOOTER_LINKS).map(([category, items]) => (
-            <LinkColumn key={category} category={category} items={items} />
-          ))}
+          <CoursesColumn />
+          <LinkColumn title="المنصة" items={PLATFORM_LINKS} />
+          <LinkColumn title="الدعم" items={SUPPORT_LINKS} />
         </div>
 
         <div className="border-t border-white/10 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">

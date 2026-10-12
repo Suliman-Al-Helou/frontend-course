@@ -110,7 +110,7 @@ export default function ManageCoursesTab({
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              className="bg-card border border-border rounded-2xl overflow-hidden"
+              className="bg-card border border-border rounded-2xl overflow-hidden flex flex-col justify-between gap-0"
             >
               {course.cover_image ? (
                 <img
@@ -119,7 +119,7 @@ export default function ManageCoursesTab({
                   className="w-full h-48 object-cover"
                 />
               ) : (
-                <div className="w-full h-36 bg-gradient-to-br from-primary/20 to-blue-mid/20 flex items-center justify-center">
+                <div className="w-full h-48 bg-gradient-to-br from-primary/20 to-blue-mid/20 flex items-center justify-center ">
                   <BookOpen className="w-10 h-10 text-primary/40" />
                 </div>
               )}
@@ -185,7 +185,7 @@ export default function ManageCoursesTab({
 
       {showModal && (
         <CourseFormModal
-          key={editingCourse?.id ?? 'new'}
+          key={editingCourse?.id ?? "new"}
           course={editingCourse}
           onClose={() => setShowModal(false)}
           onSuccess={() => {
@@ -200,7 +200,7 @@ export default function ManageCoursesTab({
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
           dir="rtl"
         >
-          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center">
+          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center ">
             <div className="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Trash2 className="w-7 h-7 text-red-500" />
             </div>

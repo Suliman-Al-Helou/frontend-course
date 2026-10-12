@@ -11,6 +11,7 @@ import {
   ArrowLeft,
   Loader2,
   X,
+  Play,
 } from "lucide-react";
 import { CourseDetail } from "../_hooks/useCourseDetail";
 import { useAuthStore } from "@/store/authStore";
@@ -45,11 +46,21 @@ function Toast({ message, onClose }: { message: string; onClose: () => void }) {
 // ─── CTA Card ────────────────────────────────────────────
 function EnrollCard({ course }: { course: CourseDetail }) {
   const token = useAuthStore((state) => state.isAuthenticated);
-  const user = useAuthStore((state) => state.user);
   const [enrolled, setEnrolled] = useState(false);
+  const [enrollmentStatus, setEnrollmentStatus] = useState<
+    "pending" | "approved" | "rejected" | null
+  >(null);
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(true);
   const [toast, setToast] = useState<string | null>(null);
+
+  const isFree = Number(course.price ?? 0) === 0 || Boolean(course.is_public);
+  const firstLessonId =
+    course.sections?.[0]?.lessons?.[0]?.id ?? course.next_lesson_id;
+  const hasLessons = Boolean(firstLessonId);
+  const learnHref = firstLessonId
+    ? `/courses/${course.id}/lessons/${firstLessonId}`
+    : null;
 
   useEffect(() => {
     if (!token || !course?.id) {
@@ -58,10 +69,16 @@ function EnrollCard({ course }: { course: CourseDetail }) {
     }
     api
       .get(`/courses/${course.id}/enrollment`)
-      .then((res) => setEnrolled(res.data.enrolled))
+      .then((res) => {
+        const status =
+          res.data.status ?? (res.data.enrolled ? "approved" : null);
+        setEnrollmentStatus(status);
+        setEnrolled(status === "approved" || !!res.data.enrolled);
+      })
       .catch(() => {})
       .finally(() => setChecking(false));
   }, [token, course?.id]);
+
   if (checking) {
     return (
       <div className="bg-white dark:bg-card rounded-2xl shadow-2xl p-6">
@@ -70,6 +87,7 @@ function EnrollCard({ course }: { course: CourseDetail }) {
       </div>
     );
   }
+
   const showToast = (msg: string) => {
     setToast(msg);
     setTimeout(() => setToast(null), 4000);
@@ -78,7 +96,6 @@ function EnrollCard({ course }: { course: CourseDetail }) {
   const handleEnroll = async () => {
     if (!course?.id) return;
 
-    // لو غير مسجل دخول
     if (!token) {
       showToast("يجب تسجيل الدخول أولاً للتسجيل في الكورس");
       return;
@@ -87,28 +104,16 @@ function EnrollCard({ course }: { course: CourseDetail }) {
     setLoading(true);
     try {
       await api.post(`/courses/${course.id}/enroll`);
-      setEnrolled(true);
-      showToast("✅ تم التسجيل في الكورس — قم بالدفع للحصول على الوصول الكامل");
+      setEnrollmentStatus("pending");
+      showToast("✅ تم إرسال طلب التسجيل — بانتظار موافقة الإدارة");
     } catch (err: any) {
       if (err.response?.status === 409) {
-        showToast("أنت مسجل في هذا الكورس مسبقاً");
-        setEnrolled(true);
+        showToast("أنت مسجل في هذا الكورس مسبقاً أو طلبك قيد المراجعة");
+        setEnrollmentStatus("pending");
       } else {
-        showToast("حدث خطأ، حاول مجدداً");
+        const msg = err.response?.data?.message || "حدث خطأ، حاول مجدداً";
+        showToast(msg);
       }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleWithdraw = async () => {
-    setLoading(true);
-    try {
-      await api.delete(`/courses/${course.id}/enroll`);
-      setEnrolled(false);
-      showToast("تم سحب تسجيلك من الكورس");
-    } catch {
-      showToast("حدث خطأ، حاول مجدداً");
     } finally {
       setLoading(false);
     }
@@ -135,63 +140,13 @@ function EnrollCard({ course }: { course: CourseDetail }) {
         )}
 
         <div className="p-6">
-          {/* إذا مسجل دخول */}
-          {!!token ? (
-            <>
-              {!enrolled && (
-                // زر التسجيل
-                <button
-                  onClick={handleEnroll}
-                  disabled={loading}
-                  className="w-full h-12 mb-3 inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 disabled:opacity-60 text-white rounded-xl font-bold text-base transition-all"
-                >
-                  {loading ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : null}
-                  سجّل الآن
-                </button>
-              // ) : (
-              )}
-                 {/* <button
-                  onClick={handleWithdraw}
-                  disabled={loading}
-                  className="w-full h-12 mb-3 inline-flex items-center justify-center gap-2 bg-muted hover:bg-destructive/10 border-2 border-border hover:border-destructive/40 disabled:opacity-60 text-muted-foreground hover:text-destructive rounded-xl font-bold text-base transition-all"
-                >
-                  {loading ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : null}
-                  سحب التسجيل
-                </button> */}
-
-              {enrolled && (
-                <div className="flex items-center gap-2 mb-3">
-                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                  <span className="text-sm text-green-700 dark:text-green-400 font-medium">
-                    أنت مسجّل في هذا الكورس
-                  </span>
-                </div>
-              )}
-
-              {!enrolled && (
-                <div className="flex items-center gap-2 mb-3">
-                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                  <span className="text-sm text-green-700 dark:text-green-400 font-medium">
-                    ضمان استرداد ٧ أيام
-                  </span>
-              <p className="text-center text-xs text-muted-foreground">
-                الوصول الكامل بعد التسجيل والدفع
-              </p>
-                </div>
-              )}
-  
-            </>
-          ) : (
-            // غير مسجل دخول
+          {/* 1. غير مسجل دخول في الموقع */}
+          {!token ? (
             <>
               <div className="flex items-center gap-2 mb-4">
                 <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                <span className="text-sm text-green-700 font-medium">
-                  ضمان استرداد ٧ أيام
+                <span className="text-sm text-green-700 dark:text-green-400 font-medium">
+                  {isFree ? "كورس مجاني 100%" : "ضمان استرداد ٧ أيام"}
                 </span>
               </div>
               <Link
@@ -202,13 +157,114 @@ function EnrollCard({ course }: { course: CourseDetail }) {
               </Link>
               <Link
                 href="/login"
-                className="w-full h-10 inline-flex items-center justify-center border-2 border-input rounded-xl text-sm text-foreground/80 hover:bg-blue-50 dark:hover:bg-accent/10 transition-colors"
+                className="w-full h-10 inline-flex items-center justify-center border-2 border-input rounded-xl text-sm text-foreground/80 hover:bg-muted transition-colors"
               >
                 لديك حساب؟ سجّل دخولك
               </Link>
               <p className="text-center text-xs text-muted-foreground mt-3">
-                الوصول الكامل بعد التسجيل
+                {isFree
+                  ? "سجّل الدخول للمشاهدة فوراً"
+                  : "الوصول الكامل بعد التسجيل والدفع"}
               </p>
+            </>
+          ) : isFree ? (
+            /* 2. مسجل دخول والكورس مجاني: ابدأ المشاهدة فوراً */
+            <>
+              <div className="flex items-center gap-2 mb-4">
+                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                <span className="text-sm text-green-700 dark:text-green-400 font-medium">
+                  كورس مجاني — متاح للمشاهدة
+                </span>
+              </div>
+              {hasLessons ? (
+                <Link
+                  href={learnHref!}
+                  className="w-full h-12 mb-3 inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-base transition-colors"
+                >
+                  <Play className="w-4 h-4 fill-current" />
+                  ابدأ المشاهدة
+                </Link>
+              ) : (
+                <div className="w-full h-12 mb-3 inline-flex items-center justify-center gap-2 bg-muted text-muted-foreground rounded-xl font-bold text-base cursor-not-allowed">
+                  <BookOpen className="w-4 h-4" />
+                  الدروس قيد الإعداد
+                </div>
+              )}
+              <p className="text-center text-xs text-muted-foreground">
+                {hasLessons ? "يمكنك مشاهدة جميع الدروس مباشرة" : "سيتم إضافة الدروس قريبًا"}
+              </p>
+            </>
+          ) : (
+            /* 3. مسجل دخول والكورس مدفوع */
+            <>
+              {/* حالة أ: مقبول ومسجل */}
+              {enrolled || enrollmentStatus === "approved" ? (
+                <>
+                  <div className="flex items-center gap-2 mb-4">
+                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-sm text-green-700 dark:text-green-400 font-medium">
+                      أنت مسجّل في هذا الكورس ومقبول
+                    </span>
+                  </div>
+                  {hasLessons ? (
+                    <Link
+                      href={learnHref!}
+                      className="w-full h-12 mb-3 inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-base transition-colors"
+                    >
+                      <Play className="w-4 h-4 fill-current" />
+                      تابع التعلم
+                    </Link>
+                  ) : (
+                    <div className="w-full h-12 mb-3 inline-flex items-center justify-center gap-2 bg-muted text-muted-foreground rounded-xl font-bold text-base cursor-not-allowed">
+                      <BookOpen className="w-4 h-4" />
+                      الدروس قيد الإعداد
+                    </div>
+                  )}
+                </>
+              ) : enrollmentStatus === "pending" ? (
+                /* حالة ب: قيد المراجعة */
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-600 dark:text-amber-400">
+                    <Clock className="w-5 h-5 flex-shrink-0" />
+                    <div>
+                      <p className="text-sm font-bold">طلبك قيد المراجعة</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        تم إرسال طلبك للإدارة، وبانتظار الموافقة لتفعيل الكورس.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                /* حالة ج: لم يسجل بعد (أو تم رفضه) */
+                <>
+                  {enrollmentStatus === "rejected" && (
+                    <div className="mb-3 p-2.5 bg-destructive/10 border border-destructive/20 rounded-xl text-xs text-destructive text-center">
+                      تم رفض طلبك السابق، يمكنك إعادة إرسال الطلب.
+                    </div>
+                  )}
+                  <button
+                    onClick={handleEnroll}
+                    disabled={loading}
+                    className="w-full h-12 mb-3 inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 disabled:opacity-60 text-white rounded-xl font-bold text-base transition-all"
+                  >
+                    {loading ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : null}
+                    {enrollmentStatus === "rejected"
+                      ? "إعادة إرسال طلب التسجيل"
+                      : "طلب التسجيل في الكورس"}
+                  </button>
+                  <div className="flex items-center gap-2 mb-2">
+                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-sm text-green-700 dark:text-green-400 font-medium">
+                      ضمان استرداد ٧ أيام
+                    </span>
+                  </div>
+                  <p className="text-center text-xs text-muted-foreground">
+                    الوصول الكامل بعد موافقة الإدارة والدفع
+                  </p>
+                </>
+              )}
             </>
           )}
         </div>

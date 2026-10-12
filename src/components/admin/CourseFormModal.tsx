@@ -20,12 +20,12 @@ interface Props {
 
 const toArray = (val: any): string[] => {
   if (Array.isArray(val)) return val;
-  if (typeof val === 'string' && val.trim()) {
+  if (typeof val === "string" && val.trim()) {
     try {
       const parsed = JSON.parse(val);
       return Array.isArray(parsed) ? parsed : [val];
     } catch {
-      return val.split('\n').filter(Boolean);
+      return val.split("\n").filter(Boolean);
     }
   }
   return [];
@@ -45,23 +45,24 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
     is_popular: (course as any)?.is_popular ?? course?.hot ?? false,
     total_duration: course?.total_duration ?? 0,
     price: (course as any)?.price ?? 0,
+    is_public: (course as any)?.is_public ?? false,
   });
 
   const [whatYouLearn, setWhatYouLearn] = useState<string[]>(
-    toArray((course as any)?.what_you_learn)
+    toArray((course as any)?.what_you_learn),
   );
 
   const [requirements, setRequirements] = useState<string[]>(
-    toArray((course as any)?.requirements)
+    toArray((course as any)?.requirements),
   );
 
   const [targetAudience, setTargetAudience] = useState<string[]>(
-    toArray((course as any)?.target_audience)
+    toArray((course as any)?.target_audience),
   );
 
-  const [newLearn, setNewLearn] = useState('');
-  const [newReq, setNewReq] = useState('');
-  const [newTarget, setNewTarget] = useState('');
+  const [newLearn, setNewLearn] = useState("");
+  const [newReq, setNewReq] = useState("");
+  const [newTarget, setNewTarget] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -72,17 +73,17 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
     list: string[],
     setList: (v: string[]) => void,
     value: string,
-    setValue: (v: string) => void
+    setValue: (v: string) => void,
   ) => {
     if (!value.trim()) return;
     setList([...list, value.trim()]);
-    setValue('');
+    setValue("");
   };
 
   const removeFromList = (
     list: string[],
     setList: (v: string[]) => void,
-    i: number
+    i: number,
   ) => {
     setList(list.filter((_, idx) => idx !== i));
   };
@@ -221,7 +222,9 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
               type="number"
               min="0"
               value={form.total_duration}
-              onChange={(e) => set("total_duration", parseInt(e.target.value) || 0)}
+              onChange={(e) =>
+                set("total_duration", parseInt(e.target.value) || 0)
+              }
               className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none"
             />
           </div>
@@ -262,10 +265,18 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
             <label className="text-sm font-medium">ستتعلم في هذا الكورس</label>
             <div className="space-y-2">
               {whatYouLearn.map((item, i) => (
-                <div key={i} className="flex items-center gap-2 bg-muted/50 rounded-xl px-3 py-2">
+                <div
+                  key={i}
+                  className="flex items-center gap-2 bg-muted/50 rounded-xl px-3 py-2"
+                >
                   <span className="flex-1 text-sm">✅ {item}</span>
-                  <button type="button" onClick={() => removeFromList(whatYouLearn, setWhatYouLearn, i)}
-                    className="text-destructive hover:opacity-70">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      removeFromList(whatYouLearn, setWhatYouLearn, i)
+                    }
+                    className="text-destructive hover:opacity-70"
+                  >
                     <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -274,13 +285,31 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
                 <input
                   placeholder="مثال: بناء REST API باستخدام Laravel"
                   value={newLearn}
-                  onChange={e => setNewLearn(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addToList(whatYouLearn, setWhatYouLearn, newLearn, setNewLearn))}
+                  onChange={(e) => setNewLearn(e.target.value)}
+                  onKeyDown={(e) =>
+                    e.key === "Enter" &&
+                    (e.preventDefault(),
+                    addToList(
+                      whatYouLearn,
+                      setWhatYouLearn,
+                      newLearn,
+                      setNewLearn,
+                    ))
+                  }
                   className="flex-1 h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none"
                 />
-                <button type="button"
-                  onClick={() => addToList(whatYouLearn, setWhatYouLearn, newLearn, setNewLearn)}
-                  className="h-9 px-3 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+                <button
+                  type="button"
+                  onClick={() =>
+                    addToList(
+                      whatYouLearn,
+                      setWhatYouLearn,
+                      newLearn,
+                      setNewLearn,
+                    )
+                  }
+                  className="h-9 px-3 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                >
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
@@ -292,10 +321,18 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
             <label className="text-sm font-medium">المتطلبات</label>
             <div className="space-y-2">
               {requirements.map((item, i) => (
-                <div key={i} className="flex items-center gap-2 bg-muted/50 rounded-xl px-3 py-2">
+                <div
+                  key={i}
+                  className="flex items-center gap-2 bg-muted/50 rounded-xl px-3 py-2"
+                >
                   <span className="flex-1 text-sm">📌 {item}</span>
-                  <button type="button" onClick={() => removeFromList(requirements, setRequirements, i)}
-                    className="text-destructive hover:opacity-70">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      removeFromList(requirements, setRequirements, i)
+                    }
+                    className="text-destructive hover:opacity-70"
+                  >
                     <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -304,13 +341,21 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
                 <input
                   placeholder="مثال: معرفة أساسيات البرمجة"
                   value={newReq}
-                  onChange={e => setNewReq(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addToList(requirements, setRequirements, newReq, setNewReq))}
+                  onChange={(e) => setNewReq(e.target.value)}
+                  onKeyDown={(e) =>
+                    e.key === "Enter" &&
+                    (e.preventDefault(),
+                    addToList(requirements, setRequirements, newReq, setNewReq))
+                  }
                   className="flex-1 h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none"
                 />
-                <button type="button"
-                  onClick={() => addToList(requirements, setRequirements, newReq, setNewReq)}
-                  className="h-9 px-3 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+                <button
+                  type="button"
+                  onClick={() =>
+                    addToList(requirements, setRequirements, newReq, setNewReq)
+                  }
+                  className="h-9 px-3 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                >
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
@@ -319,13 +364,23 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
 
           {/* الجمهور المستهدف */}
           <div className="space-y-2">
-            <label className="text-sm font-medium">هذا الكورس لك إذا كنت...</label>
+            <label className="text-sm font-medium">
+              هذا الكورس لك إذا كنت...
+            </label>
             <div className="space-y-2">
               {targetAudience.map((item, i) => (
-                <div key={i} className="flex items-center gap-2 bg-muted/50 rounded-xl px-3 py-2">
+                <div
+                  key={i}
+                  className="flex items-center gap-2 bg-muted/50 rounded-xl px-3 py-2"
+                >
                   <span className="flex-1 text-sm">🎯 {item}</span>
-                  <button type="button" onClick={() => removeFromList(targetAudience, setTargetAudience, i)}
-                    className="text-destructive hover:opacity-70">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      removeFromList(targetAudience, setTargetAudience, i)
+                    }
+                    className="text-destructive hover:opacity-70"
+                  >
                     <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -334,13 +389,31 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
                 <input
                   placeholder="مثال: مبتدئ يريد تعلم البرمجة"
                   value={newTarget}
-                  onChange={e => setNewTarget(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addToList(targetAudience, setTargetAudience, newTarget, setNewTarget))}
+                  onChange={(e) => setNewTarget(e.target.value)}
+                  onKeyDown={(e) =>
+                    e.key === "Enter" &&
+                    (e.preventDefault(),
+                    addToList(
+                      targetAudience,
+                      setTargetAudience,
+                      newTarget,
+                      setNewTarget,
+                    ))
+                  }
                   className="flex-1 h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none"
                 />
-                <button type="button"
-                  onClick={() => addToList(targetAudience, setTargetAudience, newTarget, setNewTarget)}
-                  className="h-9 px-3 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+                <button
+                  type="button"
+                  onClick={() =>
+                    addToList(
+                      targetAudience,
+                      setTargetAudience,
+                      newTarget,
+                      setNewTarget,
+                    )
+                  }
+                  className="h-9 px-3 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                >
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
@@ -356,8 +429,26 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
               onChange={(e) => set("is_popular", e.target.checked)}
               className="w-4 h-4 rounded"
             />
-            <label htmlFor="is_popular" className="text-sm font-medium cursor-pointer">
+            <label
+              htmlFor="is_popular"
+              className="text-sm font-medium cursor-pointer"
+            >
               🔥 الأكثر طلباً
+            </label>
+          </div>
+          <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
+            <input
+              type="checkbox"
+              id="is_public"
+              checked={form.is_public}
+              onChange={(e) => set("is_public", e.target.checked)}
+              className="w-4 h-4 rounded"
+            />
+            <label
+              htmlFor="is_public"
+              className="text-sm font-medium cursor-pointer"
+            >
+              مجاني
             </label>
           </div>
 
@@ -377,7 +468,11 @@ export default function CourseFormModal({ course, onClose, onSuccess }: Props) {
               disabled={loading}
               className="flex-1 h-10 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary/90 disabled:opacity-60 transition-colors"
             >
-              {loading ? "جارٍ الحفظ..." : isEdit ? "حفظ التعديلات" : "إضافة الكورس"}
+              {loading
+                ? "جارٍ الحفظ..."
+                : isEdit
+                  ? "حفظ التعديلات"
+                  : "إضافة الكورس"}
             </button>
           </div>
         </form>

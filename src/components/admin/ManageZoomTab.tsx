@@ -1,8 +1,16 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Plus, Pencil, Trash2, Loader2, Users, X, Video } from 'lucide-react';
 import api from '@/lib/api';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import flatpickr from 'flatpickr';
 import type { Instance } from 'flatpickr/dist/types/instance';
 import { Arabic } from 'flatpickr/dist/l10n/ar.js';
@@ -55,6 +63,41 @@ export default function ManageZoomTab() {
   const [openId, setOpenId] = useState<number | null>(null);
   const [attendees, setAttendees] = useState<Attendance[]>([]);
   const [loadingAtt, setLoadingAtt] = useState(false);
+
+  // جلب أسماء الكورسات المتاحة فقط (استخراج title والتخلص من أي بيانات زائدة)
+  const { data: courseNames = [], isLoading: coursesLoading } = useQuery<string[]>({
+    queryKey: ['admin', 'course-names'],
+    queryFn: async () => {
+      let raw: Array<{ title?: string }> = [];
+      try {
+        const res = await api.get('/admin/courses');
+        const data = res.data?.data ?? res.data;
+        if (Array.isArray(data) && data.length > 0) raw = data;
+      } catch {
+        // Fallback إلى /courses في حال تعذر /admin/courses
+      }
+      if (raw.length === 0) {
+        try {
+          const res = await api.get('/courses');
+          const data = res.data?.data ?? res.data;
+          if (Array.isArray(data)) raw = data;
+        } catch {
+          // ignore
+        }
+      }
+
+      // استخراج اسم الكورس فقط كـ string والتخلص من كامل تفاصيل الكورس لتوفير الذاكرة
+      const titles = raw
+        .map((c) => (typeof c?.title === 'string' ? c.title.trim() : ''))
+        .filter((t): t is string => t.length > 0);
+
+      return Array.from(new Set(titles)).sort((a, b) => a.localeCompare(b, 'ar'));
+    },
+  });
+
+  const hasCustomCourse = Boolean(
+    form.course_name.trim() && !courseNames.includes(form.course_name.trim()),
+  );
 
   const fetchMeetings = async () => {
     setLoading(true);
@@ -190,8 +233,40 @@ export default function ManageZoomTab() {
         <div className="grid sm:grid-cols-2 gap-3">
           <div className="space-y-1.5">
             <label htmlFor="zoom-course-name" className="text-sm font-medium text-foreground">اسم الكورس *</label>
-            <input id="zoom-course-name" value={form.course_name} onChange={(e) => set('course_name', e.target.value)}
-              placeholder="مثال: الأمن السيبراني" className={inputCls} />
+            <Select
+              dir="rtl"
+              value={form.course_name}
+              onValueChange={(val) => set('course_name', val)}
+              disabled={coursesLoading}
+            >
+              <SelectTrigger id="zoom-course-name" className="w-full">
+                <SelectValue placeholder={coursesLoading ? 'جاري تحميل الكورسات...' : 'اختر الكورس...'} />
+              </SelectTrigger>
+              <SelectContent>
+                {coursesLoading ? (
+                  <SelectItem value="__loading__" disabled>
+                    جاري تحميل الكورسات...
+                  </SelectItem>
+                ) : courseNames.length === 0 && !hasCustomCourse ? (
+                  <SelectItem value="__empty__" disabled>
+                    لا توجد كورسات متاحة
+                  </SelectItem>
+                ) : (
+                  <>
+                    {courseNames.map((name) => (
+                      <SelectItem key={name} value={name}>
+                        {name}
+                      </SelectItem>
+                    ))}
+                    {hasCustomCourse && (
+                      <SelectItem key={form.course_name} value={form.course_name}>
+                        {form.course_name}
+                      </SelectItem>
+                    )}
+                  </>
+                )}
+              </SelectContent>
+            </Select>
           </div>
           <div className="space-y-1.5">
             <label htmlFor="zoom-title" className="text-sm font-medium text-foreground">عنوان اللقاء *</label>
@@ -219,7 +294,7 @@ export default function ManageZoomTab() {
         {error && <p className="text-sm text-destructive mt-3">{error}</p>}
 
         <button onClick={handleSave} disabled={saving || !valid}
-          className="mt-4 flex items-center gap-2 bg-primary hover:bg-primary/90 disabled:opacity-60 text-white px-5 py-2 rounded-xl text-sm font-medium transition-colors">
+          className="mt-4 flex items-center gap-2 bg-primary hover:bg-primary/90 disabled:opacity-60 text-primary-foreground px-5 py-2 rounded-xl text-sm font-medium transition-colors">
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
           {editingId ? 'حفظ التعديلات' : 'إضافة اللقاء'}
         </button>

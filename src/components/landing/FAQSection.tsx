@@ -101,10 +101,7 @@ export default function FAQSection() {
           viewport={{ once: true }}
           className="text-center mb-14"
         >
-          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary rounded-full px-4 py-1.5 text-sm font-semibold mb-4">
-            <HelpCircle className="w-4 h-4" />
-            الأسئلة الشائعة
-          </div>
+        
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
             عندك سؤال؟ جاوبناك
           </h2>

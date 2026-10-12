@@ -1,20 +1,23 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Menu } from 'lucide-react';
-import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
-import { useAuthStore } from '@/store/authStore';
-import Link from 'next/link';
-import Image from 'next/image';
+import { useState } from "react";
+import { Menu } from "lucide-react";
+import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+import { useAuthStore } from "@/store/authStore";
+import Link from "next/link";
+import Image from "next/image";
 
-export default function StudentLayout({ children }: { children: React.ReactNode }) {
+export default function StudentLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const user = useAuthStore(state => state.user);
+  const user = useAuthStore((state) => state.user);
 
   return (
     <div className="min-h-screen bg-background font-arabic" dir="rtl">
       <div className="flex">
-
         {/* Sidebar — fixed */}
         <aside className="hidden lg:block w-64 flex-shrink-0">
           <div className="fixed right-0 top-0 h-screen w-64 z-30">
@@ -24,12 +27,14 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
 
         {/* Sidebar — موبايل */}
         <div className="lg:hidden">
-          <DashboardSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+          <DashboardSidebar
+            open={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+          />
         </div>
 
         {/* Main */}
         <main className="flex-1  min-h-screen">
-
           {/* Header */}
           <header className="sticky top-0 z-20 bg-card/80 backdrop-blur-xl border-b border-border px-4 sm:px-6 h-16 flex items-center justify-between">
             <div>
@@ -47,25 +52,22 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
               >
                 <Menu className="w-5 h-5" />
               </button>
-<Link href="/dashboard/profile">
-  <div className="w-8 h-8 rounded-full bg-white overflow-hidden border border-border">
-    <Image
-      src="/logo.jpg"
-      alt="logo"
-      width={32}
-      height={32}
-      className="w-full h-full object-contain"
-    />
-  </div>
-</Link>
+              <Link href="/dashboard/profile">
+                <div className="w-8 h-8 rounded-full bg-white overflow-hidden border border-border">
+                  <Image
+                    src="/logo.jpg"
+                    alt="logo"
+                    width={32}
+                    height={32}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              </Link>
             </div>
           </header>
 
           {/* Content */}
-          <div className="p-4 sm:p-6 lg:p-8">
-            {children}
-          </div>
-
+          <div className="p-4 sm:p-6 lg:p-8">{children}</div>
         </main>
       </div>
     </div>
