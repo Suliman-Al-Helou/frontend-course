@@ -54,48 +54,61 @@ export default function CourseDetailPage() {
             </div>
           }
         >
-          {(course) => (
-            <>
-              <CourseHero course={course} />
+          {(course) => {
+            const isFree =
+              Number(course.price ?? 0) === 0 || Boolean(course.is_public);
+            const hasAccess = enrolled || (isFree && isAuthenticated);
 
-              <div className="grid lg:grid-cols-3 gap-10 mt-10">
-                <div className="lg:col-span-2 space-y-10">
-                  <CourseOutcomes
-                    outcomes={course.what_you_learn ?? []}
-                    requirements={course.requirements ?? []}
-                    target={course.target_audience ?? []}
-                  />
-                  <CourseCurriculum
-                    sections={course.sections}
-                    courseId={courseId}
-                    enrolled={enrolled}
-                  />
-                </div>
-              </div>
+            return (
+              <>
+                <CourseHero course={course} />
 
-              {/* Bottom CTA — يختفي لو مسجل ومقبول */}
-              {!enrolled && (
-                <div className="mt-16 bg-gradient-to-br from-primary to-primary/70 rounded-3xl p-8 sm:p-12 text-center">
-                  <h3 className="text-2xl font-bold text-white mb-3">
-                    مستعد تبدأ؟
-                  </h3>
-                  <p className="text-white/70 mb-6">
-                    سجّل الآن وابدأ الكورس فوراً — الوصول الكامل بعد التسجيل
-                  </p>
-                  <Link
-                    href={
-                      isAuthenticated
-                        ? `/courses/${courseId}/enroll`
-                        : "/register"
-                    }
-                    className="inline-flex items-center justify-center bg-white text-primary hover:bg-white/90 rounded-xl px-10 py-3 font-bold transition-colors"
-                  >
-                    سجّل وابدأ الآن
-                  </Link>
+                <div className="grid lg:grid-cols-3 gap-10 mt-10">
+                  <div className="lg:col-span-2 space-y-10">
+                    <CourseOutcomes
+                      outcomes={course.what_you_learn ?? []}
+                      requirements={course.requirements ?? []}
+                      target={course.target_audience ?? []}
+                    />
+                    <CourseCurriculum
+                      sections={course.sections}
+                      courseId={courseId}
+                      enrolled={hasAccess}
+                    />
+                  </div>
                 </div>
-              )}
-            </>
-          )}
+
+                {/* Bottom CTA — يختفي تماماً إذا كان الكورس مجانياً أو إذا كان المستخدم مسجلاً ومقبولاً */}
+                {!isFree && !enrolled && (
+                  <div className="mt-16 bg-gradient-to-br from-primary to-primary/70 rounded-3xl p-8 sm:p-12 text-center">
+                    <h3 className="text-2xl font-bold text-white mb-3">
+                      مستعد تبدأ؟
+                    </h3>
+                    <p className="text-white/70 mb-6">
+                      سجّل الآن وابدأ الكورس فوراً — الوصول الكامل بعد موافقة الإدارة
+                    </p>
+                    {isAuthenticated ? (
+                      <button
+                        onClick={() =>
+                          window.scrollTo({ top: 0, behavior: "smooth" })
+                        }
+                        className="inline-flex items-center justify-center bg-white text-primary hover:bg-white/90 rounded-xl px-10 py-3 font-bold transition-colors cursor-pointer"
+                      >
+                        سجّل وابدأ الآن
+                      </button>
+                    ) : (
+                      <Link
+                        href="/register"
+                        className="inline-flex items-center justify-center bg-white text-primary hover:bg-white/90 rounded-xl px-10 py-3 font-bold transition-colors"
+                      >
+                        سجّل وابدأ الآن
+                      </Link>
+                    )}
+                  </div>
+                )}
+              </>
+            );
+          }}
         </QueryState>
       </div>
 

@@ -49,7 +49,7 @@ export default function CTASection() {
 
           {/* Body */}
           <p className="text-white/80 text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
-            انضم لأكثر من ١٢,٠٠٠ طالب بدأوا رحلتهم معنا.
+            انضم لأكثر من +500 طالب بدأوا رحلتهم معنا.
             أول ٧ أيام مع ضمان استرداد كامل — لا شيء تخسره.
           </p>
 
@@ -72,10 +72,6 @@ export default function CTASection() {
             </Button>
           </div>
 
-          {/* Trust line */}
-          <p className="text-white/50 text-sm mt-6">
-            لا حاجة لبطاقة ائتمان • ٧ أيام ضمان استرداد • إلغاء في أي وقت
-          </p>
         </motion.div>
       </div>
     </section>

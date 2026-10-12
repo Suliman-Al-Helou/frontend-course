@@ -93,3 +93,45 @@ You are a Senior Frontend Engineer. Before writing ANY component, you MUST read 
 - Use enabled: flag to prevent invalid requests (id > 0, isAuthenticated, etc)
 - Use retry: false for enrollment/auth checks where 401 is expected, not an error
 - Use queryKey as ['entity', id] pattern, never random strings
+
+
+
+# AGENTS.md: قواعد صارمة لمشروع FutureHouse (Frontend)
+
+## 0. بروتوكول العمل
+- مهمة واحدة فقط في كل رد. لا تنتقل لمهمة أخرى قبل أن أقول "تم".
+- لا افتراضات. إن نقصت معلومة (شكل response، endpoint، اسم ملف)، اسأل.
+- قبل أي تعديل: اذكر الملف، ثم السبب، ثم التغيير. لا تعدّل ملفات خارج المهمة.
+- ممنوع إعادة كتابة ملف كامل إذا كان التعديل جزئيًا.
+
+## 1. Server vs Client
+- الافتراضي Server Component. 'use client' فقط عند وجود: state، effect، event handler، أو browser API.
+- 'use client' يوضع على أصغر component ممكن، لا على page أو layout كاملة.
+- الصفحات العامة (SEO): تجلب بياناتها على السيرفر + generateMetadata إلزامي.
+- صفحات الطالب/الأدمن (محمية): لا حاجة لـ SEO، تُجلب بـ TanStack Query أو Server Component مع prefetch.
+
+## 2. جلب البيانات
+- ممنوع fetch/axios داخل useEffect+useState. الاستخدام الوحيد المسموح: TanStack Query.
+- ممنوع await داخل for/map لطلبات API (N+1). إن احتاج الأمر أكثر من طلب، يُطلب endpoint مجمّع من الـ Backend.
+- Promise.all مسموح فقط لطلبات مستقلة وعددها ثابت وصغير (ليس حسب طول مصفوفة).
+- أي endpoint جديد يمر عبر دالة في lib/api/<domain>.ts، لا استدعاء api.get مباشرة في component.
+
+## 3. Query Keys
+- مكان واحد فقط: lib/queryKeys.ts. ممنوع كتابة queryKey نصية في أي hook أو component.
+- الشكل: queryKeys.<domain>.<action>(params).
+
+## 4. هيكلة الملفات
+- app/**/page.tsx: تركيب (composition) فقط. ممنوع أن يحتوي logic أو types أو fetch.
+- logic ← _hooks/ ، UI ← _components/ ، types ← types/<domain>.ts
+- ممنوع any. كل response له type.
+
+## 5. إعادة الاستخدام
+- أي JSX يتكرر مرتين → يُستخرج component ويُستورد.
+- المكونات المشتركة في components/shared أو components/ui.
+
+## 6. الألوان والتصميم
+- ألوان من globals.css (tokens) فقط. ممنوع hex أو لون Tailwind ثابت (text-green-600) خارج الـ tokens.
+
+## 7. الحماية
+- أي route محمي يجب أن يكون داخل matcher في proxy.ts.
+- التوكن لا يصل للمتصفح أبدًا. الحماية الحقيقية على الـ Backend.
