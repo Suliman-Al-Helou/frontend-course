@@ -87,38 +87,51 @@ export default function HeroSection() {
             </p>
 
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-              <Button asChild size="lg" className="group h-11 px-6 font-semibold">
+              <Button
+                asChild
+                size="lg"
+                className="group h-11 px-6 font-semibold motion-safe:transition-all motion-reduce:transition-none"
+              >
                 <Link href="/register">
                   <span>{t("ctaPrimary")}</span>
                   <ArrowLeft
                     size={16}
                     aria-hidden="true"
-                    className="ms-2 transition-transform duration-200 group-hover:-translate-x-1"
+                    className="ms-2 motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:-translate-x-1 motion-reduce:transform-none"
                   />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="h-11 px-6 font-semibold">
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="h-11 px-6 font-semibold motion-safe:transition-all motion-reduce:transition-none"
+              >
                 <Link href="/#courses">{t("ctaSecondary")}</Link>
               </Button>
             </div>
 
-            {/* Trust Markers Bar */}
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm text-muted-foreground sm:gap-4 lg:justify-start">
-              <div className="inline-flex items-center gap-1.5">
+            {/* Trust Markers List */}
+            <div
+              role="list"
+              aria-label={t("freeNote")}
+              className="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm text-muted-foreground sm:gap-4 lg:justify-start"
+            >
+              <div role="listitem" className="inline-flex items-center gap-1.5">
                 <span className="flex size-5 items-center justify-center rounded-full bg-primary/10 text-primary">
                   <Check className="size-3" aria-hidden="true" />
                 </span>
                 <span>{t("freeNote")}</span>
               </div>
               <span className="hidden size-1 rounded-full bg-border sm:inline-block" aria-hidden="true" />
-              <div className="inline-flex items-center gap-1.5">
+              <div role="listitem" className="inline-flex items-center gap-1.5">
                 <span className="flex size-5 items-center justify-center rounded-full bg-primary/10 text-primary">
                   <Check className="size-3" aria-hidden="true" />
                 </span>
                 <span>{t("AccreditedCertificate")}</span>
               </div>
               <span className="hidden size-1 rounded-full bg-border sm:inline-block" aria-hidden="true" />
-              <div className="inline-flex items-center gap-1.5">
+              <div role="listitem" className="inline-flex items-center gap-1.5">
                 <span className="flex size-5 items-center justify-center rounded-full bg-primary/10 text-primary">
                   <Check className="size-3" aria-hidden="true" />
                 </span>
@@ -127,7 +140,7 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Image side: 5 columns (8 to 12) in 12-col grid */}
+          {/* Image side: 5 columns (8 to 12) in 12-col grid with CLS defense */}
           <div className="hidden md:block md:mx-auto md:max-w-md lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:max-w-none">
             <div className="relative aspect-square overflow-hidden rounded-2xl border border-border bg-muted shadow-sm">
               <Image
