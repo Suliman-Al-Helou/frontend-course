@@ -11,6 +11,7 @@ export default function HeroSection() {
   return (
     <section
       id="hero"
+      aria-labelledby="hero-title"
       className="relative flex min-h-svh items-center overflow-hidden bg-background py-16 md:py-24"
     >
       {/* Grid Pattern Background - End side subtle overlay */}
@@ -44,7 +45,10 @@ export default function HeroSection() {
         <div className="grid items-center gap-8 lg:grid-cols-12">
           {/* Text side */}
           <div className="relative z-10 flex flex-col items-center text-center lg:col-span-7 lg:col-start-1 lg:row-start-1 lg:items-start lg:text-start">
-            <h1 className="mb-6 max-w-2xl text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl lg:leading-[1.2]">
+            <h1
+              id="hero-title"
+              className="mb-6 max-w-2xl text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl lg:leading-[1.2]"
+            >
               {t("title")}
             </h1>
 
@@ -53,34 +57,51 @@ export default function HeroSection() {
             </p>
 
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-              <Button asChild size="lg" className="group h-11 px-6 font-semibold">
+              <Button
+                asChild
+                size="lg"
+                className="group h-11 px-6 font-semibold motion-safe:transition-all motion-reduce:transition-none"
+              >
                 <Link href="/register">
-                  {t("ctaPrimary")}
-                  <ArrowLeft size={16} aria-hidden="true" className="ms-2 transition-transform duration-200 group-hover:-translate-x-1" />
+                  <span>{t("ctaPrimary")}</span>
+                  <ArrowLeft
+                    size={16}
+                    aria-hidden="true"
+                    className="ms-2 motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:-translate-x-1 motion-reduce:transform-none"
+                  />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="h-11 px-6 font-semibold">
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="h-11 px-6 font-semibold motion-safe:transition-all motion-reduce:transition-none"
+              >
                 <Link href="/#courses">{t("ctaSecondary")}</Link>
               </Button>
             </div>
 
-            {/* Trust Markers Bar */}
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm text-muted-foreground sm:gap-4 lg:justify-start">
-              <div className="inline-flex items-center gap-1.5">
+            {/* Trust Markers List */}
+            <div
+              role="list"
+              aria-label={t("freeNote")}
+              className="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm text-muted-foreground sm:gap-4 lg:justify-start"
+            >
+              <div role="listitem" className="inline-flex items-center gap-1.5">
                 <span className="flex size-5 items-center justify-center rounded-full bg-primary/10 text-primary">
                   <Check className="size-3" aria-hidden="true" />
                 </span>
                 <span>{t("freeNote")}</span>
               </div>
               <span className="hidden size-1 rounded-full bg-border sm:inline-block" aria-hidden="true" />
-              <div className="inline-flex items-center gap-1.5">
+              <div role="listitem" className="inline-flex items-center gap-1.5">
                 <span className="flex size-5 items-center justify-center rounded-full bg-primary/10 text-primary">
                   <Check className="size-3" aria-hidden="true" />
                 </span>
                 <span>{t("AccreditedCertificate")}</span>
               </div>
               <span className="hidden size-1 rounded-full bg-border sm:inline-block" aria-hidden="true" />
-              <div className="inline-flex items-center gap-1.5">
+              <div role="listitem" className="inline-flex items-center gap-1.5">
                 <span className="flex size-5 items-center justify-center rounded-full bg-primary/10 text-primary">
                   <Check className="size-3" aria-hidden="true" />
                 </span>
@@ -89,7 +110,7 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Image side: 5 columns (8 to 12) in 12-col grid */}
+          {/* Image side: 5 columns (8 to 12) in 12-col grid with CLS defense */}
           <div className="hidden md:block md:mx-auto md:max-w-md lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:max-w-none">
             <div className="relative aspect-square overflow-hidden rounded-2xl border border-border bg-muted shadow-sm">
               <Image
