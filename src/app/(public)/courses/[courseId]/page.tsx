@@ -18,9 +18,12 @@ import { QueryState } from "@/components/shared/QueryState";
 
 export default function CourseDetailPage() {
   const params = useParams();
-  const courseId = params?.courseId as string;
+  const rawId = params?.courseId;
+  const courseId = Array.isArray(rawId) ? rawId[0] : (rawId as string);
   const id = Number(courseId);
-  const courseQuery = useCourseDetail(id);
+  const isValidId = Boolean(courseId) && !Number.isNaN(id) && id > 0;
+
+  const courseQuery = useCourseDetail(isValidId ? id : "");
   const queryClient = useQueryClient();
 
   const { isAuthenticated } = useAuthStore();
@@ -29,17 +32,17 @@ export default function CourseDetailPage() {
     queryKey: ["courses", "enrollment", courseId],
     queryFn: async () => {
       const res = await api.get(`/courses/${courseId}/enrollment`);
-      const status = (res.data.status ?? (res.data.enrolled ? "approved" : null)) as
+      const status = (res.data?.status ?? (res.data?.enrolled ? "approved" : null)) as
         | "pending"
         | "approved"
         | "rejected"
         | null;
       return {
         status,
-        isEnrolled: status === "approved" || Boolean(res.data.enrolled),
+        isEnrolled: status === "approved" || Boolean(res.data?.enrolled),
       };
     },
-    enabled: isAuthenticated && Boolean(courseId) && Number.isInteger(id),
+    enabled: isAuthenticated && isValidId,
     // لو المستخدم غير مسجل، السيرفر سيرجع 401 - لا نعتبره خطأ يظهر للمستخدم
     retry: false,
   });
