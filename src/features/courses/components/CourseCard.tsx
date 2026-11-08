@@ -28,10 +28,13 @@ export default function CourseCard({
   const shouldReduceMotion = useReducedMotion();
   const hours = Math.round((course.total_duration || 0) / 60);
 
+  const rawInstructor = course.instructor as unknown;
   const instructorName =
-    typeof course.instructor === "string"
-      ? course.instructor
-      : course.instructor?.name || "مدرب معتمد";
+    typeof rawInstructor === "string"
+      ? rawInstructor
+      : typeof rawInstructor === "object" && rawInstructor !== null && "name" in rawInstructor
+        ? String((rawInstructor as { name: unknown }).name)
+        : "مدرب معتمد";
 
   return (
     <motion.article
