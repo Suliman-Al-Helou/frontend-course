@@ -186,7 +186,7 @@ export function LessonSidebar({
                       >
                         <Lock className="w-4 h-4 text-muted-foreground/50 flex-shrink-0" aria-hidden="true" />
                         <span className="truncate flex-1">{lesson.title}</span>
-                        <span className="text-[11px] bg-muted px-2 py-0.5 rounded text-muted-foreground flex-shrink-0">
+                        <span className="text-xs bg-muted px-2 py-0.5 rounded text-muted-foreground flex-shrink-0">
                           مغلق
                         </span>
                       </button>
