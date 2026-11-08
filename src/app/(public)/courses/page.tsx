@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { Button } from "@/components/ui/button";
-import { useMyEnrolledCourses } from "@/components/landing/_hooks/UseMyEnrolledCourses";
+import { studentCourseQueries } from "@/features/student-courses";
 import { useAuthStore } from "@/store/authStore";
 
 import {
@@ -23,8 +23,12 @@ export default function CoursesPage() {
   const [search, setSearch] = useState("");
   const [level, setLevel] = useState("الكل");
   const { isAuthenticated } = useAuthStore();
-  const { courses: enrolled } = useMyEnrolledCourses();
-  const enrolledIds = new Set(enrolled.map((c) => c.id));
+  const { data: enrolledIds = new Set<number>() } = useQuery({
+    ...studentCourseQueries.enrolled(),
+    enabled: isAuthenticated,
+    select: (list) =>
+      new Set(list.filter((e) => e.status === "approved").map((e) => e.course?.id)),
+  });
   const shouldReduceMotion = useReducedMotion();
 
   const {
