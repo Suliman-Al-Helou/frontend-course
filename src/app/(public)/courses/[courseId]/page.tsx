@@ -1,119 +1,41 @@
-"use client";
+import type { Metadata } from "next";
+import { HydrationBoundary } from "@tanstack/react-query";
+import { getDehydratedCourseDetail } from "@/features/courses/server";
+import { getCourseById } from "@/features/courses/api/getCourseDetail";
+import CourseDetailView from "@/features/courses/components/detail/CourseDetailView";
 
-import { useParams } from "next/navigation";
-import Navbar from "@/components/landing/Navbar";
-import Footer from "@/components/landing/Footer";
-import {
-  CourseHero,
-  CourseCurriculum,
-  CourseOutcomes,
-  CourseBottomCta,
-  useCourseDetail,
-  SkeletonCard,
-} from "@/features/courses";
-import { useAuthStore } from "@/store/authStore";
-import api from "@/lib/api";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { QueryState } from "@/components/shared/QueryState";
+interface Props {
+  params: Promise<{ courseId: string }>;
+}
 
-export default function CourseDetailPage() {
-  const params = useParams();
-  const rawId = params?.courseId;
-  const courseId = Array.isArray(rawId) ? rawId[0] : (rawId as string);
-  const id = Number(courseId);
-  const isValidId = Boolean(courseId) && !Number.isNaN(id) && id > 0;
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { courseId } = await params;
+  try {
+    const course = await getCourseById(courseId);
+    return {
+      title: `${course.title} | Future House Academy`,
+      description: course.description || "تفاصيل ومنهج الكورس البرمجي في Future House Academy",
+      openGraph: {
+        title: course.title,
+        description: course.description || "",
+        images: course.cover_image ? [{ url: course.cover_image }] : [],
+      },
+    };
+  } catch {
+    return {
+      title: "تفاصيل الكورس | Future House Academy",
+      description: "استكشف محتوى ومنهج الكورس البرمجي في Future House Academy",
+    };
+  }
+}
 
-  const courseQuery = useCourseDetail(isValidId ? id : "");
-  const queryClient = useQueryClient();
-
-  const { isAuthenticated } = useAuthStore();
-
-  const enrollmentQuery = useQuery({
-    queryKey: ["courses", "enrollment", courseId],
-    queryFn: async () => {
-      const res = await api.get(`/courses/${courseId}/enrollment`);
-      const status = (res.data?.status ?? (res.data?.enrolled ? "approved" : null)) as
-        | "pending"
-        | "approved"
-        | "rejected"
-        | null;
-      return {
-        status,
-        isEnrolled: status === "approved" || Boolean(res.data?.enrolled),
-      };
-    },
-    enabled: isAuthenticated && isValidId,
-    // لو المستخدم غير مسجل، السيرفر سيرجع 401 - لا نعتبره خطأ يظهر للمستخدم
-    retry: false,
-  });
-
-  const enrollmentData = enrollmentQuery.data;
-  const enrolled = enrollmentData?.isEnrolled ?? false;
-  const enrollmentStatus = enrollmentData?.status ?? null;
+export default async function CourseDetailPage({ params }: Props) {
+  const { courseId } = await params;
+  const dehydratedState = await getDehydratedCourseDetail(courseId);
 
   return (
-    <div className="min-h-screen bg-background font-arabic" dir="rtl">
-      <Navbar />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <QueryState
-          query={courseQuery}
-          skeleton={
-            <div className="space-y-8">
-              <div className="h-[300px] bg-muted animate-pulse rounded-3xl" />
-              <div className="grid lg:grid-cols-3 gap-10">
-                <div className="lg:col-span-2 space-y-6">
-                  <SkeletonCard />
-                  <SkeletonCard />
-                </div>
-              </div>
-            </div>
-          }
-        >
-          {(course) => {
-            const isFree = Number(course.price ?? 0) === 0 || Boolean(course.is_public);
-            const hasAccess = enrolled || (isFree && isAuthenticated);
-
-            return (
-              <>
-                <CourseHero
-                  course={course}
-                  isEnrolled={enrolled}
-                  enrollmentStatus={enrollmentStatus}
-                  onEnrollSuccess={() => {
-                    queryClient.invalidateQueries({
-                      queryKey: ["courses", "enrollment", courseId],
-                    });
-                  }}
-                />
-
-                <div className="grid lg:grid-cols-3 gap-10 mt-10">
-                  <div className="lg:col-span-2 space-y-10">
-                    <CourseOutcomes
-                      outcomes={course.what_you_learn ?? []}
-                      requirements={course.requirements ?? []}
-                      target={course.target_audience ?? []}
-                    />
-                    <CourseCurriculum
-                      sections={course.sections}
-                      courseId={courseId}
-                      enrolled={hasAccess}
-                    />
-                  </div>
-                </div>
-
-                <CourseBottomCta
-                  isFree={isFree}
-                  enrolled={enrolled}
-                  isAuthenticated={isAuthenticated}
-                />
-              </>
-            );
-          }}
-        </QueryState>
-      </div>
-
-      <Footer />
-    </div>
+    <HydrationBoundary state={dehydratedState}>
+      <CourseDetailView courseId={courseId} />
+    </HydrationBoundary>
   );
 }
