@@ -1,8 +1,14 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { VIEW_LABELS } from './constants';
-import type { View } from './types';
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { VIEW_LABELS } from "./constants";
+import type { View } from "./types";
 
 /* ───────────────────────── CalendarToolbar.tsx ─────────────────────────
    مهمة الملف: شريط أعلى التقويم:
@@ -21,7 +27,7 @@ interface CalendarToolbarProps {
 }
 
 // ترتيب خيارات الفلتر. ✏️ EDIT HERE: النصوص من VIEW_LABELS بـ constants.ts
-const VIEW_OPTIONS: View[] = ['month', 'week', 'day'];
+const VIEW_OPTIONS: View[] = ["month", "week", "day"];
 
 export function CalendarToolbar({
   title,

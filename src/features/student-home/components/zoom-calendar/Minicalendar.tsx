@@ -1,9 +1,14 @@
-import { useMemo } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { WEEK_DAYS } from './constants';
-import { buildCalendarDays, dayKey, monthFormatter, sameDay } from './date-utils';
-import type { ZoomMeeting } from './types';
+import { useMemo } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { WEEK_DAYS } from "./constants";
+import {
+  buildCalendarDays,
+  dayKey,
+  monthFormatter,
+  sameDay,
+} from "./date-utils";
+import type { ZoomMeeting } from "./types";
 
 /* ───────────────────────── MiniCalendar.tsx ─────────────────────────
    مهمة الملف: التقويم الصغير بعرض اليوم (مثل الصورة 2).
@@ -39,7 +44,9 @@ export function MiniCalendar({ cursor, meetingsByDay, onPick, onShiftMonth }: Mi
         >
           <ChevronRight aria-hidden />
         </Button>
-        <span className="text-sm font-semibold text-foreground">{monthFormatter.format(cursor)}</span>
+        <span className="text-sm font-semibold text-foreground">
+          {monthFormatter.format(cursor)}
+        </span>
         <Button
           type="button"
           variant="ghost"
@@ -54,7 +61,7 @@ export function MiniCalendar({ cursor, meetingsByDay, onPick, onShiftMonth }: Mi
       <div className="grid grid-cols-7 text-center">
         {WEEK_DAYS.map((day) => (
           <span key={day} className="pb-2 text-xs text-muted-foreground">
-            {day.replace('ال', '').slice(0, 3)}
+            {day.replace("ال", "").slice(0, 3)}
           </span>
         ))}
 
@@ -70,7 +77,7 @@ export function MiniCalendar({ cursor, meetingsByDay, onPick, onShiftMonth }: Mi
               key={dayKey(day)}
               type="button"
               size="sm"
-              variant={selected ? 'default' : sameDay(day, today) ? 'outline' : 'ghost'}
+              variant={selected ? "default" : sameDay(day, today) ? "outline" : "ghost"}
               onClick={() => onPick(day)}
               className="flex-col gap-1"
             >
@@ -78,7 +85,11 @@ export function MiniCalendar({ cursor, meetingsByDay, onPick, onShiftMonth }: Mi
               <span
                 aria-hidden
                 className={`size-1 rounded-full ${
-                  hasMeetings ? (selected ? 'bg-primary-foreground' : 'bg-primary') : 'bg-transparent'
+                  hasMeetings
+                    ? selected
+                      ? "bg-primary-foreground"
+                      : "bg-primary"
+                    : "bg-transparent"
                 }`}
               />
             </Button>

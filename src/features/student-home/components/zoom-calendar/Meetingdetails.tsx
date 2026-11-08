@@ -1,11 +1,11 @@
-import { AlertCircle, CalendarDays, CheckCircle2, Clock3, LockKeyhole, Video } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
-import { MEETING_DURATION_MINUTES, STATUS_META } from './constants';
-import { dateFormatter, timeFormatter } from './date-utils';
-import type { Status, ZoomMeeting } from './types';
+import { AlertCircle, CalendarDays, CheckCircle2, Clock3, LockKeyhole, Video } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { STATUS_META } from "./constants";
+import { dateFormatter, timeFormatter } from "./date-utils";
+import type { Status, ZoomMeeting } from "./types";
 
 /* ───────────────────────── MeetingDetails.tsx ─────────────────────────
    مهمة الملف: بطاقة تفاصيل لقاء واحد (مثل لوحة "Product demo" بالصورة 2).
@@ -37,10 +37,9 @@ export function MeetingDetails({
   const meta = STATUS_META[status];
   const StatusIcon = meta.icon;
   const start = new Date(meeting.starts_at);
-  const end = new Date(start.getTime() + MEETING_DURATION_MINUTES * 60_000);
-
+  const end = new Date(meeting.ends_at);
   return (
-    <Card className={cn(active && 'border-primary', className)}>
+    <Card className={cn(active && "border-primary", className)}>
       <CardHeader>
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
@@ -79,7 +78,7 @@ export function MeetingDetails({
           </div>
         )}
 
-        {status === 'missed' && (
+        {status === "missed" && (
           <div className="flex items-center gap-2 rounded-md border border-destructive/40 bg-destructive/15 px-3 py-2 text-sm font-semibold text-destructive">
             <AlertCircle className="size-4 shrink-0" aria-hidden />
             انتهى اللقاء ولم يتم تسجيل حضورك
@@ -90,15 +89,15 @@ export function MeetingDetails({
           <Button
             type="button"
             className="w-full"
-            variant={meeting.attended ? 'outlineSuccess' : 'default'}
+            variant={meeting.joined ? "outlineSuccess" : "default"}
             loading={joining}
             onClick={() => onJoin(meeting)}
           >
             {!joining && <Video aria-hidden />}
-            {meeting.attended ? 'الدخول مرة أخرى' : 'دخول إلى لقاء Zoom'}
+            {meeting.joined ? "الدخول مرة أخرى" : "دخول إلى لقاء Zoom"}{" "}
           </Button>
         ) : (
-          status === 'upcoming' && (
+          status === "upcoming" && (
             <div className="flex items-center gap-2 rounded-md bg-muted px-3 py-2 text-xs text-muted-foreground">
               <LockKeyhole className="size-4 shrink-0" aria-hidden />
               رابط اللقاء لم يُفتح بعد، يفتح الدخول قبل اللقاء بـ 15 دقيقة

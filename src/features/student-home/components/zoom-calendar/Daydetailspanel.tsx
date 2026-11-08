@@ -1,8 +1,8 @@
-import { CalendarDays } from 'lucide-react';
-import { MeetingDetails } from './Meetingdetails';
-import { MiniCalendar } from './Minicalendar';
-import { getStatus } from './date-utils';
-import type { ZoomMeeting } from './types';
+import { CalendarDays } from "lucide-react";
+import { MeetingDetails } from "./Meetingdetails";
+import { MiniCalendar } from "./Minicalendar";
+import { getStatus } from "./date-utils";
+import type { ZoomMeeting } from "./types";
 
 /* ───────────────────────── DayDetailsPanel.tsx ─────────────────────────
    مهمة الملف: اللوحة الجانبية بعرض اليوم (مثل الصورة 2):

@@ -1,9 +1,9 @@
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { MeetingChip } from './Meetingchip';
-import { STATUS_META, WEEK_DAYS } from './constants';
-import { dateFormatter, dayKey, getStatus, sameDay } from './date-utils';
-import type { ZoomMeeting } from './types';
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { MeetingChip } from "./Meetingchip";
+import { STATUS_META, WEEK_DAYS } from "./constants";
+import { dateFormatter, dayKey, getStatus, sameDay } from "./date-utils";
+import type { ZoomMeeting } from "./types";
 
 /* ───────────────────────── MonthView.tsx ─────────────────────────
    مهمة الملف: شبكة الشهر (7 أعمدة). كل خلية فيها رقم اليوم + شرائح لقاءاته.
@@ -24,7 +24,14 @@ interface MonthViewProps {
 // ✏️ EDIT HERE: كم شريحة تظهر بالخلية قبل "+N لقاءات"
 const MAX_CHIPS_PER_DAY = 2;
 
-export function MonthView({ days, month, meetingsByDay, now, onSelect, onOpenDay }: MonthViewProps) {
+export function MonthView({
+  days,
+  month,
+  meetingsByDay,
+  now,
+  onSelect,
+  onOpenDay,
+}: MonthViewProps) {
   const today = new Date(now);
 
   return (
@@ -32,7 +39,10 @@ export function MonthView({ days, month, meetingsByDay, now, onSelect, onOpenDay
       {/* أسماء الأيام */}
       <div className="grid grid-cols-7 border-b border-border bg-muted/30">
         {WEEK_DAYS.map((day) => (
-          <div key={day} className="px-1 py-3 text-center text-xs font-semibold text-muted-foreground">
+          <div
+            key={day}
+            className="px-1 py-3 text-center text-xs font-semibold text-muted-foreground"
+          >
             {day}
           </div>
         ))}
@@ -48,18 +58,18 @@ export function MonthView({ days, month, meetingsByDay, now, onSelect, onOpenDay
             <div
               key={dayKey(day)}
               className={cn(
-                'relative min-h-16 border-b border-s border-border p-2',
-                inMonth ? 'bg-background' : 'bg-muted/10',
+                "relative min-h-16 border-b border-s border-border p-2",
+                inMonth ? "bg-background" : "bg-muted/10",
               )}
             >
               {/* الزر يغطي الخلية كلها (after) فيفتح عرض اليوم */}
               <Button
                 type="button"
                 size="sm"
-                variant={sameDay(day, today) ? 'default' : 'ghost'}
+                variant={sameDay(day, today) ? "default" : "ghost"}
                 onClick={() => onOpenDay(day)}
                 aria-label={dateFormatter.format(day)}
-                className={cn('after:absolute after:inset-0', !inMonth && 'opacity-50')}
+                className={cn("after:absolute after:inset-0", !inMonth && "opacity-50")}
               >
                 {day.getDate()}
               </Button>
@@ -92,7 +102,7 @@ export function MonthView({ days, month, meetingsByDay, now, onSelect, onOpenDay
                 {list.map((meeting) => (
                   <span
                     key={meeting.id}
-                    className={cn('size-2 rounded-full', STATUS_META[getStatus(meeting, now)].dot)}
+                    className={cn("size-2 rounded-full", STATUS_META[getStatus(meeting, now)].dot)}
                   />
                 ))}
               </div>

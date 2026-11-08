@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 /* ───────────────────────── useNow.ts ─────────────────────────
    مهمة الملف: يرجّع الوقت الحالي (ms) ويحدّثه كل دقيقة.

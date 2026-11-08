@@ -1,6 +1,14 @@
-import { MEETING_DURATION_MINUTES, WEEK_DAYS } from './constants';
-import type { Status, ZoomMeeting } from './types';
+import { WEEK_DAYS } from "./constants";
+import type { Status } from "./types";
+import type { ZoomMeeting } from "@/features/student-home/types";
 
+// Real duration from the server (min 15 so blocks stay clickable).
+export function meetingMinutes(m: ZoomMeeting) {
+  return Math.max(
+    15,
+    Math.round((new Date(m.ends_at).getTime() - new Date(m.starts_at).getTime()) / 60_000),
+  );
+}
 /* ───────────────────────── date-utils.ts ─────────────────────────
    مهمة الملف: دوال التاريخ والتنسيق وحساب حالة اللقاء.
    كلها pure functions: تاخد مدخلات وترجع نتيجة، بدون state ولا React.
@@ -10,26 +18,26 @@ import type { Status, ZoomMeeting } from './types';
 /* ── التنسيق (TODO translate: 'ar' ثابتة الآن، لاحقًا من next-intl) ──
    ✏️ EDIT HERE: غيّر الصيغة هون مرة وحدة وبتتغير بكل العروض */
 
-export const monthFormatter = new Intl.DateTimeFormat('ar', { month: 'long', year: 'numeric' });
-export const dateFormatter = new Intl.DateTimeFormat('ar', {
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
+export const monthFormatter = new Intl.DateTimeFormat("ar", { month: "long", year: "numeric" });
+export const dateFormatter = new Intl.DateTimeFormat("ar", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
 });
-export const fullDateFormatter = new Intl.DateTimeFormat('ar', {
-  weekday: 'long',
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
+export const fullDateFormatter = new Intl.DateTimeFormat("ar", {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+  year: "numeric",
 });
-export const timeFormatter = new Intl.DateTimeFormat('ar', { hour: '2-digit', minute: '2-digit' });
-export const hourFormatter = new Intl.DateTimeFormat('ar', { hour: 'numeric' });
+export const timeFormatter = new Intl.DateTimeFormat("ar", { hour: "2-digit", minute: "2-digit" });
+export const hourFormatter = new Intl.DateTimeFormat("ar", { hour: "numeric" });
 
 /* ── مفاتيح ومقارنة ── */
 
 // مفتاح الشهر لطلب الـ API: "2026-10"
 export function monthKey(date: Date) {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
 }
 
 // مفتاح اليوم لتجميع اللقاءات بـ Map: "2026-9-5" (الشهر من 0 عمدًا، يكفي أنه فريد)
@@ -97,7 +105,6 @@ export function minutesOfDay(date: Date) {
 // حضر → attended | انتهى (البداية + المدة) ولم يحضر → missed | غير ذلك → upcoming
 // ✏️ EDIT HERE: تعريف "فائت" (المدة نفسها من MEETING_DURATION_MINUTES بـ constants.ts)
 export function getStatus(meeting: ZoomMeeting, now: number): Status {
-  if (meeting.attended) return 'attended';
-  const end = new Date(meeting.starts_at).getTime() + MEETING_DURATION_MINUTES * 60_000;
-  return now > end ? 'missed' : 'upcoming';
+  if (meeting.attended) return "attended";
+  return now > new Date(meeting.ends_at).getTime() ? "missed" : "upcoming";
 }

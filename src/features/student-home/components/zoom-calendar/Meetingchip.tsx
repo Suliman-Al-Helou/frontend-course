@@ -1,7 +1,7 @@
-import { cn } from '@/lib/utils';
-import { STATUS_META } from './constants';
-import { timeFormatter } from './date-utils';
-import type { Status, ZoomMeeting } from './types';
+import { cn } from "@/lib/utils";
+import { STATUS_META } from "./constants";
+import { timeFormatter } from "./date-utils";
+import type { Status, ZoomMeeting } from "./types";
 
 /* ───────────────────────── MeetingChip.tsx ─────────────────────────
    مهمة الملف: شريحة واحدة تمثّل لقاء داخل الشبكة (وقت اللقاء + رابط Zoom).
@@ -31,12 +31,13 @@ export function MeetingChip({ meeting, status, onSelect, block = false }: Meetin
       // الألوان وحدها ما بتكفي: الحالة مكتوبة لقارئ الشاشة
       aria-label={`Zoom ${time} — ${meta.label}`}
       className={cn(
-        'relative z-10 flex w-full overflow-hidden rounded-md border text-start font-semibold transition-colors duration-150',
-        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
+        "relative z-10 flex w-full overflow-hidden rounded-md border text-start font-semibold transition-colors duration-150",
+        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
         // ✏️ EDIT HERE: تباعد وحجم الشريحة (سطر واحد / بلوك)
-        block 
- ? 'min-h-full h-fit flex-col items-start justify-between gap-0.5 p-1.5 text-[11px] leading-tight' 
-          : 'items-center gap-1 px-2 py-1 text-xs',        meta.chip,
+        block
+          ? "min-h-full h-fit flex-col items-start justify-between gap-0.5 p-1.5 text-[11px] leading-tight"
+          : "items-center gap-1 px-2 py-1 text-xs",
+        meta.chip,
       )}
     >
       <span className="flex items-center gap-1">

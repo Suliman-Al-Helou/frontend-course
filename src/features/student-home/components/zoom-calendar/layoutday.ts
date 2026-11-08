@@ -1,5 +1,4 @@
-import { MEETING_DURATION_MINUTES } from './constants';
-import type { ZoomMeeting } from './types';
+import type { ZoomMeeting } from "@/features/student-home/types";
 
 /* ───────────────────────── layoutDay.ts ─────────────────────────
    مهمة الملف: يوزّع لقاءات اليوم على "مسارات" (lanes) حتى لا يركب بلوك على بلوك
@@ -23,7 +22,7 @@ export function layoutDay(list: ZoomMeeting[]) {
       lane = laneEnds.length;
       laneEnds.push(0);
     }
-    laneEnds[lane] = start + MEETING_DURATION_MINUTES * 60_000;
+    laneEnds[lane] = new Date(meeting.ends_at).getTime();
     return { meeting, lane };
   });
 

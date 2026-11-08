@@ -4,18 +4,12 @@
    ✏️ EDIT HERE: إذا الـ API ضاف حقل جديد للّقاء، ضيفه بـ ZoomMeeting.
 */
 
-export interface ZoomMeeting {
-  id: number;
-  course_name: string;
-  title: string;
-  description: string | null;
-  starts_at: string; // ISO (UTC)
-  can_join: boolean; // false = الدخول لسا مقفل (قبل اللقاء بـ 15 دقيقة)
-  attended: boolean;
-}
+import type { ZoomMeeting } from "../../types";
+
+export type { ZoomMeeting };
 
 // فلتر العرض (الـ Select)
-export type View = 'month' | 'week' | 'day';
+export type View = "month" | "week" | "day";
 
 // حالة اللقاء: تُحسب من attended + الوقت (انظر getStatus بـ date-utils.ts)
-export type Status = 'upcoming' | 'attended' | 'missed';
+export type Status = "upcoming" | "attended" | "missed";

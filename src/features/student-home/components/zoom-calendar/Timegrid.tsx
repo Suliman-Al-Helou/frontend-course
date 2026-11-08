@@ -1,14 +1,18 @@
-import { cn } from '@/lib/utils';
-import { MeetingChip } from './Meetingchip';
+import { cn } from "@/lib/utils";
+import { MeetingChip } from "./Meetingchip";
+import { DEFAULT_END_HOUR, DEFAULT_START_HOUR, HOUR_HEIGHT } from "./constants";
 import {
-  DEFAULT_END_HOUR,
-  DEFAULT_START_HOUR,
-  HOUR_HEIGHT,
-  MEETING_DURATION_MINUTES,
-} from './constants';
-import { dayKey, getStatus, hourFormatter, minutesOfDay, sameDay, weekdayName } from './date-utils';
-import { layoutDay } from './layoutday';
-import type { ZoomMeeting } from './types';
+  dayKey,
+  getStatus,
+  hourFormatter,
+  meetingMinutes,
+  minutesOfDay,
+  sameDay,
+  weekdayName,
+} from "./date-utils";
+
+import { layoutDay } from "./layoutday";
+import type { ZoomMeeting } from "./types";
 
 /* ───────────────────────── TimeGrid.tsx ─────────────────────────
    مهمة الملف: شبكة الساعات. تُستخدم لعرضين:
@@ -41,7 +45,8 @@ export function TimeGrid({ days, meetingsByDay, now, onSelect, onDayClick }: Tim
   if (all.length > 0) {
     const starts = all.map((m) => minutesOfDay(new Date(m.starts_at)));
     startHour = Math.max(0, Math.floor(Math.min(...starts) / 60) - 1);
-    endHour = Math.min(24, Math.ceil((Math.max(...starts) + MEETING_DURATION_MINUTES) / 60) + 1);
+    const ends = all.map((m) => minutesOfDay(new Date(m.starts_at)) + meetingMinutes(m));
+    endHour = Math.min(24, Math.ceil(Math.max(...ends) / 60) + 1);
   }
 
   const hours = Array.from({ length: endHour - startHour }, (_, i) => startHour + i);
@@ -52,7 +57,7 @@ export function TimeGrid({ days, meetingsByDay, now, onSelect, onDayClick }: Tim
   return (
     <div className="overflow-auto" style={{ maxHeight: MAX_GRID_HEIGHT }}>
       {/* الأسبوع: عرض أدنى ثم scroll أفقي داخل الشبكة فقط */}
-      <div className={multi ? 'min-w-3xl' : ''}>
+      <div className={multi ? "min-w-3xl" : ""}>
         {/* Header: اسم اليوم + رقمه */}
         <div
           className="sticky top-0 z-30 grid border-b border-border bg-background"
@@ -63,11 +68,13 @@ export function TimeGrid({ days, meetingsByDay, now, onSelect, onDayClick }: Tim
             const isToday = sameDay(day, nowDate);
             const content = (
               <>
-                <span className="text-xs font-semibold text-muted-foreground">{weekdayName(day)}</span>
+                <span className="text-xs font-semibold text-muted-foreground">
+                  {weekdayName(day)}
+                </span>
                 <span
                   className={cn(
-                    'inline-flex size-8 items-center justify-center rounded-full text-xs font-semibold',
-                    isToday ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground',
+                    "inline-flex size-8 items-center justify-center rounded-full text-xs font-semibold",
+                    isToday ? "bg-primary text-primary-foreground" : "bg-muted text-foreground",
                   )}
                 >
                   {day.getDate()}
@@ -134,8 +141,7 @@ export function TimeGrid({ days, meetingsByDay, now, onSelect, onDayClick }: Tim
                   const top =
                     ((minutesOfDay(new Date(meeting.starts_at)) - startHour * 60) / 60) *
                     HOUR_HEIGHT;
-                  const height = (MEETING_DURATION_MINUTES / 60) * HOUR_HEIGHT;
-
+                  const height = (meetingMinutes(meeting) / 60) * HOUR_HEIGHT;
                   return (
                     <div
                       key={meeting.id}

@@ -1,4 +1,4 @@
-import { STATUS_META, STATUS_ORDER } from './constants';
+import { STATUS_META, STATUS_ORDER } from "./constants";
 
 /* ───────────────────────── Legend.tsx ─────────────────────────
    مهمة الملف: مفتاح الألوان (قادم / تم الحضور / فائت).
