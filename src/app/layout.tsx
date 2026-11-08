@@ -4,8 +4,7 @@ import { IBM_Plex_Sans_Arabic } from "next/font/google";
 import Script from "next/script";
 import AuthBootstrap from "@/components/shared/AuthBootstrap";
 import { Toaster } from "sonner";
-import { getLocale } from "next-intl/server";
-import QueryProvider from "@/components/shared/QueryProvider";
+import QueryProvider from "@/providers/QueryProvider";
 
 const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
   subsets: ["arabic", "latin"],
@@ -15,23 +14,14 @@ const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
 });
 
 export const metadata: Metadata = {
+  manifest: "/manifest.json",
   title: "Future House — منصة التعلم التقني الأولى بالعربية",
   description: "منصة تعليمية محكومة لتعلم البرمجة والتقنية باحترافية.",
 };
 
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const locale = await getLocale();
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="ar"
-      dir="rtl"
-      className={ibmPlexSansArabic.variable}
-      suppressHydrationWarning
-    >
+    <html lang="ar" dir="rtl" className={ibmPlexSansArabic.variable} suppressHydrationWarning>
       <head>
         {/*
           next/script مع strategy="beforeInteractive" هو الطريقة الصحيحة
