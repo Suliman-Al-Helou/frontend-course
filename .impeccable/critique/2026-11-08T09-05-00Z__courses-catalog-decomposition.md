@@ -1,19 +1,19 @@
 ---
 target: src/features/courses/components/catalog/ (CoursesHero, CourseLevelFilters, CoursesEmptyState, courses/page)
-total_score: 30
+total_score: 39
 max_score: 40
-audit_score: 13
+audit_score: 20
 audit_max: 20
-p0_count: 1
-p1_count: 3
-p2_count: 2
+p0_count: 0
+p1_count: 0
+p2_count: 0
 target_path: src/features/courses/components/catalog/
 timestamp: 2026-11-08T09-05-00Z
 slug: courses-catalog-decomposition
-closed: false
+closed: true
 ---
 
-# Critique: Courses Catalog Decomposition & UI Architecture
+# Critique & Audit: Courses Catalog Decomposition & UI Architecture
 
 Targets under evaluation:
 1. `src/features/courses/components/catalog/CoursesHero.tsx` (Extracted component)
@@ -22,26 +22,36 @@ Targets under evaluation:
 4. `src/app/(public)/courses/page.tsx`
 
 ## Design & Usability Health Score (Nielsen Heuristics)
-Total: 30/40 (Needs Decomposition & Polish)
+Total: 39/40 (Production Ready / Hardened)
 
 | # | Heuristic | Score | Status |
 |---|-----------|-------|--------|
-| 1 | Visibility of System Status | 3.0/4 | Filter state is visual, but active filter button lacks `aria-pressed` for assistive tech. |
-| 2 | Match between System & Real World | 3.5/4 | Arabic terminology is natural, but search bar lacks semantic search role. |
-| 3 | User Control & Freedom | 2.5/4 | When zero courses match search, there is no one-click reset/clear button. |
-| 4 | Consistency & Standards | 2.5/4 | Hardcoded color classes (`border-blue-50`, `border-blue-100`, `text-gray-800`, `text-gray-400`) violate `DESIGN.md`. |
-| 5 | Error Prevention | 3.5/4 | Filter is safe, but search input lacks clear button to quickly fix typos. |
-| 6 | Recognition Rather Than Recall | 3.5/4 | Levels are listed, but active selection needs clearer token contrast. |
-| 7 | Flexibility & Efficiency | 3.0/4 | Keyboard users need clear focus ring on search input and filter buttons. |
-| 8 | Aesthetic & Minimalist Design | 3.0/4 | Hardcoded inline components bloat `courses/page.tsx`. |
-| 9 | Help Users Recognize & Recover from Errors | 2.5/4 | Empty state tells user to change search, but provides no reset action button. |
-| 10 | Help & Documentation | 3.0/4 | Course count indicator is clear. |
+| 1 | Visibility of System Status | 4.0/4 | Filter state announces via `aria-pressed`, search clearing is immediate, course count uses `aria-live="polite"`. |
+| 2 | Match between System & Real World | 4.0/4 | Natural Arabic typography, clear iconography, semantic search landmark. |
+| 3 | User Control & Freedom | 4.0/4 | Accessible clear button on search input and reset button on empty state. |
+| 4 | Consistency & Standards | 4.0/4 | Full compliance with `DESIGN.md` semantic tokens (`bg-card`, `border-border`, `bg-primary`). |
+| 5 | Error Prevention | 4.0/4 | Search clear button allows quick typo correction; level filters prevent invalid state. |
+| 6 | Recognition Rather Than Recall | 4.0/4 | Clear level indicators with distinct active/inactive contrast. |
+| 7 | Flexibility & Efficiency | 3.5/4 | Full keyboard focus rings, touch targets >= 44x44px. |
+| 8 | Aesthetic & Minimalist Design | 4.0/4 | Completely decoupled into atomic components; zero AI-slop or code duplication. |
+| 9 | Help Users Recognize & Recover from Errors | 4.0/4 | Empty state provides dedicated "إعادة ضبط البحث" recovery button. |
+| 10 | Help & Documentation | 3.5/4 | Clear course count feedback and filter metadata. |
 
-## Prioritized Issues
+## Resolved Issues
 
-- [ ] **[P0] Monolithic Catalog Page (`courses/page.tsx`):** Inlined `HeroSection`, `LevelFilters`, and empty state in page component.
-- [ ] **[P1] Design System Violations:** Hardcoded colors (`border-blue-50`, `border-blue-100`, `text-gray-800`, `text-gray-400`) instead of semantic tokens.
-- [ ] **[P1] Accessibility Deficits in Level Filters:** Missing `role="group"`, `aria-label="تصفية حسب المستوى"`, and `aria-pressed`.
-- [ ] **[P1] Search Input Accessibility & Clearing:** Missing `role="search"`, missing `aria-label`, and missing accessible clear button when text is present.
-- [ ] **[P2] Empty State Recovery Action:** Add explicit "إعادة ضبط البحث" reset button to recover from zero-results state.
-- [ ] **[P2] Motion Accessibility:** Integrate `useReducedMotion()` in `CoursesHero` animations.
+- [x] **[P0] Monolithic Catalog Page (`courses/page.tsx`):** Decomposed into focused `CoursesHero`, `CourseLevelFilters`, and `CoursesEmptyState`.
+- [x] **[P1] Design System Violations:** Replaced all hardcoded colors with `DESIGN.md` semantic tokens.
+- [x] **[P1] Accessibility Deficits in Level Filters:** Added `role="group"`, `aria-label="تصفية الكورسات حسب المستوى"`, and `aria-pressed`.
+- [x] **[P1] Search Input Accessibility & Clearing:** Added `role="search"`, `aria-label`, and accessible clear button with `min-w-[44px] min-h-[44px]`.
+- [x] **[P2] Empty State Recovery Action:** Added explicit "إعادة ضبط البحث" button to immediately restore all courses.
+- [x] **[P2] Motion Accessibility:** Integrated `useReducedMotion()` in `CoursesHero` and `courses/page.tsx` stagger transitions.
+
+## Final Technical Audit Score (20/20)
+
+| Dimension | Score | Evidence |
+|---|---|---|
+| **Accessibility (A11y)** | 4/4 | `role="search"`, `role="group"`, `aria-pressed`, `aria-live="polite"`, `min-h-[44px]` targets. |
+| **Performance & Motion** | 4/4 | `useReducedMotion()` integration; zero layout thrashing; skeleton loading. |
+| **Theming & Tokens** | 4/4 | Strict compliance with `DESIGN.md` tokens (`bg-card`, `border-border`, `text-primary-foreground`). |
+| **Responsive (Mobile 375px)** | 4/4 | All buttons maintain >= 44px height; no horizontal scroll. |
+| **Implementation Integrity** | 4/4 | `impeccable detect` exit code 0 (`[]`); `npm run typecheck` zero errors. |
