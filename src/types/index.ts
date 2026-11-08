@@ -1,3 +1,22 @@
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: "admin" | "student";
+}
+
+export interface LessonProgress {
+  watched_percent: number;
+  completed: boolean;
+  last_position: number;
+}
+
+export interface Task {
+  id: number;
+  questions: Question[];
+  pass_percentage: number;
+  max_attempts: number;
+}
 export interface Course {
   id: number;
   title: string;
@@ -11,7 +30,7 @@ export interface Course {
   target_audience: string;
   students_count: number;
   sections?: Section[];
-
+  is_public: Boolean;
   rating: number;
   reviews: number;
   students: number;
@@ -22,6 +41,7 @@ export interface Course {
   tags: string[];
   price: number;
   hot?: boolean;
+  next_lesson_id?: number | null;
 }
 
 export interface Section {
@@ -39,24 +59,9 @@ export interface Lesson {
   is_preview: boolean;
 }
 
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-  role?: "admin" | "student";
-}
-// أضف في نهاية الملف
-
 export interface LessonDetail extends Lesson {
   video_id: string;
   task?: Task;
-}
-
-export interface Task {
-  id: number;
-  questions: Question[];
-  pass_percentage: number;
-  max_attempts: number;
 }
 
 export interface Question {
@@ -70,24 +75,27 @@ export interface Question {
 export interface TaskResult {
   score: number;
   passed: boolean;
-  feedback: {
-    question_id: string;
-    correct: boolean;
-    correct_answer: string;
-    explanation: string;
-  }[];
-}
-
-export interface LessonProgress {
-  watched_percent: number;
-  completed: boolean;
-  last_position: number;
+  pass_score: number;
+  message?: string;
+  // Backend returns results as object keyed by question_id
+  results: Record<
+    string,
+    {
+      correct: boolean;
+      your_answer: string;
+      correct_answer: string;
+      explanation: string | null;
+      type?: string;
+      pending?: boolean;
+    }
+  >;
 }
 
 export interface CourseProgress {
   total_lessons: number;
-  completed_lessons: number;
-  percentage: number;
+  completed_count: number;
+  percent: number;
+  course_complete: boolean;
 }
 // أضف للـ types الموجودة
 export interface Enrollment {
@@ -126,11 +134,17 @@ export interface Instructor {
   title?: string;
   bio?: string;
   avatar_url?: string;
+  cover_url?: string;
   specializations?: string;
   years_experience?: number;
+  rating?: number;
+  total_reviews?: number;
+  students_count?: number;
+  achievements?: string[];
   twitter?: string;
   linkedin?: string;
   youtube?: string;
+  courses?: number[]; // IDs of assigned courses
 }
 
 export interface AdminStats {

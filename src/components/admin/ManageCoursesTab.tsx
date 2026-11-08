@@ -10,6 +10,7 @@ import type { Course, Enrollment } from "@/types";
 import CourseSectionsModal from "@/components/admin/CourseSectionsModal";
 import { LayoutList } from "lucide-react";
 import Image from "next/image";
+
 export default function ManageCoursesTab({
   enrollments,
 }: {
@@ -21,15 +22,33 @@ export default function ManageCoursesTab({
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [managingCourse, setManagingCourse] = useState<Course | null>(null);
+
   const fetchCourses = async () => {
     setLoading(true);
     try {
-      const res = await api.get("/courses");
-      setCourses(res.data.data ?? res.data);
+      const res = await api.get("/admin/courses");
+      const data = res.data.data ?? res.data;
+      setCourses(data);
+      if (editingCourse) {
+        const updated = data.find((c: Course) => c.id === editingCourse.id);
+        if (updated) setEditingCourse(updated);
+      }
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // 👇 أضف هذه الدالة
+  const handleEdit = async (course: Course) => {
+    try {
+      const res = await api.get(`/admin/courses/${course.id}`);
+      setEditingCourse(res.data);
+      setShowModal(true);
+    } catch {
+      setEditingCourse(course);
+      setShowModal(true);
     }
   };
 
@@ -91,7 +110,7 @@ export default function ManageCoursesTab({
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              className="bg-card border border-border rounded-2xl overflow-hidden"
+              className="bg-card border border-border rounded-2xl overflow-hidden flex flex-col justify-between gap-0"
             >
               {course.cover_image ? (
                 <img
@@ -100,7 +119,7 @@ export default function ManageCoursesTab({
                   className="w-full h-48 object-cover"
                 />
               ) : (
-                <div className="w-full h-36 bg-gradient-to-br from-primary/20 to-blue-mid/20 flex items-center justify-center">
+                <div className="w-full h-48 bg-gradient-to-br from-primary/20 to-blue-mid/20 flex items-center justify-center ">
                   <BookOpen className="w-10 h-10 text-primary/40" />
                 </div>
               )}
@@ -139,10 +158,7 @@ export default function ManageCoursesTab({
                     variant="outline"
                     size="sm"
                     className="flex-1 rounded-xl h-8 text-xs"
-                    onClick={() => {
-                      setEditingCourse(course);
-                      setShowModal(true);
-                    }}
+                    onClick={() => handleEdit(course)} // 👈 تم التعديل
                   >
                     <Pencil className="w-3.5 h-3.5 ml-1" /> تعديل
                   </Button>
@@ -169,6 +185,7 @@ export default function ManageCoursesTab({
 
       {showModal && (
         <CourseFormModal
+          key={editingCourse?.id ?? "new"}
           course={editingCourse}
           onClose={() => setShowModal(false)}
           onSuccess={() => {
@@ -177,12 +194,13 @@ export default function ManageCoursesTab({
           }}
         />
       )}
+
       {deleteId && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
           dir="rtl"
         >
-          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center">
+          <div className="bg-card rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center ">
             <div className="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Trash2 className="w-7 h-7 text-red-500" />
             </div>

@@ -1,54 +1,18 @@
-import { useEffect, useState } from "react";
-import api from "@/lib/api";
-import { Course } from "@/types";
-import {
-  COURSE_UI_EXTRAS,
-  CourseUIExtra,
-} from "@/components/landing/_data/coursesData";
+import { useQuery } from "@tanstack/react-query";
+import { courseQueries } from "@/features/courses";
+import type { Course } from "@/types";
 
-export type CourseCard = Omit<Course, 'hot'> & CourseUIExtra;
+export type CourseListItem = Course & { hot: boolean };
 
-const LEVEL_COLOR: Record<Course["level"], string> = {
-  beginner: "bg-green-100 text-green-700",
-  intermediate: "bg-blue-100 text-blue-700",
-  advanced: "bg-purple-100 text-purple-700",
-};
+export function useCoursesSection(): { courses: CourseListItem[]; loading: boolean } {
+  const { data: courses = [], isLoading } = useQuery({
+    ...courseQueries.list(),
+    select: (list): CourseListItem[] =>
+      list.map((course) => ({
+        ...course,
+        hot: course.hot ?? false,
+      })),
+  });
 
-const LEVEL_LABEL: Record<Course["level"], string> = {
-  beginner: "مبتدئ",
-  intermediate: "متوسط",
-  advanced: "متقدم",
-};
-
-export function useLevelStyle(level: Course["level"]) {
-  return {
-    color: LEVEL_COLOR[level],
-    label: LEVEL_LABEL[level],
-  };
-}
-
-export function useCoursesSection(): CourseCard[] {
-  const [courses, setCourses] = useState<CourseCard[]>([]);
-
-  useEffect(() => {
-    api
-      .get<Course[]>("/courses")
-      .then(({ data }) => {
-        const merged = data.map((course) => ({
-          ...course,
-          ...(COURSE_UI_EXTRAS.find((e) => e.id === course.id) ?? {
-            instructor: "",
-            students: 0, // ✅ number
-            rating: 0,
-            price: 0,
-            tags: [],
-            hot: false,
-          }),
-        }));
-        setCourses(merged);
-      })
-      .catch(() => setCourses([]));
-  }, []);
-
-  return courses;
+  return { courses, loading: isLoading };
 }

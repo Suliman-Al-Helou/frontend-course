@@ -1,8 +1,7 @@
-// postcss.config.mjs
+// postcss.config.mjs - لـ Tailwind v4
 const config = {
   plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
+    "@tailwindcss/postcss": {},
   },
 };
 

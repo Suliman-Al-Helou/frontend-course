@@ -1,82 +1,113 @@
 "use client";
 
-import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
-import { CourseHero } from "./_components/CourseHero";
-import { CourseCurriculum } from "./_components/CourseCurriculum";
-import { CourseOutcomes } from "./_components/CourseOutcomes";
-import { useCourseDetail } from "./_hooks/useCourseDetail";
+import {
+  CourseHero,
+  CourseCurriculum,
+  CourseOutcomes,
+  CourseBottomCta,
+  useCourseDetail,
+  SkeletonCard,
+} from "@/features/courses";
 import { useAuthStore } from "@/store/authStore";
 import api from "@/lib/api";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { QueryState } from "@/components/shared/QueryState";
 
 export default function CourseDetailPage() {
   const params = useParams();
   const courseId = params?.courseId as string;
-  const { course, loading, error } = useCourseDetail(Number(courseId));
+  const id = Number(courseId);
+  const courseQuery = useCourseDetail(id);
+  const queryClient = useQueryClient();
+
   const { isAuthenticated } = useAuthStore();
-  const [enrolled, setEnrolled] = useState(false);
 
-  useEffect(() => {
-    if (!isAuthenticated || !courseId) return;
-    api.get(`/courses/${courseId}/enrollment`)
-      .then(res => setEnrolled(res.data.status === 'approved'))
-      .catch(() => {});
-  }, [isAuthenticated, courseId]);
+  const enrollmentQuery = useQuery({
+    queryKey: ["courses", "enrollment", courseId],
+    queryFn: async () => {
+      const res = await api.get(`/courses/${courseId}/enrollment`);
+      const status = (res.data.status ?? (res.data.enrolled ? "approved" : null)) as
+        | "pending"
+        | "approved"
+        | "rejected"
+        | null;
+      return {
+        status,
+        isEnrolled: status === "approved" || Boolean(res.data.enrolled),
+      };
+    },
+    enabled: isAuthenticated && Boolean(courseId) && Number.isInteger(id),
+    // لو المستخدم غير مسجل، السيرفر سيرجع 401 - لا نعتبره خطأ يظهر للمستخدم
+    retry: false,
+  });
 
-  if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="w-10 h-10 rounded-full border-4 border-primary border-t-transparent animate-spin" />
-    </div>
-  );
-
-  if (error || !course) return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-background">
-      <p className="text-muted-foreground">{error ?? "الكورس غير موجود"}</p>
-      <Link href="/courses" className="text-primary hover:underline text-sm">
-        العودة للكورسات
-      </Link>
-    </div>
-  );
+  const enrollmentData = enrollmentQuery.data;
+  const enrolled = enrollmentData?.isEnrolled ?? false;
+  const enrollmentStatus = enrollmentData?.status ?? null;
 
   return (
     <div className="min-h-screen bg-background font-arabic" dir="rtl">
       <Navbar />
-      <CourseHero course={course} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid lg:grid-cols-3 gap-10">
-          <div className="lg:col-span-2 space-y-10">
-            <CourseOutcomes
-              outcomes={course.what_you_learn ?? []}
-              requirements={course.requirements ?? []}
-              target={course.target_audience ?? []}
-            />
-            <CourseCurriculum
-              sections={course.sections}
-              courseId={courseId}
-              enrolled={enrolled}
-            />
-          </div>
-        </div>
+        <QueryState
+          query={courseQuery}
+          skeleton={
+            <div className="space-y-8">
+              <div className="h-[300px] bg-muted animate-pulse rounded-3xl" />
+              <div className="grid lg:grid-cols-3 gap-10">
+                <div className="lg:col-span-2 space-y-6">
+                  <SkeletonCard />
+                  <SkeletonCard />
+                </div>
+              </div>
+            </div>
+          }
+        >
+          {(course) => {
+            const isFree = Number(course.price ?? 0) === 0 || Boolean(course.is_public);
+            const hasAccess = enrolled || (isFree && isAuthenticated);
 
-        {/* Bottom CTA — يختفي لو مسجل ومقبول */}
-        {!enrolled && (
-          <div className="mt-16 bg-gradient-to-br from-primary to-primary/70 rounded-3xl p-8 sm:p-12 text-center">
-            <h3 className="text-2xl font-bold text-white mb-3">مستعد تبدأ؟</h3>
-            <p className="text-white/70 mb-6">
-              سجّل الآن وابدأ الكورس فوراً — الوصول الكامل بعد التسجيل
-            </p>
-            <Link
-              href={isAuthenticated ? `/courses/${courseId}/enroll` : "/register"}
-              className="inline-flex items-center justify-center bg-white text-primary hover:bg-white/90 rounded-xl px-10 py-3 font-bold transition-colors"
-            >
-              سجّل وابدأ الآن
-            </Link>
-          </div>
-        )}
+            return (
+              <>
+                <CourseHero
+                  course={course}
+                  isEnrolled={enrolled}
+                  enrollmentStatus={enrollmentStatus}
+                  onEnrollSuccess={() => {
+                    queryClient.invalidateQueries({
+                      queryKey: ["courses", "enrollment", courseId],
+                    });
+                  }}
+                />
+
+                <div className="grid lg:grid-cols-3 gap-10 mt-10">
+                  <div className="lg:col-span-2 space-y-10">
+                    <CourseOutcomes
+                      outcomes={course.what_you_learn ?? []}
+                      requirements={course.requirements ?? []}
+                      target={course.target_audience ?? []}
+                    />
+                    <CourseCurriculum
+                      sections={course.sections}
+                      courseId={courseId}
+                      enrolled={hasAccess}
+                    />
+                  </div>
+                </div>
+
+                <CourseBottomCta
+                  isFree={isFree}
+                  enrolled={enrolled}
+                  isAuthenticated={isAuthenticated}
+                />
+              </>
+            );
+          }}
+        </QueryState>
       </div>
 
       <Footer />

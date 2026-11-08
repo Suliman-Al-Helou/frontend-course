@@ -1,0 +1,10 @@
+config:
+  target: 'https://frontend-course-tau.vercel.app'
+  phases:
+    - duration: 30
+      arrivalRate: 10
+
+scenarios:
+  - flow:
+      - get:
+          url: "/"

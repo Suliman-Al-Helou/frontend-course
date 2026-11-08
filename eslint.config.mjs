@@ -1,26 +1,33 @@
 import { FlatCompat } from "@eslint/eslintrc";
-import { dirname } from "path";
+import path from "path";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = path.dirname(__filename);
 
 const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+export default [
+  ...compat.extends("next/core-web-vitals"),
   {
+    files: ["src/**/*.{ts,tsx}"],
+    ignores: ["src/components/ui/**"],
     rules: {
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-unused-vars": "warn",
-      "@next/next/no-img-element": "warn",
-      "@next/next/no-page-custom-font": "off",
-      "react/no-unescaped-entities": "off",
-      "react-hooks/exhaustive-deps": "warn",
-    }
-  }
-];
+      "no-restricted-syntax": [
+        "warn",
+        {
+          selector: "JSXOpeningElement[name.name='button']",
+          message: "استخدم <Button> من @/components/ui/button",
+        },
+        {
+          selector: "JSXOpeningElement[name.name='input']",
+          message: "استخدم <Input> من @/components/ui/input",
+        },
+            { selector: "Literal[value=/^#([0-9a-fA-F]{3}){1,2}$/]", message: "HEX colors are FORBIDDEN. Use semantic tokens." },
 
-export default eslintConfig;
+      ],
+    },
+  },
+];
