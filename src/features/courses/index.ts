@@ -41,8 +41,9 @@ export * from "./components/CourseCard";
 export * from "./components/CourseCardSkeleton";
 export { default as CourseLevelBadge } from "./components/CourseLevelBadge";
 export { default as StarRating } from "./components/StarRating";
-export * from "./components/courseLevel";
-export * from "./components/courseLinks";
+/* ─── Utilities ─────────────────────────────────────────── */
+export * from "./utils/courseLevel";
+export * from "./utils/courseLinks";
 export * from "./components/catalog/CoursesHero";
 export * from "./components/catalog/CourseLevelFilters";
 export * from "./components/catalog/CoursesEmptyState";

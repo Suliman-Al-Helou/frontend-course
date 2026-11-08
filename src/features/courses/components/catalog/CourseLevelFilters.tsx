@@ -2,7 +2,7 @@
 
 import { Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { LEVELS, LEVEL_LABELS } from "../courseLevel";
+import { LEVELS, LEVEL_LABELS } from "../../utils/courseLevel";
 
 export interface CourseLevelFiltersProps {
   level: string;
@@ -45,3 +45,4 @@ export function CourseLevelFilters({
     </nav>
   );
 }
+
