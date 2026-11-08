@@ -11,3 +11,4 @@ export function getCourseLinks(course: Course, isEnrolled: boolean, isAuthentica
     ctaLabel: isEnrolled ? "متابعة التعلم" : "عرض الكورس",
   };
 }
+
