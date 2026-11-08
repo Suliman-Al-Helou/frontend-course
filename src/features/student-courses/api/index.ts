@@ -58,3 +58,4 @@ export async function submitLessonTask(
   const { data } = await api.post<TaskResult>(`/lessons/${lessonId}/task`, { answers });
   return data;
 }
+

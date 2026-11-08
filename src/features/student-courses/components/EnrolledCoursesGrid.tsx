@@ -84,3 +84,4 @@ export function EnrolledCoursesGrid({ initialEnrollments }: EnrolledCoursesGridP
     </div>
   );
 }
+

@@ -65,3 +65,4 @@ src/features/student-courses/
 4. **DOUBLE-SUBMIT CONCURRENCY LOCK:** Any mutation or task submission MUST employ a `useRef` lock (`isSubmittingRef`) to reject duplicate rapid submissions.
 5. **A11Y & MOTION SAFETY:** All accordions MUST declare `aria-expanded` and `aria-controls`. Animations MUST respect `prefers-reduced-motion`. All interactive elements MUST meet `>= 44x44px` touch targets.
 6. **ZERO LINGERING BRIDGES:** Delete old unused files immediately upon migration (`EnrolledCourses.tsx`, `UseMyEnrolledCourses.ts`).
+

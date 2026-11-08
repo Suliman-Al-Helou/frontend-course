@@ -224,3 +224,4 @@ export function TaskSection({ task, lessonId, onPassed }: TaskSectionProps) {
     </div>
   );
 }
+
