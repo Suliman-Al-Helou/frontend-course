@@ -14,10 +14,7 @@ export default function StudentContactPage() {
           واجهت مشكلة في كورس أو فيديو؟ راسلنا وسنساعدك. {/* TODO: translate */}
         </p>
       </div>
-      <ContactPanel
-        key={user?.email}
-        initial={{ name: user?.name, email: user?.email }}
-      />
+      <ContactPanel key={user?.email} initial={{ name: user?.name, email: user?.email }} />
     </div>
   );
 }
