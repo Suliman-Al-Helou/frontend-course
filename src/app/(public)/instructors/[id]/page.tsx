@@ -5,9 +5,17 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import {
-  Star, Users, BookOpen, Clock, Award,
-  Twitter, Linkedin, Youtube, CheckCircle,
-  Loader2, MessageSquare,
+  Star,
+  Users,
+  BookOpen,
+  Clock,
+  Award,
+  Twitter,
+  Linkedin,
+  Youtube,
+  CheckCircle,
+  Loader2,
+  MessageSquare,
 } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
@@ -98,11 +106,11 @@ export default function InstructorProfile() {
   const studentsCount = instructor.students_count ?? 0;
 
   const stats = [
-    { icon: Users,         label: "إجمالي الطلاب", value: fmt(studentsCount) },
-    { icon: BookOpen,      label: "عدد الكورسات",  value: instructor.courses?.length ?? 0 },
-    { icon: Star,          label: "متوسط التقييم", value: rating.toFixed(1) },
+    { icon: Users, label: "إجمالي الطلاب", value: fmt(studentsCount) },
+    { icon: BookOpen, label: "عدد الكورسات", value: instructor.courses?.length ?? 0 },
+    { icon: Star, label: "متوسط التقييم", value: rating.toFixed(1) },
     { icon: MessageSquare, label: "عدد التقييمات", value: fmt(totalReviews) },
-    { icon: Award,         label: "سنوات الخبرة",  value: instructor.years_experience ?? 0 },
+    { icon: Award, label: "سنوات الخبرة", value: instructor.years_experience ?? 0 },
   ];
 
   return (
@@ -136,9 +144,15 @@ export default function InstructorProfile() {
               />
 
               <div className="flex-1 sm:pb-2 relative z-10">
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                >
                   <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <h1 className="text-2xl sm:text-3xl font-bold text-foreground">{instructor.name}</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
+                      {instructor.name}
+                    </h1>
                     <span className="bg-primary/10 text-primary text-xs font-semibold px-3 py-1 rounded-full">
                       مدرب معتمد
                     </span>
@@ -177,20 +191,32 @@ export default function InstructorProfile() {
               {/* Social links */}
               <div className="flex items-center gap-2 sm:pb-2 relative z-10">
                 {instructor.twitter && (
-                  <a href={instructor.twitter} target="_blank" rel="noreferrer"
-                    className="w-9 h-9 rounded-xl bg-muted hover:bg-primary/10 flex items-center justify-center transition-colors">
+                  <a
+                    href={instructor.twitter}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-9 h-9 rounded-xl bg-muted hover:bg-primary/10 flex items-center justify-center transition-colors"
+                  >
                     <Twitter className="w-4 h-4 text-foreground" />
                   </a>
                 )}
                 {instructor.linkedin && (
-                  <a href={instructor.linkedin} target="_blank" rel="noreferrer"
-                    className="w-9 h-9 rounded-xl bg-muted hover:bg-primary/10 flex items-center justify-center transition-colors">
+                  <a
+                    href={instructor.linkedin}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-9 h-9 rounded-xl bg-muted hover:bg-primary/10 flex items-center justify-center transition-colors"
+                  >
                     <Linkedin className="w-4 h-4 text-foreground" />
                   </a>
                 )}
                 {instructor.youtube && (
-                  <a href={instructor.youtube} target="_blank" rel="noreferrer"
-                    className="w-9 h-9 rounded-xl bg-muted hover:bg-primary/10 flex items-center justify-center transition-colors">
+                  <a
+                    href={instructor.youtube}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-9 h-9 rounded-xl bg-muted hover:bg-primary/10 flex items-center justify-center transition-colors"
+                  >
                     <Youtube className="w-4 h-4 text-foreground" />
                   </a>
                 )}
@@ -203,32 +229,47 @@ export default function InstructorProfile() {
       {/* Content */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="grid lg:grid-cols-3 gap-10">
-
           {/* Sidebar */}
           <div className="space-y-6">
             {instructor.bio && (
-              <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
-                className="bg-card border border-border rounded-2xl p-6">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="bg-card border border-border rounded-2xl p-6"
+              >
                 <h2 className="text-base font-bold text-foreground mb-3">عن المدرب</h2>
                 <p className="text-sm text-muted-foreground leading-relaxed">{instructor.bio}</p>
               </motion.div>
             )}
 
             {specs.length > 0 && (
-              <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}
-                className="bg-card border border-border rounded-2xl p-6">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1 }}
+                className="bg-card border border-border rounded-2xl p-6"
+              >
                 <h2 className="text-base font-bold text-foreground mb-3">التخصصات</h2>
                 <div className="flex flex-wrap gap-2">
-                  {specs.map(s => (
-                    <span key={s} className="bg-primary/10 text-primary text-xs font-medium px-3 py-1.5 rounded-xl">{s}</span>
+                  {specs.map((s) => (
+                    <span
+                      key={s}
+                      className="bg-primary/10 text-primary text-xs font-medium px-3 py-1.5 rounded-xl"
+                    >
+                      {s}
+                    </span>
                   ))}
                 </div>
               </motion.div>
             )}
 
             {instructor.achievements && instructor.achievements.length > 0 && (
-              <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }}
-                className="bg-card border border-border rounded-2xl p-6">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.15 }}
+                className="bg-card border border-border rounded-2xl p-6"
+              >
                 <h2 className="text-base font-bold text-foreground mb-3">الإنجازات</h2>
                 <ul className="space-y-2.5">
                   {instructor.achievements.map((a, i) => (
@@ -242,12 +283,19 @@ export default function InstructorProfile() {
             )}
 
             {/* Stats card */}
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}
-              className="bg-primary rounded-2xl p-6 text-white">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="bg-primary rounded-2xl p-6 text-white"
+            >
               <h2 className="text-base font-bold mb-4">إحصائيات</h2>
               <div className="grid grid-cols-2 gap-3">
                 {stats.map((stat, i) => (
-                  <div key={i} className={`bg-white/10 rounded-xl p-3 text-center ${i === stats.length - 1 && stats.length % 2 !== 0 ? 'col-span-2' : ''}`}>
+                  <div
+                    key={i}
+                    className={`bg-white/10 rounded-xl p-3 text-center ${i === stats.length - 1 && stats.length % 2 !== 0 ? "col-span-2" : ""}`}
+                  >
                     <stat.icon className="w-5 h-5 text-white/70 mx-auto mb-1" />
                     <p className="text-lg font-bold text-white">{stat.value}</p>
                     <p className="text-white/60 text-xs">{stat.label}</p>
@@ -259,7 +307,11 @@ export default function InstructorProfile() {
 
           {/* Courses */}
           <div className="lg:col-span-2">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 }}
+            >
               <h2 className="text-xl font-bold text-foreground mb-5">
                 كورسات المدرب ({instructor.courses?.length ?? 0})
               </h2>
@@ -272,21 +324,30 @@ export default function InstructorProfile() {
               ) : (
                 <div className="space-y-5">
                   {instructor.courses.map((course, i) => (
-                    <motion.div key={course.id}
-                      initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}>
+                    <motion.div
+                      key={course.id}
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.08 }}
+                    >
                       <Link href={`/courses/${course.id}`} className="group block">
-                      <div className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg hover:shadow-primary/10 transition-all sm:h-40">
+                        <div className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg hover:shadow-primary/10 transition-all sm:h-40">
                           <div className="flex flex-col sm:flex-row">
                             <div className="relative sm:w-52 sm:h-40 h-40 flex-shrink-0 overflow-hidden">
                               {course.cover_image ? (
-                                <img src={course.cover_image} alt={course.title}
-                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                <img
+                                  src={course.cover_image}
+                                  alt={course.title}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                />
                               ) : (
                                 <div className="w-full h-full bg-primary/10 flex items-center justify-center">
                                   <BookOpen className="w-10 h-10 text-primary/40" />
                                 </div>
                               )}
-                              <div className={`absolute bottom-3 right-3 text-xs font-semibold px-2.5 py-1 rounded-full ${LEVEL_COLOR[course.level] ?? "bg-muted text-muted-foreground"}`}>
+                              <div
+                                className={`absolute bottom-3 right-3 text-xs font-semibold px-2.5 py-1 rounded-full ${LEVEL_COLOR[course.level] ?? "bg-muted text-muted-foreground"}`}
+                              >
                                 {LEVEL_LABEL[course.level] ?? course.level}
                               </div>
                             </div>

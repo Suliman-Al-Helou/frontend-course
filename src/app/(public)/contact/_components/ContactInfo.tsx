@@ -5,9 +5,7 @@ import { MessageCircle, Mail, Clock } from "lucide-react";
 export function ContactInfo() {
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-blue-deep dark:text-foreground">
-        تواصل معنا مباشرة
-      </h2>
+      <h2 className="text-2xl font-bold text-blue-deep dark:text-foreground">تواصل معنا مباشرة</h2>
       <a
         href="https://wa.me/972592877251"
         target="_blank"
@@ -19,9 +17,7 @@ export function ContactInfo() {
         </div>
         <div>
           <p className="font-bold text-green-800 dark:text-green-400">واتساب</p>
-          <p className="text-green-700 dark:text-green-500 text-sm">
-            ردّ فوري خلال دقائق
-          </p>
+          <p className="text-green-700 dark:text-green-500 text-sm">ردّ فوري خلال دقائق</p>
           <p className="text-green-600 dark:text-green-500 text-sm font-mono mt-1">
             +972 59 287 7251
           </p>
@@ -36,12 +32,8 @@ export function ContactInfo() {
           <Mail className="w-6 h-6 text-white" />
         </div>
         <div>
-          <p className="font-bold text-blue-deep dark:text-foreground">
-            البريد الإلكتروني
-          </p>
-          <p className="text-muted-foreground text-sm">
-            sulimanalhellou@gmail.com
-          </p>
+          <p className="font-bold text-blue-deep dark:text-foreground">البريد الإلكتروني</p>
+          <p className="text-muted-foreground text-sm">sulimanalhellou@gmail.com</p>
         </div>
       </a>
 
@@ -51,12 +43,8 @@ export function ContactInfo() {
         </div>
         <div>
           <p className="font-bold text-foreground">ساعات الدعم</p>
-          <p className="text-muted-foreground text-sm">
-            الأحد — الخميس: ٩ ص – ١١ م
-          </p>
-          <p className="text-muted-foreground text-sm">
-            متوسط وقت الرد: أقل من ساعة
-          </p>
+          <p className="text-muted-foreground text-sm">الأحد — الخميس: ٩ ص – ١١ م</p>
+          <p className="text-muted-foreground text-sm">متوسط وقت الرد: أقل من ساعة</p>
         </div>
       </div>
     </div>

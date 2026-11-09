@@ -1,10 +1,10 @@
 // src/app/(public)/contact/page.tsx
-'use client';
-import { motion } from 'framer-motion';
-import Navbar  from '@/components/landing/Navbar';
-import Footer  from '@/components/landing/Footer';
-import { ContactInfo } from '@/app/(public)/contact/_components/ContactInfo';
-import { ContactForm }  from '@/app/(public)/contact/_components/ContactForm';
+"use client";
+import { motion } from "framer-motion";
+import Navbar from "@/components/landing/Navbar";
+import Footer from "@/components/landing/Footer";
+import { ContactInfo } from "@/app/(public)/contact/_components/ContactInfo";
+import { ContactForm } from "@/app/(public)/contact/_components/ContactForm";
 // import { ContactFAQ }   from '@/app/(public)/contact/_components/ContactFAQ';
 
 // export const metadata = {
@@ -20,9 +20,7 @@ export default function ContactPage() {
       {/* Hero */}
       <div className="bg-gradient-to-br from-blue-deep to-blue-mid pt-28 pb-16 px-4 text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
-            كيف يمكننا مساعدتك؟
-          </h1>
+          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">كيف يمكننا مساعدتك؟</h1>
           <p className="text-white/70 text-lg">فريقنا جاهز للرد على جميع استفساراتك</p>
         </motion.div>
       </div>
@@ -33,7 +31,6 @@ export default function ContactPage() {
           <ContactInfo />
           <ContactForm />
         </div>
-
       </div>
 
       <Footer />

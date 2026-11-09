@@ -3,7 +3,12 @@ import { SUPPORT_EMAIL, WHATSAPP_DISPLAY, WHATSAPP_URL } from "@/lib/contact";
 import ContactForm from "./ContactForm";
 
 function Channel({
-  href, icon: Icon, title, value, tone, external,
+  href,
+  icon: Icon,
+  title,
+  value,
+  tone,
+  external,
 }: {
   href: string;
   icon: typeof Mail;
@@ -31,11 +36,7 @@ function Channel({
   );
 }
 
-export default function ContactPanel({
-  initial,
-}: {
-  initial?: { name?: string; email?: string };
-}) {
+export default function ContactPanel({ initial }: { initial?: { name?: string; email?: string } }) {
   return (
     <div className="grid gap-8 lg:grid-cols-2">
       <div className="space-y-4">
