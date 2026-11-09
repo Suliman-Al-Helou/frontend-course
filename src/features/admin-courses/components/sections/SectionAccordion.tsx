@@ -60,7 +60,7 @@ export default function SectionAccordion({
       await onCreateLesson({
         title: lessonTitle.trim(),
         video_id: cleanVideoId,
-        duration: parseInt(lessonDuration, 10) || 0,
+        duration: Number.parseInt(lessonDuration, 10) || 0,
         order: section.lessons.length,
         is_preview: lessonPreview,
       });

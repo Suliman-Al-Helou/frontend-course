@@ -50,7 +50,7 @@ export default function CoursePricingMediaFields({
             step="0.1"
             dir="ltr"
             value={rating}
-            onChange={(e) => onRatingChange(parseFloat(e.target.value) || 0)}
+            onChange={(e) => onRatingChange(Number.parseFloat(e.target.value) || 0)}
             className="w-full h-11 rounded-xl border border-input bg-background px-3.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-right"
           />
         </div>
@@ -68,7 +68,7 @@ export default function CoursePricingMediaFields({
               dir="ltr"
               disabled={isPublic}
               value={price}
-              onChange={(e) => onPriceChange(Math.max(0, parseFloat(e.target.value) || 0))}
+              onChange={(e) => onPriceChange(Math.max(0, Number.parseFloat(e.target.value) || 0))}
               className="w-full h-11 rounded-xl border border-input bg-background pl-8 pr-3.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-right disabled:opacity-60 disabled:bg-muted/50 disabled:cursor-not-allowed"
             />
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm font-bold">
@@ -102,7 +102,7 @@ export default function CoursePricingMediaFields({
           dir="ltr"
           value={Math.round(totalDuration / 60)}
           onChange={(e) =>
-            onDurationChange(Math.max(0, parseInt(e.target.value, 10) || 0) * 60)
+            onDurationChange(Math.max(0, Number.parseInt(e.target.value, 10) || 0) * 60)
           }
           className="w-full h-11 rounded-xl border border-input bg-background px-3.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-right"
         />
@@ -170,8 +170,12 @@ export default function CoursePricingMediaFields({
 
       {/* خيارات الأكثر طلباً ومجاني */}
       <div className="grid sm:grid-cols-2 gap-3 pt-1">
-        <label className="flex items-center gap-3 p-3.5 bg-muted/30 border border-border/60 rounded-xl cursor-pointer hover:bg-muted/50 hover:border-border transition-all select-none">
+        <label
+          htmlFor="course-is-popular"
+          className="flex items-center gap-3 p-3.5 bg-muted/30 border border-border/60 rounded-xl cursor-pointer hover:bg-muted/50 hover:border-border transition-all select-none"
+        >
           <input
+            id="course-is-popular"
             type="checkbox"
             checked={isPopular}
             onChange={(e) => onIsPopularChange(e.target.checked)}
@@ -183,8 +187,12 @@ export default function CoursePricingMediaFields({
           </div>
         </label>
 
-        <label className="flex items-center gap-3 p-3.5 bg-muted/30 border border-border/60 rounded-xl cursor-pointer hover:bg-muted/50 hover:border-border transition-all select-none">
+        <label
+          htmlFor="course-is-public"
+          className="flex items-center gap-3 p-3.5 bg-muted/30 border border-border/60 rounded-xl cursor-pointer hover:bg-muted/50 hover:border-border transition-all select-none"
+        >
           <input
+            id="course-is-public"
             type="checkbox"
             checked={isPublic}
             onChange={(e) => {

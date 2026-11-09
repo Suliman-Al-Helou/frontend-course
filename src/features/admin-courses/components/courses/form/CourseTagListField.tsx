@@ -30,7 +30,7 @@ export default function CourseTagListField({
     // دعم لصق عناصر متعددة مفصولة بأسطر جديدة أو فواصل
     const newItems = trimmed
       .split(/[\n,]/)
-      .map((s) => s.trim().replace(/^[-•*✓📌🎯]\s*/, ""))
+      .map((s) => s.trim().replace(/^[-•*✓📌🎯]\s*/u, ""))
       .filter((s) => s.length > 0 && !items.includes(s));
 
     if (newItems.length > 0) {

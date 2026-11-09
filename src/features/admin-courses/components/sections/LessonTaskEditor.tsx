@@ -141,29 +141,31 @@ export default function LessonTaskEditor({ lessonId, lessonTitle, onClose }: Pro
           {/* Settings */}
           <div className="grid sm:grid-cols-2 gap-4 bg-card p-4 rounded-xl border border-border">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-foreground">
+              <label htmlFor="task-pass-percentage" className="text-xs font-semibold text-foreground">
                 نسبة النجاح المطلوبة (%)
               </label>
               <input
+                id="task-pass-percentage"
                 type="number"
                 min="10"
                 max="100"
                 value={passPercentage}
-                onChange={(e) => setPassPercentage(parseInt(e.target.value, 10) || 70)}
+                onChange={(e) => setPassPercentage(Number.parseInt(e.target.value, 10) || 70)}
                 className="w-full h-9 rounded-lg border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-foreground">
+              <label htmlFor="task-max-attempts" className="text-xs font-semibold text-foreground">
                 الحد الأقصى للمحاولات
               </label>
               <input
+                id="task-max-attempts"
                 type="number"
                 min="1"
                 max="10"
                 value={maxAttempts}
-                onChange={(e) => setMaxAttempts(parseInt(e.target.value, 10) || 3)}
+                onChange={(e) => setMaxAttempts(Number.parseInt(e.target.value, 10) || 3)}
                 className="w-full h-9 rounded-lg border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
               />
             </div>

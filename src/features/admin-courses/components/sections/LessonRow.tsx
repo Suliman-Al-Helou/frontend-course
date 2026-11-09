@@ -45,7 +45,7 @@ export default function LessonRow({ lesson, onUpdate, onDelete }: Props) {
       await onUpdate({
         title: editTitle.trim(),
         video_id: cleanVideoId || null,
-        duration: parseInt(editDuration, 10) || 0,
+        duration: Number.parseInt(editDuration, 10) || 0,
         is_preview: editPreview,
       });
       setIsEditing(false);
