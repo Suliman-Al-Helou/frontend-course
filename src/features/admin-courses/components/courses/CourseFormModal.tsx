@@ -107,13 +107,18 @@ export default function CourseFormModal({ course, isOpen, onClose }: Props) {
 
     isSubmittingRef.current = true;
     try {
+      const submitPayload: CourseFormData = {
+        ...form,
+        price: form.is_public ? 0 : form.price,
+      };
+
       if (isEdit && course?.id) {
         await updateMutation.mutateAsync({
           id: course.id,
-          data: form,
+          data: submitPayload,
         });
       } else {
-        await createMutation.mutateAsync(form);
+        await createMutation.mutateAsync(submitPayload);
       }
       onClose();
     } catch (err: unknown) {
@@ -258,7 +263,12 @@ export default function CourseFormModal({ course, isOpen, onClose }: Props) {
                 onDurationChange={(v) => setField("total_duration", v)}
                 onCoverImageChange={(v) => setField("cover_image", v)}
                 onIsPopularChange={(v) => setField("is_popular", v)}
-                onIsPublicChange={(v) => setField("is_public", v)}
+                onIsPublicChange={(v) => {
+                  setField("is_public", v);
+                  if (v) {
+                    setField("price", 0);
+                  }
+                }}
               />
             </div>
           )}

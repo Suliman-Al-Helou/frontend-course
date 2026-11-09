@@ -66,14 +66,20 @@ export default function CoursePricingMediaFields({
               min="0"
               step="0.01"
               dir="ltr"
+              disabled={isPublic}
               value={price}
               onChange={(e) => onPriceChange(Math.max(0, parseFloat(e.target.value) || 0))}
-              className="w-full h-11 rounded-xl border border-input bg-background pl-8 pr-3.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-right"
+              className="w-full h-11 rounded-xl border border-input bg-background pl-8 pr-3.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-right disabled:opacity-60 disabled:bg-muted/50 disabled:cursor-not-allowed"
             />
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm font-bold">
               $
             </span>
           </div>
+          {isPublic && (
+            <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+              هذا الكورس مجاني ومتاح للعامة، السعر مقفل على 0$
+            </p>
+          )}
         </div>
       </div>
 
@@ -181,7 +187,13 @@ export default function CoursePricingMediaFields({
           <input
             type="checkbox"
             checked={isPublic}
-            onChange={(e) => onIsPublicChange(e.target.checked)}
+            onChange={(e) => {
+              const checked = e.target.checked;
+              onIsPublicChange(checked);
+              if (checked) {
+                onPriceChange(0);
+              }
+            }}
             className="w-5 h-5 rounded text-primary focus:ring-primary/20"
           />
           <div>
@@ -193,3 +205,4 @@ export default function CoursePricingMediaFields({
     </div>
   );
 }
+
