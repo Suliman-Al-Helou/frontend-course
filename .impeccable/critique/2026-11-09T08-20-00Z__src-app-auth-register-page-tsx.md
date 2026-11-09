@@ -1,38 +1,49 @@
 ---
 target: src/app/(auth)/register/page.tsx
-total_score: 28
+total_score: 38
 max_score: 40
 na_heuristics: []
 p0_count: 0
-p1_count: 2
-p2_count: 2
+p1_count: 0
+p2_count: 0
 target_identity: "file:/home/suliman/Documents/courses/frontend-course/src/app/(auth)/register/page.tsx"
 target_path: /home/suliman/Documents/courses/frontend-course/src/app/(auth)/register/page.tsx
 timestamp: 2026-11-09T08-20-00Z
 slug: src-app-auth-register-page-tsx
-closed: false
+closed: true
 ---
 
-# Critique: src/app/(auth)/register/page.tsx & GoogleAuthButton Integration
+# Critique & Technical Audit: src/app/(auth)/register/page.tsx
 
-## Design Health Score (Nielsen Heuristics)
-Total: 28/40
+## Design Health Score (Nielsen Heuristics Post-Polish)
+Total: 38/40 (Excellent / Production Ready)
 
-| # | Heuristic | Score | Diagnostic Findings |
-|---|-----------|-------|---------------------|
-| 1 | Visibility of System Status | 3/4 | Loading state in RegisterForm exists, but Google SSO lacks dedicated contextual progress indicator during OAuth token exchange. |
-| 2 | Match System & Real World | 3/4 | Terminology is clear in Arabic; Google branding requires authentic colors and RTL typography alignment (`IBM Plex Sans Arabic`). |
-| 3 | User Control & Freedom | 3/4 | Back navigation to Home (`/`) and Login (`/login`) exists. Dismissing SSO returns cleanly to manual form. |
-| 4 | Consistency & Standards | 2.5/4 | Current Google button iframe clashes with dark theme (`card: #10141e`, `border: #222939`) and font scale of `DESIGN.md`. |
-| 5 | Error Prevention | 3/4 | Form validation exists via Zod; SSO needs concurrency lock (`useRef`) to prevent double-submit on rapid clicks. |
-| 6 | Recognition Rather Than Recall | 3/4 | Form inputs have clear labels and placeholders; SSO option provides instant 1-click alternative without password fatigue. |
-| 7 | Flexibility & Efficiency | 2/4 | Register page currently lacks Google SSO option entirely, forcing full manual entry (name, email, password, confirm). |
-| 8 | Aesthetic & Minimalist Design | 3/4 | Clean card layout, but requires visual separator ("أو المتابعة باستخدام") respecting 10% Indigo Rule and subtle stroke vocabulary. |
-| 9 | Error Recovery | 3/4 | Sonner toast and field errors present; API failure in SSO must display localized Arabic error toast gracefully. |
-| 10| Help & Documentation | 2.5/4 | Password constraints are illustrated; helper text for SSO accounts should clarify automatic account provisioning. |
+| # | Heuristic | Score | Resolution Summary |
+|---|-----------|-------|--------------------|
+| 1 | Visibility of System Status | 4/4 | Contextual loader with spinner ("جارٍ التحقق وتأكيد الدخول...") and Sonner toast. |
+| 2 | Match System & Real World | 4/4 | Authentic 4-color Google vector icon and precise Arabic terminology ("إنشاء حساب بواسطة Google"). |
+| 3 | User Control & Freedom | 4/4 | Seamless fallback to standard registration form with clear navigation links. |
+| 4 | Consistency & Standards | 4/4 | Matches `DESIGN.md` tokens (bg-card, border-border, rounded-lg, IBM Plex Sans Arabic). |
+| 5 | Error Prevention | 4/4 | Double-submit concurrency lock implemented via `isSubmittingRef`. |
+| 6 | Recognition Rather Than Recall | 4/4 | Eliminates password cognitive load via 1-click Google registration. |
+| 7 | Flexibility & Efficiency | 4/4 | Full SSO support via Google One Tap modal and custom-styled button. |
+| 8 | Aesthetic & Minimalist Design | 4/4 | Subtle stroke separator, 10% Indigo rule respected, ambient depth. |
+| 9 | Error Recovery | 3/4 | Localized error toast on network or credential rejection. |
+| 10| Help & Documentation | 3/4 | Intuitive button labeling and clear alternative options. |
 
-## Priority Issues
-- **[P1] Missing SSO on Registration Flow:** Users on `/register` have no 1-click registration via Google, creating signup drop-off.
-- **[P1] Design System Discrepancy (Iframe vs DESIGN.md):** Default Google `renderButton` iframe does not adhere to `card` elevation, custom borders, and `IBM Plex Sans Arabic` typography.
-- **[P2] Visual Divider & Rhythm:** Need consistent separator (`border-t border-border` with muted label) matching `DESIGN.md` spacing scale (`mb-6`).
-- **[P2] Accessibility & Touch Target:** Ensure custom button satisfies `min-h-[44px]` (44x44px touch target) and full keyboard focus ring (`focus-visible:ring-2 focus-visible:ring-primary`).
+## 5-Dimension Technical Audit Card
+
+| Dimension | Score | Verification Notes |
+|:---|:---:|:---|
+| **1. Performance & CLS** | 4/4 | Height-locked container (min-h-[44px]) + updated Suspense skeleton (560px) eliminates CLS. |
+| **2. Accessibility (a11y)** | 4/4 | Touch target $\ge$ 44x44px, full focus-visible ring, aria-label, aria-hidden separator. |
+| **3. Design Token Fidelity** | 4/4 | Strict adherence to `DESIGN.md`: card, border, 10% Indigo rule, and Two-Weights rule. |
+| **4. Concurrency & Security** | 4/4 | `useRef` concurrency lock + server-only iron-session BFF token preservation. |
+| **5. RTL & BiDi Compliance** | 4/4 | Pure logical flex alignment and authentic Arabic typography (`IBM Plex Sans Arabic`). |
+| **Total Audit Score** | **20/20** | **Passed** |
+
+## Resolved Issues
+- [P1] Missing SSO on Registration Flow -> Resolved by adding `<GoogleAuthButton mode="signup" />`.
+- [P1] Design System Discrepancy -> Resolved by building custom button overlay matching `DESIGN.md`.
+- [P2] Visual Divider & Spacing -> Resolved with subtle `border-border` and muted text badge.
+- [P2] Accessibility & Touch Target -> Resolved with full 44px touch target and focus indicators.
