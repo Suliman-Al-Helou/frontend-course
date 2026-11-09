@@ -75,7 +75,7 @@ export default function RegisterPage() {
             <p className="text-muted-foreground mt-1 text-sm">انضم مجاناً وابدأ مسارك البرمجي اليوم</p>
           </div>
 
-          <Suspense fallback={<div className="h-[480px] animate-pulse bg-card rounded-2xl border border-border" />}>
+          <Suspense fallback={<div className="h-[560px] animate-pulse bg-card rounded-2xl border border-border" />}>
             <RegisterContent />
           </Suspense>
 
