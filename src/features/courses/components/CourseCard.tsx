@@ -43,7 +43,7 @@ export default function CourseCard({
       whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{
-        duration: 0.3,
+        // duration: 0.3,
         delay: shouldReduceMotion ? 0 : Math.min(index * 0.05, 0.3),
       }}
       className="group flex flex-col gap-4 rounded-xl border border-border bg-card p-3.5 shadow-sm hover:shadow-md hover:border-primary/40 transition-all duration-300"

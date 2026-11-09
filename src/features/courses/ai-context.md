@@ -53,7 +53,7 @@ src/features/courses/
 
 ## Data Contracts (Backend Source of Truth)
 
-- `GET /courses` → `Course[] | { data: Course[] }`: Returns active public courses.
+- `GET /courses?limit={n}&level={level}` → `Course[] | { data: Course[] }`: Returns active public courses with optional limit (e.g. limit=3 for landing page) and level filtering.
 - `GET /courses/{id}` → `Course & { sections?: unknown[] }`: Returns course syllabus, sections, lessons.
 - `GET /courses/{id}/enrollment` → `{ status: "pending" | "approved" | "rejected" }`: Current user enrollment status.
 - `POST /courses/{id}/enroll` → Sends course enrollment request to backend.

@@ -1,17 +1,18 @@
 import "server-only";
 import { QueryClient, dehydrate, type DehydratedState } from "@tanstack/react-query";
 import { courseQueries } from "../queries/courses.queries";
+import type { GetCoursesParams } from "../api/getCourses";
 
 // ميزانية مهلة السيرفر لمنع حجب الرندرة في حال بطء الباك إند
 const PREFETCH_BUDGET_MS = 1500;
 
 /**
- * جلب كاش الكورسات مسبقاً في السيرفر (RSC Prefetching)
+ * جلب كاش الكورسات مسبقاً في السيرفر (RSC Prefetching) مع دعم المعاملات الاختيارية
  */
-export async function getDehydratedCourses(): Promise<DehydratedState> {
+export async function getDehydratedCourses(params?: GetCoursesParams): Promise<DehydratedState> {
   const queryClient = new QueryClient();
 
-  const prefetch = queryClient.prefetchQuery(courseQueries.list());
+  const prefetch = queryClient.prefetchQuery(courseQueries.list(params));
   const budget = new Promise<void>((resolve) => setTimeout(resolve, PREFETCH_BUDGET_MS));
 
   await Promise.race([prefetch, budget]).catch(() => {});
