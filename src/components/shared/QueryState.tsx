@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import type { ReactNode } from 'react';
-import Link from 'next/link';
-import type { UseQueryResult } from '@tanstack/react-query';
-import { Button } from '@/components/ui/button';
-import { ERROR_CODES } from '@/lib/errors/codes';
-import { mapApiError } from '@/lib/errors/mapApiError';
-import { ERROR_MESSAGES_AR } from '@/lib/errors/messages';
-import { EmptyState } from './states/EmptyState';
-import { ErrorState } from './states/ErrorState';
-import { NotFoundState } from './states/NotFoundState';
+import type { ReactNode } from "react";
+import Link from "next/link";
+import type { UseQueryResult } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { ERROR_CODES } from "@/lib/errors/codes";
+import { mapApiError } from "@/lib/errors/mapApiError";
+import { ERROR_MESSAGES_AR } from "@/lib/errors/messages";
+import { EmptyState } from "./states/EmptyState";
+import { ErrorState } from "./states/ErrorState";
+import { NotFoundState } from "./states/NotFoundState";
 
 /* ───────────────────────── QueryState.tsx ─────────────────────────
    مهمة الملف: يقرر "شو نعرض" لأي query من TanStack Query، بمكان واحد:
@@ -57,7 +57,13 @@ export function QueryState<T>({ query, skeleton, isEmpty, empty, children }: Que
       );
     }
 
-    return <ErrorState message={error.message} onRetry={() => void query.refetch()} retrying={query.isFetching} />;
+    return (
+      <ErrorState
+        message={error.message}
+        onRetry={() => void query.refetch()}
+        retrying={query.isFetching}
+      />
+    );
   }
 
   const data = query.data as T;

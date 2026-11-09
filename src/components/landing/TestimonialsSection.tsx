@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
 // 1. Imports
-import { motion } from 'framer-motion';
-import { Star, Quote } from 'lucide-react';
-import Image from 'next/image';
+import { motion } from "framer-motion";
+import { Star, Quote } from "lucide-react";
+import Image from "next/image";
 // 2. Types & Data
 interface Testimonial {
   name: string;
@@ -15,25 +15,25 @@ interface Testimonial {
 
 const TESTIMONIALS: Testimonial[] = [
   {
-    name:   'عبد الرحمن ابو العيس',
-    role:   'مطور Frontend — وظّفه بعد ٦ أشهر',
+    name: "عبد الرحمن ابو العيس",
+    role: "مطور Frontend — وظّفه بعد ٦ أشهر",
     // avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face',
     rating: 5,
-    text:   'كنت أبحث عن منصة تُعلّم البرمجة بالعربية بشكل جاد. وجدت ما أريد هنا. الكورسات منظمة، والاختبارات تُثبّت المعلومة، والمدربون يردون على كل سؤال.',
+    text: "كنت أبحث عن منصة تُعلّم البرمجة بالعربية بشكل جاد. وجدت ما أريد هنا. الكورسات منظمة، والاختبارات تُثبّت المعلومة، والمدربون يردون على كل سؤال.",
   },
   {
-    name:   'راوية مشتهى',
-    role:   'مهندسة بيانات — انتقلت من المحاسبة',
+    name: "راوية مشتهى",
+    role: "مهندسة بيانات — انتقلت من المحاسبة",
     // avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face',
     rating: 5,
-    text:   'تغيير مساري المهني بدا مستحيلاً حتى وجدت المنصة. بعد سنة كاملة من التعلم المنتظم، أعمل الآن كمهندسة بيانات. الشهادة ساعدتني كثيراً في المقابلات.',
+    text: "تغيير مساري المهني بدا مستحيلاً حتى وجدت المنصة. بعد سنة كاملة من التعلم المنتظم، أعمل الآن كمهندسة بيانات. الشهادة ساعدتني كثيراً في المقابلات.",
   },
   {
-    name:   'سليمان الحلو ',
-    role:   'مطور مواقع — طالب جامعي',
+    name: "سليمان الحلو ",
+    role: "مطور مواقع — طالب جامعي",
     // avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face',
     rating: 5,
-    text:   'أفضل استثمار في نفسي. الفيديوهات عالية الجودة، الشرح بالعربية الواضحة، وطريقة التقدم المحكوم جعلتني أفهم فعلاً لا مجرد أحفظ.',
+    text: "أفضل استثمار في نفسي. الفيديوهات عالية الجودة، الشرح بالعربية الواضحة، وطريقة التقدم المحكوم جعلتني أفهم فعلاً لا مجرد أحفظ.",
   },
 ];
 
@@ -83,7 +83,6 @@ export default function TestimonialsSection() {
   return (
     <section className="py-24 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -91,13 +90,8 @@ export default function TestimonialsSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            طلابنا يتحدثون
-          </h2>
-          <p className="text-muted-foreground text-lg">
-            +500 طالب وثّقوا رحلتهم معنا
-          </p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">طلابنا يتحدثون</h2>
+          <p className="text-muted-foreground text-lg">+500 طالب وثّقوا رحلتهم معنا</p>
         </motion.div>
 
         {/* Cards */}
@@ -106,7 +100,6 @@ export default function TestimonialsSection() {
             <TestimonialCard key={t.name} testimonial={t} index={i} />
           ))}
         </div>
-
       </div>
     </section>
   );

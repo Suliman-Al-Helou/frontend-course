@@ -16,15 +16,13 @@
   --destructive: #dc2828;
   --ring: #6d5ef0;
 
-  
   --destructive-foreground: #ffffff;
   --primary-hover: #5d4fe0;
 
-    --login-signup-background: #0c0f18;
-    
-  }
-  
-  .dark {
+  --login-signup-background: #0c0f18;
+}
+
+.dark {
   --login-signup-background: #0c0f18;
   --background: #0c0f18;
   --foreground: #eff2f5;
@@ -41,13 +39,9 @@
 
   --destructive-foreground: #0b111e;
   --primary-hover: #7a6aee;
-
-
 }
 
 @theme inline {
-
-
   --color-login-signup-background: var(--login-signup-background);
 
   --color-background: var(--background);
@@ -81,17 +75,16 @@
   }
 }
 
-
 @layer utilities {
- .mask-fade-left {
+  .mask-fade-left {
     mask-image: linear-gradient(to left, black 40%, transparent 90%);
     -webkit-mask-image: linear-gradient(to left, black 40%, transparent 90%);
   }
- .mask-fade-right {
+  .mask-fade-right {
     mask-image: linear-gradient(to right, black 40%, transparent 90%);
     -webkit-mask-image: linear-gradient(to right, black 40%, transparent 90%);
   }
- .mask-fade-center {
+  .mask-fade-center {
     mask-image: radial-gradient(ellipse at center, black 50%, transparent 80%);
     -webkit-mask-image: radial-gradient(ellipse at center, black 50%, transparent 80%);
   }

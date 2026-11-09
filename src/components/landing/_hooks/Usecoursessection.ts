@@ -6,9 +6,11 @@ export type CourseListItem = Course & { hot: boolean };
 
 export function useCoursesSection(): { courses: CourseListItem[]; loading: boolean } {
   const { data: courses = [], isLoading } = useQuery({
-    ...courseQueries.list(),
+    // طلب أحدث 3 كورسات فقط من الـ Backend لصفحة الهبوط مع عزل كاشها
+    ...courseQueries.list({ limit: 3 }),
+    // حماية دفاعية لضمان ألا تزيد الكروت المعروضة عن 3 أبداً حتى في الحالات الحدية
     select: (list): CourseListItem[] =>
-      list.map((course) => ({
+      list.slice(0, 3).map((course) => ({
         ...course,
         hot: course.hot ?? false,
       })),

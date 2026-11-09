@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
-import Link from 'next/link';
+import { useEffect } from "react";
+import { AlertTriangle, RefreshCw, Home } from "lucide-react";
+import Link from "next/link";
 
-export default function Error({
+export default function RootError({
   error,
   reset,
 }: {
@@ -26,9 +26,7 @@ export default function Error({
         </div>
 
         {/* Text */}
-        <h1 className="text-2xl font-bold text-foreground mb-2">
-          حدث خطأ ما
-        </h1>
+        <h1 className="text-2xl font-bold text-foreground mb-2">حدث خطأ ما</h1>
         <p className="text-muted-foreground text-sm mb-8 leading-relaxed">
           عذراً، واجهنا مشكلة غير متوقعة. يمكنك المحاولة مجدداً أو العودة للصفحة الرئيسية.
         </p>

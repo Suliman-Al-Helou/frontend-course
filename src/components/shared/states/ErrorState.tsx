@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import type { ReactNode } from 'react';
-import Link from 'next/link';
-import { AlertTriangle, Home, RefreshCw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { ERROR_CODES } from '@/lib/errors/codes';
-import { ERROR_MESSAGES_AR } from '@/lib/errors/messages';
-import { StateMessage } from './Statemessage';
+import type { ReactNode } from "react";
+import Link from "next/link";
+import { AlertTriangle, Home, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ERROR_CODES } from "@/lib/errors/codes";
+import { ERROR_MESSAGES_AR } from "@/lib/errors/messages";
+import { StateMessage } from "./Statemessage";
 
 /* ───────────────────────── ErrorState.tsx ─────────────────────────
    مهمة الملف: واجهة "فشل" (سيرفر واقع / انقطاع نت / خطأ غير متوقع).

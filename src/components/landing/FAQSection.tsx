@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, HelpCircle } from 'lucide-react';
-import api from '@/lib/api';
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown, HelpCircle } from "lucide-react";
+import api from "@/lib/api";
 
 interface FAQItem {
   q: string;
@@ -11,13 +11,34 @@ interface FAQItem {
 }
 
 const STATIC_FAQS: FAQItem[] = [
-  { q: 'هل التسجيل في المنصة مجاني؟',      a: 'نعم، التسجيل مجاني تماماً. يمكنك إنشاء حسابك والوصول للكورسات فور التسجيل.' },
-  { q: 'كيف يعمل نظام التقدم المحكوم؟',    a: 'كل درس يُفتح فقط بعد إتمام الدرس السابق — يجب مشاهدة ≥٨٠٪ من الفيديو واجتياز المهمة للانتقال للدرس التالي. هذا يضمن فهمك الحقيقي قبل المضي قدماً.' },
-  { q: 'هل يمكنني التعلم من الجوال؟',       a: 'بالتأكيد! المنصة مصممة بالكامل للموبايل وتعمل بكفاءة على جميع الأجهزة — هاتف، تابلت، أو كمبيوتر.' },
-  { q: 'ما هي الشهادات التي سأحصل عليها؟', a: 'عند إكمال أي كورس بنجاح، تحصل على شهادة إتمام رسمية من المنصة يمكن إضافتها لملفك على LinkedIn وسيرتك الذاتية.' },
-  { q: 'ماذا لو لم أفهم درساً معيناً؟',    a: 'يمكنك إعادة مشاهدة الدرس أي عدد من المرات، وطرح سؤالك في مجتمع المنصة أو التواصل مع المدرب مباشرة.' },
-  { q: 'هل يوجد ضمان استرداد الأموال؟',    a: 'نعم، نضمن استرداد كامل خلال ٧ أيام من الشراء بدون أي أسئلة أو شروط.' },
-  { q: 'كم من الوقت يستغرق إكمال الكورس؟', a: 'يعتمد على الكورس ووتيرة دراستك. معظم طلابنا يكملون الكورس بتخصيص ساعة إلى ساعتين يومياً.' },
+  {
+    q: "هل التسجيل في المنصة مجاني؟",
+    a: "نعم، التسجيل مجاني تماماً. يمكنك إنشاء حسابك والوصول للكورسات فور التسجيل.",
+  },
+  {
+    q: "كيف يعمل نظام التقدم المحكوم؟",
+    a: "كل درس يُفتح فقط بعد إتمام الدرس السابق — يجب مشاهدة ≥٨٠٪ من الفيديو واجتياز المهمة للانتقال للدرس التالي. هذا يضمن فهمك الحقيقي قبل المضي قدماً.",
+  },
+  {
+    q: "هل يمكنني التعلم من الجوال؟",
+    a: "بالتأكيد! المنصة مصممة بالكامل للموبايل وتعمل بكفاءة على جميع الأجهزة — هاتف، تابلت، أو كمبيوتر.",
+  },
+  {
+    q: "ما هي الشهادات التي سأحصل عليها؟",
+    a: "عند إكمال أي كورس بنجاح، تحصل على شهادة إتمام رسمية من المنصة يمكن إضافتها لملفك على LinkedIn وسيرتك الذاتية.",
+  },
+  {
+    q: "ماذا لو لم أفهم درساً معيناً؟",
+    a: "يمكنك إعادة مشاهدة الدرس أي عدد من المرات، وطرح سؤالك في مجتمع المنصة أو التواصل مع المدرب مباشرة.",
+  },
+  {
+    q: "هل يوجد ضمان استرداد الأموال؟",
+    a: "نعم، نضمن استرداد كامل خلال ٧ أيام من الشراء بدون أي أسئلة أو شروط.",
+  },
+  {
+    q: "كم من الوقت يستغرق إكمال الكورس؟",
+    a: "يعتمد على الكورس ووتيرة دراستك. معظم طلابنا يكملون الكورس بتخصيص ساعة إلى ساعتين يومياً.",
+  },
 ];
 
 interface FAQItemProps {
@@ -46,7 +67,9 @@ function FAQItemCard({ faq, index, isOpen, onToggle }: FAQItemProps) {
           transition={{ duration: 0.2 }}
           className="flex-shrink-0 mr-3"
         >
-          <ChevronDown className={`w-5 h-5 transition-colors ${isOpen ? 'text-primary' : 'text-muted-foreground'}`} />
+          <ChevronDown
+            className={`w-5 h-5 transition-colors ${isOpen ? "text-primary" : "text-muted-foreground"}`}
+          />
         </motion.div>
       </button>
 
@@ -54,7 +77,7 @@ function FAQItemCard({ faq, index, isOpen, onToggle }: FAQItemProps) {
         {isOpen && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
+            animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25 }}
           >
@@ -73,8 +96,9 @@ export default function FAQSection() {
   const [dynamicFaqs, setDynamicFaqs] = useState<FAQItem[]>([]);
 
   useEffect(() => {
-    api.get('/faqs')
-      .then(res => {
+    api
+      .get("/faqs")
+      .then((res) => {
         const data = res.data.data ?? res.data;
         if (Array.isArray(data) && data.length > 0) {
           setDynamicFaqs(data.map((f: any) => ({ q: f.question, a: f.answer })));
@@ -84,30 +108,23 @@ export default function FAQSection() {
   }, []);
 
   // الأسئلة الديناميكية أولاً ثم الثابتة
-  const allFaqs = dynamicFaqs.length > 0
-    ? [...dynamicFaqs, ...STATIC_FAQS]
-    : STATIC_FAQS;
+  const allFaqs = dynamicFaqs.length > 0 ? [...dynamicFaqs, ...STATIC_FAQS] : STATIC_FAQS;
 
-  const handleToggle = (index: number) =>
-    setOpenIndex(prev => (prev === index ? null : index));
+  const handleToggle = (index: number) => setOpenIndex((prev) => (prev === index ? null : index));
 
   return (
     <section id="faq" className="py-24 bg-gradient-to-b from-background to-secondary/30">
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
-
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="text-center mb-14"
         >
-        
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
             عندك سؤال؟ جاوبناك
           </h2>
-          <p className="text-muted-foreground text-lg">
-            إجابات على أكثر الأسئلة التي يطرحها طلابنا
-          </p>
+          <p className="text-muted-foreground text-lg">إجابات على أكثر الأسئلة التي يطرحها طلابنا</p>
         </motion.div>
 
         <div className="space-y-3">
@@ -121,7 +138,6 @@ export default function FAQSection() {
             />
           ))}
         </div>
-
       </div>
     </section>
   );

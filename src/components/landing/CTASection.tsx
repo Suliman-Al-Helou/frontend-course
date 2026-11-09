@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
 // 1. Imports
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
-import { Button } from '../ui/button';
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "../ui/button";
 
 // 2. Sub Components
 function BackgroundEffects() {
@@ -16,8 +16,8 @@ function BackgroundEffects() {
       <div
         className="absolute inset-0 opacity-5"
         style={{
-          backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
-          backgroundSize: '32px 32px',
+          backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)",
+          backgroundSize: "32px 32px",
         }}
       />
     </>
@@ -38,7 +38,6 @@ export default function CTASection() {
           transition={{ duration: 0.7 }}
         >
           {/* Badge */}
-          
 
           {/* Heading */}
           <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6 leading-tight">
@@ -49,29 +48,19 @@ export default function CTASection() {
 
           {/* Body */}
           <p className="text-white/80 text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
-            انضم لأكثر من +500 طالب بدأوا رحلتهم معنا.
-            أول ٧ أيام مع ضمان استرداد كامل — لا شيء تخسره.
+            انضم لأكثر من +500 طالب بدأوا رحلتهم معنا. أول ٧ أيام مع ضمان استرداد كامل — لا شيء تخسره.
           </p>
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center ">
-            <Button
-              href="/register"
-              size={"lg"}
-              
-              >
+            <Button href="/register" size={"lg"}>
               ابدأ رحلتك مجاناً
               <ArrowLeft className="w-5 h-5 mr-2" />
             </Button>
-            <Button
-              href="/courses"
-              size={"lg"}
-              variant={"outline"}
-            >
+            <Button href="/courses" size={"lg"} variant={"outline"}>
               تصفح الكورسات
             </Button>
           </div>
-
         </motion.div>
       </div>
     </section>

@@ -46,7 +46,16 @@ export default function CoursesSection() {
               })}
         </div>
 
-        {/* Footer link: نفس الكود الحالي، مع تغيير mr-2 إلى ms-2 */}
+        {/* زر الانتقال لكتالوج الكورسات الكامل لعرض وتصفح باقي الكورسات */}
+        <div className="text-center mt-12">
+          <Link
+            href="/courses"
+            className="inline-flex items-center gap-2 rounded-xl border border-primary/30 hover:border-primary text-primary hover:bg-primary/5 px-8 py-3 text-base font-medium transition-colors"
+          >
+            عرض جميع الكورسات
+            <ArrowLeft className="w-5 h-5 ms-2" />
+          </Link>
+        </div>
       </div>
     </section>
   );

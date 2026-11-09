@@ -141,13 +141,15 @@ export default function HeroSection() {
           </div>
 
           {/* Image side: 5 columns (8 to 12) in 12-col grid with CLS defense */}
-          <div className="hidden md:block md:mx-auto md:max-w-md lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:max-w-none">
-            <div className="relative aspect-square overflow-hidden rounded-2xl border border-border bg-muted shadow-sm">
+          {/* الحاوية الأب تأخذ w-full لتشغل كامل عرض الأعمدة الخمسة */}
+          <div className="w-full md:mx-auto md:max-w-md lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:max-w-none">
+            {/* الحاوية الداخلية تأخذ w-full aspect-square ليحسب المتصفح الأبعاد فوراً بدقة 1:1 */}
+            <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-border bg-muted shadow-sm">
               <Image
                 src="/images/landing-hero1.jpg"
                 alt={t("imageAlt")}
                 fill
-                sizes="(max-width: 1024px) 100vw, (max-width: 1280px) 45vw, 500px"
+                sizes="(max-width: 768px) 100vw, (max-width: 1280px) 45vw, 500px"
                 className="object-cover"
                 priority
               />

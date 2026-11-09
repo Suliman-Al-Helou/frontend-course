@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useAuthStore } from '@/store/authStore';
+import { useEffect } from "react";
+import { useAuthStore } from "@/store/authStore";
 
 /**
  * لازم يتركب مرة وحدة بجذر التطبيق (شوف layout.tsx). بما إنه ما عاد

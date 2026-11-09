@@ -1,7 +1,7 @@
-import type { ReactNode } from 'react';
-import { Inbox } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
-import { StateMessage } from './Statemessage';
+import type { ReactNode } from "react";
+import { Inbox } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { StateMessage } from "./Statemessage";
 
 /* ───────────────────────── EmptyState.tsx ─────────────────────────
    مهمة الملف: واجهة "نجح الطلب لكن ما في بيانات" (مختلفة تمامًا عن الخطأ).
@@ -18,7 +18,7 @@ interface EmptyStateProps {
 
 export function EmptyState({
   icon = Inbox,
-  title = 'لا توجد بيانات بعد',
+  title = "لا توجد بيانات بعد",
   description,
   children,
 }: EmptyStateProps) {
