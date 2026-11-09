@@ -34,3 +34,17 @@ _Avoid_: Class, Lecture, Webinar, Zoom call
 The administrative catalog of all uploaded and verified media assets, categorized by course association and available for curriculum assignment or recording review.
 _Avoid_: Upload list, Media folder, Videos page
 
+## Ingestion & Pipeline Domain
+
+**Chunked Upload**:
+The process of dividing a large video file into small sequential chunks in the browser and uploading them progressively to ensure fault tolerance and prevent network timeouts.
+_Avoid_: Direct upload, Multipart form, File streaming
+
+**Course YouTube Playlist**:
+An unlisted playlist generated automatically on the platform's connected YouTube channel for each course, housing its video assets in sequence.
+_Avoid_: Video folder, YouTube list, Channel category
+
+**Curriculum Asset Binding**:
+The single-click operation of converting an uploaded course video asset into a structured lesson within a designated course section.
+_Avoid_: Link pasting, Lesson attachment, Manual entry
+

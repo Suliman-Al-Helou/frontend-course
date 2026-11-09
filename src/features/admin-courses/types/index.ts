@@ -19,6 +19,7 @@ export interface AdminCourse {
   is_popular?: boolean;
   price?: number;
   is_public?: boolean;
+  youtube_playlist_id?: string | null;
   hot?: boolean;
   instructor?: {
     id: number;
@@ -133,6 +134,7 @@ export interface AdminVideoAsset {
   provider_video_id: string;
   duration_seconds: number;
   type: "recording" | "lesson";
+  status?: "uploading" | "processing" | "ready" | "failed";
   created_by?: number;
   course?: { id: number; title: string };
   zoom_meeting?: { id: number; title: string; starts_at: string } | null;

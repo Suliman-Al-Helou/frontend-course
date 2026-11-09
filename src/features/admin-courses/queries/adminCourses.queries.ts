@@ -7,6 +7,7 @@ import {
   getAdminEnrollments,
   getAdminZoomMeetings,
   getAdminVideoAssets,
+  getYouTubeStatus,
 } from "../api";
 
 export const adminCourseQueries = {
@@ -76,6 +77,17 @@ export const adminVideoAssetQueries = {
       queryKey: [...adminVideoAssetQueries.all(), "list", params ?? {}] as const,
       queryFn: () => getAdminVideoAssets(params),
       staleTime: 1000 * 60 * 2,
+    }),
+};
+
+export const adminYouTubeQueries = {
+  all: () => ["admin-youtube"] as const,
+
+  status: () =>
+    queryOptions({
+      queryKey: [...adminYouTubeQueries.all(), "status"] as const,
+      queryFn: getYouTubeStatus,
+      staleTime: 1000 * 60 * 5,
     }),
 };
 

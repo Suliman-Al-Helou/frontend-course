@@ -1,7 +1,20 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { X, Loader2, Video, Film, Clock, Link as LinkIcon, FileText, CheckCircle2, AlertCircle } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  X,
+  Loader2,
+  Video,
+  Film,
+  Clock,
+  Link as LinkIcon,
+  FileText,
+  CheckCircle2,
+  AlertCircle,
+  UploadCloud,
+  FileVideo,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -11,6 +24,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { extractYouTubeVideoId } from "@/lib/youtube";
+import { uploadVideoChunk } from "@/features/admin-courses/api";
+import { adminVideoAssetQueries } from "@/features/admin-courses/queries/adminCourses.queries";
 import type { AdminVideoAsset, VideoAssetFormData, AdminZoomMeeting } from "@/features/admin-courses/types";
 
 interface Props {
@@ -30,6 +45,12 @@ export default function VideoAssetModal({
   meetings,
   onSave,
 }: Props) {
+  const queryClient = useQueryClient();
+
+  // Mode: "upload" (file dropzone) or "manual" (YouTube link/ID)
+  const [mode, setMode] = useState<"upload" | "manual">("upload");
+
+  // Form Fields
   const [courseId, setCourseId] = useState<string>("");
   const [zoomMeetingId, setZoomMeetingId] = useState<string>("none");
   const [title, setTitle] = useState("");
@@ -37,10 +58,17 @@ export default function VideoAssetModal({
   const [durationMinutes, setDurationMinutes] = useState<string>("45");
   const [type, setType] = useState<"recording" | "lesson">("recording");
   const [description, setDescription] = useState("");
+
+  // File Upload State
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isSubmittingRef = useRef(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const extractedId = extractYouTubeVideoId(rawVideoInput.trim());
 
@@ -48,6 +76,7 @@ export default function VideoAssetModal({
     if (!open) return;
 
     if (editingAsset) {
+      setMode("manual");
       setCourseId(String(editingAsset.course_id));
       setZoomMeetingId(editingAsset.zoom_meeting_id ? String(editingAsset.zoom_meeting_id) : "none");
       setTitle(editingAsset.title);
@@ -55,7 +84,9 @@ export default function VideoAssetModal({
       setDurationMinutes(String(Math.round(editingAsset.duration_seconds / 60) || 0));
       setType(editingAsset.type);
       setDescription(editingAsset.description || "");
+      setSelectedFile(null);
     } else {
+      setMode("upload");
       setCourseId(courses.length > 0 ? String(courses[0].id) : "");
       setZoomMeetingId("none");
       setTitle("");
@@ -63,11 +94,41 @@ export default function VideoAssetModal({
       setDurationMinutes("45");
       setType("recording");
       setDescription("");
+      setSelectedFile(null);
     }
+    setUploadProgress(0);
     setError(null);
   }, [open, editingAsset, courses]);
 
-  // إغلاق عبر Escape
+  // Handle Drag & Drop
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const file = e.dataTransfer.files[0];
+      handleFileSelected(file);
+    }
+  };
+
+  const handleFileSelected = (file: File) => {
+    setSelectedFile(file);
+    if (!title.trim()) {
+      // Auto-populate title from clean filename
+      const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+      setTitle(cleanName);
+    }
+  };
+
+  // Close on Escape
   useEffect(() => {
     if (!open) return;
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -81,7 +142,6 @@ export default function VideoAssetModal({
 
   if (!open) return null;
 
-  // ترشيح لقاءات الزوم التابعة للكورس المختار حالياً
   const filteredMeetings = meetings.filter((m) => {
     const meetingCourseId = m.course_id || m.course?.id;
     return String(meetingCourseId) === courseId;
@@ -99,6 +159,58 @@ export default function VideoAssetModal({
       setError("عنوان الفيديو مطلوب");
       return;
     }
+
+    // MODE 1: CHUNKED FILE UPLOAD
+    if (mode === "upload") {
+      if (!selectedFile) {
+        setError("الرجاء اختيار ملف فيديو للرفع (.mp4 أو .webm)");
+        return;
+      }
+
+      isSubmittingRef.current = true;
+      setIsSubmitting(true);
+      setError(null);
+      setUploadProgress(1);
+
+      try {
+        const chunkSize = 5 * 1024 * 1024; // 5 MB per chunk
+        const totalChunks = Math.ceil(selectedFile.size / chunkSize);
+        const uploadId = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+
+        for (let i = 0; i < totalChunks; i++) {
+          const start = i * chunkSize;
+          const end = Math.min(start + chunkSize, selectedFile.size);
+          const chunkBlob = selectedFile.slice(start, end);
+
+          const result = await uploadVideoChunk({
+            chunk: chunkBlob,
+            chunkIndex: i,
+            totalChunks,
+            uploadId,
+            fileName: selectedFile.name,
+            courseId: Number.parseInt(courseId, 10),
+            zoomMeetingId: zoomMeetingId !== "none" ? Number.parseInt(zoomMeetingId, 10) : null,
+            title: title.trim(),
+            description: description.trim() || undefined,
+            type,
+          });
+
+          setUploadProgress(result.progress);
+        }
+
+        void queryClient.invalidateQueries({ queryKey: adminVideoAssetQueries.all() });
+        onClose();
+      } catch (err: unknown) {
+        const e = err as { response?: { data?: { message?: string } } };
+        setError(e.response?.data?.message || "فشل رفع الفيديو على مراحل. تحقق من الاتصال بالإنترنت.");
+      } finally {
+        isSubmittingRef.current = false;
+        setIsSubmitting(false);
+      }
+      return;
+    }
+
+    // MODE 2: MANUAL YOUTUBE LINK / ID
     if (!extractedId && !rawVideoInput.trim()) {
       setError("رابط يوتيوب أو معرّف الفيديو (11 حرفاً) مطلوب");
       return;
@@ -150,10 +262,10 @@ export default function VideoAssetModal({
             </div>
             <div>
               <h2 id="video-modal-title" className="text-base font-bold text-foreground">
-                {editingAsset ? "تعديل الفيديو المسجل" : "إدراج / رفع تسجيل فيديو"}
+                {editingAsset ? "تعديل الفيديو" : "رفع / إدراج فيديو جديد"}
               </h2>
               <p className="text-xs text-muted-foreground">
-                إضافة الفيديو إلى بنك الوسائط وربطه بالكورس أو لقاء Zoom منتهي
+                رفع ملف فيديو من جهازك مباشرة أو إدراج رابط YouTube لبنك الوسائط
               </p>
             </div>
           </div>
@@ -167,6 +279,39 @@ export default function VideoAssetModal({
             <X className="w-4 h-4" />
           </button>
         </div>
+
+        {/* Mode Selector Tabs (فقط في حالة الإضافة الجديدة) */}
+        {!editingAsset && (
+          <div className="px-6 pt-3 shrink-0 flex items-center gap-2 border-b border-border bg-muted/20 pb-2">
+            <button
+              type="button"
+              onClick={() => setMode("upload")}
+              disabled={isSubmitting}
+              className={`text-xs font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all ${
+                mode === "upload"
+                  ? "bg-emerald-600 text-white shadow-xs"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+              }`}
+            >
+              <UploadCloud className="w-3.5 h-3.5" />
+              <span>رفع ملف فيديو من الجهاز (موصى به)</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setMode("manual")}
+              disabled={isSubmitting}
+              className={`text-xs font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all ${
+                mode === "manual"
+                  ? "bg-primary text-primary-foreground shadow-xs"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+              }`}
+            >
+              <LinkIcon className="w-3.5 h-3.5" />
+              <span>إدخال رابط / معرّف يوتيوب يدوياً</span>
+            </button>
+          </div>
+        )}
 
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-4">
@@ -235,6 +380,132 @@ export default function VideoAssetModal({
             </div>
           )}
 
+          {/* MODE 1: FILE DRAG & DROP DROPZONE */}
+          {mode === "upload" && !editingAsset ? (
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                <FileVideo className="w-3.5 h-3.5 text-emerald-600" />
+                <span>ملف الفيديو (.mp4, .webm, .mov) *</span>
+              </label>
+
+              <div
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={() => !isSubmitting && fileInputRef.current?.click()}
+                className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
+                  isDragging
+                    ? "border-emerald-500 bg-emerald-500/10 scale-[1.01]"
+                    : selectedFile
+                    ? "border-emerald-500/50 bg-emerald-500/5"
+                    : "border-border hover:border-primary/50 hover:bg-muted/30"
+                }`}
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="video/*,.mp4,.webm,.mov"
+                  className="hidden"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      handleFileSelected(e.target.files[0]);
+                    }
+                  }}
+                  disabled={isSubmitting}
+                />
+
+                {selectedFile ? (
+                  <div className="flex flex-col items-center">
+                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-2">
+                      <FileVideo className="w-6 h-6" />
+                    </div>
+                    <p className="text-sm font-bold text-foreground max-w-sm truncate">{selectedFile.name}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5 font-mono">
+                      الحجم: {(selectedFile.size / (1024 * 1024)).toFixed(1)} MB
+                    </p>
+                    <span className="text-[11px] text-emerald-600 font-medium mt-1">
+                      اضغط لاختيار ملف آخر إن أردت
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center">
+                    <div className="w-12 h-12 rounded-2xl bg-muted text-muted-foreground flex items-center justify-center mb-2">
+                      <UploadCloud className="w-6 h-6" />
+                    </div>
+                    <p className="text-sm font-semibold text-foreground">
+                      اسحب وأفلت ملف الفيديو هنا، أو اضغط للاختيار من جهازك
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      يدعم ملفات MP4 و WebM الكبيرة. يتم الرفع بتقنية التقطيع (Chunking) بأمان تام.
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Progress Bar during Chunked Upload */}
+              {isSubmitting && (
+                <div className="space-y-1.5 p-3 rounded-xl bg-muted/40 border border-border">
+                  <div className="flex items-center justify-between text-xs font-semibold">
+                    <span className="flex items-center gap-1.5 text-foreground">
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-600" />
+                      <span>جارٍ رفع الفيديو على مراحل إلى السيرفر...</span>
+                    </span>
+                    <span className="font-mono text-emerald-600">{uploadProgress}%</span>
+                  </div>
+                  <div className="w-full h-2 rounded-full bg-border overflow-hidden">
+                    <div
+                      className="h-full bg-emerald-600 transition-all duration-300 rounded-full"
+                      style={{ width: `${uploadProgress}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            /* MODE 2: MANUAL YOUTUBE LINK / ID */
+            <div className="space-y-1.5">
+              <label htmlFor="video-modal-id-input" className="text-xs font-semibold text-foreground flex items-center justify-between">
+                <span className="flex items-center gap-1.5">
+                  <LinkIcon className="w-3.5 h-3.5 text-muted-foreground" />
+                  <span>رابط الفيديو على YouTube أو المعرف (ID) *</span>
+                </span>
+                {extractedId ? (
+                  <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3" /> تم التعرف على المعرف ({extractedId})
+                  </span>
+                ) : rawVideoInput.trim() ? (
+                  <span className="text-[11px] text-amber-500 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" /> تأكد من صحة الرابط أو الـ ID
+                  </span>
+                ) : null}
+              </label>
+              <input
+                id="video-modal-id-input"
+                value={rawVideoInput}
+                onChange={(e) => setRawVideoInput(e.target.value)}
+                placeholder="https://www.youtube.com/watch?v=... أو dQw4w9WgXcQ"
+                dir="ltr"
+                disabled={isSubmitting}
+                className="w-full h-10 rounded-xl border border-input bg-background px-3 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              />
+
+              {extractedId && (
+                <div className="flex items-center gap-3 p-2.5 rounded-xl bg-card border border-border mt-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`https://img.youtube.com/vi/${extractedId}/mqdefault.jpg`}
+                    alt="معاينة الفيديو"
+                    className="w-24 h-14 object-cover rounded-lg shrink-0 border border-border"
+                  />
+                  <div className="text-xs min-w-0">
+                    <p className="font-semibold text-foreground truncate">معاينة غلاف الفيديو الجاهز</p>
+                    <p className="text-[11px] text-muted-foreground font-mono mt-0.5">ID: {extractedId}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* عنوان الفيديو */}
           <div className="space-y-1.5">
             <label htmlFor="video-modal-title-input" className="text-xs font-semibold text-foreground">
@@ -250,70 +521,25 @@ export default function VideoAssetModal({
             />
           </div>
 
-          {/* رابط يوتيوب أو المعرف */}
-          <div className="space-y-1.5">
-            <label htmlFor="video-modal-id-input" className="text-xs font-semibold text-foreground flex items-center justify-between">
-              <span className="flex items-center gap-1.5">
-                <LinkIcon className="w-3.5 h-3.5 text-muted-foreground" />
-                <span>رابط الفيديو على YouTube أو المعرف (ID) *</span>
-              </span>
-              {extractedId ? (
-                <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono flex items-center gap-1">
-                  <CheckCircle2 className="w-3 h-3" /> تم التعرف على المعرف ({extractedId})
-                </span>
-              ) : rawVideoInput.trim() ? (
-                <span className="text-[11px] text-amber-500 flex items-center gap-1">
-                  <AlertCircle className="w-3 h-3" /> تأكد من صحة الرابط أو الـ ID
-                </span>
-              ) : null}
-            </label>
-            <input
-              id="video-modal-id-input"
-              value={rawVideoInput}
-              onChange={(e) => setRawVideoInput(e.target.value)}
-              placeholder="https://www.youtube.com/watch?v=... أو dQw4w9WgXcQ"
-              dir="ltr"
-              disabled={isSubmitting}
-              className="w-full h-10 rounded-xl border border-input bg-background px-3 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500"
-            />
-            <p className="text-[11px] text-muted-foreground">
-              يمكنك رفع الفيديو كـ (Unlisted غير مدرج) على قناتك ولصق الرابط هنا مباشرة.
-            </p>
-          </div>
-
-          {/* معاينة مصغرة عند توفر الـ ID */}
-          {extractedId && (
-            <div className="flex items-center gap-3 p-2.5 rounded-xl bg-card border border-border">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={`https://img.youtube.com/vi/${extractedId}/mqdefault.jpg`}
-                alt="معاينة الفيديو"
-                className="w-24 h-14 object-cover rounded-lg shrink-0 border border-border"
+          {/* المدة والوصف (في الوضع اليدوي فقط) */}
+          {mode === "manual" && (
+            <div className="space-y-1.5">
+              <label htmlFor="video-modal-duration" className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-muted-foreground" />
+                <span>مدة الفيديو التقريبية (بالدقائق)</span>
+              </label>
+              <input
+                id="video-modal-duration"
+                type="number"
+                min={0}
+                max={1440}
+                value={durationMinutes}
+                onChange={(e) => setDurationMinutes(e.target.value)}
+                disabled={isSubmitting}
+                className="w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500"
               />
-              <div className="text-xs min-w-0">
-                <p className="font-semibold text-foreground truncate">معاينة غلاف الفيديو الجاهز</p>
-                <p className="text-[11px] text-muted-foreground font-mono mt-0.5">ID: {extractedId}</p>
-              </div>
             </div>
           )}
-
-          {/* المدة والوصف */}
-          <div className="space-y-1.5">
-            <label htmlFor="video-modal-duration" className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-              <span>مدة الفيديو التقريبية (بالدقائق)</span>
-            </label>
-            <input
-              id="video-modal-duration"
-              type="number"
-              min={0}
-              max={1440}
-              value={durationMinutes}
-              onChange={(e) => setDurationMinutes(e.target.value)}
-              disabled={isSubmitting}
-              className="w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500"
-            />
-          </div>
 
           <div className="space-y-1.5">
             <label htmlFor="video-modal-desc" className="text-xs font-semibold text-foreground flex items-center gap-1.5">
@@ -350,10 +576,12 @@ export default function VideoAssetModal({
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>جارٍ الحفظ...</span>
+                  <span>{mode === "upload" ? `جارٍ الرفع (${uploadProgress}%)` : "جارٍ الحفظ..."}</span>
                 </>
               ) : (
-                <span>{editingAsset ? "حفظ التعديلات" : "إدراج الفيديو"}</span>
+                <span>
+                  {editingAsset ? "حفظ التعديلات" : mode === "upload" ? "بدء الرفع على مراحل" : "إدراج الفيديو"}
+                </span>
               )}
             </Button>
           </div>

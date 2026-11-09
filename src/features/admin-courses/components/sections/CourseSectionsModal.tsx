@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import { X, Plus, BookOpen } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { adminCourseQueries } from "../../queries/adminCourses.queries";
+import { adminCourseQueries, adminVideoAssetQueries } from "../../queries/adminCourses.queries";
 import { useSectionMutations } from "../../queries/adminCourses.mutations";
 import SectionAccordion from "./SectionAccordion";
 import type { AdminCourse, AdminLesson } from "../../types";
@@ -22,6 +22,9 @@ export default function CourseSectionsModal({ course, isOpen, onClose }: Props) 
   const isAddingSectionRef = useRef(false);
 
   const { data: sections = [], isLoading } = useQuery(adminCourseQueries.sections(course.id));
+  const { data: courseVideos = [] } = useQuery(
+    adminVideoAssetQueries.list({ course_id: course.id })
+  );
   const {
     createSection,
     deleteSection,
@@ -120,6 +123,7 @@ export default function CourseSectionsModal({ course, isOpen, onClose }: Props) 
                   }
                   onUpdateLesson={handleUpdateLesson}
                   onDeleteLesson={(lessonId) => deleteLesson.mutateAsync(lessonId)}
+                  courseVideos={courseVideos}
                 />
               ))}
             </div>

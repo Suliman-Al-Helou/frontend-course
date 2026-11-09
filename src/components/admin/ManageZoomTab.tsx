@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState, useRef, useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Plus,
   Pencil,
@@ -15,6 +15,9 @@ import {
   ExternalLink,
   AlertTriangle,
   Play,
+  CheckCircle2,
+  Radio,
+  Unlink,
 } from "lucide-react";
 import api from "@/lib/api";
 import { Button } from "@/components/ui/button";
@@ -24,11 +27,17 @@ import {
   adminZoomQueries,
   adminVideoAssetQueries,
   adminCourseQueries,
+  adminYouTubeQueries,
 } from "@/features/admin-courses/queries/adminCourses.queries";
 import {
   useZoomMeetingMutations,
   useVideoAssetMutations,
 } from "@/features/admin-courses/queries/adminCourses.mutations";
+import {
+  getYouTubeAuthUrl,
+  sendYouTubeCallback,
+  disconnectYouTube,
+} from "@/features/admin-courses/api";
 import type {
   AdminZoomMeeting,
   AdminVideoAsset,
@@ -46,10 +55,72 @@ const fmt = (iso: string) =>
   new Date(iso).toLocaleString("ar", { dateStyle: "medium", timeStyle: "short" });
 
 export default function ManageZoomTab() {
+  const queryClient = useQueryClient();
+
   // Queries via TanStack Query v5
   const { data: rawMeetings = [], isLoading: meetingsLoading } = useQuery(adminZoomQueries.list());
   const { data: rawVideos = [], isLoading: videosLoading } = useQuery(adminVideoAssetQueries.list());
   const { data: rawCourses = [], isLoading: coursesLoading } = useQuery(adminCourseQueries.list());
+  const { data: youtubeStatus, isLoading: youtubeLoading } = useQuery(adminYouTubeQueries.status());
+
+  const [isConnectingYouTube, setIsConnectingYouTube] = useState(false);
+  const [youtubeAlert, setYoutubeAlert] = useState<{ message: string; success: boolean } | null>(null);
+
+  // Check for Google OAuth callback in URL
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    const isYtCallback = params.get("youtube_callback");
+
+    if (code && isYtCallback) {
+      setIsConnectingYouTube(true);
+      sendYouTubeCallback(code)
+        .then((res) => {
+          setYoutubeAlert({
+            message: `تم ربط القناة بنجاح (${res.channel_title}). يمكنك الآن إنشاء Playlists ورفع الفيديوهات آلياً!`,
+            success: true,
+          });
+          void queryClient.invalidateQueries({ queryKey: adminYouTubeQueries.all() });
+          // Clean the query params from the URL without reload
+          window.history.replaceState({}, "", "/admin?tab=zoom");
+        })
+        .catch((err: unknown) => {
+          const e = err as { response?: { data?: { message?: string } } };
+          setYoutubeAlert({
+            message: e.response?.data?.message || "فشل إكمال ربط قناة YouTube مع Google.",
+            success: false,
+          });
+        })
+        .finally(() => {
+          setIsConnectingYouTube(false);
+        });
+    }
+  }, [queryClient]);
+
+  const handleConnectYouTube = async () => {
+    setIsConnectingYouTube(true);
+    try {
+      const { url } = await getYouTubeAuthUrl();
+      if (url) {
+        window.location.href = url;
+      }
+    } catch {
+      setYoutubeAlert({ message: "تعذر توليد رابط المصادقة من Google.", success: false });
+      setIsConnectingYouTube(false);
+    }
+  };
+
+  const handleDisconnectYouTube = async () => {
+    if (!confirm("هل أنت متأكد من رغبتك في فصل قناة YouTube عن المنصة؟")) return;
+    try {
+      await disconnectYouTube();
+      void queryClient.invalidateQueries({ queryKey: adminYouTubeQueries.all() });
+      setYoutubeAlert({ message: "تم فصل قناة YouTube عن المنصة.", success: true });
+    } catch {
+      setYoutubeAlert({ message: "تعذر فصل القناة.", success: false });
+    }
+  };
 
   const meetings = Array.isArray(rawMeetings) ? rawMeetings : [];
   const videos = Array.isArray(rawVideos) ? rawVideos : [];
@@ -177,6 +248,88 @@ export default function ManageZoomTab() {
             <Film className="w-4 h-4" />
             <span>+ رفع / إدراج فيديو</span>
           </Button>
+        </div>
+      </div>
+
+      {/* ─── YouTube Channel Integration Banner ─────────────── */}
+      {youtubeAlert && (
+        <div
+          className={`p-3.5 rounded-xl border flex items-center justify-between text-xs font-medium animate-in fade-in-0 ${
+            youtubeAlert.success
+              ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400"
+              : "bg-destructive/10 border-destructive/20 text-destructive"
+          }`}
+        >
+          <span>{youtubeAlert.message}</span>
+          <button
+            type="button"
+            onClick={() => setYoutubeAlert(null)}
+            className="text-xs opacity-70 hover:opacity-100"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
+      <div className="bg-card border border-border rounded-2xl p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-red-500/10 text-red-600 flex items-center justify-center shrink-0">
+            <Radio className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold text-foreground">ربط قناة YouTube الرسمية</span>
+              {youtubeStatus?.connected ? (
+                <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3" /> متصلة: {youtubeStatus.channel_title}
+                </span>
+              ) : (
+                <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 font-semibold">
+                  غير متصلة
+                </span>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {youtubeStatus?.connected
+                ? "يتم إنشاء قوائم التشغيل (Playlists) ورفع الفيديوهات غير المدرجة (Unlisted) إلى هذه القناة تلقائياً."
+                : "اربط قناتك على YouTube لتفعيل إنشاء Playlists تلقائية باسم الكورس ورفع الفيديوهات عبر المنصة."}
+            </p>
+          </div>
+        </div>
+
+        <div className="shrink-0">
+          {youtubeStatus?.connected ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleDisconnectYouTube}
+              className="rounded-xl h-9 text-xs text-muted-foreground hover:text-destructive gap-1.5"
+            >
+              <Unlink className="w-3.5 h-3.5" />
+              <span>فصل القناة</span>
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              size="sm"
+              onClick={handleConnectYouTube}
+              disabled={isConnectingYouTube || youtubeLoading}
+              className="rounded-xl h-9 text-xs bg-red-600 hover:bg-red-700 text-white gap-1.5 shadow-xs"
+            >
+              {isConnectingYouTube ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>جارٍ الاتصال بـ Google...</span>
+                </>
+              ) : (
+                <>
+                  <Radio className="w-3.5 h-3.5" />
+                  <span>ربط قناة YouTube الآن</span>
+                </>
+              )}
+            </Button>
+          )}
         </div>
       </div>
 

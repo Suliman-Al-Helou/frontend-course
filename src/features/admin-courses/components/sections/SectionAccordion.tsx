@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { extractYouTubeVideoId } from "@/lib/youtube";
 import LessonRow from "./LessonRow";
-import type { AdminSection, AdminLesson } from "../../types";
+import type { AdminSection, AdminLesson, AdminVideoAsset } from "../../types";
 
 interface Props {
   section: AdminSection;
@@ -27,6 +27,7 @@ interface Props {
   }) => Promise<unknown>;
   onUpdateLesson: (lessonId: number | string, data: Partial<AdminLesson>) => Promise<unknown>;
   onDeleteLesson: (lessonId: number | string) => Promise<unknown>;
+  courseVideos?: AdminVideoAsset[];
 }
 
 export default function SectionAccordion({
@@ -37,6 +38,7 @@ export default function SectionAccordion({
   onCreateLesson,
   onUpdateLesson,
   onDeleteLesson,
+  courseVideos = [],
 }: Props) {
   const [showAddLesson, setShowAddLesson] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -195,6 +197,34 @@ export default function SectionAccordion({
                   إلغاء
                 </button>
               </div>
+
+              {courseVideos.length > 0 && (
+                <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-xs space-y-1">
+                  <span className="font-semibold text-emerald-700 dark:text-emerald-400 block">
+                    💡 اختيار فيديو مدرج للكورس ({courseVideos.length} فيديو متوفر):
+                  </span>
+                  <select
+                    aria-label="اختر من فيديوهات الكورس المرفوعة"
+                    className="w-full h-8 rounded-md border border-input bg-background px-2 text-xs"
+                    onChange={(e) => {
+                      const found = courseVideos.find((v) => String(v.id) === e.target.value);
+                      if (found) {
+                        setLessonTitle(found.title);
+                        setLessonVideoId(found.provider_video_id);
+                        setLessonDuration(String(Math.round(found.duration_seconds / 60) || ""));
+                      }
+                    }}
+                    defaultValue=""
+                  >
+                    <option value="" disabled>-- اضغط لاختيار فيديو تلقائياً وتعبئة البيانات --</option>
+                    {courseVideos.map((v) => (
+                      <option key={v.id} value={String(v.id)}>
+                        {v.title} ({Math.round(v.duration_seconds / 60)} دقيقة)
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
               <div className="grid sm:grid-cols-2 gap-3">
                 <input
