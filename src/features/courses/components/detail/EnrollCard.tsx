@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import type { CourseDetail } from "../../index";
 import { useAuthStore } from "@/store/authStore";
+import { useQueryClient } from "@tanstack/react-query";
+import { studentCourseQueries } from "@/features/student-courses";
 import api from "@/lib/api";
 
 export interface EnrollCardProps {
@@ -51,6 +53,7 @@ export function EnrollCard({
   onEnrollSuccess,
 }: EnrollCardProps) {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const queryClient = useQueryClient();
   const isSubmittingRef = useRef(false);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
@@ -63,6 +66,20 @@ export function EnrollCard({
   const showToast = (msg: string) => {
     setToast(msg);
     setTimeout(() => setToast(null), 4000);
+  };
+
+  const handleFreeStartLearning = () => {
+    if (course.id && !isEnrolled && isAuthenticated) {
+      api
+        .post(`/courses/${course.id}/enroll`)
+        .then(() => {
+          onEnrollSuccess?.();
+          void queryClient.invalidateQueries({
+            queryKey: studentCourseQueries.enrolled().queryKey,
+          });
+        })
+        .catch(() => {});
+    }
   };
 
   const handleEnroll = async () => {
@@ -153,10 +170,11 @@ export function EnrollCard({
               {hasLessons ? (
                 <Link
                   href={learnHref!}
+                  onClick={handleFreeStartLearning}
                   className="w-full min-h-[44px] mb-3 inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-bold text-base transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                 >
                   <Play className="w-4 h-4 fill-current" />
-                  ابدأ المشاهدة
+                  {isEnrolled ? "تابع التعلم" : "ابدأ المشاهدة"}
                 </Link>
               ) : (
                 <div className="w-full min-h-[44px] mb-3 inline-flex items-center justify-center gap-2 bg-muted text-muted-foreground rounded-xl font-bold text-base cursor-not-allowed">
