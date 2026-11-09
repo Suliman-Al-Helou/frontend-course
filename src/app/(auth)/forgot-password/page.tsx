@@ -1,110 +1,135 @@
-'use client';
+"use client";
 
 // src/app/(auth)/forgot-password/page.tsx
 
-// 1. Imports
-import { useState } from 'react';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { Code2, ArrowLeft, Mail } from 'lucide-react';
-import api from '@/lib/api';
+import { useState, useRef } from "react";
+import Link from "next/link";
+import { motion, useReducedMotion } from "framer-motion";
+import { Code2, ArrowRight, Mail } from "lucide-react";
+import { SubmitButton } from "../_components/SubmitButton";
 
-// 2. Sub Components
 function Logo() {
   return (
-    <Link href="/" className="inline-flex items-center gap-2 mb-4">
-      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-mid to-blue-light flex items-center justify-center">
+    <Link
+      href="/"
+      className="inline-flex items-center gap-2.5 mb-4 group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl"
+    >
+      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-mid to-blue-light flex items-center justify-center shadow-md shadow-primary/10 group-hover:scale-105 transition-transform">
         <Code2 className="w-5 h-5 text-white" />
       </div>
-      <span className="text-xl font-bold text-blue-deep">
-        future <span className="text-primary">house</span>
+      <span className="text-xl font-bold tracking-tight text-foreground">
+        Future <span className="text-primary">House</span>
       </span>
     </Link>
   );
 }
 
-function SuccessState() {
+function SuccessState({ email }: { email: string }) {
   return (
-    <div className="text-center space-y-4">
-      <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-        <Mail className="w-8 h-8 text-primary" />
+    <div className="text-center space-y-4 py-2 animate-in fade-in-50 duration-300">
+      <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto text-primary">
+        <Mail className="w-8 h-8" />
       </div>
-      <h3 className="font-bold text-blue-deep text-lg">تم الإرسال!</h3>
-      <p className="text-muted-foreground text-sm leading-relaxed">
-        إذا كان هذا البريد مسجلاً لدينا، ستصلك رسالة تحتوي على رابط إعادة تعيين كلمة المرور خلال دقائق.
+      <div className="space-y-1">
+        <h3 className="font-bold text-foreground text-lg">تم إرسال الرابط!</h3>
+        <p className="text-muted-foreground text-sm leading-relaxed">
+          إذا كان البريد <span className="font-semibold text-foreground dir-ltr font-mono text-xs">{email}</span> مسجلاً لدينا، ستصلك رسالة تحتوي على تعليمات إعادة التعيين.
+        </p>
+      </div>
+      <p className="text-xs text-muted-foreground/80 bg-muted/50 rounded-lg p-2.5">
+        يرجى التحقق من مجلد الرسائل غير المرغوب فيها (Spam) إذا لم تصل الرسالة خلال دقائق.
       </p>
-      <p className="text-xs text-muted-foreground">تحقق من مجلد الرسائل غير المرغوب فيها (Spam)</p>
     </div>
   );
 }
 
-// 3. Main Component
 export default function ForgotPasswordPage() {
-  const [email,   setEmail]   = useState('');
-  const [sent,    setSent]    = useState(false);
+  const [email, setEmail] = useState("");
+  const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const isSubmittingRef = useRef(false);
+  const shouldReduceMotion = useReducedMotion();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading || isSubmittingRef.current || !email.trim()) return;
+
+    isSubmittingRef.current = true;
     setLoading(true);
     try {
-      // ← TODO: أضف POST /api/auth/forgot-password في Laravel
-      // await api.post('/auth/forgot-password', { email });
-      await new Promise(res => setTimeout(res, 800)); // مؤقت
+      // TODO: ربط مسار POST /api/auth/forgot-password في لارافيل عند جهوزيته
+      await new Promise((res) => setTimeout(res, 800));
     } catch (_) {
-      // نُظهر success دائماً — لا نكشف إذا الإيميل مسجل أو لا (أمان)
+      // الحفاظ على أمان البيانات: إظهار النجاح دائماً لعدم تمكين تخمين الحسابات المسجلة
     } finally {
       setSent(true);
       setLoading(false);
+      isSubmittingRef.current = false;
     }
   };
 
   return (
     <div
-      className="min-h-screen bg-gradient-to-br from-blue-pale via-white to-blue-50 flex items-center justify-center p-4"
+      className="min-h-screen bg-gradient-to-br from-background via-background to-muted/60 flex items-center justify-center p-4 font-arabic"
       dir="rtl"
     >
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
         animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: shouldReduceMotion ? 0.05 : 0.3,
+          ease: "easeOut",
+        }}
         className="w-full max-w-md"
       >
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <Logo />
-          <h1 className="text-2xl font-bold text-blue-deep">إعادة تعيين كلمة المرور</h1>
-          <p className="text-muted-foreground mt-1">أدخل بريدك الإلكتروني وسنرسل لك رابط الإعادة</p>
+          <h1 className="text-2xl font-bold text-foreground">إعادة تعيين كلمة المرور</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            أدخل بريدك الإلكتروني وسنرسل لك رابط استعادة الحساب
+          </p>
         </div>
 
-        {/* Card */}
-        <div className="bg-white rounded-2xl shadow-xl shadow-blue-100/60 border border-blue-100 p-8">
+        {/* Card Container */}
+        <div className="bg-card rounded-2xl shadow-xl border border-border p-8">
           {!sent ? (
             <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">البريد الإلكتروني</label>
+              <div className="space-y-1.5">
+                <label htmlFor="forgot-email" className="text-sm font-medium text-foreground">
+                  البريد الإلكتروني
+                </label>
                 <input
+                  id="forgot-email"
                   type="email"
                   placeholder="example@email.com"
                   value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full h-11 rounded-xl border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  dir="ltr"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  inputMode="email"
+                  autoComplete="email"
+                  disabled={loading}
+                  className="w-full h-11 rounded-xl border border-border hover:border-foreground/30 bg-background px-4 text-sm text-left placeholder:text-right transition-colors focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
                 />
               </div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full h-11 bg-primary hover:bg-primary/90 disabled:opacity-60 text-white rounded-xl font-semibold transition-colors"
-              >
-                {loading ? 'جارٍ الإرسال...' : 'إرسال رابط الإعادة'}
-              </button>
+
+              <SubmitButton loading={loading} loadingText="جارٍ الإرسال...">
+                إرسال رابط الإعادة
+              </SubmitButton>
             </form>
           ) : (
-            <SuccessState />
+            <SuccessState email={email} />
           )}
 
           <p className="text-center text-sm text-muted-foreground mt-6">
-            <Link href="/login" className="text-primary font-semibold hover:underline">
+            تذكرت كلمة المرور؟{" "}
+            <Link
+              href="/login"
+              className="text-primary font-semibold hover:underline inline-block py-1 px-1.5 -my-1 focus:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded-sm transition-colors"
+            >
               العودة لتسجيل الدخول
             </Link>
           </p>
@@ -114,10 +139,10 @@ export default function ForgotPasswordPage() {
         <div className="text-center mt-6">
           <Link
             href="/"
-            className="text-sm text-muted-foreground hover:text-primary inline-flex items-center justify-center gap-1 transition-colors"
+            className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center justify-center gap-1.5 py-1.5 px-3 -my-1.5 transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded-md"
           >
-            <ArrowLeft className="w-4 h-4" />
-            العودة للصفحة الرئيسية
+            <ArrowRight className="w-4 h-4" />
+            <span>العودة للصفحة الرئيسية</span>
           </Link>
         </div>
       </motion.div>

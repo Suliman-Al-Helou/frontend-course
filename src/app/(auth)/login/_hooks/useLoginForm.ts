@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import api from "@/lib/api";
 import { useAuthStore } from "@/store/authStore";
@@ -23,6 +23,7 @@ export function useLoginForm() {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const isSubmittingRef = useRef(false);
 
   const updateField = (field: keyof LoginForm) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -31,7 +32,7 @@ export function useLoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (loading) return;
+    if (loading || isSubmittingRef.current) return;
 
     setError("");
     setFieldErrors({});
@@ -42,6 +43,7 @@ export function useLoginForm() {
       return;
     }
 
+    isSubmittingRef.current = true;
     setLoading(true);
     try {
       const { data } = await api.post("/auth/login", form);
@@ -55,6 +57,7 @@ export function useLoginForm() {
       handleFormError(err, setFieldErrors, setError);
     } finally {
       setLoading(false);
+      isSubmittingRef.current = false;
     }
   };
 
