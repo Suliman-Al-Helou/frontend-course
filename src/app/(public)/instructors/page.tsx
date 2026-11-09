@@ -32,10 +32,14 @@ function SkeletonCard() {
       </div>
       <div className="px-6 pb-4">
         <div className="flex gap-1.5 mb-4">
-          {[1, 2, 3].map(i => <div key={i} className="h-6 w-16 bg-muted rounded-lg" />)}
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-6 w-16 bg-muted rounded-lg" />
+          ))}
         </div>
         <div className="grid grid-cols-2 gap-2">
-          {[1, 2].map(i => <div key={i} className="h-16 bg-muted rounded-xl" />)}
+          {[1, 2].map((i) => (
+            <div key={i} className="h-16 bg-muted rounded-xl" />
+          ))}
         </div>
       </div>
     </div>
@@ -44,13 +48,15 @@ function SkeletonCard() {
 
 function InstructorCard({ ins, index }: { ins: Instructor; index: number }) {
   const specs = ins.specializations
-    ? ins.specializations.split(",").map(s => s.trim()).slice(0, 3)
+    ? ins.specializations
+        .split(",")
+        .map((s) => s.trim())
+        .slice(0, 3)
     : [];
 
   const rating = Number(ins.rating ?? 4.5);
 
-  const fmt = (n?: number) =>
-    !n ? "0" : n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n);
+  const fmt = (n?: number) => (!n ? "0" : n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n));
 
   return (
     <motion.div
@@ -60,7 +66,6 @@ function InstructorCard({ ins, index }: { ins: Instructor; index: number }) {
     >
       <Link href={`/instructors/${ins.id}`} className="group block h-full">
         <div className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-primary/10 transition-all h-full flex flex-col">
-
           {/* Header */}
           <div className="bg-gradient-to-br from-primary/10 to-primary/5 p-6 pb-4 text-center">
             {ins.avatar_url ? (
@@ -82,7 +87,9 @@ function InstructorCard({ ins, index }: { ins: Instructor; index: number }) {
               <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
               <span className="text-sm font-semibold text-foreground">{rating.toFixed(1)}</span>
               {ins.total_reviews ? (
-                <span className="text-xs text-muted-foreground">({fmt(ins.total_reviews)} تقييم)</span>
+                <span className="text-xs text-muted-foreground">
+                  ({fmt(ins.total_reviews)} تقييم)
+                </span>
               ) : null}
             </div>
           </div>
@@ -91,8 +98,13 @@ function InstructorCard({ ins, index }: { ins: Instructor; index: number }) {
             {/* Specializations */}
             {specs.length > 0 && (
               <div className="flex flex-wrap gap-1.5 mb-4">
-                {specs.map(s => (
-                  <span key={s} className="bg-primary/10 text-primary text-xs px-2.5 py-1 rounded-lg font-medium">{s}</span>
+                {specs.map((s) => (
+                  <span
+                    key={s}
+                    className="bg-primary/10 text-primary text-xs px-2.5 py-1 rounded-lg font-medium"
+                  >
+                    {s}
+                  </span>
                 ))}
               </div>
             )}
@@ -138,8 +150,9 @@ export default function InstructorsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get("/instructors")
-      .then(res => setInstructors(res.data.data ?? res.data))
+    api
+      .get("/instructors")
+      .then((res) => setInstructors(res.data.data ?? res.data))
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
@@ -151,9 +164,10 @@ export default function InstructorsPage() {
       {/* Hero */}
       <div className="bg-gradient-to-br from-primary/90 to-primary/60 pt-28 pb-16 px-4 text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-      
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">تعرّف على مدربينا</h1>
-          <p className="text-white/70 text-lg">خبراء ومتخصصون يجمعهم شغف التعليم وبناء الجيل التقني العربي</p>
+          <p className="text-white/70 text-lg">
+            خبراء ومتخصصون يجمعهم شغف التعليم وبناء الجيل التقني العربي
+          </p>
         </motion.div>
       </div>
 
@@ -161,7 +175,9 @@ export default function InstructorsPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         {loading ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map(i => <SkeletonCard key={i} />)}
+            {[1, 2, 3].map((i) => (
+              <SkeletonCard key={i} />
+            ))}
           </div>
         ) : instructors.length === 0 ? (
           <div className="text-center py-16 text-muted-foreground">

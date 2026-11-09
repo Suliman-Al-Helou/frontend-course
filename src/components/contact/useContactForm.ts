@@ -3,7 +3,11 @@
 import { useState } from "react";
 import { FORMSPREE_URL } from "@/lib/contact";
 
-interface FormState { name: string; email: string; message: string }
+interface FormState {
+  name: string;
+  email: string;
+  message: string;
+}
 
 export function useContactForm(initial?: Partial<FormState>) {
   const [form, setForm] = useState<FormState>({ name: "", email: "", message: "", ...initial });
@@ -12,8 +16,7 @@ export function useContactForm(initial?: Partial<FormState>) {
   const [error, setError] = useState<string | null>(null);
 
   const updateField =
-    (field: keyof FormState) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    (field: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setForm((prev) => ({ ...prev, [field]: e.target.value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
