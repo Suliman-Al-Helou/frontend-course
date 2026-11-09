@@ -180,11 +180,12 @@ export default function CoursePricingMediaFields({
             checked={isPopular}
             onChange={(e) => onIsPopularChange(e.target.checked)}
             className="w-5 h-5 rounded text-primary focus:ring-primary/20"
+            aria-label="الأكثر طلباً (Popular)"
           />
-          <div>
-            <p className="text-sm font-semibold text-foreground">🔥 الأكثر طلباً (Popular)</p>
-            <p className="text-[11px] text-muted-foreground">يظهر بشارة مميزة في صفحة الهبوط والكتالوج</p>
-          </div>
+          <span className="flex flex-col">
+            <span className="text-sm font-semibold text-foreground">🔥 الأكثر طلباً (Popular)</span>
+            <span className="text-[11px] text-muted-foreground">يظهر بشارة مميزة في صفحة الهبوط والكتالوج</span>
+          </span>
         </label>
 
         <label
@@ -203,11 +204,12 @@ export default function CoursePricingMediaFields({
               }
             }}
             className="w-5 h-5 rounded text-primary focus:ring-primary/20"
+            aria-label="كورس مجاني (Public Access)"
           />
-          <div>
-            <p className="text-sm font-semibold text-foreground">كورس مجاني (Public Access)</p>
-            <p className="text-[11px] text-muted-foreground">متاح للطلاب بدون اشتراك أو موافقة دفع</p>
-          </div>
+          <span className="flex flex-col">
+            <span className="text-sm font-semibold text-foreground">كورس مجاني (Public Access)</span>
+            <span className="text-[11px] text-muted-foreground">متاح للطلاب بدون اشتراك أو موافقة دفع</span>
+          </span>
         </label>
       </div>
     </div>
