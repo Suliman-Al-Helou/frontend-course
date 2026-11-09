@@ -4,11 +4,10 @@ export function getCourseLinks(course: Course, isEnrolled: boolean, isAuthentica
   const detailsHref = `/courses/${course.id}`;
 
   return {
-    href: isEnrolled || isAuthenticated ? detailsHref : "/register",
+    href: detailsHref,
     learnHref: course.next_lesson_id
       ? `/courses/${course.id}/lessons/${course.next_lesson_id}`
       : detailsHref,
     ctaLabel: isEnrolled ? "متابعة التعلم" : "عرض الكورس",
   };
 }
-

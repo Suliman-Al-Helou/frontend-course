@@ -29,6 +29,8 @@ src/features/courses/
 ├── utils/                     # Pure helpers & route calculators
 │   ├── courseLevel.ts         # Level labels and color styles
 │   └── courseLinks.ts         # Route calculator helper
+├── server/
+│   └── index.ts               # Server-only RSC Prefetching with timeout budget (getDehydratedCourses, getDehydratedCourseDetail)
 ├── components/                # Decomposed UI components
 │   ├── catalog/               # Public catalog page components:
 │   │   ├── CoursesHero.tsx       # Search hero with clear button & reduced motion

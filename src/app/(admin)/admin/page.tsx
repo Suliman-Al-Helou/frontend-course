@@ -3,45 +3,60 @@
 import { useState, useEffect, Suspense } from "react";
 import { motion } from "framer-motion";
 import {
-  Shield, Plus, LogOut, LayoutDashboard,
-  Users, BookOpen, ClipboardList, GraduationCap,
-  Moon, Sun, ChevronDown, MessageCircleQuestion, Video,
+  Shield,
+  LogOut,
+  LayoutDashboard,
+  Users,
+  BookOpen,
+  ClipboardList,
+  GraduationCap,
+  Moon,
+  Sun,
+  ChevronDown,
+  MessageCircleQuestion,
+  Video,
 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import { useThemeStore } from "@/store/themeStore";
 import api from "@/lib/api";
-import AdminStatsCards        from "@/components/admin/AdminStatsCards";
-import EnrollmentRequests     from "@/components/admin/EnrollmentRequests";
-import StudentsTable          from "@/components/admin/StudentsTable";
-import CoursesOverview        from "@/components/admin/CoursesOverview";
-import AddEnrollmentModal     from "@/components/admin/AddEnrollmentModal";
-import ManageCoursesTab       from "@/components/admin/ManageCoursesTab";
-import ManageInstructorsTab   from "@/components/admin/ManageInstructorsTab";
-import ManageFaqTab           from "@/components/admin/ManageFaqTab";
-import ManageZoomTab          from "@/components/admin/ManageZoomTab";
+import { useQuery } from "@tanstack/react-query";
+import {
+  AdminStatsCards,
+  EnrollmentRequests,
+  CoursesPriceOverview,
+  ManageCoursesTab,
+  adminCourseQueries,
+  adminEnrollmentQueries,
+} from "@/features/admin-courses";
+import StudentsTable from "@/components/admin/StudentsTable";
+import ManageInstructorsTab from "@/components/admin/ManageInstructorsTab";
+import ManageFaqTab from "@/components/admin/ManageFaqTab";
+import ManageZoomTab from "@/components/admin/ManageZoomTab";
 import type { Enrollment, AdminUser, AdminStats } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useInstructorsStore } from "@/store/instructorsStore";
+
 
 const TABS = [
-  { id: "overview",     label: "نظرة عامة",         icon: LayoutDashboard       },
-  { id: "enrollments",  label: "طلبات التسجيل",     icon: ClipboardList         },
-  { id: "students",     label: "الطلاب",             icon: Users                 },
-  { id: "courses",      label: "الكورسات",           icon: BookOpen              },
-  { id: "instructors",  label: "المدربون",           icon: GraduationCap         },
-  { id: "faqs",         label: "الأسئلة الشائعة",   icon: MessageCircleQuestion },
-  { id: "zoom",         label: "لقاءات Zoom",       icon: Video                 },
+  { id: "overview", label: "نظرة عامة", icon: LayoutDashboard },
+  { id: "enrollments", label: "طلبات التسجيل", icon: ClipboardList },
+  { id: "students", label: "الطلاب", icon: Users },
+  { id: "courses", label: "الكورسات", icon: BookOpen },
+  { id: "instructors", label: "المدربون", icon: GraduationCap },
+  { id: "faqs", label: "الأسئلة الشائعة", icon: MessageCircleQuestion },
+  { id: "zoom", label: "لقاءات Zoom", icon: Video },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
 
 const TAB_LABELS: Record<TabId, string> = {
-  overview:    "نظرة عامة",
+  overview: "نظرة عامة",
   enrollments: "طلبات التسجيل",
-  students:    "الطلاب",
-  courses:     "الكورسات",
+  students: "الطلاب",
+  courses: "الكورسات",
   instructors: "المدربون",
-  faqs:        "الأسئلة الشائعة",
-  zoom:        "لقاءات Zoom",
+  faqs: "الأسئلة الشائعة",
+  zoom: "لقاءات Zoom",
 };
 
 function ThemeToggle() {
@@ -58,46 +73,47 @@ function ThemeToggle() {
 }
 
 function AdminContent() {
+
   const { user, logout } = useAuthStore();
   const searchParams = useSearchParams();
-  const router       = useRouter();
-  const tab          = (searchParams.get("tab") as TabId) ?? "overview";
+  const router = useRouter();
+  const tab = (searchParams.get("tab") as TabId) ?? "overview";
 
   const setTab = (newTab: TabId) => {
     router.push(`/admin?tab=${newTab}`, { scroll: false });
     setMobileMenuOpen(false);
   };
 
-  const [enrollments,    setEnrollments]    = useState<Enrollment[]>([]);
-  const [users,          setUsers]          = useState<AdminUser[]>([]);
-  const [stats,          setStats]          = useState<AdminStats>({
-    totalStudents: 0, totalCourses: 0, totalInstructors: 0, pendingEnrollments: 0,
-  });
-  const [showModal,      setShowModal]      = useState(false);
-  const [loading,        setLoading]        = useState(true);
+  const { data: enrollments = [] } = useQuery(adminEnrollmentQueries.list());
+  const { data: courses = [] } = useQuery(adminCourseQueries.list());
+
+  const [users, setUsers] = useState<AdminUser[]>([]);
+  const [totalInstructors, setTotalInstructors] = useState(0);
+  const [loading, setLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const fetchData = async () => {
+  const pendingEnrollmentsCount = enrollments.filter((e) => e.status === "pending").length;
+
+  const stats: AdminStats = {
+    totalStudents: users.filter((u) => u.role !== "admin").length,
+    totalCourses: courses.length,
+    totalInstructors,
+    pendingEnrollments: pendingEnrollmentsCount,
+  };
+
+  const fetchUsers = async () => {
     setLoading(true);
     try {
-      const [enrRes, usrRes, coursesRes, instructorsRes] = await Promise.all([
-        api.get("/admin/enrollments"),
-        api.get("/admin/users"),
-        api.get("/admin/courses"),
-        api.get("/admin/instructors"),
+      const [usrRes, insRes] = await Promise.all([
+        api.get("/admin/users").catch(() => null),
+        api.get("/admin/instructors").catch(() => null),
       ]);
-      const enrData = enrRes.data.data       ?? enrRes.data;
-      const usrData = usrRes.data.data        ?? usrRes.data;
-      const crsData = coursesRes.data.data     ?? coursesRes.data;
-      const insData = instructorsRes.data.data ?? instructorsRes.data;
-      setEnrollments(enrData);
+
+      const usrData = usrRes ? (usrRes.data.data ?? usrRes.data) : [];
+      const insData = insRes ? (insRes.data.data ?? insRes.data) : [];
+
       setUsers(usrData);
-      setStats({
-        totalStudents:      usrData.filter((u: any) => u.role !== "admin").length,
-        totalCourses:       Array.isArray(crsData) ? crsData.length : 0,
-        totalInstructors:   Array.isArray(insData) ? insData.length : 0,
-        pendingEnrollments: enrData.filter((e: any) => e.status === "pending").length,
-      });
+      setTotalInstructors(Array.isArray(insData) ? insData.length : 0);
     } catch (err) {
       console.error(err);
     } finally {
@@ -105,7 +121,9 @@ function AdminContent() {
     }
   };
 
-  useEffect(() => { void fetchData(); }, []);
+  useEffect(() => {
+    void fetchUsers();
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -123,12 +141,11 @@ function AdminContent() {
     );
   }
 
-  const currentTab = TABS.find(t => t.id === tab);
+  const currentTab = TABS.find((t) => t.id === tab);
 
   return (
     <div className="min-h-screen bg-background font-arabic" dir="rtl">
       <div className="flex">
-
         {/* Sidebar — Desktop */}
         <aside className="hidden lg:flex flex-col w-64 min-h-screen bg-card border-l border-border fixed right-0 top-0 z-30">
           <div className="p-6 border-b border-border">
@@ -144,25 +161,25 @@ function AdminContent() {
           </div>
 
           <nav className="flex-1 p-4 space-y-1">
-            {TABS.map(t => (
+            {TABS.map((t) => (
               <button
                 key={t.id}
                 onClick={() => setTab(t.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                  tab === t.id
-                    ? "bg-primary text-white shadow-md"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${tab === t.id
+                  ? "bg-primary text-white shadow-md"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`}
               >
                 <t.icon className="w-4 h-4" />
                 {t.label}
-                {t.id === "enrollments" && stats.pendingEnrollments > 0 && (
-                  <span className={`mr-auto text-xs px-2 py-0.5 rounded-full font-bold ${
-                    tab === "enrollments"
+                {t.id === "enrollments" && pendingEnrollmentsCount > 0 && (
+                  <span
+                    className={`mr-auto text-xs px-2 py-0.5 rounded-full font-bold ${tab === "enrollments"
                       ? "bg-white/20 text-white"
                       : "bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400"
-                  }`}>
-                    {stats.pendingEnrollments}
+                      }`}
+                  >
+                    {pendingEnrollmentsCount}
                   </span>
                 )}
               </button>
@@ -186,7 +203,6 @@ function AdminContent() {
 
         {/* Main */}
         <main className="flex-1 lg:mr-64 min-h-screen">
-
           {/* Header */}
           <header className="sticky top-0 z-20 bg-card/80 backdrop-blur-xl border-b border-border px-4 sm:px-6 h-16 flex items-center justify-between">
             <div>
@@ -194,51 +210,49 @@ function AdminContent() {
               <p className="text-xs text-muted-foreground hidden sm:block">مرحباً {user?.name}</p>
             </div>
             <div className="flex items-center gap-3">
-              <div className="lg:hidden"><ThemeToggle /></div>
-
+              <div className="lg:hidden">
+                <ThemeToggle />
+              </div>
             </div>
           </header>
 
           {/* Mobile Nav — Dropdown */}
           <div className="lg:hidden px-4 py-3 border-b border-border bg-card relative">
             <button
-              onClick={() => setMobileMenuOpen(o => !o)}
+              onClick={() => setMobileMenuOpen((o) => !o)}
               className="w-full flex items-center justify-between bg-muted px-4 py-2.5 rounded-xl text-sm font-medium text-foreground"
             >
               <span className="flex items-center gap-2">
                 {currentTab && <currentTab.icon className="w-4 h-4 text-primary" />}
                 {TAB_LABELS[tab]}
-                {tab === "enrollments" && stats.pendingEnrollments > 0 && (
+                {tab === "enrollments" && pendingEnrollmentsCount > 0 && (
                   <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-600 text-xs px-2 py-0.5 rounded-full font-bold">
-                    {stats.pendingEnrollments}
+                    {pendingEnrollmentsCount}
                   </span>
                 )}
               </span>
-              <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${mobileMenuOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown
+                className={`w-4 h-4 text-muted-foreground transition-transform ${mobileMenuOpen ? "rotate-180" : ""}`}
+              />
             </button>
 
             {mobileMenuOpen && (
               <div className="absolute top-full right-4 left-4 mt-1 bg-card border border-border rounded-2xl shadow-xl z-50 overflow-hidden">
-                {TABS.map(t => (
+                {TABS.map((t) => (
                   <button
                     key={t.id}
                     onClick={() => setTab(t.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors border-b border-border/50 last:border-0 ${
-                      tab === t.id
-                        ? 'bg-primary/10 text-primary'
-                        : 'text-foreground hover:bg-muted'
-                    }`}
+                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors border-b border-border/50 last:border-0 ${tab === t.id ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted"
+                      }`}
                   >
                     <t.icon className="w-4 h-4" />
                     {t.label}
-                    {t.id === "enrollments" && stats.pendingEnrollments > 0 && (
+                    {t.id === "enrollments" && pendingEnrollmentsCount > 0 && (
                       <span className="mr-auto bg-orange-100 dark:bg-orange-900/30 text-orange-600 text-xs px-2 py-0.5 rounded-full font-bold">
-                        {stats.pendingEnrollments}
+                        {pendingEnrollmentsCount}
                       </span>
                     )}
-                    {tab === t.id && (
-                      <span className="mr-auto text-primary text-xs">✓</span>
-                    )}
+                    {tab === t.id && <span className="mr-auto text-primary text-xs">✓</span>}
                   </button>
                 ))}
                 <button
@@ -264,24 +278,24 @@ function AdminContent() {
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                     <AdminStatsCards stats={stats} />
                     <div className="grid lg:grid-cols-2 gap-6">
-                      <EnrollmentRequests enrollments={enrollments} onRefresh={fetchData} />
-                      <CoursesOverview enrollments={enrollments} />
+                      <EnrollmentRequests />
+                      <CoursesPriceOverview />
                     </div>
                   </motion.div>
                 )}
                 {tab === "enrollments" && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                    <EnrollmentRequests enrollments={enrollments} onRefresh={fetchData} />
+                    <EnrollmentRequests />
                   </motion.div>
                 )}
                 {tab === "students" && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                    <StudentsTable users={users} enrollments={enrollments} onRefresh={fetchData} />
+                    <StudentsTable users={users} enrollments={enrollments as unknown as Enrollment[]} onRefresh={fetchUsers} />
                   </motion.div>
                 )}
                 {tab === "courses" && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                    <ManageCoursesTab enrollments={enrollments} />
+                    <ManageCoursesTab />
                   </motion.div>
                 )}
                 {tab === "instructors" && (
@@ -304,19 +318,30 @@ function AdminContent() {
           </div>
         </main>
       </div>
-
-
     </div>
   );
 }
 
+
+
+
+
+
 export default function AdminPage() {
+  // داخل AdminContent:
+  const fetchInstructors = useInstructorsStore((state) => state.fetchInstructors);
+
+  useEffect(() => {
+    fetchInstructors();
+  }, [fetchInstructors]);
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-background">
+          <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+        </div>
+      }
+    >
       <AdminContent />
     </Suspense>
   );

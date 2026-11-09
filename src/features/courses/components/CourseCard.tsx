@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { BookOpen, Check, Clock, Lock, Users, Zap } from "lucide-react";
@@ -48,7 +49,10 @@ export default function CourseCard({
       className="group flex flex-col gap-4 rounded-xl border border-border bg-card p-3.5 shadow-sm hover:shadow-md hover:border-primary/40 transition-all duration-300"
     >
       {/* Cover: داخل البطاقة بحواف مدوّرة */}
-      <div className="relative h-44 overflow-hidden rounded-lg bg-muted">
+      <Link
+        href={href}
+        className="block relative h-44 overflow-hidden rounded-lg bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
         {course.cover_image ? (
           <Image
             src={course.cover_image}
@@ -60,14 +64,19 @@ export default function CourseCard({
         ) : (
           <BookOpen className="absolute inset-0 m-auto size-10 text-muted-foreground/40" />
         )}
-      </div>
+      </Link>
 
       {/* Body */}
       <div className="flex flex-1 flex-col gap-3 px-1">
         <div className="flex justify-between items-start gap-2">
-          <h3 className="line-clamp-2 text-base font-bold leading-snug text-foreground min-h-[44px]">
-            {course.title}
-          </h3>
+          <Link
+            href={href}
+            className="flex-1 group-hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xs"
+          >
+            <h3 className="line-clamp-2 text-base font-bold leading-snug text-foreground min-h-[44px]">
+              {course.title}
+            </h3>
+          </Link>
           <div className="flex flex-col gap-1.5 items-end shrink-0">
             {course.hot && (
               <span className="flex items-center gap-1 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 px-2 py-0.5 text-xs font-semibold">

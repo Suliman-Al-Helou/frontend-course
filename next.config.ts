@@ -1,6 +1,18 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import withPWAInit from "@ducanh2912/next-pwa";
 
+// 1. إعداد الـ PWA
+const withPWA = withPWAInit({
+  dest: "public",
+  cacheOnFrontEndNav: true,
+  aggressiveFrontEndNavCaching: true,
+  reloadOnOnline: true,
+  // disable: process.env.NODE_ENV === "development", // معطل في بيئة التطوير لتسريع العمل
+  disable: false, // معطل في بيئة التطوير لتسريع العمل
+});
+
+// For Security
 const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "DENY" },
@@ -14,6 +26,15 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
+  compress: true,
+  // 2. تفعيل مراقبة الـ Cache وجلب البيانات في الـ Terminal
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+  },
+
+  // For Upload the project Automatecly
   output: "standalone",
   images: {
     remotePatterns: [
@@ -24,6 +45,7 @@ const nextConfig: NextConfig = {
     ],
     formats: ["image/avif", "image/webp"],
   },
+  //For Optimiz the performance
   experimental: {
     optimizePackageImports: [
       "lucide-react",
@@ -33,10 +55,13 @@ const nextConfig: NextConfig = {
     ],
   },
   compiler: {
+    //for Clean the code form console
     removeConsole: process.env.NODE_ENV === "production",
   },
   transpilePackages: [],
 };
+// For Support multi language
 const withNextIntl = createNextIntlPlugin();
 
-export default withNextIntl(nextConfig);
+export default withPWA(withNextIntl(nextConfig));
+

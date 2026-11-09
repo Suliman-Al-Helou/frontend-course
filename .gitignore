@@ -34,6 +34,7 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+*.zip
 
 # TypeScript
 *.tsbuildinfo
@@ -42,3 +43,9 @@ next-env.d.ts
 # Misc
 .vercel
 .turbo
+
+
+
+.github 
+deep-twelve/
+.vite-hooks
