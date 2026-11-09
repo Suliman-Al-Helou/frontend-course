@@ -11,16 +11,12 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary-hover",
-        destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline:
-          "border border-primary bg-background text-foreground hover:bg-muted",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline: "border border-primary bg-background text-foreground hover:bg-muted",
         outlineDestructive:
           "border border-destructive/40 bg-background text-destructive hover:bg-destructive/10",
-        outlineWarning:
-          "border border-warning/40 bg-background text-warning hover:bg-warning/10",
-          outlineSuccess:
-  "border border-success/40 bg-background text-success hover:bg-success/10",
+        outlineWarning: "border border-warning/40 bg-background text-warning hover:bg-warning/10",
+        outlineSuccess: "border border-success/40 bg-background text-success hover:bg-success/10",
         secondary: "bg-muted text-foreground hover:bg-muted/70",
         ghost: "text-foreground hover:bg-muted",
         link: "text-primary underline-offset-4 hover:underline",
@@ -54,71 +50,60 @@ type ButtonAsLink = StyleProps &
 
 export type ButtonProps = ButtonAsButton | ButtonAsLink;
 
-const Button = React.forwardRef<
-  HTMLButtonElement | HTMLAnchorElement,
-  ButtonProps
->((props, ref) => {
-  // ---- رابط ----
-  if (props.href !== undefined) {
-    const { href, className, variant, size, disabled, ...anchorProps } = props;
-    const common = {
-      className: cn(buttonVariants({ variant, size, className })),
-      "aria-disabled": disabled || undefined,
-      tabIndex: disabled ? -1 : undefined,
-    };
-    const isExternal = /^(https?:|mailto:|tel:)/.test(href);
+const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
+  (props, ref) => {
+    // ---- رابط ----
+    if (props.href !== undefined) {
+      const { href, className, variant, size, disabled, ...anchorProps } = props;
+      const common = {
+        className: cn(buttonVariants({ variant, size, className })),
+        "aria-disabled": disabled || undefined,
+        tabIndex: disabled ? -1 : undefined,
+      };
+      const isExternal = /^(https?:|mailto:|tel:)/.test(href);
 
-    return isExternal ? (
-      <a
-        ref={ref as React.Ref<HTMLAnchorElement>}
-        href={href}
-        {...common}
-        {...anchorProps}
-      />
-    ) : (
-      <Link
-        ref={ref as React.Ref<HTMLAnchorElement>}
-        href={href}
-        {...common}
-        {...anchorProps}
-      />
-    );
-  }
+      return isExternal ? (
+        <a ref={ref as React.Ref<HTMLAnchorElement>} href={href} {...common} {...anchorProps} />
+      ) : (
+        <Link ref={ref as React.Ref<HTMLAnchorElement>} href={href} {...common} {...anchorProps} />
+      );
+    }
 
-  // ---- زر ----
-  const {
-    className,
-    variant,
-    size,
-    asChild = false,
-    loading = false,
-    disabled,
-    children,
-    ...rest
-  } = props;
-  const classes = cn(buttonVariants({ variant, size, className }));
+    // ---- زر ----
+    const {
+      className,
+      variant,
+      size,
+      asChild = false,
+      loading = false,
+      disabled,
+      children,
+      ...rest
+    } = props;
+    const classes = cn(buttonVariants({ variant, size, className }));
 
-  if (asChild) {
+    if (asChild) {
+      return (
+        <Slot className={classes} ref={ref as React.Ref<HTMLElement>} {...rest}>
+          {children}
+        </Slot>
+      );
+    }
+
     return (
-      <Slot className={classes} ref={ref as React.Ref<HTMLElement>} {...rest}>
+      <button
+        className={classes}
+        ref={ref as React.Ref<HTMLButtonElement>}
+        disabled={disabled || loading}
+        aria-busy={loading || undefined}
+        {...rest}
+      >
+        {loading && <Loader2 className="animate-spin" aria-hidden />}
         {children}
-      </Slot>
+      </button>
     );
-  }
-
-  return (
-    <button
-      className={classes}
-      ref={ref as React.Ref<HTMLButtonElement>}
-      disabled={disabled || loading}
-      aria-busy={loading || undefined}
-      {...rest}
-    >
-      {loading && <Loader2 className="animate-spin" aria-hidden />}
-      {children}
-    </button>
-  );
-});
+  },
+);
 Button.displayName = "Button";
 
 export { Button, buttonVariants };

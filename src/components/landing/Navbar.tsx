@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import Logo from '@/components/Logo';
-import NavbarClient from './NavbarClient';
+import Link from "next/link";
+import Logo from "@/components/Logo";
+import NavbarClient from "./NavbarClient";
 
 export default function Navbar() {
   return (

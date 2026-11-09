@@ -48,9 +48,8 @@ export default function FeaturesSection() {
                 <Icon className="size-7" />
               </div>
               <div>
-                
-              <h3 className="mb-2 text-lg font-bold text-foreground">{title}</h3>
-              <p className="text-sm leading-relaxed text-muted-foreground">{description}</p>
+                <h3 className="mb-2 text-lg font-bold text-foreground">{title}</h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">{description}</p>
               </div>
             </motion.div>
           ))}

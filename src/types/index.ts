@@ -24,22 +24,32 @@ export interface Course {
   cover_image: string | null;
   level: "beginner" | "intermediate" | "advanced";
   status: "draft" | "published" | "coming_soon";
+
   total_duration: number;
-  what_you_learn: string[];
   requirements: string;
+  what_you_learn: string[];
   target_audience: string;
+
   students_count: number;
-  sections?: Section[];
-  is_public: Boolean;
+  enrollments_count: number;
   rating: number;
+  is_popular: boolean;
+  price: number;
+  is_public: boolean;
+
+
+    instructor?: {
+    id: number;
+    name: string;
+  } | null;
+
+  sections?: Section[];
   reviews: number;
   students: number;
-  instructor: string;
-  instructorBio: string;
+
   lessons: number;
   duration?: string;
   tags: string[];
-  price: number;
   hot?: boolean;
   next_lesson_id?: number | null;
 }

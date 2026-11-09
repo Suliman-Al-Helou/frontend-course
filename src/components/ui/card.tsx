@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { cn } from '@/lib/utils';
+import * as React from "react";
+import { cn } from "@/lib/utils";
 
 /* Card حسب design.md: rounded-md + border + bg-background، بدون shadow */
 
@@ -7,25 +7,25 @@ const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElemen
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('rounded-md border border-border bg-background', className)}
+      className={cn("rounded-md border border-border bg-background", className)}
       {...props}
     />
   ),
 );
-Card.displayName = 'Card';
+Card.displayName = "Card";
 
 const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('flex flex-col gap-1 p-4', className)} {...props} />
+    <div ref={ref} className={cn("flex flex-col gap-1 p-4", className)} {...props} />
   ),
 );
-CardHeader.displayName = 'CardHeader';
+CardHeader.displayName = "CardHeader";
 
 const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('p-4 pt-0', className)} {...props} />
+    <div ref={ref} className={cn("p-4 pt-0", className)} {...props} />
   ),
 );
-CardContent.displayName = 'CardContent';
+CardContent.displayName = "CardContent";
 
 export { Card, CardHeader, CardContent };

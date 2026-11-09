@@ -1,7 +1,7 @@
-import Link from 'next/link';
-import { BookOpen, Home, SearchX } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { StateMessage } from './Statemessage';
+import Link from "next/link";
+import { BookOpen, Home, SearchX } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { StateMessage } from "./Statemessage";
 
 /* ───────────────────────── NotFoundState.tsx ─────────────────────────
    مهمة الملف: واجهة "غير موجود" (404).
@@ -17,8 +17,8 @@ interface NotFoundStateProps {
 }
 
 export function NotFoundState({
-  title = 'غير موجود',
-  description = 'المحتوى الذي تبحث عنه غير موجود أو تم نقله.',
+  title = "غير موجود",
+  description = "المحتوى الذي تبحث عنه غير موجود أو تم نقله.",
   fullPage = false,
 }: NotFoundStateProps) {
   return (
