@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import api from "@/lib/api";
 import { useAuthStore } from "@/store/authStore";
@@ -30,6 +30,7 @@ export function useRegisterForm() {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const isSubmittingRef = useRef(false);
 
   const updateField = (field: keyof RegisterForm) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -38,7 +39,7 @@ export function useRegisterForm() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (loading) return; // 👈 جديد
+    if (loading || isSubmittingRef.current) return;
 
     setError("");
     setFieldErrors({});
@@ -49,6 +50,7 @@ export function useRegisterForm() {
       return;
     }
 
+    isSubmittingRef.current = true;
     setLoading(true);
     try {
       const { data } = await api.post("/auth/register", {
@@ -67,6 +69,7 @@ export function useRegisterForm() {
       handleFormError(err, setFieldErrors, setError);
     } finally {
       setLoading(false);
+      isSubmittingRef.current = false;
     }
   };
 

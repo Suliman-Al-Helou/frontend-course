@@ -1,7 +1,7 @@
-import { mapApiError } from './mapApiError';
-import { notify } from '@/lib/toast';
+import { mapApiError } from "./mapApiError";
+import { notify } from "@/lib/toast";
 
-import { LARAVEL_FIELD_MAP } from './fieldNameMap';
+import { LARAVEL_FIELD_MAP } from "./fieldNameMap";
 
 export function handleFormError(
   err: unknown,

@@ -79,7 +79,7 @@ export function GoogleAuthButton({ mode = "signin" }: GoogleAuthButtonProps) {
   const isSubmittingRef = useRef(false);
   const hiddenIframeRef = useRef<HTMLDivElement>(null);
 
-  const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+  const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID?.trim();
 
   const handleCredentialResponse = useCallback(
     async (response: { credential: string }) => {
@@ -146,8 +146,14 @@ export function GoogleAuthButton({ mode = "signin" }: GoogleAuthButtonProps) {
         });
       }
 
-      // تفعيل Google One Tap التلقائي للمستخدمين
-      window.google.accounts.id.prompt();
+      // تفعيل Google One Tap التلقائي مع معالجة هادئة لعدم إيقاف الواجهة
+      window.google.accounts.id.prompt((notification: unknown) => {
+        // التقاط حالات التخطي أو الانتظار دون إثارة أخطاء مزعجة في شاشة التطوير
+        const notif = notification as { isNotDisplayed?: () => boolean; getNotDisplayedReason?: () => string };
+        if (notif?.isNotDisplayed?.()) {
+          console.warn("Google One Tap postponed:", notif.getNotDisplayedReason?.());
+        }
+      });
     } catch (error) {
       console.error("Failed to initialize Google Identity Services:", error);
     }

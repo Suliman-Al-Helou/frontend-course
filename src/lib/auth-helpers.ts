@@ -49,3 +49,4 @@ export function extractUpdatedProfile(
   }
   return null;
 }
+
