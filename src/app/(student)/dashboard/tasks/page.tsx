@@ -14,6 +14,7 @@ import {
 import api from "@/lib/api";
 import type { TaskResult } from "@/types";
 import { lessonApi } from "@/services/lessonApi";
+import CourseFilterDropdown, { useEnrolledCourses } from "@/components/dashboard/CourseFilterDropdown";
 
 interface TaskItem {
   id: number;
@@ -24,50 +25,21 @@ interface TaskItem {
   course: { id: number; title: string };
 }
 
-interface CourseOption {
-  id: number;
-  title: string;
-}
-
 function TasksContent() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
-  const [enrolledCourses, setEnrolledCourses] = useState<CourseOption[]>([]);
-  const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
+  const { courses, selectedId, isLoading: loadingCourses, selectCourse } = useEnrolledCourses();
   const [tasks, setTasks] = useState<TaskItem[]>([]);
-  const [loadingCourses, setLoadingCourses] = useState(true);
   const [loadingTasks, setLoadingTasks] = useState(false);
   const [openId, setOpenId] = useState<number | null>(null);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  // جلب الكورسات أولاً
-  useEffect(() => {
-    api
-      .get("/my-courses")
-      .then((res) => {
-        const approved = res.data
-          .filter((e: any) => e.status === "approved")
-          .map((e: any) => ({ id: e.course.id, title: e.course.title }));
-        setEnrolledCourses(approved);
-
-        const urlId = searchParams.get("course");
-        const defaultId = urlId ? Number(urlId) : (approved[0]?.id ?? null);
-        setSelectedCourseId(defaultId);
-      })
-      .catch(() => {})
-      .finally(() => setLoadingCourses(false));
-  }, []);
 
   // جلب مهام الكورس المحدد
   useEffect(() => {
-    if (!selectedCourseId) return;
+    if (!selectedId) return;
     setLoadingTasks(true);
     setTasks([]);
     setOpenId(null);
 
     api
-      .get(`/courses/${selectedCourseId}`)
+      .get(`/courses/${selectedId}`)
       .then(async (fullCourse) => {
         const course = fullCourse.data;
         const allLessons = (course.sections ?? []).flatMap((s: any) =>
@@ -101,16 +73,7 @@ function TasksContent() {
         setTasks(result);
       })
       .finally(() => setLoadingTasks(false));
-  }, [selectedCourseId]);
-
-  const handleSelect = (id: number) => {
-    setSelectedCourseId(id);
-    setDropdownOpen(false);
-    router.replace(`?course=${id}`, { scroll: false });
-  };
-
-  const selectedCourse = enrolledCourses.find((c) => c.id === selectedCourseId);
-  const showDropdown = enrolledCourses.length > 1;
+  }, [selectedId]);
 
   if (loadingCourses)
     return (
@@ -126,37 +89,12 @@ function TasksContent() {
       <h1 className="text-2xl font-bold text-foreground mb-6">المهام</h1>
 
       {/* Course Dropdown — يظهر فقط إذا في أكثر من كورس */}
-      {showDropdown && (
-        <div className="relative mb-6">
-          <button
-            onClick={() => setDropdownOpen((o) => !o)}
-            className="w-full flex items-center justify-between bg-card border border-border rounded-2xl px-4 py-3 text-sm font-medium text-foreground hover:bg-muted/50 transition"
-          >
-            <span>{selectedCourse?.title ?? "اختر كورساً"}</span>
-            <ChevronDown
-              className={`w-4 h-4 text-muted-foreground transition-transform ${dropdownOpen ? "rotate-180" : ""}`}
-            />
-          </button>
-
-          {dropdownOpen && (
-            <div className="absolute top-full mt-1 w-full bg-card border border-border rounded-2xl shadow-lg z-10 overflow-hidden">
-              {enrolledCourses.map((course) => (
-                <button
-                  key={course.id}
-                  onClick={() => handleSelect(course.id)}
-                  className={`w-full text-right px-4 py-3 text-sm transition hover:bg-muted/60 border-b border-border/50 last:border-0 ${
-                    course.id === selectedCourseId
-                      ? "text-primary font-semibold bg-primary/5"
-                      : "text-foreground"
-                  }`}
-                >
-                  {course.title}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+      <CourseFilterDropdown
+        courses={courses}
+        selectedId={selectedId}
+        onSelect={selectCourse}
+        hideIfSingle
+      />
 
       {/* Tasks */}
       {loadingTasks ? (

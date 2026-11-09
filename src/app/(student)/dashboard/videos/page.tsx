@@ -1,48 +1,24 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Video, CheckCircle, ChevronDown } from "lucide-react";
+import { Video, CheckCircle } from "lucide-react";
 import api from "@/lib/api";
+import CourseFilterDropdown, { useEnrolledCourses } from "@/components/dashboard/CourseFilterDropdown";
 
 function VideosContent() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
-  const [enrolledCourses, setEnrolledCourses] = useState<any[]>([]);
-  const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
+  const { courses, selectedId, isLoading: loadingCourses, selectCourse } = useEnrolledCourses();
   const [lessons, setLessons] = useState<any[]>([]);
-  const [loadingCourses, setLoadingCourses] = useState(true);
   const [loadingLessons, setLoadingLessons] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  // جلب الكورسات
-  useEffect(() => {
-    api
-      .get("/my-courses")
-      .then((res) => {
-        const approved = res.data
-          .filter((e: any) => e.status === "approved")
-          .map((e: any) => ({ id: e.course.id, title: e.course.title }));
-        setEnrolledCourses(approved);
-
-        const urlId = searchParams.get("course");
-        const defaultId = urlId ? Number(urlId) : (approved[0]?.id ?? null);
-        setSelectedCourseId(defaultId);
-      })
-      .catch(() => {})
-      .finally(() => setLoadingCourses(false));
-  }, []);
 
   // جلب فيديوهات الكورس المحدد
   useEffect(() => {
-    if (!selectedCourseId) return;
+    if (!selectedId) return;
     setLoadingLessons(true);
     setLessons([]);
 
     api
-      .get(`/courses/${selectedCourseId}`)
+      .get(`/courses/${selectedId}`)
       .then(async (res) => {
         const fullCourse = res.data;
         const result: any[] = [];
@@ -59,15 +35,7 @@ function VideosContent() {
         setLessons(result);
       })
       .finally(() => setLoadingLessons(false));
-  }, [selectedCourseId]);
-
-  const handleSelect = (id: number) => {
-    setSelectedCourseId(id);
-    setDropdownOpen(false);
-    router.replace(`?course=${id}`, { scroll: false });
-  };
-
-  const selectedCourse = enrolledCourses.find((c) => c.id === selectedCourseId);
+  }, [selectedId]);
 
   if (loadingCourses)
     return (
@@ -84,73 +52,62 @@ function VideosContent() {
       <h1 className="text-2xl font-bold text-foreground mb-6">الفيديوهات</h1>
 
       {/* Course Dropdown */}
-      <div className="relative mb-6">
-        <button
-          onClick={() => setDropdownOpen((o) => !o)}
-          className="w-full flex items-center justify-between bg-card border border-border rounded-2xl px-4 py-3 text-sm font-medium text-foreground hover:bg-muted/50 transition"
-        >
-          <span>{selectedCourse?.title ?? "اختر كورساً"}</span>
-          <ChevronDown
-            className={`w-4 h-4 text-muted-foreground transition-transform ${dropdownOpen ? "rotate-180" : ""}`}
-          />
-        </button>
+      <CourseFilterDropdown
+        courses={courses}
+        selectedId={selectedId}
+        onSelect={selectCourse}
+      />
 
-        {dropdownOpen && (
-          <div className="absolute top-full mt-1 w-full bg-card border border-border rounded-2xl shadow-lg z-10 overflow-hidden">
-            {enrolledCourses.map((course) => (
-              <button
-                key={course.id}
-                onClick={() => handleSelect(course.id)}
-                className={`w-full text-right px-4 py-3 text-sm transition hover:bg-muted/60 ${
-                  course.id === selectedCourseId
-                    ? "text-primary font-semibold bg-primary/5"
-                    : "text-foreground"
-                }`}
-              >
-                {course.title}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Lessons */}
       {loadingLessons ? (
-        <div className="animate-pulse space-y-3">
+        <div className="space-y-3">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="bg-card rounded-2xl h-16 border border-border" />
+            <div key={i} className="bg-card rounded-2xl h-20 border border-border animate-pulse" />
           ))}
+        </div>
+      ) : lessons.length === 0 ? (
+        <div className="text-center py-16 text-muted-foreground bg-card rounded-2xl border border-border">
+          <Video className="w-10 h-10 mx-auto mb-2 opacity-30" />
+          <p className="text-sm font-medium">لا توجد دروس متاحة حالياً</p>
         </div>
       ) : (
         <div className="space-y-3">
-          {lessons.map((lesson, index) => (
-            <Link
-              key={lesson.id}
-              href={`/courses/${lesson.course.id}/lessons/${lesson.id}`}
-              className="flex items-center gap-4 bg-card p-4 rounded-2xl hover:shadow-md transition border border-border group"
-            >
+          {lessons.map((lesson) => {
+            const isCompleted = lesson.progress?.completed;
+            const percent = lesson.progress?.watched_percent ?? 0;
+
+            return (
               <div
-                className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                  lesson.progress.completed
-                    ? "bg-green-500/10"
-                    : "bg-primary/10 group-hover:bg-primary/20"
-                }`}
+                key={lesson.id}
+                className="bg-card border border-border rounded-2xl p-4 flex items-center justify-between gap-4 hover:border-primary/50 transition"
               >
-                {lesson.progress.completed ? (
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                ) : (
-                  <span className="text-sm font-bold text-primary">{index + 1}</span>
-                )}
+                <div className="flex items-center gap-3 min-w-0">
+                  <div
+                    className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                      isCompleted ? "bg-emerald-500/10 text-emerald-500" : "bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    {isCompleted ? <CheckCircle className="w-5 h-5" /> : <Video className="w-5 h-5" />}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs text-muted-foreground truncate">{lesson.section?.title}</p>
+                    <p className="text-sm font-semibold text-foreground truncate">{lesson.title}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 shrink-0">
+                  {percent > 0 && !isCompleted && (
+                    <span className="text-xs text-muted-foreground hidden sm:inline">%{percent}</span>
+                  )}
+                  <Link
+                    href={`/courses/${lesson.course?.id}/lessons/${lesson.id}`}
+                    className="text-xs font-semibold px-4 py-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition"
+                  >
+                    {isCompleted ? "مراجعة" : percent > 0 ? "متابعة" : "مشاهدة"}
+                  </Link>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-medium text-foreground truncate">{lesson.title}</p>
-                <p className="text-xs text-muted-foreground">{lesson.section.title}</p>
-              </div>
-              <span className="text-xs text-muted-foreground">
-                {Math.round(Number(lesson.duration) / 60)} د
-              </span>
-            </Link>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
@@ -162,6 +119,7 @@ export default function VideosPage() {
     <Suspense
       fallback={
         <div className="animate-pulse space-y-3">
+          <div className="bg-card rounded-2xl h-12 border border-border" />
           {[1, 2, 3].map((i) => (
             <div key={i} className="bg-card rounded-2xl h-16 border border-border" />
           ))}

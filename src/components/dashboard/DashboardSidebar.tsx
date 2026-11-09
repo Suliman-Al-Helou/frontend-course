@@ -59,7 +59,14 @@ export default function DashboardSidebar({ open, onClose }: Props) {
 
   return (
     <>
-      {open && <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={onClose} />}
+      {open && (
+        <button
+          type="button"
+          aria-label="إغلاق القائمة الجانبية"
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden cursor-default border-0 p-0"
+          onClick={onClose}
+        />
+      )}
 
       <aside
         className={`
