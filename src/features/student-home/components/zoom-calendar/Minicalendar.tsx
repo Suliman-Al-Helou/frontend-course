@@ -2,12 +2,7 @@ import { useMemo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { WEEK_DAYS } from "./constants";
-import {
-  buildCalendarDays,
-  dayKey,
-  monthFormatter,
-  sameDay,
-} from "./date-utils";
+import { buildCalendarDays, dayKey, monthFormatter, sameDay } from "./date-utils";
 import type { ZoomMeeting } from "./types";
 
 /* ───────────────────────── MiniCalendar.tsx ─────────────────────────
