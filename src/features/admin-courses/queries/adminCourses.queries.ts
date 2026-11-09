@@ -5,6 +5,8 @@ import {
   getCourseSections,
   getAdminLessonTask,
   getAdminEnrollments,
+  getAdminZoomMeetings,
+  getAdminVideoAssets,
 } from "../api";
 
 export const adminCourseQueries = {
@@ -51,6 +53,28 @@ export const adminEnrollmentQueries = {
     queryOptions({
       queryKey: [...adminEnrollmentQueries.all(), "list"] as const,
       queryFn: getAdminEnrollments,
+      staleTime: 1000 * 60 * 2,
+    }),
+};
+
+export const adminZoomQueries = {
+  all: () => ["admin-zoom-meetings"] as const,
+
+  list: () =>
+    queryOptions({
+      queryKey: [...adminZoomQueries.all(), "list"] as const,
+      queryFn: getAdminZoomMeetings,
+      staleTime: 1000 * 60 * 2,
+    }),
+};
+
+export const adminVideoAssetQueries = {
+  all: () => ["admin-video-assets"] as const,
+
+  list: (params?: { course_id?: number | string; zoom_meeting_id?: number | string }) =>
+    queryOptions({
+      queryKey: [...adminVideoAssetQueries.all(), "list", params ?? {}] as const,
+      queryFn: () => getAdminVideoAssets(params),
       staleTime: 1000 * 60 * 2,
     }),
 };

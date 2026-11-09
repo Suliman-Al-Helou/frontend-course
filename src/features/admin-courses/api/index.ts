@@ -9,6 +9,10 @@ import type {
   AdminEnrollment,
   CreateEnrollmentPayload,
   EnrollmentStatus,
+  AdminVideoAsset,
+  VideoAssetFormData,
+  AdminZoomMeeting,
+  ZoomMeetingFormData,
 } from "../types";
 
 /* ─── 1. Courses CRUD API ──────────────────────────────────── */
@@ -147,4 +151,66 @@ export async function createAdminEnrollment(
   const { data } = await api.post<AdminEnrollment>("/admin/enrollments", payload);
   return data;
 }
+
+/* ─── 6. Zoom Meetings API ─────────────────────────────────── */
+
+export async function getAdminZoomMeetings(): Promise<AdminZoomMeeting[]> {
+  const { data } = await api.get<AdminZoomMeeting[] | { data: AdminZoomMeeting[] }>("/admin/zoom-meetings");
+  if (Array.isArray(data)) return data;
+  if (data && typeof data === "object" && Array.isArray((data as { data: AdminZoomMeeting[] }).data)) {
+    return (data as { data: AdminZoomMeeting[] }).data;
+  }
+  return [];
+}
+
+export async function createAdminZoomMeeting(payload: ZoomMeetingFormData): Promise<AdminZoomMeeting> {
+  const { data } = await api.post<AdminZoomMeeting>("/admin/zoom-meetings", payload);
+  return data;
+}
+
+export async function updateAdminZoomMeeting(
+  id: number | string,
+  payload: Partial<ZoomMeetingFormData>
+): Promise<AdminZoomMeeting> {
+  const { data } = await api.put<AdminZoomMeeting>(`/admin/zoom-meetings/${id}`, payload);
+  return data;
+}
+
+export async function deleteAdminZoomMeeting(id: number | string): Promise<void> {
+  await api.delete(`/admin/zoom-meetings/${id}`);
+}
+
+/* ─── 7. Video Assets API ──────────────────────────────────── */
+
+export async function getAdminVideoAssets(params?: {
+  course_id?: number | string;
+  zoom_meeting_id?: number | string;
+}): Promise<AdminVideoAsset[]> {
+  const { data } = await api.get<AdminVideoAsset[] | { data: AdminVideoAsset[] }>("/admin/video-assets", {
+    params,
+  });
+  if (Array.isArray(data)) return data;
+  if (data && typeof data === "object" && Array.isArray((data as { data: AdminVideoAsset[] }).data)) {
+    return (data as { data: AdminVideoAsset[] }).data;
+  }
+  return [];
+}
+
+export async function createAdminVideoAsset(payload: VideoAssetFormData): Promise<AdminVideoAsset> {
+  const { data } = await api.post<AdminVideoAsset>("/admin/video-assets", payload);
+  return data;
+}
+
+export async function updateAdminVideoAsset(
+  id: number | string,
+  payload: Partial<VideoAssetFormData>
+): Promise<AdminVideoAsset> {
+  const { data } = await api.put<AdminVideoAsset>(`/admin/video-assets/${id}`, payload);
+  return data;
+}
+
+export async function deleteAdminVideoAsset(id: number | string): Promise<void> {
+  await api.delete(`/admin/video-assets/${id}`);
+}
+
 

@@ -1,30 +1,40 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { Plus, Pencil, Trash2, Loader2, Users, X, Video } from 'lucide-react';
-import api from '@/lib/api';
+import { useState, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import flatpickr from 'flatpickr';
-import type { Instance } from 'flatpickr/dist/types/instance';
-import { Arabic } from 'flatpickr/dist/l10n/ar.js';
-import 'flatpickr/dist/flatpickr.min.css';
-
-interface ZoomMeeting {
-  id: number;
-  course_name: string;
-  title: string;
-  description: string | null;
-  zoom_link: string;
-  starts_at: string; // ISO (UTC)
-  attendances_count?: number;
-}
+  Plus,
+  Pencil,
+  Trash2,
+  Loader2,
+  Users,
+  Video,
+  Film,
+  Calendar,
+  Clock,
+  ExternalLink,
+  AlertTriangle,
+  Play,
+} from "lucide-react";
+import api from "@/lib/api";
+import { Button } from "@/components/ui/button";
+import ZoomMeetingModal from "./ZoomMeetingModal";
+import VideoAssetModal from "./VideoAssetModal";
+import {
+  adminZoomQueries,
+  adminVideoAssetQueries,
+  adminCourseQueries,
+} from "@/features/admin-courses/queries/adminCourses.queries";
+import {
+  useZoomMeetingMutations,
+  useVideoAssetMutations,
+} from "@/features/admin-courses/queries/adminCourses.mutations";
+import type {
+  AdminZoomMeeting,
+  AdminVideoAsset,
+  ZoomMeetingFormData,
+  VideoAssetFormData,
+} from "@/features/admin-courses/types";
 
 interface Attendance {
   id: number;
@@ -32,340 +42,508 @@ interface Attendance {
   user: { id: number; name: string; email: string };
 }
 
-const EMPTY = { course_name: '', title: '', zoom_link: '', starts_at: '', description: '' };
-
-const inputCls =
-  'w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring';
-
-// ISO (UTC) -> نص بنفس صيغة flatpickr ("Y-m-d H:i") بتوقيت المتصفح
-function toLocalInput(iso: string) {
-  const d = new Date(iso);
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
-
-// "2026-09-30 18:00" -> Date بتوقيت المتصفح (استبدال المسافة بـ T ليعمل على كل المتصفحات)
-const parseLocal = (v: string) => new Date(v.replace(' ', 'T'));
-
 const fmt = (iso: string) =>
-  new Date(iso).toLocaleString('ar', { dateStyle: 'medium', timeStyle: 'short' });
+  new Date(iso).toLocaleString("ar", { dateStyle: "medium", timeStyle: "short" });
 
 export default function ManageZoomTab() {
-  const [meetings, setMeetings] = useState<ZoomMeeting[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [form, setForm] = useState(EMPTY);
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
+  // Queries via TanStack Query v5
+  const { data: rawMeetings = [], isLoading: meetingsLoading } = useQuery(adminZoomQueries.list());
+  const { data: rawVideos = [], isLoading: videosLoading } = useQuery(adminVideoAssetQueries.list());
+  const { data: rawCourses = [], isLoading: coursesLoading } = useQuery(adminCourseQueries.list());
 
-  // قائمة الحضور للقاء مفتوح
-  const [openId, setOpenId] = useState<number | null>(null);
+  const meetings = Array.isArray(rawMeetings) ? rawMeetings : [];
+  const videos = Array.isArray(rawVideos) ? rawVideos : [];
+  const courses = Array.isArray(rawCourses)
+    ? rawCourses.map((c) => ({ id: c.id, title: c.title }))
+    : [];
+
+  // Mutations
+  const { createMeeting, updateMeeting, deleteMeeting } = useZoomMeetingMutations();
+  const { createAsset, updateAsset, deleteAsset } = useVideoAssetMutations();
+
+  // Modals state
+  const [isZoomModalOpen, setIsZoomModalOpen] = useState(false);
+  const [editingMeeting, setEditingMeeting] = useState<AdminZoomMeeting | null>(null);
+
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const [editingVideo, setEditingVideo] = useState<AdminVideoAsset | null>(null);
+
+  // Accessible Delete confirmation dialog state
+  const [deleteTarget, setDeleteTarget] = useState<{
+    type: "meeting" | "video";
+    id: number;
+    title: string;
+  } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const isDeletingRef = useRef(false);
+
+  // Attendees drawer state
+  const [openMeetingId, setOpenMeetingId] = useState<number | null>(null);
   const [attendees, setAttendees] = useState<Attendance[]>([]);
   const [loadingAtt, setLoadingAtt] = useState(false);
 
-  // جلب أسماء الكورسات المتاحة فقط (استخراج title والتخلص من أي بيانات زائدة)
-  const { data: courseNames = [], isLoading: coursesLoading } = useQuery<string[]>({
-    queryKey: ['admin', 'course-names'],
-    queryFn: async () => {
-      let raw: Array<{ title?: string }> = [];
-      try {
-        const res = await api.get('/admin/courses');
-        const data = res.data?.data ?? res.data;
-        if (Array.isArray(data) && data.length > 0) raw = data;
-      } catch {
-        // Fallback إلى /courses في حال تعذر /admin/courses
-      }
-      if (raw.length === 0) {
-        try {
-          const res = await api.get('/courses');
-          const data = res.data?.data ?? res.data;
-          if (Array.isArray(data)) raw = data;
-        } catch {
-          // ignore
-        }
-      }
-
-      // استخراج اسم الكورس فقط كـ string والتخلص من كامل تفاصيل الكورس لتوفير الذاكرة
-      const titles = raw
-        .map((c) => (typeof c?.title === 'string' ? c.title.trim() : ''))
-        .filter((t): t is string => t.length > 0);
-
-      return Array.from(new Set(titles)).sort((a, b) => a.localeCompare(b, 'ar'));
-    },
-  });
-
-  const hasCustomCourse = Boolean(
-    form.course_name.trim() && !courseNames.includes(form.course_name.trim()),
-  );
-
-  const fetchMeetings = async () => {
-    setLoading(true);
-    try {
-      const res = await api.get('/admin/zoom-meetings');
-      setMeetings(res.data.data ?? res.data);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    void fetchMeetings();
-  }, []);
-
-  const set = (k: keyof typeof EMPTY, v: string) => setForm((p) => ({ ...p, [k]: v }));
-
-  const valid = form.course_name.trim() && form.title.trim() && form.zoom_link.trim();
-
-  // منتقي التاريخ (flatpickr): يُنشأ مرة واحدة ويُدمَّر عند مغادرة التاب
-  const dateRef = useRef<HTMLInputElement>(null);
-  const fpRef = useRef<Instance | null>(null);
-
-  useEffect(() => {
-    if (!dateRef.current) return;
-    const fp = flatpickr(dateRef.current, {
-      enableTime: true,
-      dateFormat: 'Y-m-d H:i',
-      time_24hr: false,
-      locale: Arabic,
-      onChange: (_dates, dateStr) => setForm((p) => ({ ...p, starts_at: dateStr })),
-    }) as Instance;
-    fpRef.current = fp;
-    return () => fp.destroy();
-  }, []);
-
-  const reset = () => {
-    setForm(EMPTY);
-    fpRef.current?.clear(false);
-    setEditingId(null);
-    setError(null);
-  };
-
-  const handleSave = async () => {
-    if (!valid) return;
-    if (!form.starts_at) {
-      setError('الرجاء اختيار تاريخ ووقت اللقاء');
-      return;
-    }
-    setSaving(true);
-    setError(null);
-    const payload = {
-      course_name: form.course_name.trim(),
-      title: form.title.trim(),
-      zoom_link: form.zoom_link.trim(),
-      description: form.description.trim() || null,
-      starts_at: parseLocal(form.starts_at).toISOString(), // يخزّن UTC
-    };
-    try {
-      if (editingId) await api.put(`/admin/zoom-meetings/${editingId}`, payload);
-      else await api.post('/admin/zoom-meetings', payload);
-      reset();
-      await fetchMeetings();
-    } catch (e: unknown) {
-      const err = e as { response?: { data?: { message?: string } } };
-      setError(err.response?.data?.message ?? 'تعذّر حفظ اللقاء');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleEdit = (m: ZoomMeeting) => {
-    const startsAt = toLocalInput(m.starts_at);
-    setEditingId(m.id);
-    setForm({
-      course_name: m.course_name,
-      title: m.title,
-      zoom_link: m.zoom_link,
-      starts_at: startsAt,
-      description: m.description ?? '',
-    });
-    fpRef.current?.setDate(startsAt, false); // يزامن المنتقي مع اللقاء المعدّل
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleDelete = async (id: number) => {
-    if (!confirm('سيتم حذف اللقاء وسجلات حضوره. متأكد؟')) return;
-    setDeletingId(id);
-    try {
-      await api.delete(`/admin/zoom-meetings/${id}`);
-      if (editingId === id) reset();
-      await fetchMeetings();
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setDeletingId(null);
-    }
-  };
-
   const toggleAttendees = async (id: number) => {
-    if (openId === id) return setOpenId(null);
-    setOpenId(id);
+    if (openMeetingId === id) return setOpenMeetingId(null);
+    setOpenMeetingId(id);
     setLoadingAtt(true);
     try {
       const res = await api.get(`/admin/zoom-meetings/${id}/attendances`);
-      setAttendees(res.data.data ?? res.data);
-    } catch (e) {
-      console.error(e);
+      setAttendees(res.data?.data ?? res.data ?? []);
+    } catch {
       setAttendees([]);
     } finally {
       setLoadingAtt(false);
     }
   };
 
+  // Save Handlers
+  const handleSaveMeeting = async (data: ZoomMeetingFormData) => {
+    if (editingMeeting) {
+      await updateMeeting.mutateAsync({ id: editingMeeting.id, data });
+    } else {
+      await createMeeting.mutateAsync(data);
+    }
+  };
+
+  const handleSaveVideo = async (data: VideoAssetFormData) => {
+    if (editingVideo) {
+      await updateAsset.mutateAsync({ id: editingVideo.id, data });
+    } else {
+      await createAsset.mutateAsync(data);
+    }
+  };
+
+  // Delete Handler with Concurrency Lock
+  const handleConfirmDelete = async () => {
+    if (isDeletingRef.current || !deleteTarget) return;
+
+    isDeletingRef.current = true;
+    setIsDeleting(true);
+    try {
+      if (deleteTarget.type === "meeting") {
+        await deleteMeeting.mutateAsync(deleteTarget.id);
+        if (openMeetingId === deleteTarget.id) setOpenMeetingId(null);
+      } else {
+        await deleteAsset.mutateAsync(deleteTarget.id);
+      }
+      setDeleteTarget(null);
+    } catch (e) {
+      console.error("فشل الحذف:", e);
+    } finally {
+      isDeletingRef.current = false;
+      setIsDeleting(false);
+    }
+  };
+
   return (
-    <div className="space-y-6">
-      {/* Form */}
-      <div className="bg-card border border-border rounded-2xl p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-base font-bold text-foreground flex items-center gap-2">
-            <Plus className="w-4 h-4 text-primary" />
-            {editingId ? 'تعديل اللقاء' : 'إضافة لقاء Zoom'}
-          </h2>
-          {editingId && (
-            <button onClick={reset} className="text-xs text-muted-foreground flex items-center gap-1">
-              <X className="w-3.5 h-3.5" /> إلغاء التعديل
-            </button>
+    <div className="space-y-8">
+      {/* ─── 1. Top Action Header ───────────────────────────── */}
+      <div className="bg-card border border-border rounded-2xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-lg font-bold text-foreground flex items-center gap-2">
+            <Video className="w-5 h-5 text-primary" />
+            <span>إدارة اللقاءات والتسجيلات</span>
+          </h1>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            جدولة لقاءات Zoom الحية وإدارة تسجيلات الفيديوهات المرفوعة وربطها بالكورسات
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2.5 shrink-0">
+          {/* زر لقاء زووم */}
+          <Button
+            type="button"
+            onClick={() => {
+              setEditingMeeting(null);
+              setIsZoomModalOpen(true);
+            }}
+            disabled={coursesLoading}
+            className="rounded-xl h-10 px-4 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-semibold shadow-xs transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            <span>+ إضافة لقاء Zoom</span>
+          </Button>
+
+          {/* زر رفع/إدراج فيديو */}
+          <Button
+            type="button"
+            onClick={() => {
+              setEditingVideo(null);
+              setIsVideoModalOpen(true);
+            }}
+            disabled={coursesLoading}
+            className="rounded-xl h-10 px-4 gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs transition-colors"
+          >
+            <Film className="w-4 h-4" />
+            <span>+ رفع / إدراج فيديو</span>
+          </Button>
+        </div>
+      </div>
+
+      {/* ─── 2. Top Section: Live Zoom Meetings (Blue Accent) ─── */}
+      <section aria-labelledby="live-meetings-heading" className="space-y-3.5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse" />
+            <h2 id="live-meetings-heading" className="text-sm font-bold text-foreground">
+              لقاءات Zoom الحية والمجدولة
+            </h2>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-mono font-medium">
+              {meetings.length}
+            </span>
+          </div>
+        </div>
+
+        <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-xs">
+          {meetingsLoading ? (
+            <div className="flex flex-col items-center justify-center py-12 gap-2 text-muted-foreground text-xs">
+              <Loader2 className="w-5 h-5 animate-spin text-primary" />
+              <span>جارٍ تحميل لقاءات Zoom...</span>
+            </div>
+          ) : meetings.length === 0 ? (
+            <div className="py-12 px-4 text-center">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-3">
+                <Video className="w-6 h-6" />
+              </div>
+              <p className="text-sm font-semibold text-foreground">لا توجد لقاءات مجدولة حالياً</p>
+              <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
+                يمكنك الضغط على زر &quot;إضافة لقاء Zoom&quot; بالأعلى لجدولة موعد جلسة حية لطلابك.
+              </p>
+            </div>
+          ) : (
+            <div className="divide-y divide-border">
+              {meetings.map((m) => {
+                const courseName = m.course?.title || m.course_name || "كورس غير محدد";
+                return (
+                  <div key={m.id} className="p-4 transition-colors hover:bg-muted/10">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      {/* Left: Info */}
+                      <div className="flex items-start gap-3 min-w-0 flex-1">
+                        <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5">
+                          <Video className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h3 className="text-sm font-bold text-foreground truncate">{m.title}</h3>
+                            <span className="text-[11px] px-2 py-0.5 rounded-md bg-muted text-muted-foreground font-medium">
+                              {courseName}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1 flex-wrap">
+                            <span className="flex items-center gap-1">
+                              <Calendar className="w-3.5 h-3.5" />
+                              <span>{fmt(m.starts_at)}</span>
+                            </span>
+                            {m.duration_minutes ? (
+                              <span className="flex items-center gap-1 font-mono">
+                                <Clock className="w-3.5 h-3.5" />
+                                <span>{m.duration_minutes} دقيقة</span>
+                              </span>
+                            ) : null}
+                          </div>
+                          {m.description && (
+                            <p className="text-xs text-muted-foreground/80 mt-1 line-clamp-1">
+                              {m.description}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Right: Actions */}
+                      <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                        <a
+                          href={m.zoom_link}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="h-8 px-2.5 rounded-lg border border-border bg-background hover:bg-muted text-xs text-foreground font-medium flex items-center gap-1.5 transition-colors"
+                        >
+                          <span className="font-mono" dir="ltr">Zoom</span>
+                          <ExternalLink className="w-3 h-3 text-muted-foreground" />
+                        </a>
+
+                        <button
+                          type="button"
+                          onClick={() => toggleAttendees(m.id)}
+                          className="h-8 px-2.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 text-xs font-medium flex items-center gap-1.5 transition-colors"
+                        >
+                          <Users className="w-3.5 h-3.5" />
+                          <span>{m.attendances_count ?? 0}</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingMeeting(m);
+                            setIsZoomModalOpen(true);
+                          }}
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                          aria-label="تعديل اللقاء"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setDeleteTarget({
+                              type: "meeting",
+                              id: m.id,
+                              title: m.title,
+                            })
+                          }
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-destructive hover:bg-destructive/10 transition-colors"
+                          aria-label="حذف اللقاء"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Attendees Accordion */}
+                    {openMeetingId === m.id && (
+                      <div className="mt-3 bg-muted/30 rounded-xl p-3 border border-border/50 text-xs">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-semibold text-foreground">قائمة حضور الطلاب ({attendees.length})</span>
+                        </div>
+                        {loadingAtt ? (
+                          <div className="flex items-center justify-center py-4 text-muted-foreground gap-2">
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            <span>جارٍ جلب سجلات الحضور...</span>
+                          </div>
+                        ) : attendees.length === 0 ? (
+                          <p className="text-muted-foreground py-2 text-center">لم يسجل أي طالب حضوره في هذا اللقاء بعد</p>
+                        ) : (
+                          <ul className="space-y-1.5 max-h-40 overflow-y-auto">
+                            {attendees.map((a) => (
+                              <li key={a.id} className="flex items-center justify-between p-1.5 rounded-lg bg-background/50">
+                                <span className="text-foreground font-medium">
+                                  {a.user.name} <span className="text-muted-foreground font-normal">({a.user.email})</span>
+                                </span>
+                                <span className="text-[11px] text-muted-foreground font-mono">{fmt(a.attended_at)}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           )}
         </div>
+      </section>
 
-        <div className="grid sm:grid-cols-2 gap-3">
-          <div className="space-y-1.5">
-            <label htmlFor="zoom-course-name" className="text-sm font-medium text-foreground">اسم الكورس *</label>
-            <Select
-              dir="rtl"
-              value={form.course_name}
-              onValueChange={(val) => set('course_name', val)}
-              disabled={coursesLoading}
-            >
-              <SelectTrigger id="zoom-course-name" className="w-full">
-                <SelectValue placeholder={coursesLoading ? 'جاري تحميل الكورسات...' : 'اختر الكورس...'} />
-              </SelectTrigger>
-              <SelectContent>
-                {coursesLoading ? (
-                  <SelectItem value="__loading__" disabled>
-                    جاري تحميل الكورسات...
-                  </SelectItem>
-                ) : courseNames.length === 0 && !hasCustomCourse ? (
-                  <SelectItem value="__empty__" disabled>
-                    لا توجد كورسات متاحة
-                  </SelectItem>
-                ) : (
-                  <>
-                    {courseNames.map((name) => (
-                      <SelectItem key={name} value={name}>
-                        {name}
-                      </SelectItem>
-                    ))}
-                    {hasCustomCourse && (
-                      <SelectItem key={form.course_name} value={form.course_name}>
-                        {form.course_name}
-                      </SelectItem>
-                    )}
-                  </>
-                )}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-1.5">
-            <label htmlFor="zoom-title" className="text-sm font-medium text-foreground">عنوان اللقاء *</label>
-            <input id="zoom-title" value={form.title} onChange={(e) => set('title', e.target.value)}
-              placeholder="مثال: مراجعة الأسبوع الأول" className={inputCls} />
-          </div>
-          <div className="space-y-1.5">
-            <label htmlFor="zoom-link" className="text-sm font-medium text-foreground">رابط Zoom *</label>
-            <input id="zoom-link" value={form.zoom_link} onChange={(e) => set('zoom_link', e.target.value)}
-              placeholder="https://zoom.us/j/..." dir="ltr" className={inputCls} />
-          </div>
-          <div className="space-y-1.5">
-            <label htmlFor="zoom-starts-at" className="text-sm font-medium text-foreground">التاريخ والوقت *</label>
-            <input id="zoom-starts-at" ref={dateRef} type="text" value={form.starts_at} readOnly
-              placeholder="اضغط لاختيار التاريخ والوقت..." className={inputCls} />
-          </div>
-          <div className="space-y-1.5 sm:col-span-2">
-            <label htmlFor="zoom-description" className="text-sm font-medium text-foreground">وصف (اختياري)</label>
-            <textarea id="zoom-description" value={form.description} onChange={(e) => set('description', e.target.value)}
-              rows={2}
-              className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring resize-none" />
+      {/* ─── 3. Bottom Section: Video Assets Bank (Emerald Accent) ─── */}
+      <section aria-labelledby="video-bank-heading" className="space-y-3.5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+            <h2 id="video-bank-heading" className="text-sm font-bold text-foreground">
+              مكتبة الفيديوهات والتسجيلات المرفوعة
+            </h2>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono font-medium">
+              {videos.length}
+            </span>
           </div>
         </div>
 
-        {error && <p className="text-sm text-destructive mt-3">{error}</p>}
-
-        <button onClick={handleSave} disabled={saving || !valid}
-          className="mt-4 flex items-center gap-2 bg-primary hover:bg-primary/90 disabled:opacity-60 text-primary-foreground px-5 py-2 rounded-xl text-sm font-medium transition-colors">
-          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-          {editingId ? 'حفظ التعديلات' : 'إضافة اللقاء'}
-        </button>
-      </div>
-
-      {/* List */}
-      <div className="bg-card border border-border rounded-2xl overflow-hidden">
-        <div className="p-6 border-b border-border">
-          <h2 className="text-base font-bold text-foreground">لقاءات Zoom ({meetings.length})</h2>
-        </div>
-
-        {loading ? (
-          <div className="flex items-center justify-center py-16">
-            <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
-          </div>
-        ) : meetings.length === 0 ? (
-          <div className="py-16 text-center text-muted-foreground text-sm">
-            لا توجد لقاءات بعد — أضف لقاءً من الأعلى
-          </div>
-        ) : (
-          <div className="divide-y divide-border">
-            {meetings.map((m) => (
-              <div key={m.id} className="p-4">
-                <div className="flex items-center gap-3">
-                  <Video className="w-5 h-5 text-primary flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground truncate">{m.title}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {m.course_name} • {fmt(m.starts_at)}
-                    </p>
-                  </div>
-                  <button onClick={() => toggleAttendees(m.id)}
-                    className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
-                    <Users className="w-3.5 h-3.5" />
-                    {m.attendances_count ?? 0}
-                  </button>
-                  <button onClick={() => handleEdit(m)}
-                    className="p-1.5 rounded-lg text-muted-foreground hover:bg-muted transition-colors">
-                    <Pencil className="w-4 h-4" />
-                  </button>
-                  <button onClick={() => handleDelete(m.id)} disabled={deletingId === m.id}
-                    className="p-1.5 rounded-lg text-destructive hover:bg-destructive/10 transition-colors">
-                    {deletingId === m.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-                  </button>
-                </div>
-
-                {openId === m.id && (
-                  <div className="mt-3 bg-muted/30 rounded-xl p-3">
-                    {loadingAtt ? (
-                      <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
-                    ) : attendees.length === 0 ? (
-                      <p className="text-xs text-muted-foreground">لم يحضر أحد بعد</p>
-                    ) : (
-                      <ul className="space-y-1.5">
-                        {attendees.map((a) => (
-                          <li key={a.id} className="flex items-center justify-between text-xs">
-                            <span className="text-foreground">{a.user.name}
-                              <span className="text-muted-foreground"> — {a.user.email}</span>
-                            </span>
-                            <span className="text-muted-foreground">{fmt(a.attended_at)}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                )}
+        <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-xs">
+          {videosLoading ? (
+            <div className="flex flex-col items-center justify-center py-12 gap-2 text-muted-foreground text-xs">
+              <Loader2 className="w-5 h-5 animate-spin text-emerald-500" />
+              <span>جارٍ تحميل الفيديوهات المسجلة...</span>
+            </div>
+          ) : videos.length === 0 ? (
+            <div className="py-12 px-4 text-center">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto mb-3">
+                <Film className="w-6 h-6" />
               </div>
-            ))}
+              <p className="text-sm font-semibold text-foreground">لا توجد تسجيلات أو فيديوهات مرفوعة بعد</p>
+              <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
+                اضغط على زر &quot;رفع / إدراج فيديو&quot; بالأعلى لإضافة رابط فيديو من يوتيوب أو تسجيل Zoom ليتاح للاستخدام في الكورسات.
+              </p>
+            </div>
+          ) : (
+            <div className="divide-y divide-border">
+              {videos.map((v) => {
+                const courseName = v.course?.title || "كورس غير محدد";
+                const durationMin = Math.round(v.duration_seconds / 60);
+                return (
+                  <div key={v.id} className="p-4 transition-colors hover:bg-muted/10">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      {/* Left: Thumbnail & Details */}
+                      <div className="flex items-start gap-3 min-w-0 flex-1">
+                        <div className="relative w-16 h-10 rounded-lg overflow-hidden shrink-0 border border-border bg-black/40">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={`https://img.youtube.com/vi/${v.provider_video_id}/mqdefault.jpg`}
+                            alt={v.title}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              // Fallback on invalid image
+                              (e.target as HTMLElement).style.display = "none";
+                            }}
+                          />
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                            <Play className="w-3.5 h-3.5 text-white/80" />
+                          </div>
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h3 className="text-sm font-bold text-foreground truncate">{v.title}</h3>
+                            <span className="text-[11px] px-2 py-0.5 rounded-md bg-muted text-muted-foreground font-medium">
+                              {courseName}
+                            </span>
+                            <span
+                              className={`text-[10px] px-2 py-0.5 rounded-md font-medium ${
+                                v.type === "recording"
+                                  ? "bg-purple-500/10 text-purple-600 dark:text-purple-400"
+                                  : "bg-blue-500/10 text-blue-600 dark:text-blue-400"
+                              }`}
+                            >
+                              {v.type === "recording" ? "تسجيل Zoom" : "درس مسجل"}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1 flex-wrap">
+                            <span className="flex items-center gap-1 font-mono">
+                              <Clock className="w-3 h-3" />
+                              <span>{durationMin > 0 ? `${durationMin} دقيقة` : "غير محدد"}</span>
+                            </span>
+                            <span className="text-[11px] font-mono text-muted-foreground/80" dir="ltr">
+                              ID: {v.provider_video_id}
+                            </span>
+                            {v.zoom_meeting && (
+                              <span className="text-[11px] text-primary flex items-center gap-1">
+                                <Video className="w-3 h-3" />
+                                <span>مرتبط بـ: {v.zoom_meeting.title}</span>
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Right: Actions */}
+                      <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                        <a
+                          href={`https://www.youtube.com/watch?v=${v.provider_video_id}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="h-8 px-2.5 rounded-lg border border-border bg-background hover:bg-muted text-xs text-foreground font-medium flex items-center gap-1.5 transition-colors"
+                        >
+                          <span>معاينة</span>
+                          <ExternalLink className="w-3 h-3 text-muted-foreground" />
+                        </a>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingVideo(v);
+                            setIsVideoModalOpen(true);
+                          }}
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                          aria-label="تعديل الفيديو"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setDeleteTarget({
+                              type: "video",
+                              id: v.id,
+                              title: v.title,
+                            })
+                          }
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-destructive hover:bg-destructive/10 transition-colors"
+                          aria-label="حذف الفيديو"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ─── 4. Modals ──────────────────────────────────────── */}
+      <ZoomMeetingModal
+        open={isZoomModalOpen}
+        onClose={() => {
+          setIsZoomModalOpen(false);
+          setEditingMeeting(null);
+        }}
+        editingMeeting={editingMeeting}
+        courses={courses}
+        onSave={handleSaveMeeting}
+      />
+
+      <VideoAssetModal
+        open={isVideoModalOpen}
+        onClose={() => {
+          setIsVideoModalOpen(false);
+          setEditingVideo(null);
+        }}
+        editingAsset={editingVideo}
+        courses={courses}
+        meetings={meetings}
+        onSave={handleSaveVideo}
+      />
+
+      {/* ─── 5. Accessible Delete Confirmation Dialog ───────── */}
+      {deleteTarget && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-dialog-title"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm"
+        >
+          <div className="bg-card border border-border rounded-2xl p-6 w-full max-w-sm shadow-2xl animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none text-center">
+            <div className="w-12 h-12 rounded-full bg-destructive/10 text-destructive flex items-center justify-center mx-auto mb-3">
+              <AlertTriangle className="w-6 h-6" />
+            </div>
+            <h3 id="delete-dialog-title" className="text-base font-bold text-foreground">
+              تأكيد عملية الحذف
+            </h3>
+            <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+              هل أنت متأكد من رغبتك في حذف{" "}
+              <strong className="text-foreground">{deleteTarget.title}</strong>؟
+              {deleteTarget.type === "meeting"
+                ? " سيتم حذف اللقاء وسجلات حضور الطلاب التابعة له بشكل نهائي."
+                : " سيتم حذف هذا الفيديو من بنك الوسائط."}
+            </p>
+
+            <div className="mt-5 flex items-center justify-center gap-2.5">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setDeleteTarget(null)}
+                disabled={isDeleting}
+                className="rounded-xl h-10 px-4 flex-1"
+              >
+                إلغاء
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={handleConfirmDelete}
+                disabled={isDeleting}
+                className="rounded-xl h-10 px-4 flex-1 gap-1.5"
+              >
+                {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                <span>نعم، احذف</span>
+              </Button>
+            </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

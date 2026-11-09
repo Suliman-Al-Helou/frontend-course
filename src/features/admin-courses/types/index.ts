@@ -123,3 +123,56 @@ export interface AdminStats {
   pendingEnrollments: number;
 }
 
+export interface AdminVideoAsset {
+  id: number;
+  course_id: number;
+  zoom_meeting_id?: number | null;
+  title: string;
+  description?: string | null;
+  provider: "youtube" | "bunny" | "cloudflare";
+  provider_video_id: string;
+  duration_seconds: number;
+  type: "recording" | "lesson";
+  created_by?: number;
+  course?: { id: number; title: string };
+  zoom_meeting?: { id: number; title: string; starts_at: string } | null;
+  creator?: { id: number; name: string };
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface VideoAssetFormData {
+  course_id: number;
+  zoom_meeting_id?: number | null;
+  title: string;
+  description?: string;
+  provider: "youtube" | "bunny" | "cloudflare";
+  provider_video_id: string;
+  duration_seconds: number;
+  type: "recording" | "lesson";
+}
+
+export interface AdminZoomMeeting {
+  id: number;
+  course_id: number;
+  course_name?: string;
+  title: string;
+  description: string | null;
+  zoom_link: string;
+  starts_at: string;
+  duration_minutes?: number;
+  attendances_count?: number;
+  course?: { id: number; title: string };
+  created_at?: string;
+}
+
+export interface ZoomMeetingFormData {
+  course_id: number;
+  title: string;
+  description?: string;
+  zoom_link: string;
+  starts_at: string;
+  duration_minutes?: number;
+}
+
+

@@ -11,14 +11,27 @@ import {
   saveAdminLessonTask,
   updateEnrollmentStatus,
   createAdminEnrollment,
+  createAdminZoomMeeting,
+  updateAdminZoomMeeting,
+  deleteAdminZoomMeeting,
+  createAdminVideoAsset,
+  updateAdminVideoAsset,
+  deleteAdminVideoAsset,
 } from "../api";
-import { adminCourseQueries, adminEnrollmentQueries } from "./adminCourses.queries";
+import {
+  adminCourseQueries,
+  adminEnrollmentQueries,
+  adminZoomQueries,
+  adminVideoAssetQueries,
+} from "./adminCourses.queries";
 import type {
   CourseFormData,
   AdminLesson,
   AdminTaskPayload,
   EnrollmentStatus,
   CreateEnrollmentPayload,
+  ZoomMeetingFormData,
+  VideoAssetFormData,
 } from "../types";
 
 /**
@@ -188,5 +201,67 @@ export function useEnrollmentMutations() {
     updateStatus,
     createEnrollment,
   };
+}
+
+/**
+ * هوكس لقاءات زووم للأدمن
+ */
+export function useZoomMeetingMutations() {
+  const queryClient = useQueryClient();
+
+  const createMeeting = useMutation({
+    mutationFn: (payload: ZoomMeetingFormData) => createAdminZoomMeeting(payload),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: adminZoomQueries.all() });
+    },
+  });
+
+  const updateMeeting = useMutation({
+    mutationFn: ({ id, data }: { id: number | string; data: Partial<ZoomMeetingFormData> }) =>
+      updateAdminZoomMeeting(id, data),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: adminZoomQueries.all() });
+    },
+  });
+
+  const deleteMeeting = useMutation({
+    mutationFn: (id: number | string) => deleteAdminZoomMeeting(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: adminZoomQueries.all() });
+    },
+  });
+
+  return { createMeeting, updateMeeting, deleteMeeting };
+}
+
+/**
+ * هوكس أصول الفيديوهات والتسجيلات للأدمن
+ */
+export function useVideoAssetMutations() {
+  const queryClient = useQueryClient();
+
+  const createAsset = useMutation({
+    mutationFn: (payload: VideoAssetFormData) => createAdminVideoAsset(payload),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: adminVideoAssetQueries.all() });
+    },
+  });
+
+  const updateAsset = useMutation({
+    mutationFn: ({ id, data }: { id: number | string; data: Partial<VideoAssetFormData> }) =>
+      updateAdminVideoAsset(id, data),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: adminVideoAssetQueries.all() });
+    },
+  });
+
+  const deleteAsset = useMutation({
+    mutationFn: (id: number | string) => deleteAdminVideoAsset(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: adminVideoAssetQueries.all() });
+    },
+  });
+
+  return { createAsset, updateAsset, deleteAsset };
 }
 
