@@ -111,8 +111,8 @@ export function VideoPlayer({
 
       {/* العلامة المائية لحماية الملكية الفكرية */}
       {user && (
-        <div className="absolute bottom-12 start-4 pointer-events-none select-none z-10">
-          <p className="text-white/25 text-xs font-mono">
+        <div className="absolute top-4 start-4 pointer-events-none select-none z-10 bg-black/50 text-white/80 backdrop-blur-xs px-2.5 py-1 rounded-md border border-white/10 shadow-xs">
+          <p className="text-xs font-mono font-medium tracking-tight">
             {user.name} • {user.email}
           </p>
         </div>

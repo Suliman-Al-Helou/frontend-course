@@ -40,11 +40,7 @@ function ThemeToggle() {
       className="p-2 rounded-xl text-foreground/70 hover:bg-accent/10 hover:text-primary transition-colors"
       aria-label="تبديل الوضع الليلي"
     >
-      {theme === "dark" ? (
-        <Sun className="w-5 h-5" />
-      ) : (
-        <Moon className="w-5 h-5" />
-      )}
+      {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
     </button>
   );
 }
@@ -54,9 +50,7 @@ export default function DashboardSidebar({ open, onClose }: Props) {
   const { user, logout, isLoading } = useAuthStore();
 
   if (isLoading) {
-    return (
-      <div className="text-gray-400 text-sm animate-pulse">جارٍ التحقق...</div>
-    );
+    return <div className="text-gray-400 text-sm animate-pulse">جارٍ التحقق...</div>;
   }
 
   const handleLogout = () => {
@@ -65,12 +59,7 @@ export default function DashboardSidebar({ open, onClose }: Props) {
 
   return (
     <>
-      {open && (
-        <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
-          onClick={onClose}
-        />
-      )}
+      {open && <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={onClose} />}
 
       <aside
         className={`
@@ -85,10 +74,7 @@ export default function DashboardSidebar({ open, onClose }: Props) {
             لوحة
             <span className="text-primary dark:text-white mr-1">الطالب</span>
           </div>
-          <button
-            onClick={onClose}
-            className="lg:hidden p-1 rounded-lg hover:bg-muted"
-          >
+          <button onClick={onClose} className="lg:hidden p-1 rounded-lg hover:bg-muted">
             <X className="w-5 h-5" />
           </button>
         </div>

@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useAuthStore } from '@/store/authStore';
-import { User, Mail, GraduationCap } from 'lucide-react';
-import Image from 'next/image';
+import { useAuthStore } from "@/store/authStore";
+import { User, Mail, GraduationCap } from "lucide-react";
+import Image from "next/image";
 
 export default function ProfilePage() {
-  const user = useAuthStore(state => state.user);
+  const user = useAuthStore((state) => state.user);
 
   return (
     <div className="min-h-screen bg-background" dir="rtl">
@@ -13,7 +13,6 @@ export default function ProfilePage() {
         <h1 className="text-2xl font-bold text-foreground mb-8">ملفي الشخصي</h1>
 
         <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
-
           {/* Cover */}
           <div className="h-32 bg-gradient-to-br from-primary to-primary/60" />
 
@@ -63,7 +62,7 @@ export default function ProfilePage() {
                 <div>
                   <p className="text-xs text-muted-foreground">الدور</p>
                   <p className="font-medium text-foreground text-sm">
-                    {(user as any)?.role === 'admin' ? 'مدير' : 'طالب'}
+                    {(user as any)?.role === "admin" ? "مدير" : "طالب"}
                   </p>
                 </div>
               </div>

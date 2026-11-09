@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight, ArrowLeft, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import api from "@/lib/api";
 import { courseQueries } from "@/features/courses";
 import {
   studentCourseQueries,
@@ -74,6 +75,24 @@ export default function LessonPage() {
   const isVideoDone = isInitiallyCompleted || videoCompleted;
   const isTaskDone = isInitiallyCompleted || taskPassed || !task;
 
+  // تسجيل تلقائي صامت للكورسات المجانية عند دخول الدرس
+  const hasAutoEnrolledRef = useRef(false);
+  useEffect(() => {
+    if (!course || hasAutoEnrolledRef.current) return;
+    const isFree = Number(course.price ?? 0) === 0 || Boolean(course.is_public);
+    if (isFree && course.id) {
+      hasAutoEnrolledRef.current = true;
+      api
+        .post(`/courses/${course.id}/enroll`)
+        .then(() => {
+          void queryClient.invalidateQueries({
+            queryKey: studentCourseQueries.enrolled().queryKey,
+          });
+        })
+        .catch(() => {});
+    }
+  }, [course, queryClient]);
+
   // معالجة إتمام الفيديو وحفظ التقدم في السيرفر والكاش
   const handleVideoComplete = useCallback(async () => {
     setVideoCompleted(true);
@@ -92,19 +111,32 @@ export default function LessonPage() {
       queryClient.invalidateQueries({
         queryKey: [...studentCourseQueries.all(), "completed-lessons", String(courseId)],
       });
+      queryClient.invalidateQueries({
+        queryKey: studentCourseQueries.enrolled().queryKey,
+      });
     } catch {
       // حفظ صامت في حالة عدم توفر الاتصال
     }
   }, [numericLessonId, courseId, queryClient]);
 
+  const hasInvalidatedEnrolledOnProgressRef = useRef(false);
   const handleVideoProgress = useCallback(
     (percent: number, position: number) => {
       saveLessonProgress(numericLessonId, {
         watched_percent: percent,
         last_position: position,
-      }).catch(() => {});
+      })
+        .then(() => {
+          if (!hasInvalidatedEnrolledOnProgressRef.current) {
+            hasInvalidatedEnrolledOnProgressRef.current = true;
+            void queryClient.invalidateQueries({
+              queryKey: studentCourseQueries.enrolled().queryKey,
+            });
+          }
+        })
+        .catch(() => {});
     },
-    [numericLessonId],
+    [numericLessonId, queryClient],
   );
 
   // شاشة التحميل الأولية

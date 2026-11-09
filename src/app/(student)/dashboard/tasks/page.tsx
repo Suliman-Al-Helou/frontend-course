@@ -1,11 +1,19 @@
-'use client';
+"use client";
 
-import { useEffect, useState, Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { ClipboardList, ChevronDown, ChevronUp, CheckCircle2, XCircle, RefreshCw, ChevronLeft } from 'lucide-react';
-import api from '@/lib/api';
-import type { TaskResult } from '@/types';
-import {lessonApi} from '@/lib/axios';
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import {
+  ClipboardList,
+  ChevronDown,
+  ChevronUp,
+  CheckCircle2,
+  XCircle,
+  RefreshCw,
+  ChevronLeft,
+} from "lucide-react";
+import api from "@/lib/api";
+import type { TaskResult } from "@/types";
+import { lessonApi } from "@/services/lessonApi";
 
 interface TaskItem {
   id: number;
@@ -35,15 +43,16 @@ function TasksContent() {
 
   // جلب الكورسات أولاً
   useEffect(() => {
-    api.get('/my-courses')
-      .then(res => {
+    api
+      .get("/my-courses")
+      .then((res) => {
         const approved = res.data
-          .filter((e: any) => e.status === 'approved')
+          .filter((e: any) => e.status === "approved")
           .map((e: any) => ({ id: e.course.id, title: e.course.title }));
         setEnrolledCourses(approved);
 
-        const urlId = searchParams.get('course');
-        const defaultId = urlId ? Number(urlId) : approved[0]?.id ?? null;
+        const urlId = searchParams.get("course");
+        const defaultId = urlId ? Number(urlId) : (approved[0]?.id ?? null);
         setSelectedCourseId(defaultId);
       })
       .catch(() => {})
@@ -57,34 +66,41 @@ function TasksContent() {
     setTasks([]);
     setOpenId(null);
 
-    api.get(`/courses/${selectedCourseId}`).then(async fullCourse => {
-      const course = fullCourse.data;
-      const allLessons = (course.sections ?? []).flatMap((s: any) =>
-        (s.lessons ?? []).map((l: any) => ({ ...l, course }))
-      );
+    api
+      .get(`/courses/${selectedCourseId}`)
+      .then(async (fullCourse) => {
+        const course = fullCourse.data;
+        const allLessons = (course.sections ?? []).flatMap((s: any) =>
+          (s.lessons ?? []).map((l: any) => ({ ...l, course })),
+        );
 
-      const progressResults = await Promise.allSettled(
-        allLessons.map((l: any) => api.get(`/lessons/${l.id}/progress`))
-      );
+        const progressResults = await Promise.allSettled(
+          allLessons.map((l: any) => api.get(`/lessons/${l.id}/progress`)),
+        );
 
-      const completedLessons = allLessons.filter((_: any, i: number) => {
-        const r = progressResults[i];
-        return r.status === 'fulfilled' && (r as any).value.data.completed;
-      });
+        const completedLessons = allLessons.filter((_: any, i: number) => {
+          const r = progressResults[i];
+          return r.status === "fulfilled" && (r as any).value.data.completed;
+        });
 
-      const taskResults = await Promise.allSettled(
-        completedLessons.map((l: any) => api.get(`/lessons/${l.id}/task`))
-      );
+        const taskResults = await Promise.allSettled(
+          completedLessons.map((l: any) => api.get(`/lessons/${l.id}/task`)),
+        );
 
-      const result: TaskItem[] = [];
-      taskResults.forEach((r, i) => {
-        if (r.status === 'fulfilled') {
-          result.push({ ...(r as any).value.data, lesson: completedLessons[i], course: completedLessons[i].course });
-        }
-      });
+        const result: TaskItem[] = [];
+        taskResults.forEach((r, i) => {
+          if (r.status === "fulfilled") {
+            result.push({
+              ...(r as any).value.data,
+              lesson: completedLessons[i],
+              course: completedLessons[i].course,
+            });
+          }
+        });
 
-      setTasks(result);
-    }).finally(() => setLoadingTasks(false));
+        setTasks(result);
+      })
+      .finally(() => setLoadingTasks(false));
   }, [selectedCourseId]);
 
   const handleSelect = (id: number) => {
@@ -93,14 +109,17 @@ function TasksContent() {
     router.replace(`?course=${id}`, { scroll: false });
   };
 
-  const selectedCourse = enrolledCourses.find(c => c.id === selectedCourseId);
+  const selectedCourse = enrolledCourses.find((c) => c.id === selectedCourseId);
   const showDropdown = enrolledCourses.length > 1;
 
-  if (loadingCourses) return (
-    <div className="space-y-3">
-      {[1,2,3].map(i => <div key={i} className="bg-card rounded-2xl h-16 border border-border animate-pulse" />)}
-    </div>
-  );
+  if (loadingCourses)
+    return (
+      <div className="space-y-3">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="bg-card rounded-2xl h-16 border border-border animate-pulse" />
+        ))}
+      </div>
+    );
 
   return (
     <div>
@@ -110,21 +129,25 @@ function TasksContent() {
       {showDropdown && (
         <div className="relative mb-6">
           <button
-            onClick={() => setDropdownOpen(o => !o)}
+            onClick={() => setDropdownOpen((o) => !o)}
             className="w-full flex items-center justify-between bg-card border border-border rounded-2xl px-4 py-3 text-sm font-medium text-foreground hover:bg-muted/50 transition"
           >
-            <span>{selectedCourse?.title ?? 'اختر كورساً'}</span>
-            <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
+            <span>{selectedCourse?.title ?? "اختر كورساً"}</span>
+            <ChevronDown
+              className={`w-4 h-4 text-muted-foreground transition-transform ${dropdownOpen ? "rotate-180" : ""}`}
+            />
           </button>
 
           {dropdownOpen && (
             <div className="absolute top-full mt-1 w-full bg-card border border-border rounded-2xl shadow-lg z-10 overflow-hidden">
-              {enrolledCourses.map(course => (
+              {enrolledCourses.map((course) => (
                 <button
                   key={course.id}
                   onClick={() => handleSelect(course.id)}
                   className={`w-full text-right px-4 py-3 text-sm transition hover:bg-muted/60 border-b border-border/50 last:border-0 ${
-                    course.id === selectedCourseId ? 'text-primary font-semibold bg-primary/5' : 'text-foreground'
+                    course.id === selectedCourseId
+                      ? "text-primary font-semibold bg-primary/5"
+                      : "text-foreground"
                   }`}
                 >
                   {course.title}
@@ -138,7 +161,9 @@ function TasksContent() {
       {/* Tasks */}
       {loadingTasks ? (
         <div className="space-y-3">
-          {[1,2,3].map(i => <div key={i} className="bg-card rounded-2xl h-16 border border-border animate-pulse" />)}
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-card rounded-2xl h-16 border border-border animate-pulse" />
+          ))}
         </div>
       ) : tasks.length === 0 ? (
         <div className="text-center py-16 bg-card border border-border rounded-2xl">
@@ -148,7 +173,10 @@ function TasksContent() {
       ) : (
         <div className="space-y-3">
           {tasks.map((task, i) => (
-            <div key={`${task.id}-${task.lesson.id}`} className="bg-card border border-border rounded-2xl overflow-hidden">
+            <div
+              key={`${task.id}-${task.lesson.id}`}
+              className="bg-card border border-border rounded-2xl overflow-hidden"
+            >
               <button
                 onClick={() => setOpenId(openId === i ? null : i)}
                 className="w-full flex items-center gap-4 p-4 hover:bg-muted/30 transition-colors text-right"
@@ -160,9 +188,11 @@ function TasksContent() {
                   <p className="font-medium text-foreground truncate">{task.lesson.title}</p>
                   <p className="text-xs text-muted-foreground">{task.course.title}</p>
                 </div>
-                {openId === i
-                  ? <ChevronUp className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                  : <ChevronDown className="w-4 h-4 text-muted-foreground flex-shrink-0" />}
+                {openId === i ? (
+                  <ChevronUp className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                )}
               </button>
 
               {openId === i && (
@@ -180,9 +210,9 @@ function TasksContent() {
 
 /* ── Inline Task Component ── */
 function InlineTask({ task }: { task: TaskItem }) {
-  const [answers,  setAnswers]  = useState<Record<string, string>>({});
-  const [result,   setResult]   = useState<TaskResult | null>(null);
-  const [loading,  setLoading]  = useState(false);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [result, setResult] = useState<TaskResult | null>(null);
+  const [loading, setLoading] = useState(false);
   const [attempts, setAttempts] = useState(0);
 
   const allAnswered = task.questions.every((q: any) => answers[q.id]);
@@ -193,107 +223,165 @@ function InlineTask({ task }: { task: TaskItem }) {
       setLoading(true);
       const res = await lessonApi.submitTask(task.lesson.id, answers);
       setResult(res.data);
-      setAttempts(prev => prev + 1);
-    } catch {} finally {
+      setAttempts((prev) => prev + 1);
+    } catch {
+    } finally {
       setLoading(false);
     }
   };
 
-  const handleRetry = () => { setResult(null); setAnswers({}); };
+  const handleRetry = () => {
+    setResult(null);
+    setAnswers({});
+  };
 
-  if (result) return (
-    <div className="space-y-4">
-      <div className={`rounded-xl p-4 flex items-center gap-3 ${
-        result.passed ? 'bg-green-500/10 border border-green-500/20' : 'bg-red-500/10 border border-red-500/20'
-      }`}>
-        {result.passed
-          ? <CheckCircle2 className="w-8 h-8 text-green-500 flex-shrink-0" />
-          : <XCircle className="w-8 h-8 text-red-400 flex-shrink-0" />}
-        <div>
-          <p className={`font-bold ${result.passed ? 'text-green-500' : 'text-red-400'}`}>
-            {result.passed ? 'أحسنت! اجتزت المهمة 🎉' : 'لم تجتز المهمة'}
-          </p>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            نتيجتك: <span className="font-bold">{result.score}%</span> — المطلوب: {task.pass_percentage}%
-          </p>
+  if (result)
+    return (
+      <div className="space-y-4">
+        <div
+          className={`rounded-xl p-4 flex items-center gap-3 ${
+            result.passed
+              ? "bg-green-500/10 border border-green-500/20"
+              : "bg-red-500/10 border border-red-500/20"
+          }`}
+        >
+          {result.passed ? (
+            <CheckCircle2 className="w-8 h-8 text-green-500 flex-shrink-0" />
+          ) : (
+            <XCircle className="w-8 h-8 text-red-400 flex-shrink-0" />
+          )}
+          <div>
+            <p className={`font-bold ${result.passed ? "text-green-500" : "text-red-400"}`}>
+              {result.passed ? "أحسنت! اجتزت المهمة 🎉" : "لم تجتز المهمة"}
+            </p>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              نتيجتك: <span className="font-bold">{result.score}%</span> — المطلوب:{" "}
+              {task.pass_percentage}%
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div className="space-y-3">
-        {task.questions.map((q: any, i: number) => {
-          const fb = result.results?.[q.id];
-          return (
-            <div key={q.id} className={`rounded-xl p-3 border text-sm ${
-              fb?.correct ? 'border-green-500/20 bg-green-500/5' : 'border-red-500/20 bg-red-500/5'
-            }`}>
-              <p className="font-medium text-foreground">{i + 1}. {q.text}</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                إجابتك: <span className={fb?.correct ? 'text-green-500' : 'text-red-400'}>{answers[q.id]}</span>
-              </p>
-              {!fb?.correct && <p className="text-xs text-green-500 mt-0.5">الصحيح: {fb?.correct_answer}</p>}
-              {fb?.explanation && <p className="text-xs text-muted-foreground mt-1 pt-1 border-t border-border">{fb.explanation}</p>}
-            </div>
-          );
-        })}
-      </div>
+        <div className="space-y-3">
+          {task.questions.map((q: any, i: number) => {
+            const fb = result.results?.[q.id];
+            return (
+              <div
+                key={q.id}
+                className={`rounded-xl p-3 border text-sm ${
+                  fb?.correct
+                    ? "border-green-500/20 bg-green-500/5"
+                    : "border-red-500/20 bg-red-500/5"
+                }`}
+              >
+                <p className="font-medium text-foreground">
+                  {i + 1}. {q.text}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  إجابتك:{" "}
+                  <span className={fb?.correct ? "text-green-500" : "text-red-400"}>
+                    {answers[q.id]}
+                  </span>
+                </p>
+                {!fb?.correct && (
+                  <p className="text-xs text-green-500 mt-0.5">الصحيح: {fb?.correct_answer}</p>
+                )}
+                {fb?.explanation && (
+                  <p className="text-xs text-muted-foreground mt-1 pt-1 border-t border-border">
+                    {fb.explanation}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </div>
 
-      {!result.passed && attempts < task.max_attempts && (
-        <button onClick={handleRetry}
-          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-primary text-primary text-sm font-medium hover:bg-primary/5 transition-colors">
-          <RefreshCw className="w-4 h-4" />
-          حاول مرة أخرى ({task.max_attempts - attempts} محاولة متبقية)
-        </button>
-      )}
-    </div>
-  );
+        {!result.passed && attempts < task.max_attempts && (
+          <button
+            onClick={handleRetry}
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-primary text-primary text-sm font-medium hover:bg-primary/5 transition-colors"
+          >
+            <RefreshCw className="w-4 h-4" />
+            حاول مرة أخرى ({task.max_attempts - attempts} محاولة متبقية)
+          </button>
+        )}
+      </div>
+    );
 
   return (
     <div className="space-y-5">
-      <p className="text-sm text-muted-foreground">أجب على جميع الأسئلة — المطلوب {task.pass_percentage}% للنجاح</p>
+      <p className="text-sm text-muted-foreground">
+        أجب على جميع الأسئلة — المطلوب {task.pass_percentage}% للنجاح
+      </p>
       {task.questions.map((q: any, i: number) => (
         <div key={q.id} className="space-y-2">
-          <p className="text-sm font-medium text-foreground">{i + 1}. {q.text}</p>
-          {q.type === 'mcq' && q.options && (
+          <p className="text-sm font-medium text-foreground">
+            {i + 1}. {q.text}
+          </p>
+          {q.type === "mcq" && q.options && (
             <div className="space-y-2">
               {q.options.map((opt: string) => (
-                <label key={opt} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-colors ${
-                  answers[q.id] === opt ? 'border-primary bg-primary/5 text-primary' : 'border-border hover:bg-muted'
-                }`}>
-                  <input type="radio" name={q.id} value={opt}
+                <label
+                  key={opt}
+                  className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-colors ${
+                    answers[q.id] === opt
+                      ? "border-primary bg-primary/5 text-primary"
+                      : "border-border hover:bg-muted"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name={q.id}
+                    value={opt}
                     checked={answers[q.id] === opt}
-                    onChange={() => setAnswers(prev => ({ ...prev, [q.id]: opt }))}
-                    className="accent-primary" />
+                    onChange={() => setAnswers((prev) => ({ ...prev, [q.id]: opt }))}
+                    className="accent-primary"
+                  />
                   <span className="text-sm">{opt}</span>
                 </label>
               ))}
             </div>
           )}
-          {q.type === 'true_false' && (
+          {q.type === "true_false" && (
             <div className="flex gap-2">
-              {['صح', 'خطأ'].map(opt => (
-                <label key={opt} className={`flex-1 flex items-center justify-center p-3 rounded-xl border cursor-pointer transition-colors ${
-                  answers[q.id] === opt ? 'border-primary bg-primary/5 text-primary font-medium' : 'border-border hover:bg-muted'
-                }`}>
-                  <input type="radio" name={q.id} value={opt}
+              {["صح", "خطأ"].map((opt) => (
+                <label
+                  key={opt}
+                  className={`flex-1 flex items-center justify-center p-3 rounded-xl border cursor-pointer transition-colors ${
+                    answers[q.id] === opt
+                      ? "border-primary bg-primary/5 text-primary font-medium"
+                      : "border-border hover:bg-muted"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name={q.id}
+                    value={opt}
                     checked={answers[q.id] === opt}
-                    onChange={() => setAnswers(prev => ({ ...prev, [q.id]: opt }))}
-                    className="hidden" />
+                    onChange={() => setAnswers((prev) => ({ ...prev, [q.id]: opt }))}
+                    className="hidden"
+                  />
                   {opt}
                 </label>
               ))}
             </div>
           )}
-          {q.type === 'open' && (
-            <textarea rows={3} value={answers[q.id] ?? ''}
-              onChange={e => setAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
+          {q.type === "open" && (
+            <textarea
+              rows={3}
+              value={answers[q.id] ?? ""}
+              onChange={(e) => setAnswers((prev) => ({ ...prev, [q.id]: e.target.value }))}
               placeholder="اكتب إجابتك هنا..."
-              className="w-full p-3 rounded-xl border border-border bg-background text-foreground text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition" />
+              className="w-full p-3 rounded-xl border border-border bg-background text-foreground text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+            />
           )}
         </div>
       ))}
-      <button onClick={handleSubmit} disabled={!allAnswered || loading}
-        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-        {loading ? 'جاري التصحيح...' : 'تسليم المهمة'}
+      <button
+        onClick={handleSubmit}
+        disabled={!allAnswered || loading}
+        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {loading ? "جاري التصحيح..." : "تسليم المهمة"}
         {!loading && <ChevronLeft className="w-4 h-4" />}
       </button>
     </div>
@@ -302,11 +390,15 @@ function InlineTask({ task }: { task: TaskItem }) {
 
 export default function TasksPage() {
   return (
-    <Suspense fallback={
-      <div className="space-y-3">
-        {[1,2,3].map(i => <div key={i} className="bg-card rounded-2xl h-16 border border-border animate-pulse" />)}
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="space-y-3">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-card rounded-2xl h-16 border border-border animate-pulse" />
+          ))}
+        </div>
+      }
+    >
       <TasksContent />
     </Suspense>
   );

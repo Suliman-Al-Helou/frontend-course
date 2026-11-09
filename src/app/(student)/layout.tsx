@@ -8,8 +8,11 @@ export default async function StudentLayout({ children }: { children: React.Reac
   if (!session.token || !session.user) {
     redirect("/login?redirect=/dashboard");
   }
+  if (session.user.role === "admin") {
+    redirect("/admin");
+  }
 
- 
+
   return (
     <StudentLayoutClient user={session.user}>
       {children}

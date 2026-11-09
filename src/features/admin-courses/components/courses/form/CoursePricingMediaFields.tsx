@@ -183,7 +183,7 @@ export default function CoursePricingMediaFields({
             aria-label="الأكثر طلباً (Popular)"
           />
           <span className="flex flex-col">
-            <span className="text-sm font-semibold text-foreground">🔥 الأكثر طلباً (Popular)</span>
+            <span className="text-sm font-semibold text-foreground">🔥 الأكثر طلباً </span>
             <span className="text-[11px] text-muted-foreground">يظهر بشارة مميزة في صفحة الهبوط والكتالوج</span>
           </span>
         </label>
