@@ -30,6 +30,9 @@ const Toaster = ({ ...props }: ToasterProps) => {
       position="top-center"
       richColors={false}
       closeButton
+      gap={12}
+      visibleToasts={4}
+      duration={4500}
       icons={{
         success: <CheckCircle2 className="w-5 h-5 text-success shrink-0" />,
         info: <Info className="w-5 h-5 text-primary shrink-0" />,
@@ -41,15 +44,15 @@ const Toaster = ({ ...props }: ToasterProps) => {
         closeButtonAriaLabel: "إغلاق التنبيه",
         classNames: {
           toast:
-            "group toast group-[.toaster]:bg-card group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-2xl group-[.toaster]:rounded-2xl group-[.toaster]:p-4 group-[.toaster]:gap-3 group-[.toaster]:font-arabic border",
+            "group toast group-[.toaster]:bg-card group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-2xl group-[.toaster]:rounded-2xl group-[.toaster]:p-4 group-[.toaster]:gap-3 group-[.toaster]:font-arabic group-[.toaster]:max-w-[420px] group-[.toaster]:w-full border motion-reduce:transition-none",
           title: "group-[.toast]:font-semibold group-[.toast]:text-sm group-[.toast]:text-foreground",
-          description: "group-[.toast]:text-xs group-[.toast]:text-muted-foreground group-[.toast]:leading-relaxed",
+          description: "group-[.toast]:text-xs group-[.toast]:text-muted-foreground group-[.toast]:leading-relaxed break-words",
           actionButton:
-            "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground group-[.toast]:hover:bg-primary-hover group-[.toast]:font-semibold group-[.toast]:rounded-xl group-[.toast]:h-9 group-[.toast]:px-3.5 group-[.toast]:text-xs transition-colors",
+            "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground group-[.toast]:hover:bg-primary-hover group-[.toast]:font-semibold group-[.toast]:rounded-xl group-[.toast]:h-9 group-[.toast]:px-3.5 group-[.toast]:text-xs transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none motion-reduce:transition-none",
           cancelButton:
-            "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground group-[.toast]:hover:bg-muted/80 group-[.toast]:font-medium group-[.toast]:rounded-xl group-[.toast]:h-9 group-[.toast]:px-3.5 group-[.toast]:text-xs transition-colors",
+            "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground group-[.toast]:hover:bg-muted/80 group-[.toast]:font-medium group-[.toast]:rounded-xl group-[.toast]:h-9 group-[.toast]:px-3.5 group-[.toast]:text-xs transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none motion-reduce:transition-none",
           closeButton:
-            "group-[.toast]:bg-card group-[.toast]:border-border group-[.toast]:text-muted-foreground hover:group-[.toast]:text-foreground group-[.toast]:rounded-xl group-[.toast]:w-7 group-[.toast]:h-7 group-[.toast]:border transition-colors",
+            "group-[.toast]:bg-card group-[.toast]:border-border group-[.toast]:text-muted-foreground hover:group-[.toast]:text-foreground group-[.toast]:rounded-xl group-[.toast]:w-8 group-[.toast]:h-8 group-[.toast]:border transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none motion-reduce:transition-none",
           success:
             "group-[.toaster]:border-success/30 group-[.toaster]:bg-card group-[.toaster]:text-foreground",
           error:

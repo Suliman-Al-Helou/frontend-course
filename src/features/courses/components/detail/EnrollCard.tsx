@@ -8,7 +8,6 @@ import {
   CheckCircle,
   BookOpen,
   Loader2,
-  X,
   Play,
 } from "lucide-react";
 import type { CourseDetail } from "../../index";
@@ -16,33 +15,13 @@ import { useAuthStore } from "@/store/authStore";
 import { useQueryClient } from "@tanstack/react-query";
 import { studentCourseQueries } from "@/features/student-courses";
 import api from "@/lib/api";
+import { notify } from "@/components/ui/sonner";
 
 export interface EnrollCardProps {
   course: CourseDetail;
   isEnrolled?: boolean;
   enrollmentStatus?: "pending" | "approved" | "rejected" | null;
   onEnrollSuccess?: () => void;
-}
-
-// ─── Accessible Feedback Toast ──────────────────────────────
-function Toast({ message, onClose }: { message: string; onClose: () => void }) {
-  return (
-    <div
-      role="alert"
-      aria-live="polite"
-      className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-foreground text-background px-5 py-3 rounded-2xl shadow-xl text-sm font-medium animate-in fade-in slide-in-from-bottom-4 duration-300"
-    >
-      <CheckCircle className="w-4 h-4 text-success flex-shrink-0" />
-      <span>{message}</span>
-      <button
-        onClick={onClose}
-        aria-label="إغلاق التنبيه"
-        className="opacity-70 hover:opacity-100 transition-opacity p-2 -m-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-      >
-        <X className="w-4 h-4" />
-      </button>
-    </div>
-  );
 }
 
 // ─── Decomposed Enroll Card ─────────────────────────────────
@@ -56,17 +35,11 @@ export function EnrollCard({
   const queryClient = useQueryClient();
   const isSubmittingRef = useRef(false);
   const [loading, setLoading] = useState(false);
-  const [toast, setToast] = useState<string | null>(null);
 
   const isFree = Number(course.price ?? 0) === 0 || Boolean(course.is_public);
   const firstLessonId = course.sections?.[0]?.lessons?.[0]?.id ?? course.next_lesson_id;
   const hasLessons = Boolean(firstLessonId);
   const learnHref = firstLessonId ? `/courses/${course.id}/lessons/${firstLessonId}` : null;
-
-  const showToast = (msg: string) => {
-    setToast(msg);
-    setTimeout(() => setToast(null), 4000);
-  };
 
   const handleFreeStartLearning = () => {
     if (course.id && !isEnrolled && isAuthenticated) {
@@ -87,7 +60,7 @@ export function EnrollCard({
     if (isSubmittingRef.current || loading) return;
 
     if (!isAuthenticated) {
-      showToast("يجب تسجيل الدخول أولاً للتسجيل في الكورس");
+      notify.info("يجب تسجيل الدخول أولاً للتسجيل في الكورس");
       return;
     }
 
@@ -95,16 +68,16 @@ export function EnrollCard({
     setLoading(true);
     try {
       await api.post(`/courses/${course.id}/enroll`);
-      showToast("✅ تم إرسال طلب التسجيل — بانتظار موافقة الإدارة");
+      notify.success("تم إرسال طلب التسجيل — بانتظار موافقة الإدارة");
       onEnrollSuccess?.();
     } catch (err: unknown) {
       const axiosErr = err as { response?: { status?: number; data?: { message?: string } } };
       if (axiosErr.response?.status === 409) {
-        showToast("أنت مسجل في هذا الكورس مسبقاً أو طلبك قيد المراجعة");
+        notify.info("أنت مسجل في هذا الكورس مسبقاً أو طلبك قيد المراجعة");
         onEnrollSuccess?.();
       } else {
         const msg = axiosErr.response?.data?.message || "حدث خطأ، حاول مجدداً";
-        showToast(msg);
+        notify.error(msg);
       }
     } finally {
       isSubmittingRef.current = false;
@@ -256,8 +229,6 @@ export function EnrollCard({
           )}
         </div>
       </div>
-
-      {toast && <Toast message={toast} onClose={() => setToast(null)} />}
     </>
   );
 }
