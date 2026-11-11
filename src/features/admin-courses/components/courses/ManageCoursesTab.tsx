@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { Plus, Pencil, Trash2, BookOpen, Users, LayoutList, Clock, DollarSign } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { notify } from "@/components/ui/sonner";
 import { adminCourseQueries, adminEnrollmentQueries } from "../../queries/adminCourses.queries";
 import { useDeleteCourseMutation } from "../../queries/adminCourses.mutations";
 import CourseFormModal from "./CourseFormModal";
@@ -43,9 +44,12 @@ export default function ManageCoursesTab() {
     if (!deletingCourse) return;
     try {
       await deleteMutation.mutateAsync(deletingCourse.id);
+      notify.success(`تم حذف كورس "${deletingCourse.title}" بنجاح`);
       setDeletingCourse(null);
-    } catch (err) {
+    } catch (err: any) {
       console.error("فشل حذف الكورس:", err);
+      const msg = err?.response?.data?.message || "تعذر حذف الكورس، يرجى المحاولة لاحقاً";
+      notify.error(msg);
     }
   };
 
@@ -60,7 +64,7 @@ export default function ManageCoursesTab() {
           </p>
         </div>
         <Button
-          className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl h-10 px-4 font-medium shadow-sm transition-all"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl h-11 min-h-[44px] px-5 font-semibold shadow-sm transition-all"
           onClick={() => {
             setEditingCourse(null);
             setFormModalOpen(true);
@@ -77,7 +81,7 @@ export default function ManageCoursesTab() {
           {[1, 2, 3, 4, 5, 6].map((n) => (
             <div
               key={n}
-              className="bg-card border border-border rounded-2xl h-80 animate-pulse flex flex-col p-4 justify-between"
+              className="bg-card border border-border rounded-2xl h-80 animate-pulse motion-reduce:animate-none flex flex-col p-4 justify-between"
             >
               <div className="w-full h-44 bg-muted rounded-xl" />
               <div className="space-y-2 mt-4">
@@ -92,7 +96,7 @@ export default function ManageCoursesTab() {
         <div className="text-center py-20 bg-card border border-border rounded-2xl p-6">
           <BookOpen className="w-14 h-14 text-muted-foreground/30 mx-auto mb-4" />
           <h3 className="text-base font-semibold text-foreground mb-1">لا توجد أي كورسات بعد</h3>
-          <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6">
+          <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6 leading-relaxed">
             ابدأ ببناء المحتوى التعليمي عبر إضافة الكورس الأول ومشاركة المعرفة مع الطلاب.
           </p>
           <Button
@@ -100,7 +104,7 @@ export default function ManageCoursesTab() {
               setEditingCourse(null);
               setFormModalOpen(true);
             }}
-            className="rounded-xl"
+            className="rounded-xl h-11 min-h-[44px] px-5 font-semibold"
           >
             <Plus className="w-4 h-4 ml-1" />
             إضافة أول كورس
@@ -115,7 +119,7 @@ export default function ManageCoursesTab() {
             return (
               <div
                 key={course.id}
-                className="bg-card border border-border rounded-2xl overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow"
+                className="bg-card border border-border rounded-2xl overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow motion-reduce:transition-none"
               >
                 {/* Image Cover */}
                 <div className="relative w-full h-44 bg-muted overflow-hidden">
@@ -200,30 +204,32 @@ export default function ManageCoursesTab() {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="flex-1 rounded-xl h-9 text-xs font-medium hover:bg-primary/10 hover:text-primary transition-colors"
+                      className="flex-1 rounded-xl h-11 min-h-[44px] text-xs font-medium hover:bg-primary/10 hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary"
                       onClick={() => setManagingCourse(course)}
+                      aria-label={`إدارة محتوى كورس ${course.title}`}
                     >
                       <LayoutList className="w-3.5 h-3.5 ml-1" /> المحتوى
                     </Button>
                     <Button
                       variant="outline"
                       size="sm"
-                      className="flex-1 rounded-xl h-9 text-xs font-medium hover:bg-muted transition-colors"
+                      className="flex-1 rounded-xl h-11 min-h-[44px] text-xs font-medium hover:bg-muted transition-colors focus-visible:ring-2 focus-visible:ring-primary"
                       onClick={() => {
                         setEditingCourse(course);
                         setFormModalOpen(true);
                       }}
+                      aria-label={`تعديل بيانات كورس ${course.title}`}
                     >
                       <Pencil className="w-3.5 h-3.5 ml-1" /> تعديل
                     </Button>
                     <Button
                       variant="outline"
                       size="sm"
-                      className="rounded-xl h-9 text-xs border-destructive/20 text-destructive hover:bg-destructive/10 transition-colors"
+                      className="rounded-xl h-11 min-h-[44px] px-3.5 text-xs border-destructive/20 text-destructive hover:bg-destructive/10 transition-colors focus-visible:ring-2 focus-visible:ring-destructive"
                       onClick={() => setDeletingCourse(course)}
-                      aria-label="حذف الكورس"
+                      aria-label={`حذف كورس ${course.title}`}
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
@@ -268,4 +274,3 @@ export default function ManageCoursesTab() {
     </div>
   );
 }
-
