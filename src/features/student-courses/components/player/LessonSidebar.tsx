@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { CheckCircle2, Lock, PlayCircle, ChevronDown, BookOpen } from "lucide-react";
+import { CheckCircle2, Lock, PlayCircle, ChevronDown } from "lucide-react";
+import { notify } from "@/components/ui/sonner";
 
 export interface SidebarLesson {
   id: number;
@@ -36,7 +37,6 @@ export function LessonSidebar({
   const [openSections, setOpenSections] = useState<number[]>(() =>
     sections.map((s) => s.id),
   );
-  const [lockedToast, setLockedToast] = useState<string | null>(null);
 
   const toggleSection = (id: number) => {
     setOpenSections((prev) =>
@@ -60,8 +60,7 @@ export function LessonSidebar({
   };
 
   const triggerLockedAlert = () => {
-    setLockedToast("يرجى إكمال الدرس السابق واجتياز مهمته لفتح هذا الدرس");
-    setTimeout(() => setLockedToast(null), 3500);
+    notify.warning("يرجى إكمال الدرس السابق واجتياز مهمته لفتح هذا الدرس");
   };
 
   return (
@@ -69,17 +68,6 @@ export function LessonSidebar({
       aria-label="فهرس دروس الكورس"
       className="w-full lg:w-80 bg-card rounded-2xl border border-border overflow-hidden flex-shrink-0 flex flex-col relative"
     >
-      {/* Toast Alert */}
-      {lockedToast && (
-        <div
-          role="alert"
-          aria-live="assertive"
-          className="absolute top-3 inset-x-3 z-50 bg-destructive text-destructive-foreground text-xs font-semibold px-4 py-3 rounded-xl shadow-lg text-center"
-        >
-          {lockedToast}
-        </div>
-      )}
-
       {/* Header & Course Progress */}
       <div className="p-4 border-b border-border bg-muted/40">
         <h2 className="font-bold text-foreground text-sm line-clamp-2 leading-snug">
@@ -100,7 +88,7 @@ export function LessonSidebar({
           className="h-1.5 w-full bg-border rounded-full overflow-hidden"
         >
           <div
-            className="h-full bg-primary rounded-full transition-all duration-300"
+            className="h-full bg-primary rounded-full transition-all duration-300 motion-reduce:transition-none"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
