@@ -3,7 +3,7 @@ import "./globals.css";
 import { IBM_Plex_Sans_Arabic } from "next/font/google";
 import Script from "next/script";
 import AuthBootstrap from "@/components/shared/AuthBootstrap";
-import { Toaster } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 import QueryProvider from "@/providers/QueryProvider";
 
 const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
@@ -47,7 +47,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body suppressHydrationWarning>
         <AuthBootstrap />
-        <Toaster position="top-center" dir="rtl" richColors />
+        <Toaster />
         <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
