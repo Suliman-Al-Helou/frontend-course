@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { extractYouTubeVideoId } from "@/lib/youtube";
+import { notify } from "@/lib/toast";
 import { uploadVideoChunk } from "@/features/admin-courses/api";
 import { adminVideoAssetQueries, adminYouTubeQueries } from "@/features/admin-courses/queries/adminCourses.queries";
 import type { AdminVideoAsset, VideoAssetFormData, AdminZoomMeeting } from "@/features/admin-courses/types";
@@ -206,6 +207,7 @@ export default function VideoAssetModal({
         }
 
         void queryClient.invalidateQueries({ queryKey: adminVideoAssetQueries.all() });
+        notify.success("تم استلام الفيديو بنجاح، وجاري الآن رفعه ومعالجته على قناتك في YouTube بالخلفية.");
         onClose();
       } catch (err: unknown) {
         const e = err as { response?: { data?: { message?: string } } };

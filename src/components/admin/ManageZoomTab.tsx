@@ -59,7 +59,14 @@ export default function ManageZoomTab() {
 
   // Queries via TanStack Query v5
   const { data: rawMeetings = [], isLoading: meetingsLoading } = useQuery(adminZoomQueries.list());
-  const { data: rawVideos = [], isLoading: videosLoading } = useQuery(adminVideoAssetQueries.list());
+  const { data: rawVideos = [], isLoading: videosLoading } = useQuery({
+    ...adminVideoAssetQueries.list(),
+    refetchInterval: (query) => {
+      const data = query.state.data;
+      const hasProcessing = Array.isArray(data) && data.some((v: AdminVideoAsset) => v.status === "processing");
+      return hasProcessing ? 5000 : false;
+    },
+  });
   const { data: rawCourses = [], isLoading: coursesLoading } = useQuery(adminCourseQueries.list());
   const { data: youtubeStatus, isLoading: youtubeLoading } = useQuery(adminYouTubeQueries.status());
 
@@ -565,6 +572,18 @@ export default function ManageZoomTab() {
                             >
                               {v.type === "recording" ? "تسجيل Zoom" : "درس مسجل"}
                             </span>
+                            {v.status === "processing" && (
+                              <span className="text-[10px] px-2 py-0.5 rounded-md font-medium bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center gap-1 border border-amber-500/20">
+                                <Loader2 className="w-2.5 h-2.5 animate-spin" />
+                                <span>قيد المعالجة</span>
+                              </span>
+                            )}
+                            {v.status === "failed" && (
+                              <span className="text-[10px] px-2 py-0.5 rounded-md font-medium bg-destructive/10 text-destructive flex items-center gap-1 border border-destructive/20">
+                                <AlertTriangle className="w-2.5 h-2.5" />
+                                <span>فشل الرفع</span>
+                              </span>
+                            )}
                           </div>
 
                           <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1 flex-wrap">
@@ -587,15 +606,33 @@ export default function ManageZoomTab() {
 
                       {/* Right: Actions */}
                       <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
-                        <a
-                          href={`https://www.youtube.com/watch?v=${v.provider_video_id}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="h-8 px-2.5 rounded-lg border border-border bg-background hover:bg-muted text-xs text-foreground font-medium flex items-center gap-1.5 transition-colors"
-                        >
-                          <span>معاينة</span>
-                          <ExternalLink className="w-3 h-3 text-muted-foreground" />
-                        </a>
+                        {v.status === "processing" ? (
+                          <div
+                            className="h-8 px-2.5 rounded-lg border border-amber-500/30 bg-amber-500/10 text-xs text-amber-600 dark:text-amber-400 font-medium flex items-center gap-1.5 select-none"
+                            title="جاري رفع الفيديو ومعالجته على خوادم YouTube بالخلفية"
+                          >
+                            <Loader2 className="w-3.5 h-3.5 animate-spin text-amber-500" />
+                            <span>جاري الرفع إلى YouTube...</span>
+                          </div>
+                        ) : v.status === "failed" ? (
+                          <div
+                            className="h-8 px-2.5 rounded-lg border border-destructive/30 bg-destructive/10 text-xs text-destructive font-medium flex items-center gap-1.5 select-none"
+                            title="تعذر إكمال رفع هذا الفيديو إلى YouTube"
+                          >
+                            <AlertTriangle className="w-3.5 h-3.5 text-destructive" />
+                            <span>فشل الرفع</span>
+                          </div>
+                        ) : (
+                          <a
+                            href={`https://www.youtube.com/watch?v=${v.provider_video_id}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="h-8 px-2.5 rounded-lg border border-border bg-background hover:bg-muted text-xs text-foreground font-medium flex items-center gap-1.5 transition-colors"
+                          >
+                            <span>معاينة</span>
+                            <ExternalLink className="w-3 h-3 text-muted-foreground" />
+                          </a>
+                        )}
 
                         <button
                           type="button"
