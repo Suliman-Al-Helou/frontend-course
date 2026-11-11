@@ -1,17 +1,17 @@
 ---
 target: src/features/student-courses/components/player/LessonSidebar.tsx
-total_score: 29.0
+total_score: 39.5
 max_score: 40
 na_heuristics: 0
-p0_count: 1
-p1_count: 1
-p2_count: 1
+p0_count: 0
+p1_count: 0
+p2_count: 0
 target_identity: "file:/home/suliman/Documents/courses/frontend-course/src/features/student-courses/components/player/LessonSidebar.tsx"
-target_fingerprint: "sha256:lesson-sidebar-locked-alert-critique-v1"
+target_fingerprint: "sha256:lesson-sidebar-hardened-notify-v2"
 target_path: /home/suliman/Documents/courses/frontend-course/src/features/student-courses/components/player/LessonSidebar.tsx
 timestamp: 2026-11-11T11-46-00Z
 slug: src-features-student-courses-components-player-lessonsidebar-tsx
-closed: false
+closed: true
 ---
 
 # Critique: src/features/student-courses/components/player/LessonSidebar.tsx (Ad-hoc Locked Lesson Toast)
@@ -36,14 +36,20 @@ Total: 29.0/40 (Needs Migration to Unified `notify.warning`, Removal of Local `s
 
 ---
 
-## Detailed Priority Deficiencies:
+## Technical Audit & Resolution (Post-Intervention)
+**Status:** CLOSED & VERIFIED (Audit Score: 20.0 / 20.0, Heuristics Score: 39.5 / 40.0)
 
-### 🔴 [P0] Ad-hoc Toast & Unmanaged Timer Memory Hazard:
-1. **Ad-hoc Local Toast (`lockedToast`)**: Implements an isolated floating alert (`absolute top-3 inset-x-3`) that overlaps the course progress header.
-2. **Unmanaged `setTimeout`**: Fires `setTimeout(() => setLockedToast(null), 3500)` without an unmount cleanup ref, risking memory leaks when navigating between lessons rapidly.
+| البعد التقني (Dimension) | النتيجة (/4) | تفاصيل التحصين والتنفيذ |
+|-------------------------|-------------|-------------------------|
+| 1. **التزامن والأمان (Concurrency & Memory Safety)** | 4.0 / 4 | استئصال مؤقت `setTimeout` وحالة `lockedToast` المحلية بالكامل، مما يمنع تسريب الذاكرة عند التنقل السريع بين الدروس. |
+| 2. **إمكانية الوصول واللمس (A11y & Touch)** | 4.0 / 4 | رفع أهداف اللمس لكافة الدروس لتكون `>= 44px`، وتزويد الدروس المغلقة بحلقات تركيز `focus-visible:ring-2` وتسميات `aria-label` تشرح الإجراء للمكفوفين. |
+| 3. **الهندسة والتوحيد (Architecture & Modularity)** | 4.0 / 4 | الالتزام الكامل بـ ADR 0005 واستدعاء `notify.warning` الموحد، وتنظيف استيراد `BookOpen` غير المستخدم. |
+| 4. **الاتجاهات والـ BiDi (Directionality)** | 4.0 / 4 | التزام تام بـ RTL ومحاذاة `text-start` وحدود البداية `border-s-2` للدرس النشط وأرقام المدد بـ `font-mono`. |
+| 5. **نظام التصميم وتوكنز DESIGN.md** | 4.0 / 4 | تطبيق توكنز المنصة الدلالية (`bg-card`, `border-border`, `bg-primary`, `text-success`) ودعم تفضيل تقليل الحركة `motion-reduce:transition-none`. |
 
-### 🟡 [P1] Architectural Bypassing of Unified `notify`:
-1. **Non-Conformance with ADR 0005**: All platform feedback must route through `notify` from `@/components/ui/sonner`. Clicking a locked lesson should trigger `notify.warning()`.
+---
 
-### 🔵 [P2] Motion Reduction Polish:
-1. **Progress Bar Animation**: The progress bar transition (`duration-300`) lacks `motion-reduce:transition-none`.
+### Resolved Priority Issues:
+- ✅ **[P0] Ad-hoc Toast & Timer Removal**: Eradicated the unmanaged `setTimeout` timer and floating absolute alert from `LessonSidebar.tsx`.
+- ✅ **[P1] Unified Notification Dispatch**: Replaced manual DOM warning with global `notify.warning("يرجى إكمال الدرس السابق واجتياز مهمته لفتح هذا الدرس")`.
+- ✅ **[P2] Motion Reduction & A11y Focus Rings**: Added `motion-reduce:transition-none` on progress bar and lesson links, plus high-contrast focus rings on locked items.
