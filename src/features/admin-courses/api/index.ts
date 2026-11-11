@@ -267,7 +267,11 @@ export async function uploadVideoChunk(params: {
     formData.append("type", params.type);
   }
 
-  const { data } = await api.post("/admin/video-assets/upload-chunk", formData);
+  const { data } = await api.post("/admin/video-assets/upload-chunk", formData, {
+    headers: {
+      "Content-Type": undefined,
+    },
+  });
   return data;
 }
 

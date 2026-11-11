@@ -17,8 +17,15 @@ export const api = axios.create({
     Accept: "application/json",
   },
   withCredentials: true,
-  timeout: 30000,
+  timeout: 70000,
+});
 
+// Request Interceptor: السماح للمتصفح بضبط Content-Type والـ Boundary تلقائياً عند إرسال FormData
+api.interceptors.request.use((config) => {
+  if (typeof FormData !== "undefined" && config.data instanceof FormData) {
+    delete config.headers["Content-Type"];
+  }
+  return config;
 });
 
 // Response Interceptor: التقاط ومعالجة استجابات العقد الموحد (401, 403, 429)
