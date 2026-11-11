@@ -48,3 +48,18 @@ _Avoid_: Video folder, YouTube list, Channel category
 The single-click operation of converting an uploaded course video asset into a structured lesson within a designated course section.
 _Avoid_: Link pasting, Lesson attachment, Manual entry
 
+## Feedback & Notifications Domain
+
+**Feedback Notification (Toast)**:
+A transient, non-modal status message presented to the user to acknowledge asynchronous mutations, API outcomes, or system alerts without interrupting page navigation.
+_Avoid_: Popup, Alert dialog, Banner, Custom flash message
+
+**Notification Viewport (Toaster)**:
+The single root container mounted in the root layout responsible for stacking, positioning, theme synchronizing, and auto-dismissing active feedback notifications.
+_Avoid_: Toast container, Alert box, Toast wrapper
+
+**Domain Feedback Code**:
+A typed error or success code emitted by the backend or business logic that maps deterministically to a localized Arabic message in the application's translation dictionary.
+_Avoid_: Hardcoded string, Raw API error, Backend message
+
+
