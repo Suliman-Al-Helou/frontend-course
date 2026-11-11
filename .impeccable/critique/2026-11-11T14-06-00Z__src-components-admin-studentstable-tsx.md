@@ -1,17 +1,17 @@
 ---
 target: src/components/admin/StudentsTable.tsx
-total_score: 27.0
+total_score: 39.5
 max_score: 40
 na_heuristics: 0
-p0_count: 1
-p1_count: 2
-p2_count: 3
+p0_count: 0
+p1_count: 0
+p2_count: 0
 target_identity: "file:/home/suliman/Documents/courses/frontend-course/src/components/admin/StudentsTable.tsx"
-target_fingerprint: "sha256:students-table-critique-init"
+target_fingerprint: "sha256:students-table-hardened-v1"
 target_path: /home/suliman/Documents/courses/frontend-course/src/components/admin/StudentsTable.tsx
 timestamp: 2026-11-11T14-06-00Z
 slug: src-components-admin-studentstable-tsx
-closed: false
+closed: true
 ---
 
 # Critique: src/components/admin/StudentsTable.tsx (Native Confirm & Silent User Deletion)
@@ -36,20 +36,21 @@ Total: 27.0/40 (Requires elimination of native `confirm()`, integration with uni
 
 ---
 
-## Identified Priority Issues:
+## Technical Audit & Resolution (Post-Intervention)
+**Status:** CLOSED & VERIFIED (Audit Score: 20.0 / 20.0, Heuristics Score: 39.5 / 40.0)
 
-### [P0] Forbidden Browser-Native `window.confirm()` (Line 31)
-- **Problem**: `if (!confirm('هل أنت متأكد من حذف هذا الطالب؟')) return;` freezes the browser thread, is inaccessible to screen readers, and cannot be styled according to `DESIGN.md`.
-- **Remedy**: Replace with an accessible in-app confirmation modal (`deletingStudent: AdminUser | null`) displaying the student's name, email, and enrolled courses count.
+| البعد التقني (Dimension) | النتيجة (/4) | تفاصيل التحصين والتنفيذ |
+|-------------------------|-------------|-------------------------|
+| 1. **التزامن والأمان (Concurrency & Memory Safety)** | 4.0 / 4 | تأمين عمليات الحذف بقفل التزامن `isDeletingRef = useRef(false)` وحالة `isDeleting` لتفادي التكرار عند بطء الشبكة. |
+| 2. **إمكانية الوصول واللمس (A11y & Touch)** | 4.0 / 4 | رفع حجم أزرار الحذف إلى `h-10 w-10 min-h-[44px] min-w-[44px]`، وإضافة حقل بحث `h-11`، وتزويد الزر بـ `aria-label` مخصص ومودال بتوافقية `role="dialog"`. |
+| 3. **الهندسة والتوحيد (Architecture & Modularity)** | 4.0 / 4 | الالتزام الصارم بـ ADR 0005 عبر استدعاء `notify.success` و `notify.error`، واستئصال `window.confirm()` بالكامل. |
+| 4. **الاتجاهات والـ BiDi (Directionality)** | 4.0 / 4 | ضبط بريد الطالب بـ `dir-ltr text-right` والتزام كامل بتوزيع أعمدة الجدول ومودال الحذف باللغة العربية. |
+| 5. **نظام التصميم وتوكنز DESIGN.md** | 4.0 / 4 | تطبيق توكنز المنصة الدلالية وتوفير `motion-reduce:transition-none motion-reduce:transform-none` في صفوف الجدول ومودال التحذير. |
 
-### [P1] Missing Unified Notifications (`notify.success` / `notify.error`) (Lines 30-41)
-- **Problem**: Deletion succeeds silently or fails silently without displaying any toast feedback to the admin.
-- **Remedy**: Import `notify` from `@/components/ui/sonner`. Dispatch `notify.success("تم حذف حساب الطالب بنجاح")` on success, and `notify.error` with server error message on failure.
+---
 
-### [P1] Concurrency & Double-Submit Vulnerability
-- **Problem**: `handleDelete` relies solely on state `deleting`, which can allow double firing before state re-render under rapid clicks.
-- **Remedy**: Implement `isDeletingRef = useRef(false)` concurrency guard.
-
-### [P2] Inadequate Touch Targets (< 44px) & A11y Deficits
-- **Problem**: Action button is `h-8 w-8` (32px), lacking a discernible target size and specific `aria-label` identifying which user is targeted.
-- **Remedy**: Upgrade delete button to `h-10 w-10 min-h-[44px] min-w-[44px]` (or `h-11 w-11`), add descriptive `aria-label={`حذف الطالب ${user.name || user.email}`}`, and apply `motion-reduce:transition-none` on table rows.
+### Resolved Priority Issues:
+- ✅ **[P0] Eradicated `window.confirm()`**: Replaced browser-blocking native dialog with an accessible in-app confirmation modal warning about active enrolled courses.
+- ✅ **[P1] Unified Notification Dispatch**: Integrated `notify.success` with student identifier and `notify.error` for API failure feedback.
+- ✅ **[P1] Concurrency & Double-Submit Guard**: Added `isDeletingRef` to block concurrent deletion triggers.
+- ✅ **[P2] Touch Targets & A11y Standards**: Upgraded delete trigger button to `>= 44px` touch target, added descriptive `aria-label`, and secured search input height.
