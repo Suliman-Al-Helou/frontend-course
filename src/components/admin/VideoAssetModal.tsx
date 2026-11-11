@@ -15,6 +15,7 @@ import {
   AlertTriangle,
   UploadCloud,
   FileVideo,
+  Ban,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -71,7 +72,9 @@ export default function VideoAssetModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isConnectingYouTube, setIsConnectingYouTube] = useState(false);
 
+  // Concurrency & Cancellation Locks
   const isSubmittingRef = useRef(false);
+  const isCancelledRef = useRef(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const extractedId = extractYouTubeVideoId(rawVideoInput.trim());
@@ -103,10 +106,12 @@ export default function VideoAssetModal({
     setUploadProgress(0);
     setError(null);
     setIsConnectingYouTube(false);
+    isCancelledRef.current = false;
   }, [open, editingAsset, courses]);
 
   // Connect to YouTube OAuth
   const handleConnectYouTube = async () => {
+    if (isConnectingYouTube) return;
     setIsConnectingYouTube(true);
     try {
       const { url } = await getYouTubeAuthUrl();
@@ -139,12 +144,32 @@ export default function VideoAssetModal({
   };
 
   const handleFileSelected = (file: File) => {
+    // Client-side file size and format sanity checks
+    if (!file.type.startsWith("video/") && !/\.(mp4|webm|mov|mkv)$/i.test(file.name)) {
+      setError("صيغة الملف غير مدعومة. يرجى اختيار ملف فيديو صالح (.mp4, .webm, .mov).");
+      return;
+    }
+    if (file.size === 0) {
+      setError("ملف الفيديو المحدد فارغ.");
+      return;
+    }
+
+    setError(null);
     setSelectedFile(file);
     if (!title.trim()) {
-      // Auto-populate title from clean filename
       const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
       setTitle(cleanName);
     }
+  };
+
+  // Cancel in-flight chunked upload
+  const handleCancelUpload = () => {
+    if (!isSubmittingRef.current) return;
+    isCancelledRef.current = true;
+    isSubmittingRef.current = false;
+    setIsSubmitting(false);
+    setUploadProgress(0);
+    notify.error("تم إلغاء عملية رفع الفيديو بطلب منك.");
   };
 
   // Close on Escape
@@ -192,6 +217,7 @@ export default function VideoAssetModal({
       }
 
       isSubmittingRef.current = true;
+      isCancelledRef.current = false;
       setIsSubmitting(true);
       setError(null);
       setUploadProgress(1);
@@ -202,6 +228,10 @@ export default function VideoAssetModal({
         const uploadId = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
         for (let i = 0; i < totalChunks; i++) {
+          if (isCancelledRef.current) {
+            return;
+          }
+
           const start = i * chunkSize;
           const end = Math.min(start + chunkSize, selectedFile.size);
           const chunkBlob = selectedFile.slice(start, end);
@@ -219,6 +249,8 @@ export default function VideoAssetModal({
             type,
           });
 
+          if (isCancelledRef.current) return;
+
           setUploadProgress(result.progress);
         }
 
@@ -226,8 +258,10 @@ export default function VideoAssetModal({
         notify.success("تم استلام الفيديو بنجاح، وجاري الآن رفعه ومعالجته على قناتك في YouTube بالخلفية.");
         onClose();
       } catch (err: unknown) {
-        const e = err as { response?: { data?: { message?: string } } };
-        setError(e.response?.data?.message || "فشل رفع الفيديو على مراحل. تحقق من الاتصال بالإنترنت.");
+        if (!isCancelledRef.current) {
+          const e = err as { response?: { data?: { message?: string } } };
+          setError(e.response?.data?.message || "فشل رفع الفيديو على مراحل. تحقق من الاتصال بالإنترنت.");
+        }
       } finally {
         isSubmittingRef.current = false;
         setIsSubmitting(false);
@@ -267,6 +301,10 @@ export default function VideoAssetModal({
       setIsSubmitting(false);
     }
   };
+
+  const totalFileSizeMb = selectedFile ? (selectedFile.size / (1024 * 1024)).toFixed(1) : "0";
+  const uploadedBytes = selectedFile ? Math.min((uploadProgress / 100) * selectedFile.size, selectedFile.size) : 0;
+  const uploadedMb = (uploadedBytes / (1024 * 1024)).toFixed(1);
 
   return (
     <div
@@ -325,7 +363,7 @@ export default function VideoAssetModal({
               type="button"
               onClick={() => setMode("upload")}
               disabled={isSubmitting}
-              className={`h-9 text-xs font-semibold px-4 rounded-xl flex items-center gap-2 transition-all ${
+              className={`h-11 text-xs font-semibold px-4 rounded-xl flex items-center gap-2 transition-all ${
                 mode === "upload"
                   ? "bg-primary text-primary-foreground shadow-xs"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"
@@ -339,7 +377,7 @@ export default function VideoAssetModal({
               type="button"
               onClick={() => setMode("manual")}
               disabled={isSubmitting}
-              className={`h-9 text-xs font-semibold px-4 rounded-xl flex items-center gap-2 transition-all ${
+              className={`h-11 text-xs font-semibold px-4 rounded-xl flex items-center gap-2 transition-all ${
                 mode === "manual"
                   ? "bg-primary text-primary-foreground shadow-xs"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"
@@ -356,6 +394,7 @@ export default function VideoAssetModal({
           {error && (
             <div
               role="alert"
+              aria-live="polite"
               className="p-3.5 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium flex items-center gap-2"
             >
               <AlertCircle className="w-4 h-4 shrink-0" />
@@ -365,7 +404,11 @@ export default function VideoAssetModal({
 
           {/* تنبيه تفاعلي عند عدم ربط قناة YouTube مع زر اتصال مباشر */}
           {mode === "upload" && !ytStatus?.connected && (
-            <div className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/10 text-foreground text-xs space-y-3">
+            <div
+              role="alert"
+              aria-live="polite"
+              className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/10 text-foreground text-xs space-y-3"
+            >
               <div className="flex items-start gap-2.5">
                 <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
                 <div className="space-y-1">
@@ -383,7 +426,7 @@ export default function VideoAssetModal({
                   size="sm"
                   onClick={handleConnectYouTube}
                   disabled={isConnectingYouTube || isSubmitting}
-                  className="h-10 px-4 rounded-xl text-xs font-semibold bg-red-600 hover:bg-red-700 text-white gap-2 shadow-xs"
+                  className="h-11 px-4 rounded-xl text-xs font-semibold bg-red-600 hover:bg-red-700 text-white gap-2 shadow-xs"
                 >
                   {isConnectingYouTube ? (
                     <>
@@ -399,7 +442,7 @@ export default function VideoAssetModal({
                   variant="outline"
                   size="sm"
                   onClick={() => setMode("manual")}
-                  className="h-10 px-3 rounded-xl text-xs"
+                  className="h-11 px-4 rounded-xl text-xs"
                 >
                   إدخال رابط يوتيوب يدوياً
                 </Button>
@@ -466,7 +509,7 @@ export default function VideoAssetModal({
             </div>
           )}
 
-          {/* MODE 1: FILE DRAG & DROP DROPZONE */}
+          {/* MODE 1: FILE DRAG & DROP DROPZONE (Keyboard Accessible) */}
           {mode === "upload" && !editingAsset ? (
             <div className="space-y-2">
               <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
@@ -475,11 +518,20 @@ export default function VideoAssetModal({
               </label>
 
               <div
+                role="button"
+                tabIndex={isSubmitting ? -1 : 0}
+                aria-label="منطقة اختيار ملف الفيديو. اسحب الملف هنا أو اضغط للاختيار من جهازك"
+                onKeyDown={(e) => {
+                  if ((e.key === "Enter" || e.key === " ") && !isSubmitting) {
+                    e.preventDefault();
+                    fileInputRef.current?.click();
+                  }
+                }}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 onClick={() => !isSubmitting && fileInputRef.current?.click()}
-                className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
+                className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
                   isDragging
                     ? "border-primary bg-primary/10 scale-[1.01]"
                     : selectedFile
@@ -507,10 +559,10 @@ export default function VideoAssetModal({
                     </div>
                     <p className="text-sm font-bold text-foreground max-w-sm truncate">{selectedFile.name}</p>
                     <p className="text-xs text-muted-foreground mt-0.5 font-mono">
-                      الحجم: {(selectedFile.size / (1024 * 1024)).toFixed(1)} MB
+                      الحجم الإجمالي: {totalFileSizeMb} MB
                     </p>
                     <span className="text-[11px] text-primary font-medium mt-1">
-                      اضغط لاختيار ملف آخر إن أردت
+                      اضغط أو اضغط Enter لاختيار ملف آخر إن أردت
                     </span>
                   </div>
                 ) : (
@@ -528,21 +580,35 @@ export default function VideoAssetModal({
                 )}
               </div>
 
-              {/* Progress Bar during Chunked Upload */}
+              {/* Progress Bar & Abort Control during Chunked Upload */}
               {isSubmitting && (
-                <div className="space-y-1.5 p-3 rounded-xl bg-muted/40 border border-border">
+                <div className="space-y-2 p-3.5 rounded-xl bg-muted/40 border border-border">
                   <div className="flex items-center justify-between text-xs font-semibold">
                     <span className="flex items-center gap-1.5 text-foreground">
                       <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" />
-                      <span>جارٍ رفع الفيديو على مراحل إلى السيرفر...</span>
+                      <span>
+                        جارٍ رفع الحزم: {uploadedMb} MB من أصل {totalFileSizeMb} MB
+                      </span>
                     </span>
-                    <span className="font-mono text-primary">{uploadProgress}%</span>
+                    <span className="font-mono text-primary font-bold">{uploadProgress}%</span>
                   </div>
                   <div className="w-full h-2 rounded-full bg-border overflow-hidden">
                     <div
-                      className="h-full bg-primary transition-all duration-300 rounded-full"
+                      className="h-full bg-primary transition-all duration-300 motion-reduce:transition-none rounded-full"
                       style={{ width: `${uploadProgress}%` }}
                     />
+                  </div>
+                  <div className="flex justify-end pt-1">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleCancelUpload}
+                      className="h-8 px-2.5 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive gap-1 rounded-lg"
+                    >
+                      <Ban className="w-3.5 h-3.5" />
+                      <span>إلغاء الرفع</span>
+                    </Button>
                   </div>
                 </div>
               )}
@@ -572,7 +638,7 @@ export default function VideoAssetModal({
                 placeholder="https://www.youtube.com/watch?v=... أو dQw4w9WgXcQ"
                 dir="ltr"
                 disabled={isSubmitting}
-                className="w-full h-11 rounded-xl border border-input bg-background px-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className="w-full h-11 rounded-xl border border-input bg-background px-3 text-sm font-mono text-left placeholder:text-right focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               />
 
               {extractedId && (
@@ -582,6 +648,9 @@ export default function VideoAssetModal({
                     src={`https://img.youtube.com/vi/${extractedId}/mqdefault.jpg`}
                     alt="معاينة الفيديو"
                     className="w-24 h-14 object-cover rounded-lg shrink-0 border border-border"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = "none";
+                    }}
                   />
                   <div className="text-xs min-w-0">
                     <p className="font-semibold text-foreground truncate">معاينة غلاف الفيديو الجاهز</p>
