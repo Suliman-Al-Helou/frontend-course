@@ -10,6 +10,8 @@ interface AuthStore {
   logout: () => void;
 }
 
+let inFlightFetch: Promise<void> | null = null;
+
 export const useAuthStore = create<AuthStore>((set) => ({
   user: null,
   isAuthenticated: false,
@@ -22,21 +24,32 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
   // الدالة المحرك المخصصة لمكون الـ AuthBootstrap عند فتح الموقع
   fetchUser: async () => {
-    try {
-      // نطلب من الـ Route Handler الداخلي معرفة المستخدم الحالي
-      const res = await fetch("/api/auth/me", { cache: "no-store" });
-
-      if (res.ok) {
-        const data = await res.json();
-        // data.user يحتوي على البيانات القادمة من السيرفر (بدون التوكن)
-        set({ user: data.user, isAuthenticated: Boolean(data.user), isLoading: false });
-      } else {
-        // إذا لم يجد السيرفر جلسة صالحة
-        set({ user: null, isAuthenticated: false, isLoading: false });
-      }
-    } catch {
-      set({ user: null, isAuthenticated: false, isLoading: false });
+    // منع تكرار الطلبات المتزامنة (In-Flight Lock) في React StrictMode و Re-renders
+    if (inFlightFetch) {
+      return inFlightFetch;
     }
+
+    inFlightFetch = (async () => {
+      try {
+        // نطلب من الـ Route Handler الداخلي معرفة المستخدم الحالي
+        const res = await fetch("/api/auth/me", { cache: "no-store" });
+
+        if (res.ok) {
+          const data = await res.json();
+          // data.user يحتوي على البيانات القادمة من السيرفر (بدون التوكن)
+          set({ user: data.user, isAuthenticated: Boolean(data.user), isLoading: false });
+        } else {
+          // إذا لم يجد السيرفر جلسة صالحة
+          set({ user: null, isAuthenticated: false, isLoading: false });
+        }
+      } catch {
+        set({ user: null, isAuthenticated: false, isLoading: false });
+      } finally {
+        inFlightFetch = null;
+      }
+    })();
+
+    return inFlightFetch;
   },
 
   // تفريغ البيانات محلياً من الذاكرة

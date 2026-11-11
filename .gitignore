@@ -10,6 +10,7 @@ node_modules
 # Production build
 /build
 /dist
+docs/issus/
 
 # Environment variables
 .env
