@@ -71,7 +71,7 @@ export default function ManageZoomTab() {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
-    const isYtCallback = params.get("youtube_callback");
+    const isYtCallback = params.get("youtube_callback") || params.get("state") === "youtube_callback";
 
     if (code && isYtCallback) {
       setIsConnectingYouTube(true);

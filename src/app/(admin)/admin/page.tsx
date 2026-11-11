@@ -77,7 +77,9 @@ function AdminContent() {
   const { user, logout } = useAuthStore();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const tab = (searchParams.get("tab") as TabId) ?? "overview";
+  const rawTab = searchParams.get("tab") as TabId | null;
+  const isYoutubeCallback = searchParams.get("state") === "youtube_callback" || Boolean(searchParams.get("youtube_callback"));
+  const tab: TabId = (rawTab && rawTab in TAB_LABELS) ? rawTab : (isYoutubeCallback ? "zoom" : "overview");
 
   const setTab = (newTab: TabId) => {
     router.push(`/admin?tab=${newTab}`, { scroll: false });
