@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import api from "@/lib/api";
 import { Button } from "@/components/ui/button";
+import { notify } from "@/components/ui/sonner";
 import ZoomMeetingModal from "./ZoomMeetingModal";
 import VideoAssetModal from "./VideoAssetModal";
 import {
@@ -71,7 +72,6 @@ export default function ManageZoomTab() {
   const { data: youtubeStatus, isLoading: youtubeLoading } = useQuery(adminYouTubeQueries.status());
 
   const [isConnectingYouTube, setIsConnectingYouTube] = useState(false);
-  const [youtubeAlert, setYoutubeAlert] = useState<{ message: string; success: boolean } | null>(null);
   const callbackProcessedRef = useRef(false);
 
   // Check for Google OAuth callback in URL
@@ -93,18 +93,12 @@ export default function ManageZoomTab() {
       setIsConnectingYouTube(true);
       sendYouTubeCallback(code, state)
         .then((res) => {
-          setYoutubeAlert({
-            message: `تم ربط القناة بنجاح (${res.channel_title}). يمكنك الآن إنشاء Playlists ورفع الفيديوهات آلياً!`,
-            success: true,
-          });
+          notify.success(`تم ربط القناة بنجاح (${res.channel_title}). يمكنك الآن إنشاء Playlists ورفع الفيديوهات آلياً!`);
           void queryClient.invalidateQueries({ queryKey: adminYouTubeQueries.all() });
         })
         .catch((err: unknown) => {
           const e = err as { response?: { data?: { message?: string } } };
-          setYoutubeAlert({
-            message: e.response?.data?.message || "فشل إكمال ربط قناة YouTube مع Google.",
-            success: false,
-          });
+          notify.error(e.response?.data?.message || "فشل إكمال ربط قناة YouTube مع Google.");
         })
         .finally(() => {
           setIsConnectingYouTube(false);
@@ -120,20 +114,17 @@ export default function ManageZoomTab() {
         window.location.href = url;
       }
     } catch {
-      setYoutubeAlert({ message: "تعذر توليد رابط المصادقة من Google.", success: false });
+      notify.error("تعذر توليد رابط المصادقة من Google.");
       setIsConnectingYouTube(false);
     }
   };
 
-  const handleDisconnectYouTube = async () => {
-    if (!confirm("هل أنت متأكد من رغبتك في فصل قناة YouTube عن المنصة؟")) return;
-    try {
-      await disconnectYouTube();
-      void queryClient.invalidateQueries({ queryKey: adminYouTubeQueries.all() });
-      setYoutubeAlert({ message: "تم فصل قناة YouTube عن المنصة.", success: true });
-    } catch {
-      setYoutubeAlert({ message: "تعذر فصل القناة.", success: false });
-    }
+  const handleDisconnectYouTube = () => {
+    setDeleteTarget({
+      type: "youtube_disconnect",
+      id: 0,
+      title: "قناة YouTube الرسمية",
+    });
   };
 
   const meetings = Array.isArray(rawMeetings) ? rawMeetings : [];
@@ -155,7 +146,7 @@ export default function ManageZoomTab() {
 
   // Accessible Delete confirmation dialog state
   const [deleteTarget, setDeleteTarget] = useState<{
-    type: "meeting" | "video";
+    type: "meeting" | "video" | "youtube_disconnect";
     id: number;
     title: string;
   } | null>(null);
@@ -183,18 +174,30 @@ export default function ManageZoomTab() {
 
   // Save Handlers
   const handleSaveMeeting = async (data: ZoomMeetingFormData) => {
-    if (editingMeeting) {
-      await updateMeeting.mutateAsync({ id: editingMeeting.id, data });
-    } else {
-      await createMeeting.mutateAsync(data);
+    try {
+      if (editingMeeting) {
+        await updateMeeting.mutateAsync({ id: editingMeeting.id, data });
+        notify.success("تم تحديث بيانات اللقاء بنجاح");
+      } else {
+        await createMeeting.mutateAsync(data);
+        notify.success("تم إنشاء لقاء Zoom الجديد بنجاح");
+      }
+    } catch {
+      notify.error("حدث خطأ أثناء حفظ اللقاء.");
     }
   };
 
   const handleSaveVideo = async (data: VideoAssetFormData) => {
-    if (editingVideo) {
-      await updateAsset.mutateAsync({ id: editingVideo.id, data });
-    } else {
-      await createAsset.mutateAsync(data);
+    try {
+      if (editingVideo) {
+        await updateAsset.mutateAsync({ id: editingVideo.id, data });
+        notify.success("تم تحديث بيانات الفيديو بنجاح");
+      } else {
+        await createAsset.mutateAsync(data);
+        notify.success("تم إدراج الفيديو في بنك الوسائط بنجاح");
+      }
+    } catch {
+      notify.error("حدث خطأ أثناء حفظ الفيديو.");
     }
   };
 
@@ -208,12 +211,19 @@ export default function ManageZoomTab() {
       if (deleteTarget.type === "meeting") {
         await deleteMeeting.mutateAsync(deleteTarget.id);
         if (openMeetingId === deleteTarget.id) setOpenMeetingId(null);
-      } else {
+        notify.success("تم حذف اللقاء بنجاح");
+      } else if (deleteTarget.type === "video") {
         await deleteAsset.mutateAsync(deleteTarget.id);
+        notify.success("تم حذف الفيديو من بنك الوسائط بنجاح");
+      } else if (deleteTarget.type === "youtube_disconnect") {
+        await disconnectYouTube();
+        void queryClient.invalidateQueries({ queryKey: adminYouTubeQueries.all() });
+        notify.success("تم فصل قناة YouTube عن المنصة بنجاح");
       }
       setDeleteTarget(null);
     } catch (e) {
-      console.error("فشل الحذف:", e);
+      console.error("فشل الإجراء:", e);
+      notify.error(deleteTarget.type === "youtube_disconnect" ? "تعذر فصل القناة." : "فشل إتمام عملية الحذف.");
     } finally {
       isDeletingRef.current = false;
       setIsDeleting(false);
@@ -266,25 +276,6 @@ export default function ManageZoomTab() {
       </div>
 
       {/* ─── YouTube Channel Integration Banner ─────────────── */}
-      {youtubeAlert && (
-        <div
-          className={`p-3.5 rounded-xl border flex items-center justify-between text-xs font-medium animate-in fade-in-0 ${
-            youtubeAlert.success
-              ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400"
-              : "bg-destructive/10 border-destructive/20 text-destructive"
-          }`}
-        >
-          <span>{youtubeAlert.message}</span>
-          <button
-            type="button"
-            onClick={() => setYoutubeAlert(null)}
-            className="text-xs opacity-70 hover:opacity-100"
-          >
-            ×
-          </button>
-        </div>
-      )}
-
       <div className="bg-card border border-border rounded-2xl p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-red-500/10 text-red-600 flex items-center justify-center shrink-0">
@@ -318,9 +309,9 @@ export default function ManageZoomTab() {
               variant="outline"
               size="sm"
               onClick={handleDisconnectYouTube}
-              className="rounded-xl h-9 text-xs text-muted-foreground hover:text-destructive gap-1.5"
+              className="rounded-xl h-11 px-4 text-xs text-muted-foreground hover:text-destructive gap-2"
             >
-              <Unlink className="w-3.5 h-3.5" />
+              <Unlink className="w-4 h-4" />
               <span>فصل القناة</span>
             </Button>
           ) : (
@@ -329,16 +320,16 @@ export default function ManageZoomTab() {
               size="sm"
               onClick={handleConnectYouTube}
               disabled={isConnectingYouTube || youtubeLoading}
-              className="rounded-xl h-9 text-xs bg-red-600 hover:bg-red-700 text-white gap-1.5 shadow-xs"
+              className="rounded-xl h-11 px-5 text-xs bg-red-600 hover:bg-red-700 text-white gap-2 shadow-xs"
             >
               {isConnectingYouTube ? (
                 <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin" />
                   <span>جارٍ الاتصال بـ Google...</span>
                 </>
               ) : (
                 <>
-                  <Radio className="w-3.5 h-3.5" />
+                  <Radio className="w-4 h-4" />
                   <span>ربط قناة YouTube الآن</span>
                 </>
               )}
@@ -694,7 +685,7 @@ export default function ManageZoomTab() {
         onSave={handleSaveVideo}
       />
 
-      {/* ─── 5. Accessible Delete Confirmation Dialog ───────── */}
+      {/* ─── 5. Accessible Delete / Disconnect Confirmation Dialog ───────── */}
       {deleteTarget && (
         <div
           role="dialog"
@@ -707,14 +698,23 @@ export default function ManageZoomTab() {
               <AlertTriangle className="w-6 h-6" />
             </div>
             <h3 id="delete-dialog-title" className="text-base font-bold text-foreground">
-              تأكيد عملية الحذف
+              {deleteTarget.type === "youtube_disconnect" ? "تأكيد فصل قناة YouTube" : "تأكيد عملية الحذف"}
             </h3>
             <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
-              هل أنت متأكد من رغبتك في حذف{" "}
-              <strong className="text-foreground">{deleteTarget.title}</strong>؟
-              {deleteTarget.type === "meeting"
-                ? " سيتم حذف اللقاء وسجلات حضور الطلاب التابعة له بشكل نهائي."
-                : " سيتم حذف هذا الفيديو من بنك الوسائط."}
+              {deleteTarget.type === "youtube_disconnect" ? (
+                <>
+                  هل أنت متأكد من رغبتك في فصل <strong className="text-foreground">{deleteTarget.title}</strong> عن المنصة؟
+                  سيتم إيقاف رفع الفيديوهات التلقائي حتى تعيد ربطها لاحقاً.
+                </>
+              ) : (
+                <>
+                  هل أنت متأكد من رغبتك في حذف{" "}
+                  <strong className="text-foreground">{deleteTarget.title}</strong>؟
+                  {deleteTarget.type === "meeting"
+                    ? " سيتم حذف اللقاء وسجلات حضور الطلاب التابعة له بشكل نهائي."
+                    : " سيتم حذف هذا الفيديو من بنك الوسائط."}
+                </>
+              )}
             </p>
 
             <div className="mt-5 flex items-center justify-center gap-2.5">
@@ -723,7 +723,7 @@ export default function ManageZoomTab() {
                 variant="outline"
                 onClick={() => setDeleteTarget(null)}
                 disabled={isDeleting}
-                className="rounded-xl h-10 px-4 flex-1"
+                className="rounded-xl h-11 px-4 flex-1"
               >
                 إلغاء
               </Button>
@@ -732,10 +732,16 @@ export default function ManageZoomTab() {
                 variant="destructive"
                 onClick={handleConfirmDelete}
                 disabled={isDeleting}
-                className="rounded-xl h-10 px-4 flex-1 gap-1.5"
+                className="rounded-xl h-11 px-4 flex-1 gap-2"
               >
-                {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-                <span>نعم، احذف</span>
+                {isDeleting ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : deleteTarget.type === "youtube_disconnect" ? (
+                  <Unlink className="w-4 h-4" />
+                ) : (
+                  <Trash2 className="w-4 h-4" />
+                )}
+                <span>{deleteTarget.type === "youtube_disconnect" ? "نعم، افصل" : "نعم، احذف"}</span>
               </Button>
             </div>
           </div>
