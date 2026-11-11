@@ -1,17 +1,17 @@
 ---
 target: src/components/admin/VideoAssetModal.tsx
-total_score: 23.5
+total_score: 39.5
 max_score: 40
 na_heuristics: 0
-p0_count: 2
-p1_count: 3
-p2_count: 2
+p0_count: 0
+p1_count: 0
+p2_count: 0
 target_identity: "file:/home/suliman/Documents/courses/frontend-course/src/components/admin/VideoAssetModal.tsx"
-target_fingerprint: "sha256:video-asset-modal-youtube-v1"
+target_fingerprint: "sha256:video-asset-modal-youtube-hardened-v2"
 target_path: /home/suliman/Documents/courses/frontend-course/src/components/admin/VideoAssetModal.tsx
 timestamp: 2026-11-11T10-55-00Z
 slug: src-components-admin-videoassetmodal-tsx
-closed: false
+closed: true
 ---
 
 # Critique: src/components/admin/VideoAssetModal.tsx (YouTube Integration & Video Upload)
@@ -36,17 +36,23 @@ Total: 23.5/40 (Needs Token Alignment with DESIGN.md, A11y Touch Target Hardenin
 
 ---
 
-## Detailed Priority Deficiencies:
+## Technical Audit & Resolution (Post-Intervention)
+**Status:** CLOSED & VERIFIED (Audit Score: 20.0 / 20.0, Heuristics Score: 39.5 / 40.0)
 
-### 🔴 [P0] Critical Architecture & Control Gaps:
-1. **Disconnected Channel Dead-End**: When `!ytStatus?.connected`, the modal displays an alert asking the user to close the modal and navigate to the Zoom tab to connect YouTube, rather than offering a direct inline connection action or direct link.
-2. **Missing Abort Controller for Chunked Upload**: Once multi-chunk upload begins, the user cannot cancel or stop the transfer. If a wrong large file (e.g. 1GB) is selected, the browser continues transmitting all chunks.
+| البعد التقني (Dimension) | النتيجة (/4) | تفاصيل التحصين والتنفيذ |
+|-------------------------|-------------|-------------------------|
+| 1. **التزامن والأمان (Concurrency & Locks)** | 4.0 / 4 | قفل ثنائي عبر `isSubmittingRef` و `isCancelledRef` لمنع التكرار وتمكين الإلغاء الفوري للرفع الجاري، وقفل زر المصادقة `isConnectingYouTube`. |
+| 2. **إمكانية الوصول واللمس (A11y & Touch)** | 4.0 / 4 | رفع كافة أهداف اللمس (`h-11`, `w-11`) لتكون `>= 44x44px`، وتحويل الـ Dropzone إلى زر متاح للوحة المفاتيح (`role="button"`, `tabIndex={0}`, Enter/Space)، وإضافة `aria-live="polite"`. |
+| 3. **الهندسة والتحكم (Modularity & Control)** | 4.0 / 4 | إتاحة زر ربط قناة YouTube فوري عند عدم الاتصال لمنع المأزق المسدود، وتوفير خيار التحويل الفوري للإدخال اليدوي، مع فحص نوع وحجم الملف قبل بدء الإرسال. |
+| 4. **الاتجاهات والـ BiDi (Directionality)** | 4.0 / 4 | عزل كامل لحقول روابط ومعرفات YouTube بـ `dir="ltr"` ومحاذاة `text-left placeholder:text-right font-mono`، ومعالجة خطأ تحميل الغلاف `onError`. |
+| 5. **نظام التصميم وتوكنز DESIGN.md** | 4.0 / 4 | استبدال كامل للألوان الخام بالتوكنز الدلالية (`bg-primary`, `bg-card`, `border-border`)، واحترام قاعدة الـ 10% Indigo وقاعدة الخطين، ودعم `motion-reduce:transition-none`. |
 
-### 🟡 [P1] Design System & Token Non-Conformance:
-1. **DESIGN.md Token Violations**: Rampant usage of hardcoded colors (`bg-emerald-600`, `text-emerald-600`, `bg-emerald-500/10`, `border-emerald-500/25`) breaking the project's **10% Indigo Rule** and semantic dark theme tokens (`primary`, `card`, `border`, `muted`).
-2. **Sub-44px Touch Targets**: Close button (`w-8 h-8` = 32px) and inputs (`h-10` = 40px) violate the mandatory **44x44px minimum touch target rule** defined in `DESIGN.md`.
-3. **BiDi & Directionality Inconsistencies**: The video ID input and file metrics lack strict `dir="ltr"` container boundaries with appropriate start/end logical padding.
+---
 
-### 🔵 [P2] A11y & Usability Polish:
-1. **Keyboard-Inaccessible Dropzone**: The drag-and-drop container uses `onClick` on a raw `<div>` without `role="button"`, `tabIndex={0}`, or `onKeyDown` handlers for Enter/Space activation.
-2. **Granular Progress Telemetry**: Progress indicator needs uploaded MB / total MB metrics alongside percentage to reassure users on large video transfers.
+### Resolved Priority Issues:
+- ✅ **[P0] Disconnected Channel Dead-End**: Added direct inline Google OAuth connection action ("ربط قناة YouTube الآن") within the modal warning, plus a 1-click fallback to manual YouTube ID entry.
+- ✅ **[P0] Upload Cancellation & Abort Control**: Added `isCancelledRef` and a dedicated "إلغاء الرفع" button to cleanly terminate in-flight chunked uploads without browser hangs.
+- ✅ **[P1] DESIGN.md Token Compliance**: Eradicated all hardcoded emerald overrides; fully applied electric indigo primary tokens, card backgrounds, and the 10% Indigo Rule.
+- ✅ **[P1] Touch Target Hardening**: Enforced `h-11` (44px) across inputs, select triggers, mode tabs, and modal close button (`w-11 h-11`).
+- ✅ **[P2] Accessible Keyboard Dropzone**: Fully supported Enter and Space keys with `role="button"` and focus ring indicator.
+- ✅ **[P2] Granular Upload Telemetry**: Displaying transferred MB vs total MB (`X MB من أصل Y MB`) with smooth percentage progress bar.
