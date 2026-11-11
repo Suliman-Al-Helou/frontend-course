@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/select";
 import { extractYouTubeVideoId } from "@/lib/youtube";
 import { notify } from "@/lib/toast";
-import { uploadVideoChunk } from "@/features/admin-courses/api";
+import { uploadVideoChunk, getYouTubeAuthUrl } from "@/features/admin-courses/api";
 import { adminVideoAssetQueries, adminYouTubeQueries } from "@/features/admin-courses/queries/adminCourses.queries";
 import type { AdminVideoAsset, VideoAssetFormData, AdminZoomMeeting } from "@/features/admin-courses/types";
 
@@ -69,6 +69,7 @@ export default function VideoAssetModal({
 
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isConnectingYouTube, setIsConnectingYouTube] = useState(false);
 
   const isSubmittingRef = useRef(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -101,7 +102,22 @@ export default function VideoAssetModal({
     }
     setUploadProgress(0);
     setError(null);
+    setIsConnectingYouTube(false);
   }, [open, editingAsset, courses]);
+
+  // Connect to YouTube OAuth
+  const handleConnectYouTube = async () => {
+    setIsConnectingYouTube(true);
+    try {
+      const { url } = await getYouTubeAuthUrl();
+      if (url) {
+        window.location.href = url;
+      }
+    } catch {
+      setError("تعذر توليد رابط مصادقة Google لربط قناة YouTube.");
+      setIsConnectingYouTube(false);
+    }
+  };
 
   // Handle Drag & Drop
   const handleDragOver = (e: React.DragEvent) => {
@@ -166,7 +182,7 @@ export default function VideoAssetModal({
     // MODE 1: CHUNKED FILE UPLOAD
     if (mode === "upload") {
       if (!ytStatus?.connected) {
-        setError("قناة YouTube غير مربوطة بعد. يرجى ربط القناة أولاً من تبويب لقاءات Zoom لتفعيل رفع الفيديوهات.");
+        setError("قناة YouTube غير مربوطة بعد. يرجى ربط القناة أولاً لتفعيل رفع الفيديوهات.");
         return;
       }
 
@@ -264,17 +280,30 @@ export default function VideoAssetModal({
     >
       <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-border flex items-center justify-between shrink-0 bg-emerald-500/5">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+        <div className="px-6 py-4 border-b border-border flex items-center justify-between shrink-0 bg-muted/30">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
               <Film className="w-5 h-5" />
             </div>
             <div>
-              <h2 id="video-modal-title" className="text-base font-bold text-foreground">
-                {editingAsset ? "تعديل الفيديو" : "رفع / إدراج فيديو جديد"}
-              </h2>
-              <p className="text-xs text-muted-foreground">
-                رفع ملف فيديو من جهازك مباشرة أو إدراج رابط YouTube لبنك الوسائط
+              <div className="flex items-center gap-2">
+                <h2 id="video-modal-title" className="text-base font-bold text-foreground">
+                  {editingAsset ? "تعديل الفيديو" : "رفع وإدراج وسائط الفيديو"}
+                </h2>
+                {ytStatus?.connected ? (
+                  <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3" /> متصل بـ YouTube
+                  </span>
+                ) : (
+                  <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold">
+                    غير متصل
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {ytStatus?.connected
+                  ? `القناة: ${ytStatus.channel_title}`
+                  : "رفع ملفات الفيديو إلى YouTube أو إدراج روابط مباشرة"}
               </p>
             </div>
           </div>
@@ -282,42 +311,42 @@ export default function VideoAssetModal({
             type="button"
             onClick={onClose}
             disabled={isSubmitting}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-colors disabled:opacity-50"
+            className="h-11 w-11 rounded-xl flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-colors disabled:opacity-50"
             aria-label="إغلاق النافذة"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Mode Selector Tabs (فقط في حالة الإضافة الجديدة) */}
         {!editingAsset && (
-          <div className="px-6 pt-3 shrink-0 flex items-center gap-2 border-b border-border bg-muted/20 pb-2">
+          <div className="px-6 pt-3 shrink-0 flex items-center gap-2 border-b border-border bg-muted/20 pb-3">
             <button
               type="button"
               onClick={() => setMode("upload")}
               disabled={isSubmitting}
-              className={`text-xs font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all ${
+              className={`h-9 text-xs font-semibold px-4 rounded-xl flex items-center gap-2 transition-all ${
                 mode === "upload"
-                  ? "bg-emerald-600 text-white shadow-xs"
+                  ? "bg-primary text-primary-foreground shadow-xs"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"
               }`}
             >
-              <UploadCloud className="w-3.5 h-3.5" />
-              <span>رفع ملف فيديو من الجهاز (موصى به)</span>
+              <UploadCloud className="w-4 h-4" />
+              <span>رفع ملف فيديو من الجهاز</span>
             </button>
 
             <button
               type="button"
               onClick={() => setMode("manual")}
               disabled={isSubmitting}
-              className={`text-xs font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all ${
+              className={`h-9 text-xs font-semibold px-4 rounded-xl flex items-center gap-2 transition-all ${
                 mode === "manual"
                   ? "bg-primary text-primary-foreground shadow-xs"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"
               }`}
             >
-              <LinkIcon className="w-3.5 h-3.5" />
-              <span>إدخال رابط / معرّف يوتيوب يدوياً</span>
+              <LinkIcon className="w-4 h-4" />
+              <span>إدخال رابط / معرّف YouTube</span>
             </button>
           </div>
         )}
@@ -325,20 +354,55 @@ export default function VideoAssetModal({
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-4">
           {error && (
-            <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium">
-              {error}
+            <div
+              role="alert"
+              className="p-3.5 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium flex items-center gap-2"
+            >
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{error}</span>
             </div>
           )}
 
-          {/* تنبيه واضح في حال عدم ربط قناة YouTube */}
+          {/* تنبيه تفاعلي عند عدم ربط قناة YouTube مع زر اتصال مباشر */}
           {mode === "upload" && !ytStatus?.connected && (
-            <div className="p-3.5 rounded-xl border bg-amber-500/10 border-amber-500/25 text-amber-900 dark:text-amber-300 text-xs flex items-start gap-2.5">
-              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
-              <div className="space-y-1">
-                <p className="font-bold">قناة YouTube غير مربوطة بعد</p>
-                <p className="text-[11px] leading-relaxed opacity-90">
-                  لم يتم ربط قناة YouTube رسمية بالمنصة بعد. لن تتمكن من رفع ملفات الفيديو من جهازك حتى تقوم بربط القناة من زر <strong>&quot;الاتصال بـ YouTube&quot;</strong> في تبويب لقاءات Zoom.
-                </p>
+            <div className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/10 text-foreground text-xs space-y-3">
+              <div className="flex items-start gap-2.5">
+                <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
+                <div className="space-y-1">
+                  <p className="font-bold text-amber-900 dark:text-amber-200">
+                    قناة YouTube غير مربوطة بالمنصة بعد
+                  </p>
+                  <p className="text-muted-foreground leading-relaxed">
+                    يتطلب رفع ملفات الفيديو من جهازك اتصالاً بقناة YouTube معتمدة لإنشاء قوائم التشغيل التلقائية وحفظ الفيديوهات غير المدرجة (Unlisted).
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 pt-1">
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={handleConnectYouTube}
+                  disabled={isConnectingYouTube || isSubmitting}
+                  className="h-10 px-4 rounded-xl text-xs font-semibold bg-red-600 hover:bg-red-700 text-white gap-2 shadow-xs"
+                >
+                  {isConnectingYouTube ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>جارٍ الاتصال بـ Google...</span>
+                    </>
+                  ) : (
+                    <span>ربط قناة YouTube الآن</span>
+                  )}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setMode("manual")}
+                  className="h-10 px-3 rounded-xl text-xs"
+                >
+                  إدخال رابط يوتيوب يدوياً
+                </Button>
               </div>
             </div>
           )}
@@ -350,7 +414,7 @@ export default function VideoAssetModal({
                 الكورس المرتبط *
               </label>
               <Select dir="rtl" value={courseId} onValueChange={(v) => { setCourseId(v); setZoomMeetingId("none"); }} disabled={isSubmitting}>
-                <SelectTrigger id="video-modal-course" className="h-10 w-full rounded-xl border border-input bg-background">
+                <SelectTrigger id="video-modal-course" className="h-11 w-full rounded-xl border border-input bg-background">
                   <SelectValue placeholder="اختر الكورس..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -368,7 +432,7 @@ export default function VideoAssetModal({
                 تصنيف الفيديو
               </label>
               <Select dir="rtl" value={type} onValueChange={(v: "recording" | "lesson") => setType(v)} disabled={isSubmitting}>
-                <SelectTrigger id="video-modal-type" className="h-10 w-full rounded-xl border border-input bg-background">
+                <SelectTrigger id="video-modal-type" className="h-11 w-full rounded-xl border border-input bg-background">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -387,7 +451,7 @@ export default function VideoAssetModal({
                 <span>ربط بلقاء Zoom سابق (اختياري)</span>
               </label>
               <Select dir="rtl" value={zoomMeetingId} onValueChange={setZoomMeetingId} disabled={isSubmitting}>
-                <SelectTrigger id="video-modal-meeting" className="h-9 w-full rounded-lg border border-input bg-background text-xs">
+                <SelectTrigger id="video-modal-meeting" className="h-11 w-full rounded-xl border border-input bg-background text-xs">
                   <SelectValue placeholder="بدون ربط بلقاء زووم محدد" />
                 </SelectTrigger>
                 <SelectContent>
@@ -406,7 +470,7 @@ export default function VideoAssetModal({
           {mode === "upload" && !editingAsset ? (
             <div className="space-y-2">
               <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-                <FileVideo className="w-3.5 h-3.5 text-emerald-600" />
+                <FileVideo className="w-3.5 h-3.5 text-primary" />
                 <span>ملف الفيديو (.mp4, .webm, .mov) *</span>
               </label>
 
@@ -417,9 +481,9 @@ export default function VideoAssetModal({
                 onClick={() => !isSubmitting && fileInputRef.current?.click()}
                 className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
                   isDragging
-                    ? "border-emerald-500 bg-emerald-500/10 scale-[1.01]"
+                    ? "border-primary bg-primary/10 scale-[1.01]"
                     : selectedFile
-                    ? "border-emerald-500/50 bg-emerald-500/5"
+                    ? "border-primary/50 bg-primary/5"
                     : "border-border hover:border-primary/50 hover:bg-muted/30"
                 }`}
               >
@@ -438,14 +502,14 @@ export default function VideoAssetModal({
 
                 {selectedFile ? (
                   <div className="flex flex-col items-center">
-                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-2">
+                    <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-2">
                       <FileVideo className="w-6 h-6" />
                     </div>
                     <p className="text-sm font-bold text-foreground max-w-sm truncate">{selectedFile.name}</p>
                     <p className="text-xs text-muted-foreground mt-0.5 font-mono">
                       الحجم: {(selectedFile.size / (1024 * 1024)).toFixed(1)} MB
                     </p>
-                    <span className="text-[11px] text-emerald-600 font-medium mt-1">
+                    <span className="text-[11px] text-primary font-medium mt-1">
                       اضغط لاختيار ملف آخر إن أردت
                     </span>
                   </div>
@@ -469,14 +533,14 @@ export default function VideoAssetModal({
                 <div className="space-y-1.5 p-3 rounded-xl bg-muted/40 border border-border">
                   <div className="flex items-center justify-between text-xs font-semibold">
                     <span className="flex items-center gap-1.5 text-foreground">
-                      <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-600" />
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" />
                       <span>جارٍ رفع الفيديو على مراحل إلى السيرفر...</span>
                     </span>
-                    <span className="font-mono text-emerald-600">{uploadProgress}%</span>
+                    <span className="font-mono text-primary">{uploadProgress}%</span>
                   </div>
                   <div className="w-full h-2 rounded-full bg-border overflow-hidden">
                     <div
-                      className="h-full bg-emerald-600 transition-all duration-300 rounded-full"
+                      className="h-full bg-primary transition-all duration-300 rounded-full"
                       style={{ width: `${uploadProgress}%` }}
                     />
                   </div>
@@ -508,7 +572,7 @@ export default function VideoAssetModal({
                 placeholder="https://www.youtube.com/watch?v=... أو dQw4w9WgXcQ"
                 dir="ltr"
                 disabled={isSubmitting}
-                className="w-full h-10 rounded-xl border border-input bg-background px-3 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                className="w-full h-11 rounded-xl border border-input bg-background px-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               />
 
               {extractedId && (
@@ -539,7 +603,7 @@ export default function VideoAssetModal({
               onChange={(e) => setTitle(e.target.value)}
               placeholder="مثال: تسجيل الجلسة الأولى - أساسيات React"
               disabled={isSubmitting}
-              className="w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              className="w-full h-11 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
             />
           </div>
 
@@ -558,7 +622,7 @@ export default function VideoAssetModal({
                 value={durationMinutes}
                 onChange={(e) => setDurationMinutes(e.target.value)}
                 disabled={isSubmitting}
-                className="w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                className="w-full h-11 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               />
             </div>
           )}
@@ -575,7 +639,7 @@ export default function VideoAssetModal({
               onChange={(e) => setDescription(e.target.value)}
               placeholder="اكتب النقاط الرئيسية التي تم شرحها في هذا التسجيل..."
               disabled={isSubmitting}
-              className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 resize-none"
+              className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
             />
           </div>
 
@@ -586,14 +650,14 @@ export default function VideoAssetModal({
               variant="outline"
               onClick={onClose}
               disabled={isSubmitting}
-              className="rounded-xl h-10 px-4 min-w-[80px]"
+              className="rounded-xl h-11 px-5 min-w-[80px]"
             >
               إلغاء
             </Button>
             <Button
               type="submit"
               disabled={isSubmitting || (mode === "upload" && !ytStatus?.connected)}
-              className="rounded-xl h-10 px-5 gap-2 min-w-[120px] bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-50"
+              className="rounded-xl h-11 px-6 gap-2 min-w-[140px] bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>
