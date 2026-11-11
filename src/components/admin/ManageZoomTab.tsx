@@ -71,11 +71,15 @@ export default function ManageZoomTab() {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
-    const isYtCallback = params.get("youtube_callback") || params.get("state") === "youtube_callback";
+    const state = params.get("state");
+    const isYtCallback =
+      params.get("youtube_callback") ||
+      state === "youtube_callback" ||
+      Boolean(state?.startsWith("yt_"));
 
     if (code && isYtCallback) {
       setIsConnectingYouTube(true);
-      sendYouTubeCallback(code)
+      sendYouTubeCallback(code, state)
         .then((res) => {
           setYoutubeAlert({
             message: `تم ربط القناة بنجاح (${res.channel_title}). يمكنك الآن إنشاء Playlists ورفع الفيديوهات آلياً!`,

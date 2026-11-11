@@ -78,7 +78,10 @@ function AdminContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const rawTab = searchParams.get("tab") as TabId | null;
-  const isYoutubeCallback = searchParams.get("state") === "youtube_callback" || Boolean(searchParams.get("youtube_callback"));
+  const isYoutubeCallback =
+    searchParams.get("state") === "youtube_callback" ||
+    Boolean(searchParams.get("youtube_callback")) ||
+    Boolean(searchParams.get("state")?.startsWith("yt_"));
   const tab: TabId = (rawTab && rawTab in TAB_LABELS) ? rawTab : (isYoutubeCallback ? "zoom" : "overview");
 
   const setTab = (newTab: TabId) => {

@@ -225,8 +225,8 @@ export async function getYouTubeAuthUrl(): Promise<{ url: string }> {
   return data;
 }
 
-export async function sendYouTubeCallback(code: string): Promise<{ status: string; channel_title: string }> {
-  const { data } = await api.post<{ status: string; channel_title: string }>("/admin/youtube/callback", { code });
+export async function sendYouTubeCallback(code: string, state?: string | null): Promise<{ status: string; channel_title: string }> {
+  const { data } = await api.post<{ status: string; channel_title: string }>("/admin/youtube/callback", { code, state });
   return data;
 }
 
