@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   X,
   Loader2,
@@ -12,6 +12,7 @@ import {
   FileText,
   CheckCircle2,
   AlertCircle,
+  AlertTriangle,
   UploadCloud,
   FileVideo,
 } from "lucide-react";
@@ -25,7 +26,7 @@ import {
 } from "@/components/ui/select";
 import { extractYouTubeVideoId } from "@/lib/youtube";
 import { uploadVideoChunk } from "@/features/admin-courses/api";
-import { adminVideoAssetQueries } from "@/features/admin-courses/queries/adminCourses.queries";
+import { adminVideoAssetQueries, adminYouTubeQueries } from "@/features/admin-courses/queries/adminCourses.queries";
 import type { AdminVideoAsset, VideoAssetFormData, AdminZoomMeeting } from "@/features/admin-courses/types";
 
 interface Props {
@@ -46,6 +47,7 @@ export default function VideoAssetModal({
   onSave,
 }: Props) {
   const queryClient = useQueryClient();
+  const { data: ytStatus } = useQuery(adminYouTubeQueries.status());
 
   // Mode: "upload" (file dropzone) or "manual" (YouTube link/ID)
   const [mode, setMode] = useState<"upload" | "manual">("upload");
@@ -162,6 +164,11 @@ export default function VideoAssetModal({
 
     // MODE 1: CHUNKED FILE UPLOAD
     if (mode === "upload") {
+      if (!ytStatus?.connected) {
+        setError("قناة YouTube غير مربوطة بعد. يرجى ربط القناة أولاً من تبويب لقاءات Zoom لتفعيل رفع الفيديوهات.");
+        return;
+      }
+
       if (!selectedFile) {
         setError("الرجاء اختيار ملف فيديو للرفع (.mp4 أو .webm)");
         return;
@@ -318,6 +325,19 @@ export default function VideoAssetModal({
           {error && (
             <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium">
               {error}
+            </div>
+          )}
+
+          {/* تنبيه واضح في حال عدم ربط قناة YouTube */}
+          {mode === "upload" && !ytStatus?.connected && (
+            <div className="p-3.5 rounded-xl border bg-amber-500/10 border-amber-500/25 text-amber-900 dark:text-amber-300 text-xs flex items-start gap-2.5">
+              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
+              <div className="space-y-1">
+                <p className="font-bold">قناة YouTube غير مربوطة بعد</p>
+                <p className="text-[11px] leading-relaxed opacity-90">
+                  لم يتم ربط قناة YouTube رسمية بالمنصة بعد. لن تتمكن من رفع ملفات الفيديو من جهازك حتى تقوم بربط القناة من زر <strong>&quot;الاتصال بـ YouTube&quot;</strong> في تبويب لقاءات Zoom.
+                </p>
+              </div>
             </div>
           )}
 
@@ -570,8 +590,8 @@ export default function VideoAssetModal({
             </Button>
             <Button
               type="submit"
-              disabled={isSubmitting}
-              className="rounded-xl h-10 px-5 gap-2 min-w-[120px] bg-emerald-600 hover:bg-emerald-700 text-white"
+              disabled={isSubmitting || (mode === "upload" && !ytStatus?.connected)}
+              className="rounded-xl h-10 px-5 gap-2 min-w-[120px] bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>
