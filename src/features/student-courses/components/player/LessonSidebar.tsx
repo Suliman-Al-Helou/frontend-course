@@ -135,7 +135,7 @@ export function LessonSidebar({
                           key={lesson.id}
                           href={`/courses/${courseId}/lessons/${lesson.id}`}
                           aria-current={current ? "step" : undefined}
-                          className={`min-h-[44px] flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
+                          className={`min-h-[44px] flex items-center gap-3 px-4 py-2.5 text-sm transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-lg ${
                             current
                               ? "bg-primary/10 text-primary font-semibold border-s-2 border-primary"
                               : "hover:bg-muted/60 text-foreground/80 hover:text-foreground"
@@ -169,8 +169,8 @@ export function LessonSidebar({
                         key={lesson.id}
                         type="button"
                         onClick={triggerLockedAlert}
-                        className="w-full min-h-[44px] flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground/60 cursor-not-allowed hover:bg-muted/20 transition-colors text-start"
-                        aria-label={`${lesson.title} - مغلق`}
+                        className="w-full min-h-[44px] flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground/60 hover:bg-muted/20 transition-colors text-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-lg motion-reduce:transition-none"
+                        aria-label={`${lesson.title} - درس مغلق، اضغط لمعرفة كيفية الفتح`}
                       >
                         <Lock className="w-4 h-4 text-muted-foreground/50 flex-shrink-0" aria-hidden="true" />
                         <span className="truncate flex-1">{lesson.title}</span>
