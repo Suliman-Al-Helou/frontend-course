@@ -65,6 +65,7 @@ export default function ManageZoomTab() {
 
   const [isConnectingYouTube, setIsConnectingYouTube] = useState(false);
   const [youtubeAlert, setYoutubeAlert] = useState<{ message: string; success: boolean } | null>(null);
+  const callbackProcessedRef = useRef(false);
 
   // Check for Google OAuth callback in URL
   useEffect(() => {
@@ -78,6 +79,10 @@ export default function ManageZoomTab() {
       Boolean(state?.startsWith("yt_"));
 
     if (code && isYtCallback) {
+      if (callbackProcessedRef.current) return;
+      callbackProcessedRef.current = true;
+      window.history.replaceState({}, "", "/admin?tab=zoom");
+
       setIsConnectingYouTube(true);
       sendYouTubeCallback(code, state)
         .then((res) => {
@@ -86,8 +91,6 @@ export default function ManageZoomTab() {
             success: true,
           });
           void queryClient.invalidateQueries({ queryKey: adminYouTubeQueries.all() });
-          // Clean the query params from the URL without reload
-          window.history.replaceState({}, "", "/admin?tab=zoom");
         })
         .catch((err: unknown) => {
           const e = err as { response?: { data?: { message?: string } } };
