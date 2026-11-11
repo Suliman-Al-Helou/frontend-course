@@ -22,6 +22,7 @@ import {
 import api from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { notify } from "@/components/ui/sonner";
+import ConfirmModal from "@/components/shared/ConfirmModal";
 import ZoomMeetingModal from "./ZoomMeetingModal";
 import VideoAssetModal from "./VideoAssetModal";
 import {
@@ -690,68 +691,32 @@ export default function ManageZoomTab() {
         onSave={handleSaveVideo}
       />
 
-      {/* ─── 5. Accessible Delete / Disconnect Confirmation Dialog ───────── */}
-      {deleteTarget && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="delete-dialog-title"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm"
-        >
-          <div className="bg-card border border-border rounded-2xl p-6 w-full max-w-sm shadow-2xl animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none text-center">
-            <div className="w-12 h-12 rounded-full bg-destructive/10 text-destructive flex items-center justify-center mx-auto mb-3">
-              <AlertTriangle className="w-6 h-6" />
-            </div>
-            <h3 id="delete-dialog-title" className="text-base font-bold text-foreground">
-              {deleteTarget.type === "youtube_disconnect" ? "تأكيد فصل قناة YouTube" : "تأكيد عملية الحذف"}
-            </h3>
-            <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
-              {deleteTarget.type === "youtube_disconnect" ? (
-                <>
-                  هل أنت متأكد من رغبتك في فصل <strong className="text-foreground">{deleteTarget.title}</strong> عن المنصة؟
-                  سيتم إيقاف رفع الفيديوهات التلقائي حتى تعيد ربطها لاحقاً.
-                </>
-              ) : (
-                <>
-                  هل أنت متأكد من رغبتك في حذف{" "}
-                  <strong className="text-foreground">{deleteTarget.title}</strong>؟
-                  {deleteTarget.type === "meeting"
-                    ? " سيتم حذف اللقاء وسجلات حضور الطلاب التابعة له بشكل نهائي."
-                    : " سيتم حذف هذا الفيديو من بنك الوسائط."}
-                </>
-              )}
-            </p>
-
-            <div className="mt-5 flex items-center justify-center gap-2.5">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setDeleteTarget(null)}
-                disabled={isDeleting}
-                className="rounded-xl h-11 px-4 flex-1"
-              >
-                إلغاء
-              </Button>
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={handleConfirmDelete}
-                disabled={isDeleting}
-                className="rounded-xl h-11 px-4 flex-1 gap-2"
-              >
-                {isDeleting ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : deleteTarget.type === "youtube_disconnect" ? (
-                  <Unlink className="w-4 h-4" />
-                ) : (
-                  <Trash2 className="w-4 h-4" />
-                )}
-                <span>{deleteTarget.type === "youtube_disconnect" ? "نعم، افصل" : "نعم، احذف"}</span>
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* ─── 5. Unified Confirmation Modal ───────────────────────────────── */}
+      <ConfirmModal
+        isOpen={Boolean(deleteTarget)}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title={deleteTarget?.type === "youtube_disconnect" ? "تأكيد فصل قناة YouTube" : "تأكيد عملية الحذف"}
+        description={
+          deleteTarget?.type === "youtube_disconnect" ? (
+            <>
+              هل أنت متأكد من رغبتك في فصل <strong className="text-foreground">{deleteTarget.title}</strong> عن المنصة؟
+              سيتم إيقاف رفع الفيديوهات التلقائي حتى تعيد ربطها لاحقاً.
+            </>
+          ) : deleteTarget ? (
+            <>
+              هل أنت متأكد من رغبتك في حذف{" "}
+              <strong className="text-foreground">{deleteTarget.title}</strong>؟
+              {deleteTarget.type === "meeting"
+                ? " سيتم حذف اللقاء وسجلات حضور الطلاب التابعة له بشكل نهائي."
+                : " سيتم حذف هذا الفيديو من بنك الوسائط."}
+            </>
+          ) : ""
+        }
+        confirmText={deleteTarget?.type === "youtube_disconnect" ? "نعم، افصل" : "نعم، احذف"}
+        variant="destructive"
+        isLoading={isDeleting}
+      />
     </div>
   );
 }

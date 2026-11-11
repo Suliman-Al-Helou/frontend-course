@@ -2,10 +2,11 @@
 
 import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Trash2, Search, AlertTriangle, Loader2 } from 'lucide-react';
+import { Trash2, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { notify } from '@/components/ui/sonner';
+import ConfirmModal from '@/components/shared/ConfirmModal';
 import api from '@/lib/api';
 import type { AdminUser, Enrollment } from '@/types';
 
@@ -128,24 +129,16 @@ export default function StudentsTable({ users, enrollments, onRefresh }: Props) 
         </table>
       </div>
 
-      {/* مودال تأكيد حذف الطالب الآمن */}
-      {deletingStudent && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="delete-student-title"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-          dir="rtl"
-        >
-          <div className="bg-card border border-border rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-destructive/10 text-destructive flex items-center justify-center mx-auto">
-              <AlertTriangle className="w-6 h-6" />
-            </div>
-            <div className="text-center space-y-2">
-              <h3 id="delete-student-title" className="text-base font-bold text-foreground">
-                تأكيد حذف حساب الطالب
-              </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
+      {/* مودال تأكيد حذف الطالب المشترك الموحد */}
+      <ConfirmModal
+        isOpen={!!deletingStudent}
+        onClose={() => setDeletingStudent(null)}
+        onConfirm={confirmDelete}
+        title="تأكيد حذف حساب الطالب"
+        description={
+          deletingStudent ? (
+            <div className="space-y-2">
+              <p>
                 هل أنت متأكد من رغبتك في حذف حساب الطالب <strong className="text-foreground">{deletingStudent.name || deletingStudent.email}</strong>؟
               </p>
               {getEnrollmentCount(deletingStudent.id) > 0 && (
@@ -154,28 +147,10 @@ export default function StudentsTable({ users, enrollments, onRefresh }: Props) 
                 </div>
               )}
             </div>
-            <div className="flex gap-3 pt-2">
-              <Button
-                variant="outline"
-                className="flex-1 rounded-xl h-11 min-h-[44px]"
-                disabled={isDeleting}
-                onClick={() => setDeletingStudent(null)}
-              >
-                إلغاء
-              </Button>
-              <Button
-                variant="destructive"
-                className="flex-1 rounded-xl h-11 min-h-[44px] bg-destructive hover:bg-destructive/90 text-destructive-foreground font-semibold flex items-center justify-center gap-2"
-                disabled={isDeleting}
-                onClick={confirmDelete}
-              >
-                {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-                {isDeleting ? 'جارٍ الحذف...' : 'تأكيد الحذف'}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+          ) : ''
+        }
+        isLoading={isDeleting}
+      />
     </div>
   );
 }

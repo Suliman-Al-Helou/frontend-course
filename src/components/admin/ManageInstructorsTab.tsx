@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Pencil, Trash2, Users, AlertTriangle, Loader2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { notify } from '@/components/ui/sonner';
+import ConfirmModal from '@/components/shared/ConfirmModal';
 import api from '@/lib/api';
 import InstructorFormModal from './InstructorFormModal';
 import type { Instructor } from '@/types';
@@ -150,50 +151,22 @@ export default function ManageInstructorsTab() {
         </div>
       )}
 
-      {/* مودال تأكيد الحذف الداخلي الآمن */}
-      {deletingInstructor && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="delete-instructor-title"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-          dir="rtl"
-        >
-          <div className="bg-card border border-border rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-destructive/10 text-destructive flex items-center justify-center mx-auto">
-              <AlertTriangle className="w-6 h-6" />
-            </div>
-            <div className="text-center space-y-1.5">
-              <h3 id="delete-instructor-title" className="text-base font-bold text-foreground">
-                تأكيد حذف المدرب
-              </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                هل أنت متأكد من رغبتك في حذف المدرب <strong className="text-foreground">{deletingInstructor.name}</strong>؟
-                لا يمكن التراجع عن هذا الإجراء وسيتم إلغاء ربطه من الكورسات المرتبطة.
-              </p>
-            </div>
-            <div className="flex gap-3 pt-2">
-              <Button
-                variant="outline"
-                className="flex-1 rounded-xl h-11 min-h-[44px]"
-                disabled={isDeleting}
-                onClick={() => setDeletingInstructor(null)}
-              >
-                إلغاء
-              </Button>
-              <Button
-                variant="destructive"
-                className="flex-1 rounded-xl h-11 min-h-[44px] bg-destructive hover:bg-destructive/90 text-destructive-foreground font-semibold flex items-center justify-center gap-2"
-                disabled={isDeleting}
-                onClick={confirmDelete}
-              >
-                {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-                {isDeleting ? 'جارٍ الحذف...' : 'تأكيد الحذف'}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* مودال تأكيد الحذف المشترك الموحد */}
+      <ConfirmModal
+        isOpen={!!deletingInstructor}
+        onClose={() => setDeletingInstructor(null)}
+        onConfirm={confirmDelete}
+        title="تأكيد حذف المدرب"
+        description={
+          deletingInstructor ? (
+            <>
+              هل أنت متأكد من رغبتك في حذف المدرب <strong className="text-foreground">{deletingInstructor.name}</strong>؟{' '}
+              لا يمكن التراجع عن هذا الإجراء وسيتم إلغاء ربطه من كافة الكورسات المرتبطة.
+            </>
+          ) : ''
+        }
+        isLoading={isDeleting}
+      />
 
       {showModal && (
         <InstructorFormModal

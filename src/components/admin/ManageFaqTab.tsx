@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Trash2, ChevronDown, ChevronUp, Loader2, Save, AlertTriangle } from 'lucide-react';
+import { Plus, Trash2, ChevronDown, ChevronUp, Loader2, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { notify } from '@/components/ui/sonner';
+import ConfirmModal from '@/components/shared/ConfirmModal';
 import api from '@/lib/api';
 
 interface Faq {
@@ -246,52 +247,24 @@ export default function ManageFaqTab() {
         )}
       </div>
 
-      {/* مودال تأكيد حذف السؤال الآمن */}
-      {deletingFaq && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="delete-faq-title"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-          dir="rtl"
-        >
-          <div className="bg-card border border-border rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-destructive/10 text-destructive flex items-center justify-center mx-auto">
-              <AlertTriangle className="w-6 h-6" />
-            </div>
-            <div className="text-center space-y-2">
-              <h3 id="delete-faq-title" className="text-base font-bold text-foreground">
-                تأكيد حذف السؤال
-              </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                هل أنت متأكد من رغبتك في حذف السؤال التالي؟
-              </p>
+      {/* مودال تأكيد حذف السؤال المشترك الموحد */}
+      <ConfirmModal
+        isOpen={!!deletingFaq}
+        onClose={() => setDeletingFaq(null)}
+        onConfirm={confirmDelete}
+        title="تأكيد حذف السؤال"
+        description={
+          deletingFaq ? (
+            <div className="space-y-2">
+              <p>هل أنت متأكد من رغبتك في حذف السؤال التالي؟</p>
               <div className="p-3 bg-muted/60 border border-border rounded-xl text-xs font-medium text-foreground text-right">
                 {deletingFaq.question || 'سؤال بدون عنوان'}
               </div>
             </div>
-            <div className="flex gap-3 pt-2">
-              <Button
-                variant="outline"
-                className="flex-1 rounded-xl h-11 min-h-[44px]"
-                disabled={isDeleting}
-                onClick={() => setDeletingFaq(null)}
-              >
-                إلغاء
-              </Button>
-              <Button
-                variant="destructive"
-                className="flex-1 rounded-xl h-11 min-h-[44px] bg-destructive hover:bg-destructive/90 text-destructive-foreground font-semibold flex items-center justify-center gap-2"
-                disabled={isDeleting}
-                onClick={confirmDelete}
-              >
-                {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-                {isDeleting ? 'جارٍ الحذف...' : 'تأكيد الحذف'}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+          ) : ''
+        }
+        isLoading={isDeleting}
+      />
     </div>
   );
 }
