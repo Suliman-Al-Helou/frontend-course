@@ -72,6 +72,7 @@ export default function ManageZoomTab() {
   const { data: youtubeStatus, isLoading: youtubeLoading } = useQuery(adminYouTubeQueries.status());
 
   const [isConnectingYouTube, setIsConnectingYouTube] = useState(false);
+  const isConnectingRef = useRef(false);
   const callbackProcessedRef = useRef(false);
 
   // Check for Google OAuth callback in URL
@@ -107,6 +108,8 @@ export default function ManageZoomTab() {
   }, [queryClient]);
 
   const handleConnectYouTube = async () => {
+    if (isConnectingRef.current || isConnectingYouTube) return;
+    isConnectingRef.current = true;
     setIsConnectingYouTube(true);
     try {
       const { url } = await getYouTubeAuthUrl();
@@ -116,6 +119,7 @@ export default function ManageZoomTab() {
     } catch {
       notify.error("تعذر توليد رابط المصادقة من Google.");
       setIsConnectingYouTube(false);
+      isConnectingRef.current = false;
     }
   };
 
@@ -253,7 +257,7 @@ export default function ManageZoomTab() {
               setIsZoomModalOpen(true);
             }}
             disabled={coursesLoading}
-            className="rounded-xl h-10 px-4 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-semibold shadow-xs transition-colors"
+            className="rounded-xl h-11 px-5 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-semibold shadow-xs transition-colors"
           >
             <Plus className="w-4 h-4" />
             <span>+ إضافة لقاء Zoom</span>
@@ -262,14 +266,15 @@ export default function ManageZoomTab() {
           {/* زر رفع/إدراج فيديو */}
           <Button
             type="button"
+            variant="outline"
             onClick={() => {
               setEditingVideo(null);
               setIsVideoModalOpen(true);
             }}
             disabled={coursesLoading}
-            className="rounded-xl h-10 px-4 gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs transition-colors"
+            className="rounded-xl h-11 px-5 gap-2 border-border text-foreground hover:bg-muted text-xs font-semibold shadow-xs transition-colors"
           >
-            <Film className="w-4 h-4" />
+            <Film className="w-4 h-4 text-primary" />
             <span>+ رفع / إدراج فيديو</span>
           </Button>
         </div>
@@ -413,16 +418,16 @@ export default function ManageZoomTab() {
                           href={m.zoom_link}
                           target="_blank"
                           rel="noreferrer"
-                          className="h-8 px-2.5 rounded-lg border border-border bg-background hover:bg-muted text-xs text-foreground font-medium flex items-center gap-1.5 transition-colors"
+                          className="h-10 px-3 rounded-xl border border-border bg-background hover:bg-muted text-xs text-foreground font-medium flex items-center gap-1.5 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                         >
                           <span className="font-mono" dir="ltr">Zoom</span>
-                          <ExternalLink className="w-3 h-3 text-muted-foreground" />
+                          <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
                         </a>
 
                         <button
                           type="button"
                           onClick={() => toggleAttendees(m.id)}
-                          className="h-8 px-2.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 text-xs font-medium flex items-center gap-1.5 transition-colors"
+                          className="h-10 px-3 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 text-xs font-medium flex items-center gap-1.5 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                         >
                           <Users className="w-3.5 h-3.5" />
                           <span>{m.attendances_count ?? 0}</span>
@@ -434,7 +439,7 @@ export default function ManageZoomTab() {
                             setEditingMeeting(m);
                             setIsZoomModalOpen(true);
                           }}
-                          className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                          className="w-10 h-10 rounded-xl flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                           aria-label="تعديل اللقاء"
                         >
                           <Pencil className="w-4 h-4" />
@@ -449,7 +454,7 @@ export default function ManageZoomTab() {
                               title: m.title,
                             })
                           }
-                          className="w-8 h-8 rounded-lg flex items-center justify-center text-destructive hover:bg-destructive/10 transition-colors"
+                          className="w-10 h-10 rounded-xl flex items-center justify-center text-destructive hover:bg-destructive/10 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                           aria-label="حذف اللقاء"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -599,18 +604,18 @@ export default function ManageZoomTab() {
                       <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
                         {v.status === "processing" ? (
                           <div
-                            className="h-8 px-2.5 rounded-lg border border-amber-500/30 bg-amber-500/10 text-xs text-amber-600 dark:text-amber-400 font-medium flex items-center gap-1.5 select-none"
+                            className="h-10 px-3 rounded-xl border border-amber-500/30 bg-amber-500/10 text-xs text-amber-600 dark:text-amber-400 font-medium flex items-center gap-1.5 select-none"
                             title="جاري رفع الفيديو ومعالجته على خوادم YouTube بالخلفية"
                           >
-                            <Loader2 className="w-3.5 h-3.5 animate-spin text-amber-500" />
+                            <Loader2 className="w-4 h-4 animate-spin text-amber-500" />
                             <span>جاري الرفع إلى YouTube...</span>
                           </div>
                         ) : v.status === "failed" ? (
                           <div
-                            className="h-8 px-2.5 rounded-lg border border-destructive/30 bg-destructive/10 text-xs text-destructive font-medium flex items-center gap-1.5 select-none"
+                            className="h-10 px-3 rounded-xl border border-destructive/30 bg-destructive/10 text-xs text-destructive font-medium flex items-center gap-1.5 select-none"
                             title="تعذر إكمال رفع هذا الفيديو إلى YouTube"
                           >
-                            <AlertTriangle className="w-3.5 h-3.5 text-destructive" />
+                            <AlertTriangle className="w-4 h-4 text-destructive" />
                             <span>فشل الرفع</span>
                           </div>
                         ) : (
@@ -618,10 +623,10 @@ export default function ManageZoomTab() {
                             href={`https://www.youtube.com/watch?v=${v.provider_video_id}`}
                             target="_blank"
                             rel="noreferrer"
-                            className="h-8 px-2.5 rounded-lg border border-border bg-background hover:bg-muted text-xs text-foreground font-medium flex items-center gap-1.5 transition-colors"
+                            className="h-10 px-3 rounded-xl border border-border bg-background hover:bg-muted text-xs text-foreground font-medium flex items-center gap-1.5 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                           >
                             <span>معاينة</span>
-                            <ExternalLink className="w-3 h-3 text-muted-foreground" />
+                            <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
                           </a>
                         )}
 
@@ -631,7 +636,7 @@ export default function ManageZoomTab() {
                             setEditingVideo(v);
                             setIsVideoModalOpen(true);
                           }}
-                          className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                          className="w-10 h-10 rounded-xl flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                           aria-label="تعديل الفيديو"
                         >
                           <Pencil className="w-4 h-4" />
@@ -646,7 +651,7 @@ export default function ManageZoomTab() {
                               title: v.title,
                             })
                           }
-                          className="w-8 h-8 rounded-lg flex items-center justify-center text-destructive hover:bg-destructive/10 transition-colors"
+                          className="w-10 h-10 rounded-xl flex items-center justify-center text-destructive hover:bg-destructive/10 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                           aria-label="حذف الفيديو"
                         >
                           <Trash2 className="w-4 h-4" />
