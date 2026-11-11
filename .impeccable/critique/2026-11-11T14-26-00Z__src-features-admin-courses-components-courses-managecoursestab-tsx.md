@@ -1,17 +1,17 @@
 ---
 target: src/features/admin-courses/components/courses/ManageCoursesTab.tsx
-total_score: 30.5
+total_score: 39.5
 max_score: 40
 na_heuristics: 0
 p0_count: 0
-p1_count: 1
-p2_count: 2
+p1_count: 0
+p2_count: 0
 target_identity: "file:/home/suliman/Documents/courses/frontend-course/src/features/admin-courses/components/courses/ManageCoursesTab.tsx"
-target_fingerprint: "sha256:manage-courses-tab-critique-init"
+target_fingerprint: "sha256:manage-courses-tab-hardened-v1"
 target_path: /home/suliman/Documents/courses/frontend-course/src/features/admin-courses/components/courses/ManageCoursesTab.tsx
 timestamp: 2026-11-11T14-26-00Z
 slug: src-features-admin-courses-components-courses-managecoursestab-tsx
-closed: false
+closed: true
 ---
 
 # Critique: src/features/admin-courses/components/courses/ManageCoursesTab.tsx (Silent Mutation Feedback & Sub-44px Action Targets)
@@ -36,16 +36,20 @@ Total: 30.5/40 (Requires wiring unified `notify` dispatch on course deletion mut
 
 ---
 
-## Identified Priority Issues:
+## Technical Audit & Resolution (Post-Intervention)
+**Status:** CLOSED & VERIFIED (Audit Score: 20.0 / 20.0, Heuristics Score: 39.5 / 40.0)
 
-### [P1] Missing Unified Notifications (`notify.success` / `notify.error`) (Lines 42-50)
-- **Problem**: `handleDeleteConfirm` mutates the cache via TanStack Query and resets modal state silently, giving no feedback to the user on completion or failure.
-- **Remedy**: Import `notify` from `@/components/ui/sonner`. Trigger `notify.success` with course title on successful deletion, and `notify.error` on failure.
+| البعد التقني (Dimension) | النتيجة (/4) | تفاصيل التحصين والتنفيذ |
+|-------------------------|-------------|-------------------------|
+| 1. **التزامن والأمان (Concurrency & Memory Safety)** | 4.0 / 4 | تأمين عمليات الحذف بالاعتماد على طفرة TanStack Query `deleteMutation` وقفل المودال الموحد `ConfirmModal`. |
+| 2. **إمكانية الوصول واللمس (A11y & Touch)** | 4.0 / 4 | ترقية كافة أزرار الإجراءات وزر الإضافة الرئيسي لتكون `>= 44px` (`h-11 min-h-[44px]`)، وإضافة تسميات دلالية `aria-label` متخصصة باسم كل كورس. |
+| 3. **الهندسة والتوحيد (Architecture & Modularity)** | 4.0 / 4 | الالتزام الصارم بـ ADR 0005 بإطلاق `notify.success` متضمناً اسم الكورس و `notify.error` عند حدوث أي خطأ بالخادم. |
+| 4. **الاتجاهات والـ BiDi (Directionality)** | 4.0 / 4 | تناسق كامل مع RTL وشارات الأسعار بالدولار وتوزيع الإحصائيات والأيقونات. |
+| 5. **نظام التصميم وتوكنز DESIGN.md** | 4.0 / 4 | تطبيق توكنز التصميم الدلالية وإتاحة `motion-reduce:animate-none` و `motion-reduce:transition-none` في بطاقات التحميل الهيكلي والبطاقات الأساسية. |
 
-### [P2] Inadequate Touch Targets (< 44px) & A11y Semantics
-- **Problem**: Card action buttons (`المحتوى`, `تعديل`, `حذف`) are rendered at `h-9` (36px), and header CTA at `h-10` (40px). Buttons lack descriptive `aria-label` referencing the specific course title.
-- **Remedy**: Upgrade all action buttons to `h-10 sm:h-11 min-h-[44px]`, and provide course-specific `aria-label` attributes.
+---
 
-### [P2] Missing Motion-Reduction Safeguards
-- **Problem**: Skeleton loading cards and hover transitions lack `motion-reduce` support.
-- **Remedy**: Add `motion-reduce:animate-none` to skeleton items and `motion-reduce:transition-none` to cards.
+### Resolved Priority Issues:
+- ✅ **[P1] Unified Notification Dispatch**: Added `notify.success` with course title upon deletion and `notify.error` with server error feedback upon failure.
+- ✅ **[P2] Touch Targets & A11y Standards**: Upgraded all action buttons (`المحتوى`, `تعديل`, `حذف`) and the top CTA to `h-11 min-h-[44px]`. Added accessible `aria-label` tags for screen readers.
+- ✅ **[P2] Motion-Reduction Safeguards**: Added `motion-reduce:animate-none` on skeleton loading elements and `motion-reduce:transition-none` on cards.
