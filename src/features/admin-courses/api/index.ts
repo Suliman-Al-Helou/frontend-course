@@ -250,7 +250,7 @@ export async function uploadVideoChunk(params: {
   type?: "recording" | "lesson";
 }): Promise<{ completed: boolean; progress: number; video_asset?: AdminVideoAsset }> {
   const formData = new FormData();
-  formData.append("chunk", params.chunk);
+  formData.append("chunk", params.chunk, `chunk_${params.chunkIndex}.part`);
   formData.append("chunk_index", String(params.chunkIndex));
   formData.append("total_chunks", String(params.totalChunks));
   formData.append("upload_id", params.uploadId);
