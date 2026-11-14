@@ -1,0 +1,47 @@
+import "server-only";
+import { getIronSession, SessionOptions } from "iron-session";
+import { cookies } from "next/headers";
+import type { SessionData } from "../types";
+
+export type { SessionData };
+
+if (!process.env.SESSION_SECRET) {
+  throw new Error(
+    "SESSION_SECRET غير معرّف بمتغيرات البيئة. لازم يكون نص عشوائي 32 حرف أو أكتر — شوف .env.example",
+  );
+}
+
+export const sessionOptions: SessionOptions = {
+  password: process.env.SESSION_SECRET,
+  cookieName: "fh_session",
+  cookieOptions: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 60 * 60 * 24 * 30, // 30 days
+  },
+};
+
+/** دومين الـ API الحقيقي (Laravel). سيرفر-فقط — بدون NEXT_PUBLIC_ عمدًا. */
+export const LARAVEL_API_URL = process.env.LARAVEL_API_URL as string;
+
+if (!LARAVEL_API_URL) {
+  throw new Error("LARAVEL_API_URL غير معرّف بمتغيرات البيئة — شوف .env.example");
+}
+
+export async function saveAuthSession(token: string, user: SessionData["user"]) {
+  const session = await getIronSession<SessionData>(await cookies(), sessionOptions);
+  session.token = token;
+  session.user = user;
+  await session.save();
+  return session;
+}
+
+export async function getIronSessionData() {
+  return await getIronSession<SessionData>(await cookies(), sessionOptions);
+}
+
+export async function destroyAuthSession() {
+  const session = await getIronSessionData();
+  session.destroy();
+}

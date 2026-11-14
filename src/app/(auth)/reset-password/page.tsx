@@ -152,11 +152,17 @@ export default function ResetPasswordPage() {
         <div className="text-center mb-6">
           <Logo />
           <h1 className="text-2xl font-bold text-foreground">كلمة مرور جديدة</h1>
-          <p className="text-sm text-muted-foreground mt-1">اختر كلمة مرور قوية لحماية حسابك التعليمي</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            اختر كلمة مرور قوية لحماية حسابك التعليمي
+          </p>
         </div>
 
         <div className="bg-card rounded-2xl shadow-xl border border-border p-8">
-          <Suspense fallback={<div className="h-[340px] bg-card animate-pulse rounded-2xl border border-border" />}>
+          <Suspense
+            fallback={
+              <div className="h-[340px] bg-card animate-pulse rounded-2xl border border-border" />
+            }
+          >
             <ResetPasswordForm />
           </Suspense>
 

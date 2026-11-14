@@ -23,8 +23,8 @@ export function PasswordStrength({ password }: { password: string }) {
                 ? allPassed
                   ? "bg-emerald-500"
                   : passedCount === 2
-                  ? "bg-amber-500"
-                  : "bg-destructive/80"
+                    ? "bg-amber-500"
+                    : "bg-destructive/80"
                 : "bg-muted"
             }`}
           />

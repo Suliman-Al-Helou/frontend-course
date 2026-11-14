@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import api from "@/lib/api";
+import { useLoginMutation } from "@/features/auth";
 import { useAuthStore } from "@/store/authStore";
 import { loginSchema } from "@/lib/validations/auth";
 import { flattenZodErrors } from "@/lib/validations/flattenZodErrors";
@@ -18,11 +18,11 @@ export function useLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const setAuth = useAuthStore((state) => state.setAuth);
+  const loginMutation = useLoginMutation();
 
   const [form, setForm] = useState<LoginForm>({ email: "", password: "" });
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const isSubmittingRef = useRef(false);
 
   const updateField = (field: keyof LoginForm) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,7 +32,7 @@ export function useLoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (loading || isSubmittingRef.current) return;
+    if (loginMutation.isPending || isSubmittingRef.current) return;
 
     setError("");
     setFieldErrors({});
@@ -44,9 +44,8 @@ export function useLoginForm() {
     }
 
     isSubmittingRef.current = true;
-    setLoading(true);
     try {
-      const { data } = await api.post("/auth/login", form);
+      const data = await loginMutation.mutateAsync(form);
       setAuth(data.user);
       notify.success(SUCCESS_CODES.AUTH_LOGIN_OK);
 
@@ -56,10 +55,9 @@ export function useLoginForm() {
     } catch (err) {
       handleFormError(err, setFieldErrors, setError);
     } finally {
-      setLoading(false);
       isSubmittingRef.current = false;
     }
   };
 
-  return { form, fieldErrors, error, loading, updateField, handleSubmit };
+  return { form, fieldErrors, error, loading: loginMutation.isPending, updateField, handleSubmit };
 }

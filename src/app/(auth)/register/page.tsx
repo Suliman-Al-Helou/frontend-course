@@ -25,7 +25,6 @@ function RegisterContent() {
 
       <GoogleAuthButton mode="signup" />
 
-
       <p className="text-center text-sm text-muted-foreground mt-6">
         لديك حساب بالفعل؟{" "}
         <Link
@@ -72,10 +71,16 @@ export default function RegisterPage() {
 
           <div className="mb-6 text-center">
             <h1 className="text-2xl font-bold text-foreground">إنشاء حساب جديد</h1>
-            <p className="text-muted-foreground mt-1 text-sm">انضم مجاناً وابدأ مسارك البرمجي اليوم</p>
+            <p className="text-muted-foreground mt-1 text-sm">
+              انضم مجاناً وابدأ مسارك البرمجي اليوم
+            </p>
           </div>
 
-          <Suspense fallback={<div className="h-[560px] animate-pulse bg-card rounded-2xl border border-border" />}>
+          <Suspense
+            fallback={
+              <div className="h-[560px] animate-pulse bg-card rounded-2xl border border-border" />
+            }
+          >
             <RegisterContent />
           </Suspense>
 

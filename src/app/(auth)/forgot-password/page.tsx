@@ -33,7 +33,9 @@ function SuccessState({ email }: { email: string }) {
       <div className="space-y-1">
         <h3 className="font-bold text-foreground text-lg">تم إرسال الرابط!</h3>
         <p className="text-muted-foreground text-sm leading-relaxed">
-          إذا كان البريد <span className="font-semibold text-foreground dir-ltr font-mono text-xs">{email}</span> مسجلاً لدينا، ستصلك رسالة تحتوي على تعليمات إعادة التعيين.
+          إذا كان البريد{" "}
+          <span className="font-semibold text-foreground dir-ltr font-mono text-xs">{email}</span>{" "}
+          مسجلاً لدينا، ستصلك رسالة تحتوي على تعليمات إعادة التعيين.
         </p>
       </div>
       <p className="text-xs text-muted-foreground/80 bg-muted/50 rounded-lg p-2.5">

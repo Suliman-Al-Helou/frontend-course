@@ -6,7 +6,7 @@ import type { User } from "@/types";
  */
 export function resolvePostLoginRedirect(
   redirectParam: string | null | undefined,
-  user: Pick<User, "role">
+  user: Pick<User, "role">,
 ): string {
   if (
     redirectParam &&
@@ -31,9 +31,7 @@ export function shouldEvictSession(status: number): boolean {
 /**
  * Extracts updated user data from a profile update response for session resealing.
  */
-export function extractUpdatedProfile(
-  rawBody: string
-): Partial<User> | null {
+export function extractUpdatedProfile(rawBody: string): Partial<User> | null {
   try {
     const parsed = JSON.parse(rawBody);
     if (parsed && typeof parsed === "object" && parsed.user) {
@@ -49,4 +47,3 @@ export function extractUpdatedProfile(
   }
   return null;
 }
-

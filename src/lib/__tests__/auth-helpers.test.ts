@@ -78,4 +78,3 @@ describe("Auth Integration Helpers (ADR 0003)", () => {
     });
   });
 });
-
