@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Video, Film, Plus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { notify } from "@/components/ui/sonner";
 import ConfirmModal from "@/components/shared/ConfirmModal";
 import ZoomMeetingModal from "./ZoomMeetingModal";
@@ -195,7 +196,7 @@ export default function MediaPipelineTab() {
   return (
     <div className="space-y-6">
       {/* ─── 1. Minimalist Header with Segmented Navigation ─── */}
-      <div className="bg-card border border-border rounded-2xl p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <Card className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Title & Description */}
         <div>
           <h1 className="text-lg font-bold text-foreground flex items-center gap-2">
@@ -276,7 +277,7 @@ export default function MediaPipelineTab() {
             </Button>
           )}
         </div>
-      </div>
+      </Card>
 
       {/* ─── 2. Active Sub-View ─────────────────────────────── */}
       {activeSubTab === "meetings" ? (

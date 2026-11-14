@@ -17,6 +17,9 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Modal, ModalHeader, ModalBody } from "@/components/ui/modal";
 import {
   Select,
   SelectContent,
@@ -70,7 +73,7 @@ export default function VideoAssetsView({
   return (
     <div className="space-y-4">
       {/* ─── Compact Controls Bar (Filter + Compact YouTube Pill) ─── */}
-      <div className="bg-card border border-border rounded-2xl p-4 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+      <Card className="p-4 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
         {/* Course Filter */}
         <div className="flex items-center gap-2">
           <span className="text-xs font-semibold text-muted-foreground shrink-0">
@@ -94,8 +97,8 @@ export default function VideoAssetsView({
         {/* Minimalist YouTube Status Pill */}
         <div className="flex items-center gap-2.5 self-end md:self-auto">
           {youtubeStatus?.connected ? (
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-success/10 border border-success/20 text-xs">
-              <span className="flex items-center gap-1.5 text-success font-semibold">
+            <Badge variant="success" className="gap-2 px-3 py-1.5 rounded-xl font-normal">
+              <span className="flex items-center gap-1.5 font-semibold">
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>YouTube: {youtubeStatus.channel_title}</span>
               </span>
@@ -108,7 +111,7 @@ export default function VideoAssetsView({
               >
                 <Unlink className="w-3.5 h-3.5" />
               </button>
-            </div>
+            </Badge>
           ) : (
             <Button
               type="button"
@@ -127,16 +130,16 @@ export default function VideoAssetsView({
             </Button>
           )}
         </div>
-      </div>
+      </Card>
 
       {/* ─── Video Assets Grid / List ─────────────────────────────── */}
       {isLoading ? (
-        <div className="flex flex-col items-center justify-center p-12 space-y-3 bg-card border border-border rounded-2xl">
+        <Card className="flex flex-col items-center justify-center p-12 space-y-3">
           <Loader2 className="w-6 h-6 animate-spin text-primary" />
           <p className="text-xs text-muted-foreground">جارٍ تحميل بنك الفيديوهات...</p>
-        </div>
+        </Card>
       ) : filteredVideos.length === 0 ? (
-        <div className="p-12 text-center bg-card border border-border rounded-2xl space-y-3">
+        <Card className="p-12 text-center space-y-3">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
             <Film className="w-6 h-6" />
           </div>
@@ -144,7 +147,7 @@ export default function VideoAssetsView({
           <p className="text-xs text-muted-foreground max-w-sm mx-auto">
             ابدأ برفع ملف فيديو من جهازك أو أدرج رابط YouTube لربطه بدروس الكورسات.
           </p>
-        </div>
+        </Card>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredVideos.map((video) => {
@@ -154,9 +157,9 @@ export default function VideoAssetsView({
             const thumbnail = `https://img.youtube.com/vi/${video.provider_video_id}/mqdefault.jpg`;
 
             return (
-              <div
+              <Card
                 key={video.id}
-                className="bg-card border border-border rounded-2xl overflow-hidden shadow-xs flex flex-col justify-between transition-all hover:border-primary/40 group"
+                className="overflow-hidden hover:border-primary/40 transition-colors flex flex-col justify-between group"
               >
                 {/* Thumbnail Preview Area */}
                 <div className="relative aspect-video bg-muted/50 overflow-hidden">
@@ -203,12 +206,12 @@ export default function VideoAssetsView({
                 <div className="p-4 space-y-2 flex-1 flex flex-col justify-between">
                   <div className="space-y-1.5">
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-primary/10 text-primary truncate max-w-[200px]">
+                      <Badge variant="primary" size="sm" className="truncate max-w-[200px]">
                         {courseTitle}
-                      </span>
-                      <span className="text-[10px] text-muted-foreground">
+                      </Badge>
+                      <Badge variant="secondary" size="sm">
                         {video.type === "recording" ? "تسجيل لقاء" : "درس مسجل"}
-                      </span>
+                      </Badge>
                     </div>
 
                     <h4
@@ -262,50 +265,31 @@ export default function VideoAssetsView({
                     </div>
                   </div>
                 </div>
-              </div>
+              </Card>
             );
           })}
         </div>
       )}
 
       {/* Video Preview Modal */}
-      {previewVideo && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-        >
-          <button
-            type="button"
-            tabIndex={-1}
-            aria-label="إغلاق المعاينة"
-            className="fixed inset-0 bg-background/80 backdrop-blur-sm cursor-default"
-            onClick={() => setPreviewVideo(null)}
-          />
-          <div className="relative z-10 bg-card border border-border rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none">
-            <div className="px-5 py-3 border-b border-border flex items-center justify-between bg-muted/20">
-              <h3 className="text-sm font-bold text-foreground truncate">{previewVideo.title}</h3>
-              <button
-                type="button"
-                onClick={() => setPreviewVideo(null)}
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground"
-                aria-label="إغلاق المعاينة"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="aspect-video w-full bg-black">
-              <iframe
-                src={`https://www.youtube-nocookie.com/embed/${previewVideo.provider_video_id}?autoplay=1`}
-                title={previewVideo.title}
-                className="w-full h-full border-0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-          </div>
+      <Modal
+        isOpen={Boolean(previewVideo)}
+        onClose={() => setPreviewVideo(null)}
+        size="2xl"
+      >
+        <ModalHeader title={previewVideo?.title} />
+        <div className="aspect-video w-full bg-black">
+          {previewVideo && (
+            <iframe
+              src={`https://www.youtube-nocookie.com/embed/${previewVideo.provider_video_id}?autoplay=1`}
+              title={previewVideo.title}
+              className="w-full h-full border-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          )}
         </div>
-      )}
+      </Modal>
     </div>
   );
 }

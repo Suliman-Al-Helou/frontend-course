@@ -14,6 +14,8 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { mediaPipelineQueries } from "../queries/mediaPipeline.queries";
 import type { AdminZoomMeeting, AttendanceRecord } from "../types";
@@ -98,16 +100,16 @@ export default function LiveMeetingsView({
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 space-y-3 bg-card border border-border rounded-2xl">
+      <Card className="flex flex-col items-center justify-center p-12 space-y-3">
         <Loader2 className="w-6 h-6 animate-spin text-primary" />
         <p className="text-xs text-muted-foreground">جارٍ تحميل قائمة اللقاءات المباشرة...</p>
-      </div>
+      </Card>
     );
   }
 
   if (meetings.length === 0) {
     return (
-      <div className="p-12 text-center bg-card border border-border rounded-2xl space-y-3">
+      <Card className="p-12 text-center space-y-3">
         <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
           <Video className="w-6 h-6" />
         </div>
@@ -115,7 +117,7 @@ export default function LiveMeetingsView({
         <p className="text-xs text-muted-foreground max-w-sm mx-auto">
           يمكنك جدولة لقاء مباشر جديد وربطه بأحد الكورسات ليظهر في جدول الطلاب.
         </p>
-      </div>
+      </Card>
     );
   }
 
@@ -127,16 +129,16 @@ export default function LiveMeetingsView({
           const isDrawerOpen = openMeetingId === m.id;
 
           return (
-            <div
+            <Card
               key={m.id}
-              className="bg-card border border-border rounded-2xl p-5 shadow-xs space-y-4 transition-all hover:border-primary/30"
+              className="p-5 space-y-4 transition-colors hover:border-primary/30"
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="space-y-1.5">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-xs font-semibold px-2.5 py-0.5 rounded-lg bg-primary/10 text-primary">
+                    <Badge variant="primary">
                       {courseTitle}
-                    </span>
+                    </Badge>
                     <h3 className="text-sm font-bold text-foreground">{m.title}</h3>
                   </div>
 
@@ -220,7 +222,7 @@ export default function LiveMeetingsView({
 
               {/* Attendance Roster Drawer */}
               {isDrawerOpen && <MeetingAttendancesDrawer meetingId={m.id} />}
-            </div>
+            </Card>
           );
         })}
       </div>
