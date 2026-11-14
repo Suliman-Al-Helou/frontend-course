@@ -10,6 +10,14 @@ import { faqQueries } from "../queries/faq.queries";
 import { useFaqMutations } from "../queries/faq.mutations";
 import type { FaqItem } from "../types";
 
+function formatFaqsCount(count: number): string {
+  if (count === 0) return "لا توجد أسئلة شائعة";
+  if (count === 1) return "سؤال واحد";
+  if (count === 2) return "سؤالان";
+  if (count >= 3 && count <= 10) return `${count} أسئلة`;
+  return `${count} سؤالاً`;
+}
+
 export default function ManageFaqTab() {
   const { data: rawFaqs = [], isLoading } = useQuery(faqQueries.adminList());
   const { createFaq, updateFaq, deleteFaq } = useFaqMutations();
@@ -127,7 +135,7 @@ export default function ManageFaqTab() {
             <span>إدارة الأسئلة الشائعة (FAQs)</span>
           </h2>
           <p className="text-xs text-muted-foreground mt-0.5">
-            {faqs.length} سؤال منشور في قسم الأسئلة بالصفحة الرئيسية
+            {formatFaqsCount(faqs.length)} منشور في قسم الأسئلة بالصفحة الرئيسية
           </p>
         </div>
 

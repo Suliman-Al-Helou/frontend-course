@@ -15,13 +15,12 @@ const statusConfig: Record<EnrollmentStatus, { label: string; color: string; ico
   {
     pending: {
       label: "معلّق",
-      color: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20",
+      color: "bg-warning/10 text-warning border border-warning/20",
       icon: Clock,
     },
     approved: {
       label: "مقبول",
-      color:
-        "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20",
+      color: "bg-success/10 text-success border border-success/20",
       icon: CheckCircle,
     },
     rejected: {
@@ -30,6 +29,14 @@ const statusConfig: Record<EnrollmentStatus, { label: string; color: string; ico
       icon: XCircle,
     },
   };
+
+function formatRequestsCount(count: number): string {
+  if (count === 0) return "لا توجد طلبات";
+  if (count === 1) return "طلب واحد";
+  if (count === 2) return "طلبان";
+  if (count >= 3 && count <= 10) return `${count} طلبات`;
+  return `${count} طلباً`;
+}
 
 const FILTER_LABELS = {
   all: "الكل",
@@ -102,7 +109,7 @@ export default function EnrollmentRequests() {
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-bold text-foreground">طلبات التسجيل في الكورسات</h2>
           <span className="text-xs bg-muted px-2.5 py-1 rounded-full text-muted-foreground font-medium">
-            {enrollments.length} طلب إجمالي
+            {formatRequestsCount(enrollments.length)} إجمالي
           </span>
         </div>
 
@@ -173,7 +180,7 @@ export default function EnrollmentRequests() {
                         {cfg.label}
                       </span>
                     </div>
-                    <p className="text-xs text-muted-foreground truncate mt-0.5 dir-ltr text-right">
+                    <p className="text-xs text-muted-foreground truncate mt-0.5 font-mono text-left" dir="ltr">
                       {studentEmail}
                     </p>
                     <p className="text-xs text-foreground font-medium mt-1 truncate">
@@ -198,7 +205,7 @@ export default function EnrollmentRequests() {
                             courseTitle,
                           )
                         }
-                        className="rounded-xl h-11 min-h-[44px] px-4 text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow-xs focus-visible:ring-2 focus-visible:ring-emerald-500"
+                        className="rounded-xl h-11 min-h-[44px] px-4 text-xs bg-success hover:bg-success/90 text-success-foreground font-semibold shadow-xs focus-visible:ring-2 focus-visible:ring-success"
                         aria-label={`قبول وتفعيل تسجيل ${studentName} في ${courseTitle}`}
                       >
                         <Check className="w-4 h-4 ml-1" />
@@ -261,7 +268,7 @@ export default function EnrollmentRequests() {
                           courseTitle,
                         )
                       }
-                      className="rounded-xl h-11 min-h-[44px] px-3.5 text-xs text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 focus-visible:ring-2 focus-visible:ring-emerald-500"
+                      className="rounded-xl h-11 min-h-[44px] px-3.5 text-xs text-success hover:bg-success/10 focus-visible:ring-2 focus-visible:ring-success"
                       aria-label={`إعادة قبول تسجيل ${studentName} في ${courseTitle}`}
                     >
                       إعادة القبول

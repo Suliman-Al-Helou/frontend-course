@@ -22,6 +22,14 @@ import { instructorQueries } from "../queries/instructor.queries";
 import { useInstructorMutations } from "../queries/instructor.mutations";
 import type { Instructor, InstructorFormData } from "../types";
 
+function formatInstructorsCount(count: number): string {
+  if (count === 0) return "لا يوجد مدربون";
+  if (count === 1) return "مدرب واحد";
+  if (count === 2) return "مدربان";
+  if (count >= 3 && count <= 10) return `${count} مدربين`;
+  return `${count} مدرباً`;
+}
+
 export default function ManageInstructorsTab() {
   const { data: instructors = [], isLoading } = useQuery(instructorQueries.adminList());
   const { createInstructor, updateInstructor, deleteInstructor } = useInstructorMutations();
@@ -74,7 +82,7 @@ export default function ManageInstructorsTab() {
             <span>إدارة أعضاء الهيئة التعليمية والمدربين</span>
           </h2>
           <p className="text-xs text-muted-foreground mt-0.5">
-            {instructors.length} مدرب مسجّل في المنصة
+            {formatInstructorsCount(instructors.length)} مسجّل في المنصة
           </p>
         </div>
 

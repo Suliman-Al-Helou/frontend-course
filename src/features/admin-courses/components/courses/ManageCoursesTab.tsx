@@ -18,6 +18,30 @@ const LEVEL_LABEL: Record<CourseLevel, string> = {
   advanced: "متقدم",
 };
 
+function formatCoursesCount(count: number): string {
+  if (count === 0) return "لا توجد كورسات";
+  if (count === 1) return "كورس واحد";
+  if (count === 2) return "كورسان";
+  if (count >= 3 && count <= 10) return `${count} كورسات`;
+  return `${count} كورساً`;
+}
+
+function formatStudentsCount(count: number): string {
+  if (count === 0) return "لا يوجد طلاب";
+  if (count === 1) return "طالب واحد";
+  if (count === 2) return "طالبان";
+  if (count >= 3 && count <= 10) return `${count} طلاب`;
+  return `${count} طالباً`;
+}
+
+function formatHoursCount(hours: number): string {
+  if (hours === 0) return "أقل من ساعة";
+  if (hours === 1) return "ساعة واحدة";
+  if (hours === 2) return "ساعتان";
+  if (hours >= 3 && hours <= 10) return `${hours} ساعات`;
+  return `${hours} ساعة`;
+}
+
 export default function ManageCoursesTab() {
   const { data: courses = [], isLoading } = useQuery(adminCourseQueries.list());
   const { data: enrollments = [] } = useQuery(adminEnrollmentQueries.list());
@@ -59,7 +83,7 @@ export default function ManageCoursesTab() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h2 className="text-xl font-bold text-foreground">إدارة الكورسات</h2>
-          <p className="text-xs text-muted-foreground mt-1">{courses.length} كورس متاح في المنصة</p>
+          <p className="text-xs text-muted-foreground mt-1">{formatCoursesCount(courses.length)} متاح في المنصة</p>
         </div>
         <Button
           className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl h-11 min-h-[44px] px-5 font-semibold shadow-sm transition-all"
@@ -139,10 +163,10 @@ export default function ManageCoursesTab() {
                     <span
                       className={`text-xs px-2.5 py-1 rounded-full font-bold shadow-sm backdrop-blur-md ${
                         course.status === "published"
-                          ? "bg-emerald-500/90 text-white"
+                          ? "bg-success/90 text-white"
                           : course.status === "draft"
-                            ? "bg-amber-500/90 text-white"
-                            : "bg-blue-500/90 text-white"
+                            ? "bg-warning/90 text-white"
+                            : "bg-primary/90 text-white"
                       }`}
                     >
                       {course.status === "published"
@@ -161,7 +185,7 @@ export default function ManageCoursesTab() {
                   {/* Price badge */}
                   <div className="absolute bottom-3 left-3">
                     <span className="bg-card/90 backdrop-blur-md text-foreground font-bold text-xs px-2.5 py-1 rounded-lg border border-border shadow-sm flex items-center gap-1">
-                      <DollarSign className="w-3 h-3 text-emerald-500" />
+                      <DollarSign className="w-3 h-3 text-success" />
                       {course.price && course.price > 0 ? `${course.price}$` : "مجاني"}
                     </span>
                   </div>
@@ -187,12 +211,12 @@ export default function ManageCoursesTab() {
                       {hours > 0 && (
                         <span className="bg-muted px-2.5 py-1 rounded-lg flex items-center gap-1 font-medium">
                           <Clock className="w-3 h-3" />
-                          {hours} ساعة
+                          {formatHoursCount(hours)}
                         </span>
                       )}
                       <span className="bg-primary/10 text-primary px-2.5 py-1 rounded-lg flex items-center gap-1 font-medium">
                         <Users className="w-3 h-3" />
-                        {studentCount} طالب
+                        {formatStudentsCount(studentCount)}
                       </span>
                     </div>
                   </div>
