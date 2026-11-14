@@ -6,9 +6,9 @@ import ZoomCalendar from "./zoom-calendar/ZoomCalendar";
 
 export default function StudentHome() {
   return (
-    <div className="space-y-12">
-      <StatsCards />
+    <div className="space-y-6 sm:space-y-8">
       <HomeHeader />
+      <StatsCards />
       <ExamResults />
       <ZoomCalendar />
     </div>

@@ -11,11 +11,11 @@ function StatCardItem({ stat }: { stat: StatCardView }) {
   return (
     <Card>
       <CardHeader className="flex-row items-center justify-between border-b border-border">
-        <p className="text-xs font-semibold text-muted-foreground">{stat.label}</p>
-        <Icon className="size-4 text-muted-foreground" aria-hidden />
+        <p className="text-xs font-semibold text-muted-foreground truncate">{stat.label}</p>
+        <Icon className="size-4 text-muted-foreground shrink-0 ms-2" aria-hidden />
       </CardHeader>
       <CardContent className="pt-4">
-        <p className="text-2xl font-semibold text-foreground">{stat.value}</p>
+        <p className="text-2xl font-semibold font-mono tabular-nums text-foreground">{stat.value}</p>
       </CardContent>
     </Card>
   );
