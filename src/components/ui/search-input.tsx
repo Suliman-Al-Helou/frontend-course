@@ -111,7 +111,7 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
           className={cn(
             "flex h-11 min-h-[44px] w-full rounded-xl border border-border bg-background ps-11 pe-11 text-base text-foreground transition-colors sm:text-sm",
             "placeholder:text-muted-foreground",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+            "focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20",
             "disabled:cursor-not-allowed",
             "motion-reduce:transition-none",
             "[&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden",
