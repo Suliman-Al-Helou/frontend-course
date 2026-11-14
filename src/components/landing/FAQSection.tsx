@@ -53,29 +53,6 @@ function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
-function BackgroundDecorations() {
-  return (
-    <>
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-24 -left-20 size-[32rem] rounded-full bg-slate-400/[0.05] blur-3xl dark:bg-white/[0.05]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -bottom-24 -right-20 size-[32rem] rounded-full bg-slate-400/[0.05] blur-3xl dark:bg-white/[0.05]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 text-foreground opacity-[0.03] dark:opacity-[0.06]"
-        style={{
-          backgroundImage: "radial-gradient(circle, currentColor 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
-        }}
-      />
-    </>
-  );
-}
-
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [dynamicFaqs, setDynamicFaqs] = useState<FAQItem[]>([]);
@@ -103,10 +80,8 @@ export default function FAQSection() {
   return (
     <section
       id="faq"
-      className="relative flex min-h-screen flex-col justify-center scroll-mt-20 overflow-hidden border-t border-border bg-background py-16 md:py-24"
+      className="relative flex min-h-screen flex-col justify-center scroll-mt-20 border-t border-border bg-background py-16 md:py-24"
     >
-      <BackgroundDecorations />
-
       <div className="relative z-10 mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* شبكة متوازنة بمسافة واسعة: الشق الأيمن (الأسئلة الشائعة) والشق الأيسر (تواصل معنا) */}
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16 lg:items-start">
