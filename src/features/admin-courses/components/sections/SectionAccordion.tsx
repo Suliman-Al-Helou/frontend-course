@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import { ChevronDown, Plus, Trash2, FolderOpen, Folder } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { extractYouTubeVideoId } from "@/lib/youtube";
 import LessonRow from "./LessonRow";
 import type { AdminSection, AdminLesson, AdminVideoAsset } from "../../types";
@@ -221,31 +222,31 @@ export default function SectionAccordion({
               )}
 
               <div className="grid sm:grid-cols-2 gap-3">
-                <input
+                <Input
                   placeholder="عنوان الدرس *"
                   value={lessonTitle}
                   onChange={(e) => setLessonTitle(e.target.value)}
-                  className="h-9 rounded-lg border border-input bg-background px-3 text-xs focus:outline-none focus:ring-1 focus:ring-primary col-span-2 sm:col-span-1"
+                  className="h-9 min-h-0 text-xs col-span-2 sm:col-span-1"
                   required
                 />
-                <input
+                <Input
                   placeholder="رابط YouTube أو المعرف (ID)"
                   value={lessonVideoId}
                   onChange={(e) => setLessonVideoId(e.target.value)}
                   onBlur={() => setLessonVideoId(extractYouTubeVideoId(lessonVideoId))}
-                  className="h-9 rounded-lg border border-input bg-background px-3 text-xs focus:outline-none focus:ring-1 focus:ring-primary col-span-2 sm:col-span-1"
+                  className="h-9 min-h-0 text-xs col-span-2 sm:col-span-1"
                 />
               </div>
 
               <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
                 <div className="flex items-center gap-3">
-                  <input
+                  <Input
                     type="number"
                     min="0"
                     placeholder="المدة بالدقائق"
                     value={lessonDuration}
                     onChange={(e) => setLessonDuration(e.target.value)}
-                    className="w-28 h-9 rounded-lg border border-input bg-background px-3 text-xs focus:outline-none focus:ring-1 focus:ring-primary"
+                    className="w-28 h-9 min-h-0 text-xs"
                   />
                   <label className="flex items-center gap-1.5 text-xs text-foreground cursor-pointer select-none">
                     <input

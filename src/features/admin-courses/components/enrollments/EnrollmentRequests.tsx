@@ -6,29 +6,33 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { SearchInput } from "@/components/ui/search-input";
 import { Avatar } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import { notify } from "@/components/ui/sonner";
 import { adminEnrollmentQueries } from "../../queries/adminCourses.queries";
 import { useEnrollmentMutations } from "../../queries/adminCourses.mutations";
 import type { AdminEnrollment, EnrollmentStatus } from "../../types";
 
-const statusConfig: Record<EnrollmentStatus, { label: string; color: string; icon: typeof Clock }> =
-  {
-    pending: {
-      label: "معلّق",
-      color: "bg-warning/10 text-warning border border-warning/20",
-      icon: Clock,
-    },
-    approved: {
-      label: "مقبول",
-      color: "bg-success/10 text-success border border-success/20",
-      icon: CheckCircle,
-    },
-    rejected: {
-      label: "مرفوض",
-      color: "bg-destructive/10 text-destructive border border-destructive/20",
-      icon: XCircle,
-    },
-  };
+const statusConfig: Record<
+  EnrollmentStatus,
+  { label: string; variant: "warning" | "success" | "destructive"; icon: typeof Clock }
+> = {
+  pending: {
+    label: "معلّق",
+    variant: "warning",
+    icon: Clock,
+  },
+  approved: {
+    label: "مقبول",
+    variant: "success",
+    icon: CheckCircle,
+  },
+  rejected: {
+    label: "مرفوض",
+    variant: "destructive",
+    icon: XCircle,
+  },
+};
 
 function formatRequestsCount(count: number): string {
   if (count === 0) return "لا توجد طلبات";
@@ -103,7 +107,7 @@ export default function EnrollmentRequests() {
   };
 
   return (
-    <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
+    <Card className="shadow-sm overflow-hidden border-border bg-card">
       {/* Header & Controls */}
       <div className="p-5 sm:p-6 border-b border-border space-y-4">
         <div className="flex items-center justify-between">
@@ -173,12 +177,10 @@ export default function EnrollmentRequests() {
                       <p className="font-semibold text-foreground text-sm truncate">
                         {studentName}
                       </p>
-                      <span
-                        className={`text-[11px] px-2.5 py-0.5 rounded-full font-bold flex items-center gap-1 ${cfg.color}`}
-                      >
+                      <Badge variant={cfg.variant} shape="rounded" size="sm">
                         <StatusIcon className="w-3 h-3" />
                         {cfg.label}
-                      </span>
+                      </Badge>
                     </div>
                     <p className="text-xs text-muted-foreground truncate mt-0.5 font-mono text-left" dir="ltr">
                       {studentEmail}
@@ -280,6 +282,6 @@ export default function EnrollmentRequests() {
           })
         )}
       </div>
-    </div>
+    </Card>
   );
 }

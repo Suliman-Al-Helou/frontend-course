@@ -1,11 +1,16 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { X, UserPlus } from "lucide-react";
+import { UserPlus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+} from "@/components/ui/modal";
 import { adminCourseQueries } from "../../queries/adminCourses.queries";
 import { useEnrollmentMutations } from "../../queries/adminCourses.mutations";
 import type { AdminCourse } from "../../types";
@@ -63,35 +68,17 @@ export default function AddEnrollmentModal({ isOpen, onClose }: Props) {
   };
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="add-enrollment-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-      dir="rtl"
-    >
-      <div className="bg-card border border-border rounded-2xl p-6 w-full max-w-md shadow-2xl animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-5 pb-3 border-b border-border">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-              <UserPlus className="w-4 h-4" />
-            </div>
-            <h3 id="add-enrollment-title" className="text-base font-bold text-foreground">
-              تسجيل طالب في كورس
-            </h3>
+    <Modal isOpen={isOpen} onClose={onClose} size="md">
+      <ModalHeader
+        title="تسجيل طالب في كورس"
+        icon={
+          <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+            <UserPlus className="w-4 h-4" />
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-muted-foreground hover:text-foreground p-1 rounded-lg transition-colors"
-            aria-label="إغلاق النافذة"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+        }
+      />
 
-        {/* Form */}
+      <ModalBody>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="enr-student-name">اسم الطالب (اختياري)</Label>
@@ -100,7 +87,6 @@ export default function AddEnrollmentModal({ isOpen, onClose }: Props) {
               placeholder="مثال: أحمد محمود"
               value={studentName}
               onChange={(e) => setStudentName(e.target.value)}
-              className="h-10 rounded-xl"
             />
           </div>
 
@@ -112,7 +98,6 @@ export default function AddEnrollmentModal({ isOpen, onClose }: Props) {
               placeholder="student@example.com"
               value={studentEmail}
               onChange={(e) => setStudentEmail(e.target.value)}
-              className="h-10 rounded-xl"
               required
             />
           </div>
@@ -123,7 +108,7 @@ export default function AddEnrollmentModal({ isOpen, onClose }: Props) {
               id="enr-course-select"
               value={courseId}
               onChange={(e) => setCourseId(e.target.value)}
-              className="w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="w-full h-11 min-h-[44px] rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
               required
             >
               <option value="">
@@ -149,20 +134,20 @@ export default function AddEnrollmentModal({ isOpen, onClose }: Props) {
               variant="outline"
               onClick={onClose}
               disabled={createEnrollment.isPending}
-              className="flex-1 rounded-xl h-11 min-h-[44px] text-sm"
+              className="flex-1"
             >
               إلغاء
             </Button>
             <Button
               type="submit"
-              disabled={createEnrollment.isPending}
-              className="flex-1 rounded-xl h-11 min-h-[44px] text-sm bg-primary text-primary-foreground font-medium"
+              loading={createEnrollment.isPending}
+              className="flex-1"
             >
-              {createEnrollment.isPending ? "جارٍ التسجيل..." : "تأكيد التسجيل"}
+              تأكيد التسجيل
             </Button>
           </div>
         </form>
-      </div>
-    </div>
+      </ModalBody>
+    </Modal>
   );
 }

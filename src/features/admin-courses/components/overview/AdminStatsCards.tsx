@@ -2,6 +2,7 @@
 
 import { Users, BookOpen, GraduationCap, Clock } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { Card } from "@/components/ui/card";
 import { adminCourseQueries, adminEnrollmentQueries } from "../../queries/adminCourses.queries";
 import type { AdminStats } from "../../types";
 
@@ -51,9 +52,9 @@ export default function AdminStatsCards({ stats }: Props) {
       {cards.map((card, i) => {
         const Icon = card.icon;
         return (
-          <div
+          <Card
             key={i}
-            className="bg-card border border-border rounded-2xl p-5 shadow-xs transition-all hover:shadow-sm"
+            className="p-5 shadow-xs transition-all hover:shadow-sm"
           >
             <div
               className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 border ${card.color}`}
@@ -62,7 +63,7 @@ export default function AdminStatsCards({ stats }: Props) {
             </div>
             <p className="text-2xl font-bold text-foreground tracking-tight">{card.value}</p>
             <p className="text-xs text-muted-foreground mt-1 font-medium">{card.label}</p>
-          </div>
+          </Card>
         );
       })}
     </div>
