@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
-import api from "@/lib/api";
+import { studentCourseQueries } from "../queries/studentCourses.queries";
 
 export interface CourseOption {
   id: number;
@@ -13,29 +14,19 @@ export interface CourseOption {
 export function useEnrolledCourses() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [courses, setCourses] = useState<CourseOption[]>([]);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    api
-      .get("/my-courses")
-      .then((res) => {
-        const approved = (res.data ?? [])
-          .filter((e: any) => e.status === "approved")
-          .map((e: any) => ({ id: e.course.id, title: e.course.title }));
-        setCourses(approved);
+  const { data: courses = [], isLoading } = useQuery({
+    ...studentCourseQueries.enrolled(),
+    select: (enrollments) =>
+      enrollments
+        .filter((e) => e.status === "approved" && e.course)
+        .map((e) => ({ id: e.course.id, title: e.course.title })),
+  });
 
-        const urlId = searchParams.get("course");
-        const defaultId = urlId ? Number(urlId) : (approved[0]?.id ?? null);
-        setSelectedId(defaultId);
-      })
-      .catch(() => {})
-      .finally(() => setIsLoading(false));
-  }, [searchParams]);
+  const urlId = searchParams.get("course");
+  const selectedId = urlId ? Number(urlId) : (courses[0]?.id ?? null);
 
   const selectCourse = (id: number) => {
-    setSelectedId(id);
     router.replace(`?course=${id}`, { scroll: false });
   };
 

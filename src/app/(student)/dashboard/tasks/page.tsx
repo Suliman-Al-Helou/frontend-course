@@ -14,9 +14,10 @@ import {
 import api from "@/lib/api";
 import type { TaskResult } from "@/types";
 import { lessonApi } from "@/services/lessonApi";
-import CourseFilterDropdown, {
+import {
+  CourseFilterDropdown,
   useEnrolledCourses,
-} from "@/components/dashboard/CourseFilterDropdown";
+} from "@/features/student-courses";
 
 interface TaskItem {
   id: number;

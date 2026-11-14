@@ -4,9 +4,10 @@ import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { Video, CheckCircle } from "lucide-react";
 import api from "@/lib/api";
-import CourseFilterDropdown, {
+import {
+  CourseFilterDropdown,
   useEnrolledCourses,
-} from "@/components/dashboard/CourseFilterDropdown";
+} from "@/features/student-courses";
 
 function VideosContent() {
   const { courses, selectedId, isLoading: loadingCourses, selectCourse } = useEnrolledCourses();

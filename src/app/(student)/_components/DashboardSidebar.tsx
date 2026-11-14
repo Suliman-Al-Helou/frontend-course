@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   BookOpen,
@@ -16,8 +16,8 @@ import {
   LifeBuoy,
 } from "lucide-react";
 import { useCurrentUser } from "@/features/auth";
-
 import { useThemeStore } from "@/store/themeStore";
+
 const MENU = [
   { label: "الرئيسية", href: "/dashboard", icon: LayoutDashboard },
   { label: "كورساتي", href: "/dashboard/courses", icon: BookOpen },
@@ -32,6 +32,7 @@ interface Props {
   open: boolean;
   onClose: () => void;
 }
+
 function ThemeToggle() {
   const { theme, toggleTheme } = useThemeStore();
   return (
@@ -44,18 +45,14 @@ function ThemeToggle() {
     </button>
   );
 }
+
 export default function DashboardSidebar({ open, onClose }: Props) {
   const pathname = usePathname();
-  const router = useRouter();
-  const { user, logout, isLoading } = useCurrentUser();
+  const { logout, isLoading } = useCurrentUser();
 
   if (isLoading) {
     return <div className="text-gray-400 text-sm animate-pulse">جارٍ التحقق...</div>;
   }
-
-  const handleLogout = () => {
-    logout();
-  };
 
   return (
     <>
@@ -117,7 +114,7 @@ export default function DashboardSidebar({ open, onClose }: Props) {
             <ThemeToggle />
           </div>
           <button
-            onClick={handleLogout}
+            onClick={() => logout()}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors"
           >
             <LogOut className="w-4 h-4" />

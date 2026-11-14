@@ -7,3 +7,5 @@ export * from "./components/EnrolledCoursesGrid";
 export * from "./components/player/VideoPlayer";
 export * from "./components/player/LessonSidebar";
 export * from "./components/player/TaskSection";
+export { default as CourseFilterDropdown, useEnrolledCourses } from "./components/CourseFilterDropdown";
+export type { CourseOption } from "./components/CourseFilterDropdown";

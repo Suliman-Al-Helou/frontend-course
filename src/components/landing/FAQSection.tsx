@@ -6,8 +6,7 @@ import { ChevronDown, Mail, Send, Check } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useContactForm } from "@/components/contact/useContactForm";
-import { SUPPORT_EMAIL, WHATSAPP_URL } from "@/lib/contact";
+import { useContactForm, SUPPORT_EMAIL, WHATSAPP_URL } from "@/features/contact";
 import { faqQueries } from "@/features/faqs";
 
 interface FAQItem {

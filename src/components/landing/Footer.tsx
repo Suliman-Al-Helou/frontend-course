@@ -6,7 +6,7 @@ import { Instagram, LucideIcon, MessageCircle } from "lucide-react";
 import LogoIcon from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { useCourses } from "@/hooks/useCourses";
-import { WHATSAPP_URL } from "@/lib/contact";
+import { WHATSAPP_URL } from "@/features/contact";
 
 // 2. Types & Data
 interface SocialLink {

@@ -94,6 +94,16 @@ _Avoid_: Help item, Accordion text, Question box
 The deterministic sequence index governing the display order of FAQ pairs on the public landing page.
 _Avoid_: Priority, Rank, Position number
 
+## Contact & Support Inquiries Domain
+
+**Inquiry Dispatch**:
+The secure, concurrency-guarded transmission of a visitor or student support message via the platform's external gateway or direct WhatsApp communication link.
+_Avoid_: Contact post, Feedback send, Form submit
+
+**Enrolled Course Selector**:
+A reactive dropdown component dynamically populated from the active student's approved enrollments cache (`studentCourseQueries.enrolled()`) via query selection, avoiding redundant network round-trips.
+_Avoid_: Course picker, Filter select, Course list box
+
 ## Feedback & Notifications Domain
 
 **Feedback Notification (Toast)**:
