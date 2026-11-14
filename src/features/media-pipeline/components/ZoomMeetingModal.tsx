@@ -158,12 +158,16 @@ export default function ZoomMeetingModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="zoom-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm overflow-y-auto"
-      onClick={(e) => {
-        if (e.target === e.currentTarget && !isSubmitting) onClose();
-      }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
     >
-      <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none">
+      <button
+        type="button"
+        tabIndex={-1}
+        aria-label="إغلاق النافذة"
+        className="fixed inset-0 bg-background/80 backdrop-blur-sm cursor-default"
+        onClick={isSubmitting ? undefined : onClose}
+      />
+      <div className="relative z-10 bg-card border border-border rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none">
         {/* Header */}
         <div className="px-6 py-4 border-b border-border flex items-center justify-between shrink-0 bg-muted/20">
           <div className="flex items-center gap-2.5">

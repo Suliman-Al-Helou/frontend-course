@@ -107,13 +107,17 @@ export default function ConfirmModal({
       aria-modal="true"
       aria-labelledby="confirm-dialog-title"
       aria-describedby="confirm-dialog-description"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
       dir="rtl"
-      onClick={(e) => {
-        if (e.target === e.currentTarget && !isLoading) onClose();
-      }}
     >
-      <div className="bg-card border border-border rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none">
+      <button
+        type="button"
+        tabIndex={-1}
+        aria-label="إغلاق النافذة"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm cursor-default"
+        onClick={isLoading ? undefined : onClose}
+      />
+      <div className="relative z-10 bg-card border border-border rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none">
         <div
           className={`w-12 h-12 rounded-2xl flex items-center justify-center mx-auto ${getIconStyles()}`}
         >

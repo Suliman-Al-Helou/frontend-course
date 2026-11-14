@@ -73,7 +73,9 @@ export default function VideoAssetsView({
       <div className="bg-card border border-border rounded-2xl p-4 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
         {/* Course Filter */}
         <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold text-muted-foreground shrink-0">تصفية حسب الكورس:</span>
+          <span className="text-xs font-semibold text-muted-foreground shrink-0">
+            تصفية حسب الكورس:
+          </span>
           <Select dir="rtl" value={selectedCourseId} onValueChange={onSelectCourseId}>
             <SelectTrigger className="h-9 w-60 rounded-xl text-xs bg-background">
               <SelectValue placeholder="جميع الكورسات" />
@@ -209,7 +211,10 @@ export default function VideoAssetsView({
                       </span>
                     </div>
 
-                    <h4 className="text-xs font-bold text-foreground line-clamp-2" title={video.title}>
+                    <h4
+                      className="text-xs font-bold text-foreground line-clamp-2"
+                      title={video.title}
+                    >
                       {video.title}
                     </h4>
 
@@ -268,12 +273,16 @@ export default function VideoAssetsView({
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setPreviewVideo(null);
-          }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
         >
-          <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden animate-in fade-in-0 zoom-in-95">
+          <button
+            type="button"
+            tabIndex={-1}
+            aria-label="إغلاق المعاينة"
+            className="fixed inset-0 bg-background/80 backdrop-blur-sm cursor-default"
+            onClick={() => setPreviewVideo(null)}
+          />
+          <div className="relative z-10 bg-card border border-border rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden animate-in fade-in-0 zoom-in-95">
             <div className="px-5 py-3 border-b border-border flex items-center justify-between bg-muted/20">
               <h3 className="text-sm font-bold text-foreground truncate">{previewVideo.title}</h3>
               <button

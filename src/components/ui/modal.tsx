@@ -77,15 +77,19 @@ function ModalRoot({
         aria-modal="true"
         aria-labelledby={titleId}
         aria-describedby={descriptionId}
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4"
         dir="rtl"
-        onClick={(e) => {
-          if (e.target === e.currentTarget && !preventClose) onClose();
-        }}
       >
+        <button
+          type="button"
+          tabIndex={-1}
+          aria-label="إغلاق النافذة"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm cursor-default"
+          onClick={preventClose ? undefined : onClose}
+        />
         <div
           className={cn(
-            "bg-card border border-border rounded-2xl shadow-2xl w-full max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none",
+            "relative z-10 bg-card border border-border rounded-2xl shadow-2xl w-full max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none",
             sizeClasses[size],
             className,
           )}

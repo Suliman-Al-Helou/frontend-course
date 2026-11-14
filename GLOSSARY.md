@@ -60,6 +60,20 @@ _Avoid_: Video folder, YouTube list, Channel category
 The single-click operation of converting an uploaded course video asset into a structured lesson within a designated course section.
 _Avoid_: Link pasting, Lesson attachment, Manual entry
 
+## Instructors & Academic Faculty Domain
+
+**Instructor Profile**:
+A dedicated academic faculty entity representing an instructor's public biography, teaching credentials, student ratings, and catalog of assigned courses.
+_Avoid_: Teacher card, Coach info, Tutor account
+
+**Course Instructor Assignment**:
+The relational association binding one or more courses to an instructor, synchronized dynamically in the administrative course builder via TanStack Query cache.
+_Avoid_: Course owner, Author tagging, Store instructor
+
+**Instructor Dossier Form**:
+An administrative modal dialog capturing comprehensive faculty metadata (bio, experience years, social links, achievements, and courses) with concurrency-safe mutation handling.
+_Avoid_: Add teacher modal, Profile edit popup
+
 ## Feedback & Notifications Domain
 
 **Feedback Notification (Toast)**:

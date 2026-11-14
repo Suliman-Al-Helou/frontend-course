@@ -17,8 +17,10 @@ export const mediaPipelineKeys = {
   attendances: (meetingId: number | string) =>
     [...mediaPipelineKeys.zoomMeetings(), "attendances", String(meetingId)] as const,
   videoAssets: () => [...mediaPipelineKeys.all, "video-assets"] as const,
-  videoAssetsFiltered: (params?: { course_id?: number | string; zoom_meeting_id?: number | string }) =>
-    [...mediaPipelineKeys.videoAssets(), params ?? {}] as const,
+  videoAssetsFiltered: (params?: {
+    course_id?: number | string;
+    zoom_meeting_id?: number | string;
+  }) => [...mediaPipelineKeys.videoAssets(), params ?? {}] as const,
   youtube: () => [...mediaPipelineKeys.all, "youtube"] as const,
   youtubeStatus: () => [...mediaPipelineKeys.youtube(), "status"] as const,
 };

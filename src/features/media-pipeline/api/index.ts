@@ -134,9 +134,7 @@ export async function disconnectYouTube(): Promise<{ status: string }> {
 
 /* ─── 4. Chunked Video Ingestion Pipeline ──────────────────── */
 
-export async function uploadVideoChunk(
-  params: ChunkUploadParams,
-): Promise<ChunkUploadResponse> {
+export async function uploadVideoChunk(params: ChunkUploadParams): Promise<ChunkUploadResponse> {
   const formData = new FormData();
   formData.append("chunk", params.chunk, `chunk_${params.chunkIndex}.part`);
   formData.append("chunk_index", String(params.chunkIndex));

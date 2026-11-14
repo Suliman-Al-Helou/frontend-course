@@ -140,15 +140,17 @@ export default function InstructorFormModal({ instructor, onClose, onSuccess }: 
       role="dialog"
       aria-modal="true"
       aria-labelledby="instructor-form-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
       dir="rtl"
-      onClick={(e) => {
-        if (e.target === e.currentTarget && !loading) {
-          onClose();
-        }
-      }}
     >
-      <div className="bg-card rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <button
+        type="button"
+        tabIndex={-1}
+        aria-label="إغلاق النافذة"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm cursor-default"
+        onClick={loading ? undefined : onClose}
+      />
+      <div className="relative z-10 bg-card rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-5 border-b border-border sticky top-0 bg-card z-10">
           <h2 id="instructor-form-title" className="font-bold text-foreground text-base">
             {isEdit ? "تعديل المدرب" : "إضافة مدرب جديد"}

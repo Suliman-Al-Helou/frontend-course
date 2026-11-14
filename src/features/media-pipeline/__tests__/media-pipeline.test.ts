@@ -9,10 +9,7 @@ vi.mock("@/lib/api", () => ({
   },
 }));
 
-import {
-  mediaPipelineQueries,
-  mediaPipelineKeys,
-} from "../queries/mediaPipeline.queries";
+import { mediaPipelineQueries, mediaPipelineKeys } from "../queries/mediaPipeline.queries";
 import type { AdminVideoAsset } from "../types";
 
 describe("Media Pipeline Query Factory & Caching", () => {
@@ -41,7 +38,9 @@ describe("Media Pipeline Query Factory & Caching", () => {
 
   it("dynamically configures adaptive polling when assets are processing", () => {
     const query = mediaPipelineQueries.videoAssets();
-    const refetchIntervalFn = query.refetchInterval as (q: { state: { data: unknown } }) => number | false;
+    const refetchIntervalFn = query.refetchInterval as (q: {
+      state: { data: unknown };
+    }) => number | false;
 
     // Ready video -> No polling
     const readyMock = [{ id: 1, status: "ready" }] as AdminVideoAsset[];

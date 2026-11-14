@@ -2,12 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  Video,
-  Film,
-  Plus,
-  Loader2,
-} from "lucide-react";
+import { Video, Film, Plus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { notify } from "@/components/ui/sonner";
 import ConfirmModal from "@/components/shared/ConfirmModal";
@@ -15,19 +10,12 @@ import ZoomMeetingModal from "./ZoomMeetingModal";
 import VideoAssetModal from "./VideoAssetModal";
 import LiveMeetingsView from "./LiveMeetingsView";
 import VideoAssetsView from "./VideoAssetsView";
-import {
-  mediaPipelineQueries,
-  mediaPipelineKeys,
-} from "../queries/mediaPipeline.queries";
+import { mediaPipelineQueries, mediaPipelineKeys } from "../queries/mediaPipeline.queries";
 import {
   useZoomMeetingMutations,
   useVideoAssetMutations,
 } from "../queries/mediaPipeline.mutations";
-import {
-  getYouTubeAuthUrl,
-  sendYouTubeCallback,
-  disconnectYouTube,
-} from "../api";
+import { getYouTubeAuthUrl, sendYouTubeCallback, disconnectYouTube } from "../api";
 import { adminCourseQueries } from "@/features/admin-courses/queries/adminCourses.queries";
 import type {
   AdminZoomMeeting,
@@ -52,9 +40,7 @@ export default function MediaPipelineTab() {
   const { data: rawVideos = [], isLoading: videosLoading } = useQuery(
     mediaPipelineQueries.videoAssets(),
   );
-  const { data: rawCourses = [], isLoading: coursesLoading } = useQuery(
-    adminCourseQueries.list(),
-  );
+  const { data: rawCourses = [], isLoading: coursesLoading } = useQuery(adminCourseQueries.list());
   const { data: youtubeStatus } = useQuery(mediaPipelineQueries.youtubeStatus());
 
   // Mutations
@@ -374,9 +360,7 @@ export default function MediaPipelineTab() {
             : `هل أنت متأكد من رغبتك في حذف "${deleteTarget?.title}" نهائياً؟ لا يمكن التراجع عن هذا الإجراء.`
         }
         confirmText={
-          deleteTarget?.type === "youtube_disconnect"
-            ? "نعم، افصل القناة"
-            : "نعم، احذف نهائياً"
+          deleteTarget?.type === "youtube_disconnect" ? "نعم، افصل القناة" : "نعم، احذف نهائياً"
         }
         cancelText="إلغاء"
         variant="destructive"

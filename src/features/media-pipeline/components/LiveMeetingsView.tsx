@@ -198,7 +198,9 @@ export default function LiveMeetingsView({
                           className="flex items-center justify-between p-2.5 rounded-xl bg-muted/30 border border-border/50 text-xs"
                         >
                           <div className="truncate">
-                            <p className="font-semibold text-foreground truncate">{att.user?.name}</p>
+                            <p className="font-semibold text-foreground truncate">
+                              {att.user?.name}
+                            </p>
                             <p className="text-[11px] text-muted-foreground truncate" dir="ltr">
                               {att.user?.email}
                             </p>
