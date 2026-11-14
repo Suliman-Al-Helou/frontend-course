@@ -3,7 +3,10 @@
 import { useState, useRef } from "react";
 import { Plus, Trash2, ChevronDown, ChevronUp, Loader2, Save, HelpCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { notify } from "@/components/ui/sonner";
 import ConfirmModal from "@/components/shared/ConfirmModal";
 import { faqQueries } from "../queries/faq.queries";
@@ -128,7 +131,7 @@ export default function ManageFaqTab() {
   return (
     <div className="space-y-6">
       {/* ─── Top Header ─────────────────────────────────────────── */}
-      <div className="bg-card border border-border rounded-2xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <Card className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
             <HelpCircle className="w-5 h-5 text-primary" />
@@ -142,88 +145,86 @@ export default function ManageFaqTab() {
         <Button
           type="button"
           onClick={() => setShowAddForm(!showAddForm)}
-          className="rounded-xl h-10 px-4 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-semibold shadow-xs"
+          size="sm"
+          className="rounded-xl h-10 px-4 gap-2 text-xs font-semibold shadow-xs"
         >
           <Plus className="w-4 h-4" />
           <span>{showAddForm ? "إغلاق النموذج" : "+ إضافة سؤال جديد"}</span>
         </Button>
-      </div>
+      </Card>
 
       {/* ─── Add New Question Form ──────────────────────────────── */}
       {showAddForm && (
-        <form
-          onSubmit={handleAdd}
-          className="bg-card border border-primary/30 rounded-2xl p-5 shadow-xs space-y-4 animate-in fade-in-0 duration-200"
-        >
+        <Card className="p-5 border-primary/30 space-y-4 animate-in fade-in-0 duration-200">
           <h3 className="text-sm font-bold text-foreground">إضافة سؤال شائع جديد</h3>
-          <div className="space-y-3">
-            <div>
-              <label
-                htmlFor="new-faq-q"
-                className="block text-xs font-semibold text-foreground mb-1"
-              >
-                نص السؤال *
-              </label>
-              <input
-                id="new-faq-q"
-                type="text"
-                value={newQ}
-                onChange={(e) => setNewQ(e.target.value)}
-                placeholder="مثال: كيف أتمكن من استرداد رسوم الكورس؟"
-                className="w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
-                required
-              />
+          <form onSubmit={handleAdd} className="space-y-4">
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <Label
+                  htmlFor="new-faq-q"
+                  className="text-xs font-semibold text-foreground"
+                >
+                  نص السؤال *
+                </Label>
+                <Input
+                  id="new-faq-q"
+                  type="text"
+                  value={newQ}
+                  onChange={(e) => setNewQ(e.target.value)}
+                  placeholder="مثال: كيف أتمكن من استرداد رسوم الكورس؟"
+                  required
+                />
+              </div>
+              <div className="space-y-1">
+                <Label
+                  htmlFor="new-faq-a"
+                  className="text-xs font-semibold text-foreground"
+                >
+                  الإجابة النموذجية *
+                </Label>
+                <textarea
+                  id="new-faq-a"
+                  rows={3}
+                  value={newA}
+                  onChange={(e) => setNewA(e.target.value)}
+                  placeholder="اكتب الإجابة بوضوح ودقة للزوار..."
+                  className="w-full rounded-xl border border-border bg-background p-3 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 resize-none transition-colors motion-reduce:transition-none"
+                  required
+                />
+              </div>
             </div>
-            <div>
-              <label
-                htmlFor="new-faq-a"
-                className="block text-xs font-semibold text-foreground mb-1"
-              >
-                الإجابة النموذجية *
-              </label>
-              <textarea
-                id="new-faq-a"
-                rows={3}
-                value={newA}
-                onChange={(e) => setNewA(e.target.value)}
-                placeholder="اكتب الإجابة بوضوح ودقة للزوار..."
-                className="w-full rounded-xl border border-input bg-background p-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary resize-none"
-                required
-              />
-            </div>
-          </div>
 
-          <div className="flex justify-end gap-2 pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => setShowAddForm(false)}
-              className="rounded-xl h-9 text-xs"
-            >
-              إلغاء
-            </Button>
-            <Button
-              type="submit"
-              size="sm"
-              disabled={createFaq.isPending}
-              className="rounded-xl h-9 text-xs bg-primary text-primary-foreground font-semibold gap-1.5"
-            >
-              {createFaq.isPending && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-              <span>حفظ السؤال</span>
-            </Button>
-          </div>
-        </form>
+            <div className="flex justify-end gap-2 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setShowAddForm(false)}
+                className="rounded-xl h-9 text-xs"
+              >
+                إلغاء
+              </Button>
+              <Button
+                type="submit"
+                size="sm"
+                loading={createFaq.isPending}
+                className="rounded-xl h-9 text-xs font-semibold"
+              >
+                حفظ السؤال
+              </Button>
+            </div>
+          </form>
+        </Card>
       )}
 
       {/* ─── List of FAQs ───────────────────────────────────────── */}
       {isLoading ? (
-        <div className="flex flex-col items-center justify-center p-12 space-y-3 bg-card border border-border rounded-2xl">
+        <Card className="flex flex-col items-center justify-center p-12 space-y-3">
           <Loader2 className="w-6 h-6 animate-spin text-primary" />
           <p className="text-xs text-muted-foreground">جارٍ تحميل الأسئلة الشائعة...</p>
-        </div>
+        </Card>
       ) : faqs.length === 0 ? (
-        <div className="p-12 text-center bg-card border border-border rounded-2xl space-y-3">
+        <Card className="p-12 text-center space-y-3">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
             <HelpCircle className="w-6 h-6" />
           </div>
@@ -231,7 +232,7 @@ export default function ManageFaqTab() {
           <p className="text-xs text-muted-foreground max-w-sm mx-auto">
             أضف أول سؤال وجواب ليظهر مباشرة في قسم الأسئلة الشائعة بالصفحة الرئيسية.
           </p>
-        </div>
+        </Card>
       ) : (
         <div className="space-y-3">
           {faqs.map((faq) => {
@@ -241,16 +242,16 @@ export default function ManageFaqTab() {
             const hasDraft = Boolean(drafts[faq.id]);
 
             return (
-              <div
+              <Card
                 key={faq.id}
-                className="bg-card border border-border rounded-2xl overflow-hidden shadow-xs transition-all hover:border-primary/30"
+                className="overflow-hidden hover:border-primary/30 transition-colors"
               >
                 {/* Collapsed Header */}
                 <div className="flex items-center justify-between p-4 gap-3 bg-card">
                   <button
                     type="button"
                     onClick={() => setExpanded(isExpanded ? null : faq.id)}
-                    className="flex-1 flex items-center justify-between text-right text-sm font-bold text-foreground gap-3 hover:text-primary transition-colors"
+                    className="flex-1 flex items-center justify-between text-right text-sm font-bold text-foreground gap-3 hover:text-primary transition-colors focus-visible:outline-none focus-visible:underline"
                     aria-expanded={isExpanded}
                   >
                     <span className="truncate">{faq.question || "سؤال بدون عنوان"}</span>
@@ -279,34 +280,33 @@ export default function ManageFaqTab() {
                 {isExpanded && (
                   <div className="p-4 border-t border-border bg-muted/20 space-y-3 animate-in fade-in-0 duration-150">
                     <div className="space-y-1">
-                      <label
+                      <Label
                         htmlFor={`faq-edit-q-${faq.id}`}
                         className="text-xs font-semibold text-foreground"
                       >
                         السؤال:
-                      </label>
-                      <input
+                      </Label>
+                      <Input
                         id={`faq-edit-q-${faq.id}`}
                         type="text"
                         value={values.question}
                         onChange={(e) => updateDraft(faq.id, "question", e.target.value)}
-                        className="w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
                       />
                     </div>
 
                     <div className="space-y-1">
-                      <label
+                      <Label
                         htmlFor={`faq-edit-a-${faq.id}`}
                         className="text-xs font-semibold text-foreground"
                       >
                         الإجابة:
-                      </label>
+                      </Label>
                       <textarea
                         id={`faq-edit-a-${faq.id}`}
                         rows={3}
                         value={values.answer}
                         onChange={(e) => updateDraft(faq.id, "answer", e.target.value)}
-                        className="w-full rounded-xl border border-input bg-background p-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary resize-none"
+                        className="w-full rounded-xl border border-border bg-background p-3 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 resize-none transition-colors motion-reduce:transition-none"
                       />
                     </div>
 
@@ -319,19 +319,16 @@ export default function ManageFaqTab() {
                         size="sm"
                         onClick={() => handleUpdate(faq)}
                         disabled={isSaving}
-                        className="rounded-xl h-9 px-4 text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5"
+                        loading={isSaving}
+                        className="rounded-xl h-9 px-4 text-xs font-semibold"
                       >
-                        {isSaving ? (
-                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                        ) : (
-                          <Save className="w-3.5 h-3.5" />
-                        )}
+                        <Save className="w-3.5 h-3.5" />
                         <span>حفظ التعديلات</span>
                       </Button>
                     </div>
                   </div>
                 )}
-              </div>
+              </Card>
             );
           })}
         </div>
