@@ -29,11 +29,6 @@ export function CourseLevelFilters({ level, onChange }: CourseLevelFiltersProps)
             variant={isSelected ? "default" : "outline"}
             aria-pressed={isSelected}
             onClick={() => onChange(l)}
-            className={`min-h-[44px] px-5 py-2 rounded-xl text-sm font-semibold transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none ${
-              isSelected
-                ? "bg-primary text-primary-foreground shadow-xs"
-                : "bg-card border-border text-foreground/80 hover:border-primary/50 hover:bg-muted"
-            }`}
           >
             {LEVEL_LABELS[l] ?? l}
           </Button>
