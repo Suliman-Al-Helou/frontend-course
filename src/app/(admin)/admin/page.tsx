@@ -28,14 +28,13 @@ import {
   adminCourseQueries,
   adminEnrollmentQueries,
 } from "@/features/admin-courses";
-import StudentsTable from "@/components/admin/StudentsTable";
+import { StudentsManagementTab, adminUserQueries } from "@/features/admin-users";
 import ManageInstructorsTab from "@/components/admin/ManageInstructorsTab";
 import ManageFaqTab from "@/components/admin/ManageFaqTab";
 import ManageZoomTab from "@/components/admin/ManageZoomTab";
 import type { Enrollment, AdminUser, AdminStats } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useInstructorsStore } from "@/store/instructorsStore";
-
 
 const TABS = [
   { id: "overview", label: "نظرة عامة", icon: LayoutDashboard },
@@ -73,7 +72,6 @@ function ThemeToggle() {
 }
 
 function AdminContent() {
-
   const { user, logout } = useAuthStore();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -82,7 +80,8 @@ function AdminContent() {
     searchParams.get("state") === "youtube_callback" ||
     Boolean(searchParams.get("youtube_callback")) ||
     Boolean(searchParams.get("state")?.startsWith("yt_"));
-  const tab: TabId = (rawTab && rawTab in TAB_LABELS) ? rawTab : (isYoutubeCallback ? "zoom" : "overview");
+  const tab: TabId =
+    rawTab && rawTab in TAB_LABELS ? rawTab : isYoutubeCallback ? "zoom" : "overview";
 
   const setTab = (newTab: TabId) => {
     router.push(`/admin?tab=${newTab}`, { scroll: false });
@@ -91,10 +90,10 @@ function AdminContent() {
 
   const { data: enrollments = [] } = useQuery(adminEnrollmentQueries.list());
   const { data: courses = [] } = useQuery(adminCourseQueries.list());
+  const { data: users = [], isLoading: usersLoading } = useQuery(adminUserQueries.list());
 
-  const [users, setUsers] = useState<AdminUser[]>([]);
   const [totalInstructors, setTotalInstructors] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [instructorsLoading, setInstructorsLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const pendingEnrollmentsCount = enrollments.filter((e) => e.status === "pending").length;
@@ -106,29 +105,24 @@ function AdminContent() {
     pendingEnrollments: pendingEnrollmentsCount,
   };
 
-  const fetchUsers = async () => {
-    setLoading(true);
+  const fetchInstructorsCount = async () => {
+    setInstructorsLoading(true);
     try {
-      const [usrRes, insRes] = await Promise.all([
-        api.get("/admin/users").catch(() => null),
-        api.get("/admin/instructors").catch(() => null),
-      ]);
-
-      const usrData = usrRes ? (usrRes.data.data ?? usrRes.data) : [];
+      const insRes = await api.get("/admin/instructors").catch(() => null);
       const insData = insRes ? (insRes.data.data ?? insRes.data) : [];
-
-      setUsers(usrData);
       setTotalInstructors(Array.isArray(insData) ? insData.length : 0);
     } catch (err) {
       console.error(err);
     } finally {
-      setLoading(false);
+      setInstructorsLoading(false);
     }
   };
 
   useEffect(() => {
-    void fetchUsers();
+    void fetchInstructorsCount();
   }, []);
+
+  const loading = usersLoading || instructorsLoading;
 
   const handleLogout = () => {
     logout();
@@ -170,19 +164,21 @@ function AdminContent() {
               <button
                 key={t.id}
                 onClick={() => setTab(t.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${tab === t.id
-                  ? "bg-primary text-white shadow-md"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  }`}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                  tab === t.id
+                    ? "bg-primary text-white shadow-md"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                }`}
               >
                 <t.icon className="w-4 h-4" />
                 {t.label}
                 {t.id === "enrollments" && pendingEnrollmentsCount > 0 && (
                   <span
-                    className={`mr-auto text-xs px-2 py-0.5 rounded-full font-bold ${tab === "enrollments"
-                      ? "bg-white/20 text-white"
-                      : "bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400"
-                      }`}
+                    className={`mr-auto text-xs px-2 py-0.5 rounded-full font-bold ${
+                      tab === "enrollments"
+                        ? "bg-white/20 text-white"
+                        : "bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400"
+                    }`}
                   >
                     {pendingEnrollmentsCount}
                   </span>
@@ -247,8 +243,9 @@ function AdminContent() {
                   <button
                     key={t.id}
                     onClick={() => setTab(t.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors border-b border-border/50 last:border-0 ${tab === t.id ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted"
-                      }`}
+                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors border-b border-border/50 last:border-0 ${
+                      tab === t.id ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted"
+                    }`}
                   >
                     <t.icon className="w-4 h-4" />
                     {t.label}
@@ -295,7 +292,7 @@ function AdminContent() {
                 )}
                 {tab === "students" && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                    <StudentsTable users={users} enrollments={enrollments as unknown as Enrollment[]} onRefresh={fetchUsers} />
+                    <StudentsManagementTab />
                   </motion.div>
                 )}
                 {tab === "courses" && (
@@ -326,11 +323,6 @@ function AdminContent() {
     </div>
   );
 }
-
-
-
-
-
 
 export default function AdminPage() {
   // داخل AdminContent:
