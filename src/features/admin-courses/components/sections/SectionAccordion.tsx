@@ -1,13 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import {
-  ChevronDown,
-  Plus,
-  Trash2,
-  FolderOpen,
-  Folder,
-} from "lucide-react";
+import { ChevronDown, Plus, Trash2, FolderOpen, Folder } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { extractYouTubeVideoId } from "@/lib/youtube";
 import LessonRow from "./LessonRow";
@@ -108,9 +102,7 @@ export default function SectionAccordion({
           </div>
           <div className="min-w-0">
             <h3 className="font-bold text-foreground text-sm truncate">{section.title}</h3>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {section.lessons.length} درس
-            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">{section.lessons.length} درس</p>
           </div>
           <ChevronDown
             className={`w-4 h-4 text-muted-foreground mr-auto transition-transform duration-200 ${
@@ -216,7 +208,9 @@ export default function SectionAccordion({
                     }}
                     defaultValue=""
                   >
-                    <option value="" disabled>-- اضغط لاختيار فيديو تلقائياً وتعبئة البيانات --</option>
+                    <option value="" disabled>
+                      -- اضغط لاختيار فيديو تلقائياً وتعبئة البيانات --
+                    </option>
                     {courseVideos.map((v) => (
                       <option key={v.id} value={String(v.id)}>
                         {v.title} ({Math.round(v.duration_seconds / 60)} دقيقة)
@@ -297,4 +291,3 @@ export default function SectionAccordion({
     </div>
   );
 }
-

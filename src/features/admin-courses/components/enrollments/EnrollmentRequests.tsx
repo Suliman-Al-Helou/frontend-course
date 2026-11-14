@@ -10,26 +10,25 @@ import { adminEnrollmentQueries } from "../../queries/adminCourses.queries";
 import { useEnrollmentMutations } from "../../queries/adminCourses.mutations";
 import type { AdminEnrollment, EnrollmentStatus } from "../../types";
 
-const statusConfig: Record<
-  EnrollmentStatus,
-  { label: string; color: string; icon: typeof Clock }
-> = {
-  pending: {
-    label: "معلّق",
-    color: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20",
-    icon: Clock,
-  },
-  approved: {
-    label: "مقبول",
-    color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20",
-    icon: CheckCircle,
-  },
-  rejected: {
-    label: "مرفوض",
-    color: "bg-destructive/10 text-destructive border border-destructive/20",
-    icon: XCircle,
-  },
-};
+const statusConfig: Record<EnrollmentStatus, { label: string; color: string; icon: typeof Clock }> =
+  {
+    pending: {
+      label: "معلّق",
+      color: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20",
+      icon: Clock,
+    },
+    approved: {
+      label: "مقبول",
+      color:
+        "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20",
+      icon: CheckCircle,
+    },
+    rejected: {
+      label: "مرفوض",
+      color: "bg-destructive/10 text-destructive border border-destructive/20",
+      icon: XCircle,
+    },
+  };
 
 const FILTER_LABELS = {
   all: "الكل",
@@ -65,7 +64,7 @@ export default function EnrollmentRequests() {
     status: EnrollmentStatus,
     paymentConfirmed: boolean,
     studentName: string,
-    courseTitle: string
+    courseTitle: string,
   ) => {
     if (updatingIdRef.current !== null) return;
     updatingIdRef.current = id;
@@ -199,7 +198,7 @@ export default function EnrollmentRequests() {
                             "approved",
                             true,
                             studentName,
-                            courseTitle
+                            courseTitle,
                           )
                         }
                         className="rounded-xl h-11 min-h-[44px] px-4 text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow-xs focus-visible:ring-2 focus-visible:ring-emerald-500"
@@ -218,7 +217,7 @@ export default function EnrollmentRequests() {
                             "rejected",
                             false,
                             studentName,
-                            courseTitle
+                            courseTitle,
                           )
                         }
                         className="rounded-xl h-11 min-h-[44px] px-4 text-xs border-destructive/20 text-destructive hover:bg-destructive/10 focus-visible:ring-2 focus-visible:ring-destructive"
@@ -241,7 +240,7 @@ export default function EnrollmentRequests() {
                           "rejected",
                           false,
                           studentName,
-                          courseTitle
+                          courseTitle,
                         )
                       }
                       className="rounded-xl h-11 min-h-[44px] px-3.5 text-xs text-muted-foreground hover:text-destructive focus-visible:ring-2 focus-visible:ring-destructive"
@@ -262,7 +261,7 @@ export default function EnrollmentRequests() {
                           "approved",
                           true,
                           studentName,
-                          courseTitle
+                          courseTitle,
                         )
                       }
                       className="rounded-xl h-11 min-h-[44px] px-3.5 text-xs text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 focus-visible:ring-2 focus-visible:ring-emerald-500"

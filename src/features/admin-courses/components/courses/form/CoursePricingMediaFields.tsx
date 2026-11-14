@@ -184,7 +184,9 @@ export default function CoursePricingMediaFields({
           />
           <span className="flex flex-col">
             <span className="text-sm font-semibold text-foreground">🔥 الأكثر طلباً </span>
-            <span className="text-[11px] text-muted-foreground">يظهر بشارة مميزة في صفحة الهبوط والكتالوج</span>
+            <span className="text-[11px] text-muted-foreground">
+              يظهر بشارة مميزة في صفحة الهبوط والكتالوج
+            </span>
           </span>
         </label>
 
@@ -207,12 +209,15 @@ export default function CoursePricingMediaFields({
             aria-label="كورس مجاني (Public Access)"
           />
           <span className="flex flex-col">
-            <span className="text-sm font-semibold text-foreground">كورس مجاني (Public Access)</span>
-            <span className="text-[11px] text-muted-foreground">متاح للطلاب بدون اشتراك أو موافقة دفع</span>
+            <span className="text-sm font-semibold text-foreground">
+              كورس مجاني (Public Access)
+            </span>
+            <span className="text-[11px] text-muted-foreground">
+              متاح للطلاب بدون اشتراك أو موافقة دفع
+            </span>
           </span>
         </label>
       </div>
     </div>
   );
 }
-

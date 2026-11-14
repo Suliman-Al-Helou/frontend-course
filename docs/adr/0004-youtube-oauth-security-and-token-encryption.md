@@ -1,9 +1,11 @@
 # 0004. YouTube OAuth 2.0 Security, Token Encryption at Rest, and CSRF Protection
 
 ## Context
+
 Integrating the YouTube Data API v3 requires offline authorization to upload video assets and manipulate course playlists without recurring user intervention. Storing raw tokens in the database or utilizing static OAuth parameters exposes the platform to Cross-Site Request Forgery (CSRF), token leakage, and unauthorized perpetual channel access if database backups or logs are compromised.
 
 ## Decision
+
 We enforce strict defense-in-depth security guidelines for Google OAuth 2.0 and YouTube Data API v3:
 
 1. **Cryptographic CSRF Defense via Dynamic State Parameter**:

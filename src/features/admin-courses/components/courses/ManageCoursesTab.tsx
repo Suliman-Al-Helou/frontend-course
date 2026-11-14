@@ -59,9 +59,7 @@ export default function ManageCoursesTab() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h2 className="text-xl font-bold text-foreground">إدارة الكورسات</h2>
-          <p className="text-xs text-muted-foreground mt-1">
-            {courses.length} كورس متاح في المنصة
-          </p>
+          <p className="text-xs text-muted-foreground mt-1">{courses.length} كورس متاح في المنصة</p>
         </div>
         <Button
           className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl h-11 min-h-[44px] px-5 font-semibold shadow-sm transition-all"
@@ -143,15 +141,15 @@ export default function ManageCoursesTab() {
                         course.status === "published"
                           ? "bg-emerald-500/90 text-white"
                           : course.status === "draft"
-                          ? "bg-amber-500/90 text-white"
-                          : "bg-blue-500/90 text-white"
+                            ? "bg-amber-500/90 text-white"
+                            : "bg-blue-500/90 text-white"
                       }`}
                     >
                       {course.status === "published"
                         ? "منشور"
                         : course.status === "draft"
-                        ? "مسودة"
-                        : "قريباً"}
+                          ? "مسودة"
+                          : "قريباً"}
                     </span>
                     {(course.is_popular || course.hot) && (
                       <span className="bg-orange-500/90 text-white text-xs px-2 py-1 rounded-full font-bold shadow-sm backdrop-blur-md">

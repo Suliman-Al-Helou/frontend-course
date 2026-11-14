@@ -17,4 +17,3 @@ export { default as EnrollmentRequests } from "./components/enrollments/Enrollme
 export { default as AddEnrollmentModal } from "./components/enrollments/AddEnrollmentModal";
 export { default as AdminStatsCards } from "./components/overview/AdminStatsCards";
 export { default as CoursesPriceOverview } from "./components/overview/CoursesPriceOverview";
-

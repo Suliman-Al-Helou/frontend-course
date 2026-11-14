@@ -90,4 +90,3 @@ export const adminYouTubeQueries = {
       staleTime: 1000 * 60 * 5,
     }),
 };
-

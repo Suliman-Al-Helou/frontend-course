@@ -105,9 +105,7 @@ export default function CourseBasicFields({
           </SelectContent>
         </Select>
         {errors.instructor_id && (
-          <span className="text-destructive text-xs block font-medium">
-            {errors.instructor_id}
-          </span>
+          <span className="text-destructive text-xs block font-medium">{errors.instructor_id}</span>
         )}
       </div>
 
@@ -165,4 +163,3 @@ export default function CourseBasicFields({
     </div>
   );
 }
-

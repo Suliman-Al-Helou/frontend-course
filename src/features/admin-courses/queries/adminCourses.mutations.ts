@@ -118,13 +118,8 @@ export function useSectionMutations(courseId: number | string) {
   });
 
   const updateLesson = useMutation({
-    mutationFn: ({
-      lessonId,
-      data,
-    }: {
-      lessonId: number | string;
-      data: Partial<AdminLesson>;
-    }) => updateCourseLesson(lessonId, data),
+    mutationFn: ({ lessonId, data }: { lessonId: number | string; data: Partial<AdminLesson> }) =>
+      updateCourseLesson(lessonId, data),
     onSuccess: invalidateSections,
   });
 
@@ -148,13 +143,8 @@ export function useSectionMutations(courseId: number | string) {
 export function useSaveTaskMutation(lessonId: number | string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({
-      payload,
-      isUpdate,
-    }: {
-      payload: AdminTaskPayload;
-      isUpdate: boolean;
-    }) => saveAdminLessonTask(lessonId, payload, isUpdate),
+    mutationFn: ({ payload, isUpdate }: { payload: AdminTaskPayload; isUpdate: boolean }) =>
+      saveAdminLessonTask(lessonId, payload, isUpdate),
     onSuccess: () => {
       void queryClient.invalidateQueries({
         queryKey: adminCourseQueries.task(lessonId).queryKey,
@@ -185,6 +175,7 @@ export function useEnrollmentMutations() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: adminEnrollmentQueries.all() });
       void queryClient.invalidateQueries({ queryKey: adminCourseQueries.all() });
+      void queryClient.invalidateQueries({ queryKey: ["admin-users"] });
       void queryClient.invalidateQueries({ queryKey: ["student-courses"] });
     },
   });
@@ -264,4 +255,3 @@ export function useVideoAssetMutations() {
 
   return { createAsset, updateAsset, deleteAsset };
 }
-

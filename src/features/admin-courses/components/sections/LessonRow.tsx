@@ -1,16 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import {
-  Video,
-  Clock,
-  Eye,
-  Pencil,
-  Trash2,
-  Check,
-  X,
-  ClipboardList,
-} from "lucide-react";
+import { Video, Clock, Eye, Pencil, Trash2, Check, X, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { extractYouTubeVideoId } from "@/lib/youtube";
 import LessonTaskEditor from "./LessonTaskEditor";
@@ -240,4 +231,3 @@ export default function LessonRow({ lesson, onUpdate, onDelete }: Props) {
     </div>
   );
 }
-

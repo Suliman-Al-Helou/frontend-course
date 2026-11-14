@@ -1,13 +1,16 @@
 # 0005. Unified Sonner Notification System, Theme Synchronization, and Design Token Binding
 
 ## Context
+
 User feedback and toast notifications across the frontend platform previously suffered from architectural fragmentation:
+
 1. `src/app/layout.tsx` imported raw `sonner` directly without design token enforcement, typography integration, or theme awareness.
 2. The Toaster was disconnected from the application's runtime Zustand theme state (`useThemeStore`), causing jarring contrast clashes when toggling between dark and light modes.
 3. Domain components (such as `EnrollCard.tsx`) created ad-hoc, isolated toast components using local `useState` timers and inline elements, leading to redundant DOM logic and inconsistent user experiences.
 4. Upstream default English close labels (`Close toast`) and lack of native close buttons degraded RTL screen-reader accessibility and mobile ergonomics.
 
 ## Decision
+
 We establish a single source of truth for platform notifications based on an encapsulated, design-token-bound Sonner architecture:
 
 1. **Encapsulated Viewport Component (`src/components/ui/sonner.tsx`)**:

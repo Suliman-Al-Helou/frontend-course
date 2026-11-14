@@ -26,7 +26,10 @@ const toArray = (val: unknown): string[] => {
       const parsed = JSON.parse(val);
       return Array.isArray(parsed) ? parsed.filter(Boolean).map(String) : [val];
     } catch {
-      return val.split("\n").map((s) => s.trim()).filter(Boolean);
+      return val
+        .split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean);
     }
   }
   return [];
@@ -52,8 +55,8 @@ export default function CourseFormModal({ course, isOpen, onClose }: Props) {
     instructor_id: course?.instructor?.id
       ? String(course.instructor.id)
       : course?.instructor_id
-      ? String(course.instructor_id)
-      : undefined,
+        ? String(course.instructor_id)
+        : undefined,
     rating: course?.rating ?? 4.5,
     is_popular: course?.is_popular ?? course?.hot ?? false,
     total_duration: course?.total_duration ?? 0,

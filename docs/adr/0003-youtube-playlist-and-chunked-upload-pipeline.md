@@ -1,9 +1,11 @@
 # 0003. Automated YouTube Playlist & Chunked Video Ingestion Pipeline
 
 ## Context
+
 Video lessons and session recordings were previously manual or limited to entering pre-existing YouTube IDs. Users need to drag-and-drop large video files (100MB–1.5GB) directly into the admin platform, have the system upload them to their YouTube channel, automatically organize them into a course-specific YouTube Playlist, and expose those videos directly inside the course curriculum builder to convert into lessons with a single click.
 
 ## Decision
+
 We implement a three-stage automated video ingestion architecture:
 
 1. **Chunked Resumable Ingestion**: The client slices large video files into 5MB chunks and uploads them to a dedicated backend chunk endpoint (`POST /api/admin/video-assets/upload-chunk`) with a live progress bar. This prevents memory leaks, HTTP timeouts, and connection drop failures.
