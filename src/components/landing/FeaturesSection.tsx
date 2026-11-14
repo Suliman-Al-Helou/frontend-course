@@ -36,16 +36,16 @@ const METHODOLOGY_PILLARS: MethodologyItem[] = [
 function BackgroundDecorations() {
   return (
     <>
-      {/* توهج ناعم في أعلى اليسار - متوافق مع الفاتح والداكن */}
+      {/* وميض أبيض/رمادي ناعم في أقصى اليسار للوضع الداكن والفاتح */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-24 -left-24 size-96 rounded-full bg-primary/10 blur-3xl dark:bg-primary/15"
+        className="pointer-events-none absolute -top-20 -left-20 size-[28rem] rounded-full bg-slate-400/[0.05] blur-3xl dark:bg-white/[0.06]"
       />
 
-      {/* توهج ناعم في أعلى اليمين - متوافق مع الفاتح والداكن */}
+      {/* وميض أبيض/رمادي ناعم في أسفل أقصى اليمين لتمييز حدود وانتقال القسم */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-24 -right-24 size-96 rounded-full bg-primary/10 blur-3xl dark:bg-primary/15"
+        className="pointer-events-none absolute -bottom-20 -right-20 size-[28rem] rounded-full bg-slate-400/[0.05] blur-3xl dark:bg-white/[0.05]"
       />
 
       {/* شبكة النقاط المتجاوبة هندسياً: تظهر في الفاتح والداكن باستخدام currentColor */}
