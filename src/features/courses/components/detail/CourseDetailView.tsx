@@ -10,7 +10,7 @@ import {
   useCourseDetail,
   SkeletonCard,
 } from "../../index";
-import { useAuthStore } from "@/store/authStore";
+import { useCurrentUser } from "@/features/auth";
 import api from "@/lib/api";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { QueryState } from "@/components/shared/QueryState";
@@ -26,7 +26,7 @@ export default function CourseDetailView({ courseId }: Props) {
   const courseQuery = useCourseDetail(isValidId ? id : "");
   const queryClient = useQueryClient();
 
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useCurrentUser();
 
   const enrollmentQuery = useQuery({
     queryKey: ["courses", "enrollment", courseId],

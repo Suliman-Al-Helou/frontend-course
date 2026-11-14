@@ -1,7 +1,6 @@
 import { useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLoginMutation } from "@/features/auth";
-import { useAuthStore } from "@/store/authStore";
 import { loginSchema } from "@/lib/validations/auth";
 import { flattenZodErrors } from "@/lib/validations/flattenZodErrors";
 import { handleFormError } from "@/lib/errors/handleFormError";
@@ -17,7 +16,6 @@ export interface LoginForm {
 export function useLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const setAuth = useAuthStore((state) => state.setAuth);
   const loginMutation = useLoginMutation();
 
   const [form, setForm] = useState<LoginForm>({ email: "", password: "" });
@@ -46,7 +44,6 @@ export function useLoginForm() {
     isSubmittingRef.current = true;
     try {
       const data = await loginMutation.mutateAsync(form);
-      setAuth(data.user);
       notify.success(SUCCESS_CODES.AUTH_LOGIN_OK);
 
       // توجيه ذكي مع التحقق الأمني من مسار إعادة التوجيه

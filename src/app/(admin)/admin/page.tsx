@@ -16,7 +16,7 @@ import {
   MessageCircleQuestion,
   Video,
 } from "lucide-react";
-import { useAuthStore } from "@/store/authStore";
+import { useCurrentUser } from "@/features/auth";
 import { useThemeStore } from "@/store/themeStore";
 import api from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
@@ -71,7 +71,7 @@ function ThemeToggle() {
 }
 
 function AdminContent() {
-  const { user, logout } = useAuthStore();
+  const { user, logout } = useCurrentUser();
   const searchParams = useSearchParams();
   const router = useRouter();
   const rawTab = searchParams.get("tab") as TabId | null;

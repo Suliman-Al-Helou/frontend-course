@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Clock, CheckCircle, BookOpen, Loader2, Play } from "lucide-react";
 import type { CourseDetail } from "../../index";
-import { useAuthStore } from "@/store/authStore";
+import { useCurrentUser } from "@/features/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { studentCourseQueries } from "@/features/student-courses";
 import api from "@/lib/api";
@@ -25,7 +25,7 @@ export function EnrollCard({
   enrollmentStatus = null,
   onEnrollSuccess,
 }: EnrollCardProps) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const { isAuthenticated } = useCurrentUser();
   const queryClient = useQueryClient();
   const isSubmittingRef = useRef(false);
   const [loading, setLoading] = useState(false);

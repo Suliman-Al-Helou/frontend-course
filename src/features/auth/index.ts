@@ -4,3 +4,4 @@ export * from "./types";
 export * from "./api";
 export * from "./queries/auth.queries";
 export * from "./queries/auth.mutations";
+export * from "./hooks/useCurrentUser";

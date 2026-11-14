@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Script from "next/script";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useAuthStore } from "@/store/authStore";
+import { useQueryClient } from "@tanstack/react-query";
+import { authQueries } from "@/features/auth";
 import { resolvePostLoginRedirect } from "@/lib/auth-helpers";
 import { notify } from "@/lib/toast";
 import { Loader2 } from "lucide-react";
@@ -73,7 +74,7 @@ function GoogleIcon({ className }: { className?: string }) {
 export function GoogleAuthButton({ mode = "signin" }: GoogleAuthButtonProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const setAuth = useAuthStore((state) => state.setAuth);
+  const queryClient = useQueryClient();
 
   const [isLoading, setIsLoading] = useState(false);
   const isSubmittingRef = useRef(false);
@@ -101,8 +102,8 @@ export function GoogleAuthButton({ mode = "signin" }: GoogleAuthButtonProps) {
           throw new Error(data.message || "فشل تسجيل الدخول عبر Google");
         }
 
-        // تحديث الحالة المركزية في Zustand
-        setAuth(data.user);
+        // تحديث كاش الهوية المركزي في TanStack Query v5
+        queryClient.setQueryData(authQueries.user().queryKey, data.user);
         notify.success(data.message || "تم تسجيل الدخول بنجاح عبر Google");
 
         // التوجيه الذكي الآمن
@@ -119,7 +120,7 @@ export function GoogleAuthButton({ mode = "signin" }: GoogleAuthButtonProps) {
         setIsLoading(false);
       }
     },
-    [router, searchParams, setAuth],
+    [router, searchParams, queryClient],
   );
 
   const initGoogleIdentity = useCallback(() => {

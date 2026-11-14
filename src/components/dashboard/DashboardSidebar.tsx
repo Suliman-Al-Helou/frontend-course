@@ -15,7 +15,7 @@ import {
   Sun,
   LifeBuoy,
 } from "lucide-react";
-import { useAuthStore } from "@/store/authStore";
+import { useCurrentUser } from "@/features/auth";
 
 import { useThemeStore } from "@/store/themeStore";
 const MENU = [
@@ -47,7 +47,7 @@ function ThemeToggle() {
 export default function DashboardSidebar({ open, onClose }: Props) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, logout, isLoading } = useAuthStore();
+  const { user, logout, isLoading } = useCurrentUser();
 
   if (isLoading) {
     return <div className="text-gray-400 text-sm animate-pulse">جارٍ التحقق...</div>;

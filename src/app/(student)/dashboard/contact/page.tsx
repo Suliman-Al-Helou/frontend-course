@@ -1,10 +1,10 @@
 "use client";
 
 import FAQSection from "@/components/landing/FAQSection";
-import { useAuthStore } from "@/store/authStore";
+import { useCurrentUser } from "@/features/auth";
 
 export default function StudentContactPage() {
-  const user = useAuthStore((s) => s.user);
+  const { user } = useCurrentUser();
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">

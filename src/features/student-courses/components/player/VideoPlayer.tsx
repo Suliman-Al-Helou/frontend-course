@@ -3,7 +3,7 @@
 import React, { useRef, useEffect } from "react";
 import dynamic from "next/dynamic";
 import type { YouTubeProps } from "react-youtube";
-import { useAuthStore } from "@/store/authStore";
+import { useCurrentUser } from "@/features/auth";
 
 const YouTube = dynamic(() => import("react-youtube").then((mod) => mod.default) as any, {
   ssr: false,
@@ -31,7 +31,7 @@ export function VideoPlayer({
   onComplete,
   completionThreshold = 80,
 }: VideoPlayerProps) {
-  const { user } = useAuthStore();
+  const { user } = useCurrentUser();
   const playerRef = useRef<any>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
   const watchedMaxRef = useRef<number>(0);
