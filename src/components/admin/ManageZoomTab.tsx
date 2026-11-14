@@ -65,7 +65,8 @@ export default function ManageZoomTab() {
     ...adminVideoAssetQueries.list(),
     refetchInterval: (query) => {
       const data = query.state.data;
-      const hasProcessing = Array.isArray(data) && data.some((v: AdminVideoAsset) => v.status === "processing");
+      const hasProcessing =
+        Array.isArray(data) && data.some((v: AdminVideoAsset) => v.status === "processing");
       return hasProcessing ? 5000 : false;
     },
   });
@@ -95,7 +96,9 @@ export default function ManageZoomTab() {
       setIsConnectingYouTube(true);
       sendYouTubeCallback(code, state)
         .then((res) => {
-          notify.success(`تم ربط القناة بنجاح (${res.channel_title}). يمكنك الآن إنشاء Playlists ورفع الفيديوهات آلياً!`);
+          notify.success(
+            `تم ربط القناة بنجاح (${res.channel_title}). يمكنك الآن إنشاء Playlists ورفع الفيديوهات آلياً!`,
+          );
           void queryClient.invalidateQueries({ queryKey: adminYouTubeQueries.all() });
         })
         .catch((err: unknown) => {
@@ -228,7 +231,9 @@ export default function ManageZoomTab() {
       setDeleteTarget(null);
     } catch (e) {
       console.error("فشل الإجراء:", e);
-      notify.error(deleteTarget.type === "youtube_disconnect" ? "تعذر فصل القناة." : "فشل إتمام عملية الحذف.");
+      notify.error(
+        deleteTarget.type === "youtube_disconnect" ? "تعذر فصل القناة." : "فشل إتمام عملية الحذف.",
+      );
     } finally {
       isDeletingRef.current = false;
       setIsDeleting(false);
@@ -388,7 +393,9 @@ export default function ManageZoomTab() {
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <h3 className="text-sm font-bold text-foreground truncate">{m.title}</h3>
+                            <h3 className="text-sm font-bold text-foreground truncate">
+                              {m.title}
+                            </h3>
                             <span className="text-[11px] px-2 py-0.5 rounded-md bg-muted text-muted-foreground font-medium">
                               {courseName}
                             </span>
@@ -421,7 +428,9 @@ export default function ManageZoomTab() {
                           rel="noreferrer"
                           className="h-10 px-3 rounded-xl border border-border bg-background hover:bg-muted text-xs text-foreground font-medium flex items-center gap-1.5 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                         >
-                          <span className="font-mono" dir="ltr">Zoom</span>
+                          <span className="font-mono" dir="ltr">
+                            Zoom
+                          </span>
                           <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
                         </a>
 
@@ -467,7 +476,9 @@ export default function ManageZoomTab() {
                     {openMeetingId === m.id && (
                       <div className="mt-3 bg-muted/30 rounded-xl p-3 border border-border/50 text-xs">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="font-semibold text-foreground">قائمة حضور الطلاب ({attendees.length})</span>
+                          <span className="font-semibold text-foreground">
+                            قائمة حضور الطلاب ({attendees.length})
+                          </span>
                         </div>
                         {loadingAtt ? (
                           <div className="flex items-center justify-center py-4 text-muted-foreground gap-2">
@@ -475,15 +486,25 @@ export default function ManageZoomTab() {
                             <span>جارٍ جلب سجلات الحضور...</span>
                           </div>
                         ) : attendees.length === 0 ? (
-                          <p className="text-muted-foreground py-2 text-center">لم يسجل أي طالب حضوره في هذا اللقاء بعد</p>
+                          <p className="text-muted-foreground py-2 text-center">
+                            لم يسجل أي طالب حضوره في هذا اللقاء بعد
+                          </p>
                         ) : (
                           <ul className="space-y-1.5 max-h-40 overflow-y-auto">
                             {attendees.map((a) => (
-                              <li key={a.id} className="flex items-center justify-between p-1.5 rounded-lg bg-background/50">
+                              <li
+                                key={a.id}
+                                className="flex items-center justify-between p-1.5 rounded-lg bg-background/50"
+                              >
                                 <span className="text-foreground font-medium">
-                                  {a.user.name} <span className="text-muted-foreground font-normal">({a.user.email})</span>
+                                  {a.user.name}{" "}
+                                  <span className="text-muted-foreground font-normal">
+                                    ({a.user.email})
+                                  </span>
                                 </span>
-                                <span className="text-[11px] text-muted-foreground font-mono">{fmt(a.attended_at)}</span>
+                                <span className="text-[11px] text-muted-foreground font-mono">
+                                  {fmt(a.attended_at)}
+                                </span>
                               </li>
                             ))}
                           </ul>
@@ -523,9 +544,12 @@ export default function ManageZoomTab() {
               <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto mb-3">
                 <Film className="w-6 h-6" />
               </div>
-              <p className="text-sm font-semibold text-foreground">لا توجد تسجيلات أو فيديوهات مرفوعة بعد</p>
+              <p className="text-sm font-semibold text-foreground">
+                لا توجد تسجيلات أو فيديوهات مرفوعة بعد
+              </p>
               <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
-                اضغط على زر &quot;رفع / إدراج فيديو&quot; بالأعلى لإضافة رابط فيديو من يوتيوب أو تسجيل Zoom ليتاح للاستخدام في الكورسات.
+                اضغط على زر &quot;رفع / إدراج فيديو&quot; بالأعلى لإضافة رابط فيديو من يوتيوب أو تسجيل
+                Zoom ليتاح للاستخدام في الكورسات.
               </p>
             </div>
           ) : (
@@ -556,7 +580,9 @@ export default function ManageZoomTab() {
 
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <h3 className="text-sm font-bold text-foreground truncate">{v.title}</h3>
+                            <h3 className="text-sm font-bold text-foreground truncate">
+                              {v.title}
+                            </h3>
                             <span className="text-[11px] px-2 py-0.5 rounded-md bg-muted text-muted-foreground font-medium">
                               {courseName}
                             </span>
@@ -588,7 +614,10 @@ export default function ManageZoomTab() {
                               <Clock className="w-3 h-3" />
                               <span>{durationMin > 0 ? `${durationMin} دقيقة` : "غير محدد"}</span>
                             </span>
-                            <span className="text-[11px] font-mono text-muted-foreground/80" dir="ltr">
+                            <span
+                              className="text-[11px] font-mono text-muted-foreground/80"
+                              dir="ltr"
+                            >
                               ID: {v.provider_video_id}
                             </span>
                             {v.zoom_meeting && (
@@ -696,12 +725,17 @@ export default function ManageZoomTab() {
         isOpen={Boolean(deleteTarget)}
         onClose={() => setDeleteTarget(null)}
         onConfirm={handleConfirmDelete}
-        title={deleteTarget?.type === "youtube_disconnect" ? "تأكيد فصل قناة YouTube" : "تأكيد عملية الحذف"}
+        title={
+          deleteTarget?.type === "youtube_disconnect"
+            ? "تأكيد فصل قناة YouTube"
+            : "تأكيد عملية الحذف"
+        }
         description={
           deleteTarget?.type === "youtube_disconnect" ? (
             <>
-              هل أنت متأكد من رغبتك في فصل <strong className="text-foreground">{deleteTarget.title}</strong> عن المنصة؟
-              سيتم إيقاف رفع الفيديوهات التلقائي حتى تعيد ربطها لاحقاً.
+              هل أنت متأكد من رغبتك في فصل{" "}
+              <strong className="text-foreground">{deleteTarget.title}</strong> عن المنصة؟ سيتم
+              إيقاف رفع الفيديوهات التلقائي حتى تعيد ربطها لاحقاً.
             </>
           ) : deleteTarget ? (
             <>
@@ -711,7 +745,9 @@ export default function ManageZoomTab() {
                 ? " سيتم حذف اللقاء وسجلات حضور الطلاب التابعة له بشكل نهائي."
                 : " سيتم حذف هذا الفيديو من بنك الوسائط."}
             </>
-          ) : ""
+          ) : (
+            ""
+          )
         }
         confirmText={deleteTarget?.type === "youtube_disconnect" ? "نعم، افصل" : "نعم، احذف"}
         variant="destructive"

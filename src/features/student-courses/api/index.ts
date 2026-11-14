@@ -5,9 +5,15 @@ import type { StudentEnrollment, LessonProgress, Task, TaskResult } from "../typ
  * جلب جميع الكورسات المسجل بها الطالب الحالي
  */
 export async function getMyCourses(): Promise<StudentEnrollment[]> {
-  const { data } = await api.get<StudentEnrollment[] | { data: StudentEnrollment[] }>("/my-courses");
+  const { data } = await api.get<StudentEnrollment[] | { data: StudentEnrollment[] }>(
+    "/my-courses",
+  );
   if (Array.isArray(data)) return data;
-  if (data && typeof data === "object" && Array.isArray((data as { data: StudentEnrollment[] }).data)) {
+  if (
+    data &&
+    typeof data === "object" &&
+    Array.isArray((data as { data: StudentEnrollment[] }).data)
+  ) {
     return (data as { data: StudentEnrollment[] }).data;
   }
   return [];
@@ -30,7 +36,7 @@ export async function getLessonProgress(lessonId: number | string): Promise<Less
  */
 export async function saveLessonProgress(
   lessonId: number | string,
-  payload: { watched_percent: number; last_position: number }
+  payload: { watched_percent: number; last_position: number },
 ): Promise<LessonProgress> {
   const { data } = await api.post<LessonProgress>(`/lessons/${lessonId}/progress`, payload);
   return data;
@@ -53,9 +59,8 @@ export async function getLessonTask(lessonId: number | string): Promise<Task | n
  */
 export async function submitLessonTask(
   lessonId: number | string,
-  answers: Record<string, string>
+  answers: Record<string, string>,
 ): Promise<TaskResult> {
   const { data } = await api.post<TaskResult>(`/lessons/${lessonId}/task`, { answers });
   return data;
 }
-

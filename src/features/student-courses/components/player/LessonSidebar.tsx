@@ -34,14 +34,10 @@ export function LessonSidebar({
   currentLessonId,
   completedIds,
 }: LessonSidebarProps) {
-  const [openSections, setOpenSections] = useState<number[]>(() =>
-    sections.map((s) => s.id),
-  );
+  const [openSections, setOpenSections] = useState<number[]>(() => sections.map((s) => s.id));
 
   const toggleSection = (id: number) => {
-    setOpenSections((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    );
+    setOpenSections((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   };
 
   const isCompleted = (id: number) => completedIds.includes(id);
@@ -123,7 +119,12 @@ export function LessonSidebar({
               </button>
 
               {isOpen && (
-                <div id={contentId} role="region" aria-labelledby={headerId} className="pb-1 bg-muted/10">
+                <div
+                  id={contentId}
+                  role="region"
+                  aria-labelledby={headerId}
+                  className="pb-1 bg-muted/10"
+                >
                   {section.lessons.map((lesson) => {
                     const unlocked = isUnlocked(lesson);
                     const completed = isCompleted(lesson.id);
@@ -172,7 +173,10 @@ export function LessonSidebar({
                         className="w-full min-h-[44px] flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground/60 hover:bg-muted/20 transition-colors text-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-lg motion-reduce:transition-none"
                         aria-label={`${lesson.title} - درس مغلق، اضغط لمعرفة كيفية الفتح`}
                       >
-                        <Lock className="w-4 h-4 text-muted-foreground/50 flex-shrink-0" aria-hidden="true" />
+                        <Lock
+                          className="w-4 h-4 text-muted-foreground/50 flex-shrink-0"
+                          aria-hidden="true"
+                        />
                         <span className="truncate flex-1">{lesson.title}</span>
                         <span className="text-xs bg-muted px-2 py-0.5 rounded text-muted-foreground flex-shrink-0">
                           مغلق

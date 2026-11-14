@@ -24,8 +24,7 @@ export default function HeroSection() {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 size-full overflow-hidden"
         style={{
-          maskImage:
-            "radial-gradient(ellipse 90% 70% at 50% 50%, black 20%, transparent 85%)",
+          maskImage: "radial-gradient(ellipse 90% 70% at 50% 50%, black 20%, transparent 85%)",
           WebkitMaskImage:
             "radial-gradient(ellipse 90% 70% at 50% 50%, black 20%, transparent 85%)",
         }}
@@ -123,14 +122,20 @@ export default function HeroSection() {
                 </span>
                 <span>{t("freeNote")}</span>
               </div>
-              <span className="hidden size-1 rounded-full bg-border sm:inline-block" aria-hidden="true" />
+              <span
+                className="hidden size-1 rounded-full bg-border sm:inline-block"
+                aria-hidden="true"
+              />
               <div role="listitem" className="inline-flex items-center gap-1.5">
                 <span className="flex size-5 items-center justify-center rounded-full bg-primary/10 text-primary">
                   <Check className="size-3" aria-hidden="true" />
                 </span>
                 <span>{t("AccreditedCertificate")}</span>
               </div>
-              <span className="hidden size-1 rounded-full bg-border sm:inline-block" aria-hidden="true" />
+              <span
+                className="hidden size-1 rounded-full bg-border sm:inline-block"
+                aria-hidden="true"
+              />
               <div role="listitem" className="inline-flex items-center gap-1.5">
                 <span className="flex size-5 items-center justify-center rounded-full bg-primary/10 text-primary">
                   <Check className="size-3" aria-hidden="true" />

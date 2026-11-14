@@ -37,8 +37,7 @@ export interface Course {
   price: number;
   is_public: boolean;
 
-
-    instructor?: {
+  instructor?: {
     id: number;
     name: string;
   } | null;

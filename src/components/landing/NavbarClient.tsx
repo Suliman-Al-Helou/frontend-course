@@ -94,8 +94,7 @@ export default function NavbarClient() {
             {link.label}
           </Link>
         ))}
-                <InstallButton /> 
-
+        <InstallButton />
       </nav>
 
       <div className="ms-auto flex items-center gap-2">
@@ -140,7 +139,6 @@ export default function NavbarClient() {
             ))}
             <div className="mt-3 flex flex-col gap-2 border-t border-border pt-4">
               <AuthActions stacked onNavigate={close} />
-              
             </div>
           </div>
         </div>

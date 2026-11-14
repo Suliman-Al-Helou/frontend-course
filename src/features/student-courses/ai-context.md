@@ -1,9 +1,11 @@
 # student-courses (Enrolled Courses, Lessons & Learning Hub) — Architectural Context & PRD (immutable anchor)
 
 ## Purpose & Scope
+
 This feature encapsulates the **Student Learning & Enrolled Courses Domain** exclusively. It is designed for authenticated students to access their registered courses, watch video lessons, monitor watch completion, and take/submit interactive lesson tasks.
 
 ### Explicit Domain Boundaries
+
 - ✅ **IN SCOPE (This Feature):**
   - Student Enrolled Courses Dashboard (`/dashboard/courses`).
   - Shared Enrolled Courses Query (`studentCourseQueries.enrolled()` used across the app via `select` projections for Landing and Catalog enrollment state).
@@ -65,4 +67,3 @@ src/features/student-courses/
 4. **DOUBLE-SUBMIT CONCURRENCY LOCK:** Any mutation or task submission MUST employ a `useRef` lock (`isSubmittingRef`) to reject duplicate rapid submissions.
 5. **A11Y & MOTION SAFETY:** All accordions MUST declare `aria-expanded` and `aria-controls`. Animations MUST respect `prefers-reduced-motion`. All interactive elements MUST meet `>= 44x44px` touch targets.
 6. **ZERO LINGERING BRIDGES:** Delete old unused files immediately upon migration (`EnrolledCourses.tsx`, `UseMyEnrolledCourses.ts`).
-

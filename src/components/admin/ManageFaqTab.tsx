@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { Plus, Trash2, ChevronDown, ChevronUp, Loader2, Save } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { notify } from '@/components/ui/sonner';
-import ConfirmModal from '@/components/shared/ConfirmModal';
-import api from '@/lib/api';
+import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import { Plus, Trash2, ChevronDown, ChevronUp, Loader2, Save } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { notify } from "@/components/ui/sonner";
+import ConfirmModal from "@/components/shared/ConfirmModal";
+import api from "@/lib/api";
 
 interface Faq {
   id: number;
@@ -24,8 +24,8 @@ export default function ManageFaqTab() {
   const [expanded, setExpanded] = useState<number | null>(null);
 
   // فورم إضافة سؤال جديد
-  const [newQ, setNewQ] = useState('');
-  const [newA, setNewA] = useState('');
+  const [newQ, setNewQ] = useState("");
+  const [newA, setNewA] = useState("");
   const [adding, setAdding] = useState(false);
 
   const isAddingRef = useRef(false);
@@ -35,11 +35,11 @@ export default function ManageFaqTab() {
   const fetchFaqs = async () => {
     setLoading(true);
     try {
-      const res = await api.get('/admin/faqs');
+      const res = await api.get("/admin/faqs");
       setFaqs(res.data.data ?? res.data ?? []);
     } catch (err) {
       console.error(err);
-      notify.error('فشل تحميل قائمة الأسئلة الشائعة');
+      notify.error("فشل تحميل قائمة الأسئلة الشائعة");
       setFaqs([]);
     } finally {
       setLoading(false);
@@ -55,14 +55,14 @@ export default function ManageFaqTab() {
     isAddingRef.current = true;
     setAdding(true);
     try {
-      await api.post('/admin/faqs', { question: newQ.trim(), answer: newA.trim() });
-      notify.success('تمت إضافة السؤال بنجاح');
-      setNewQ('');
-      setNewA('');
+      await api.post("/admin/faqs", { question: newQ.trim(), answer: newA.trim() });
+      notify.success("تمت إضافة السؤال بنجاح");
+      setNewQ("");
+      setNewA("");
       fetchFaqs();
     } catch (err: any) {
       console.error(err);
-      const msg = err?.response?.data?.message || 'تعذر إضافة السؤال، يرجى المحاولة مجدداً';
+      const msg = err?.response?.data?.message || "تعذر إضافة السؤال، يرجى المحاولة مجدداً";
       notify.error(msg);
     } finally {
       setAdding(false);
@@ -76,11 +76,11 @@ export default function ManageFaqTab() {
     setSaving(faq.id);
     try {
       await api.put(`/admin/faqs/${faq.id}`, { question: faq.question, answer: faq.answer });
-      notify.success('تم حفظ تعديلات السؤال بنجاح');
+      notify.success("تم حفظ تعديلات السؤال بنجاح");
       fetchFaqs();
     } catch (err: any) {
       console.error(err);
-      const msg = err?.response?.data?.message || 'تعذر حفظ التعديلات، يرجى المحاولة مجدداً';
+      const msg = err?.response?.data?.message || "تعذر حفظ التعديلات، يرجى المحاولة مجدداً";
       notify.error(msg);
     } finally {
       setSaving(null);
@@ -94,12 +94,12 @@ export default function ManageFaqTab() {
     setIsDeleting(true);
     try {
       await api.delete(`/admin/faqs/${deletingFaq.id}`);
-      notify.success('تم حذف السؤال بنجاح');
+      notify.success("تم حذف السؤال بنجاح");
       setDeletingFaq(null);
       fetchFaqs();
     } catch (err: any) {
       console.error(err);
-      const msg = err?.response?.data?.message || 'تعذر حذف السؤال، يرجى المحاولة لاحقاً';
+      const msg = err?.response?.data?.message || "تعذر حذف السؤال، يرجى المحاولة لاحقاً";
       notify.error(msg);
     } finally {
       setIsDeleting(false);
@@ -107,8 +107,8 @@ export default function ManageFaqTab() {
     }
   };
 
-  const updateLocal = (id: number, field: 'question' | 'answer', val: string) => {
-    setFaqs(prev => prev.map(f => (f.id === id ? { ...f, [field]: val } : f)));
+  const updateLocal = (id: number, field: "question" | "answer", val: string) => {
+    setFaqs((prev) => prev.map((f) => (f.id === id ? { ...f, [field]: val } : f)));
   };
 
   return (
@@ -124,7 +124,7 @@ export default function ManageFaqTab() {
             <label className="text-sm font-medium text-foreground">السؤال *</label>
             <input
               value={newQ}
-              onChange={e => setNewQ(e.target.value)}
+              onChange={(e) => setNewQ(e.target.value)}
               placeholder="ما هي متطلبات الالتحاق بالكورس؟"
               className="w-full h-11 rounded-xl border border-input bg-background px-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             />
@@ -133,7 +133,7 @@ export default function ManageFaqTab() {
             <label className="text-sm font-medium text-foreground">الجواب *</label>
             <textarea
               value={newA}
-              onChange={e => setNewA(e.target.value)}
+              onChange={(e) => setNewA(e.target.value)}
               placeholder="اكتب الجواب هنا بشكل واضح وشامل..."
               rows={3}
               className="w-full rounded-xl border border-input bg-background p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none leading-relaxed"
@@ -153,9 +153,7 @@ export default function ManageFaqTab() {
       {/* قائمة الأسئلة */}
       <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
         <div className="p-6 border-b border-border">
-          <h2 className="text-base font-bold text-foreground">
-            الأسئلة الشائعة ({faqs.length})
-          </h2>
+          <h2 className="text-base font-bold text-foreground">الأسئلة الشائعة ({faqs.length})</h2>
         </div>
 
         {loading ? (
@@ -184,7 +182,7 @@ export default function ManageFaqTab() {
                     aria-expanded={expanded === faq.id}
                   >
                     <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
-                      {faq.question || 'سؤال بدون عنوان'}
+                      {faq.question || "سؤال بدون عنوان"}
                     </span>
                     {expanded === faq.id ? (
                       <ChevronUp className="w-4 h-4 text-muted-foreground flex-shrink-0 mr-2" />
@@ -197,7 +195,7 @@ export default function ManageFaqTab() {
                     variant="ghost"
                     onClick={() => setDeletingFaq(faq)}
                     className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 dark:hover:bg-destructive/20 h-10 w-10 min-h-[44px] min-w-[44px] p-0 rounded-xl transition-colors flex-shrink-0 focus-visible:ring-2 focus-visible:ring-destructive"
-                    aria-label={`حذف السؤال: ${faq.question || 'بدون عنوان'}`}
+                    aria-label={`حذف السؤال: ${faq.question || "بدون عنوان"}`}
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
@@ -207,14 +205,14 @@ export default function ManageFaqTab() {
                 {expanded === faq.id && (
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
+                    animate={{ opacity: 1, height: "auto" }}
                     className="mt-4 space-y-3 pt-3 border-t border-border/50 motion-reduce:transition-none"
                   >
                     <div className="space-y-1.5">
                       <label className="text-xs font-medium text-muted-foreground">السؤال</label>
                       <input
                         value={faq.question}
-                        onChange={e => updateLocal(faq.id, 'question', e.target.value)}
+                        onChange={(e) => updateLocal(faq.id, "question", e.target.value)}
                         className="w-full h-11 rounded-xl border border-input bg-background px-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                       />
                     </div>
@@ -222,7 +220,7 @@ export default function ManageFaqTab() {
                       <label className="text-xs font-medium text-muted-foreground">الجواب</label>
                       <textarea
                         value={faq.answer}
-                        onChange={e => updateLocal(faq.id, 'answer', e.target.value)}
+                        onChange={(e) => updateLocal(faq.id, "answer", e.target.value)}
                         rows={3}
                         className="w-full rounded-xl border border-input bg-background p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none leading-relaxed"
                       />
@@ -258,10 +256,12 @@ export default function ManageFaqTab() {
             <div className="space-y-2">
               <p>هل أنت متأكد من رغبتك في حذف السؤال التالي؟</p>
               <div className="p-3 bg-muted/60 border border-border rounded-xl text-xs font-medium text-foreground text-right">
-                {deletingFaq.question || 'سؤال بدون عنوان'}
+                {deletingFaq.question || "سؤال بدون عنوان"}
               </div>
             </div>
-          ) : ''
+          ) : (
+            ""
+          )
         }
         isLoading={isDeleting}
       />

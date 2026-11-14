@@ -16,26 +16,28 @@ closed: true
 # Critique & Audit: Course Detail Decomposition & UI Architecture
 
 Targets under evaluation:
+
 1. `src/features/courses/components/detail/CourseHero.tsx`
 2. `src/features/courses/components/detail/EnrollCard.tsx` (Extracted component)
 3. `src/features/courses/components/detail/CourseBottomCta.tsx` (Extracted component)
 4. `src/app/(public)/courses/[courseId]/page.tsx`
 
 ## Design & Usability Health Score (Nielsen Heuristics)
+
 Total: 39/40 (Production Ready / Hardened)
 
-| # | Heuristic | Score | Status |
-|---|-----------|-------|--------|
-| 1 | Visibility of System Status | 4.0/4 | Single-source enrollment status via TanStack Query invalidation and clean loading states. |
-| 2 | Match between System & Real World | 4.0/4 | Natural Arabic typography, clear iconography, semantic breadcrumb navigation. |
-| 3 | User Control & Freedom | 3.5/4 | Toast alert dismissable with >= 44x44px button; clean modal and page navigation. |
-| 4 | Consistency & Standards | 4.0/4 | Fully tokenized with `DESIGN.md` semantic tokens (`bg-card`, `text-success`, `bg-warning/10`). |
-| 5 | Error Prevention | 4.0/4 | `useRef` lock prevents concurrent duplicate enrollment requests. |
-| 6 | Recognition Rather Than Recall | 4.0/4 | Clear course stats, duration, level badges, and enrollment status. |
-| 7 | Flexibility & Efficiency | 3.5/4 | Smooth scroll to top when authenticated; all actions keyboard navigable. |
-| 8 | Aesthetic & Minimalist Design | 4.0/4 | Decoupled into small, focused components; zero AI-slop or visual clutter. |
-| 9 | Help Users Recognize & Recover from Errors | 4.0/4 | Rejection banner informs user and allows resubmitting enrollment. |
-| 10 | Help & Documentation | 4.0/4 | Clear guarantee indicators, lesson count, and requirements display. |
+| #   | Heuristic                                  | Score | Status                                                                                         |
+| --- | ------------------------------------------ | ----- | ---------------------------------------------------------------------------------------------- |
+| 1   | Visibility of System Status                | 4.0/4 | Single-source enrollment status via TanStack Query invalidation and clean loading states.      |
+| 2   | Match between System & Real World          | 4.0/4 | Natural Arabic typography, clear iconography, semantic breadcrumb navigation.                  |
+| 3   | User Control & Freedom                     | 3.5/4 | Toast alert dismissable with >= 44x44px button; clean modal and page navigation.               |
+| 4   | Consistency & Standards                    | 4.0/4 | Fully tokenized with `DESIGN.md` semantic tokens (`bg-card`, `text-success`, `bg-warning/10`). |
+| 5   | Error Prevention                           | 4.0/4 | `useRef` lock prevents concurrent duplicate enrollment requests.                               |
+| 6   | Recognition Rather Than Recall             | 4.0/4 | Clear course stats, duration, level badges, and enrollment status.                             |
+| 7   | Flexibility & Efficiency                   | 3.5/4 | Smooth scroll to top when authenticated; all actions keyboard navigable.                       |
+| 8   | Aesthetic & Minimalist Design              | 4.0/4 | Decoupled into small, focused components; zero AI-slop or visual clutter.                      |
+| 9   | Help Users Recognize & Recover from Errors | 4.0/4 | Rejection banner informs user and allows resubmitting enrollment.                              |
+| 10  | Help & Documentation                       | 4.0/4 | Clear guarantee indicators, lesson count, and requirements display.                            |
 
 ## Resolved Issues
 
@@ -47,10 +49,10 @@ Total: 39/40 (Production Ready / Hardened)
 
 ## Final Technical Audit Score (20/20)
 
-| Dimension | Score | Evidence |
-|---|---|---|
-| **Accessibility (A11y)** | 4/4 | `role="alert"`, `aria-live="polite"`, `min-h-[44px]` touch targets, keyboard focus rings. |
-| **Performance & Motion** | 4/4 | Single-source TanStack query caching; smooth animations; zero CLS shift. |
-| **Theming & Tokens** | 4/4 | Strict compliance with `DESIGN.md` semantic tokens. |
-| **Responsive (Mobile 375px)** | 4/4 | All buttons maintain >= 44px height; no layout breaking or horizontal scrolling. |
-| **Implementation Integrity** | 4/4 | `impeccable detect` exit code 0 (`[]`); `npm run typecheck` zero errors. |
+| Dimension                     | Score | Evidence                                                                                  |
+| ----------------------------- | ----- | ----------------------------------------------------------------------------------------- |
+| **Accessibility (A11y)**      | 4/4   | `role="alert"`, `aria-live="polite"`, `min-h-[44px]` touch targets, keyboard focus rings. |
+| **Performance & Motion**      | 4/4   | Single-source TanStack query caching; smooth animations; zero CLS shift.                  |
+| **Theming & Tokens**          | 4/4   | Strict compliance with `DESIGN.md` semantic tokens.                                       |
+| **Responsive (Mobile 375px)** | 4/4   | All buttons maintain >= 44px height; no layout breaking or horizontal scrolling.          |
+| **Implementation Integrity**  | 4/4   | `impeccable detect` exit code 0 (`[]`); `npm run typecheck` zero errors.                  |

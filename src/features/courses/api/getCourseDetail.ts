@@ -22,18 +22,17 @@ function formatDuration(seconds?: number): string {
 }
 
 export function toCourseDetail(
-  rawResponse: Course & { sections?: unknown[] } | { data: Course & { sections?: unknown[] } }
+  rawResponse: (Course & { sections?: unknown[] }) | { data: Course & { sections?: unknown[] } },
 ): CourseDetail {
   // فك غلاف data في حال كان الـ API يرجع { data: { ... } }
-  const data = (
+  const data =
     rawResponse &&
     typeof rawResponse === "object" &&
     "data" in rawResponse &&
     rawResponse.data &&
     typeof rawResponse.data === "object"
-  )
-    ? (rawResponse as { data: Course & { sections?: unknown[] } }).data
-    : (rawResponse as Course & { sections?: unknown[] });
+      ? (rawResponse as { data: Course & { sections?: unknown[] } }).data
+      : (rawResponse as Course & { sections?: unknown[] });
 
   const rawSections = Array.isArray(data?.sections) ? data.sections : [];
 
@@ -60,8 +59,8 @@ export function toCourseDetail(
     typeof rawAny.instructor === "string"
       ? rawAny.instructor
       : rawAny.instructor && typeof rawAny.instructor === "object" && "name" in rawAny.instructor
-      ? String(rawAny.instructor.name)
-      : rawAny.instructor_name || "مدرب معتمد";
+        ? String(rawAny.instructor.name)
+        : rawAny.instructor_name || "مدرب معتمد";
 
   const instructorBio =
     typeof rawAny.instructor === "object" && rawAny.instructor && "bio" in rawAny.instructor
@@ -83,8 +82,8 @@ export function toCourseDetail(
 }
 
 export async function getCourseById(courseId: string | number): Promise<CourseDetail> {
-  const { data } = await api.get<Course & { sections?: unknown[] } | { data: Course & { sections?: unknown[] } }>(
-    `/courses/${courseId}`
-  );
+  const { data } = await api.get<
+    (Course & { sections?: unknown[] }) | { data: Course & { sections?: unknown[] } }
+  >(`/courses/${courseId}`);
   return toCourseDetail(data);
 }

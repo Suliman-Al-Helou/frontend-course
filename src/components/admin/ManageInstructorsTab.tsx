@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { Plus, Pencil, Trash2, Users } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { notify } from '@/components/ui/sonner';
-import ConfirmModal from '@/components/shared/ConfirmModal';
-import api from '@/lib/api';
-import InstructorFormModal from './InstructorFormModal';
-import type { Instructor } from '@/types';
+import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import { Plus, Pencil, Trash2, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { notify } from "@/components/ui/sonner";
+import ConfirmModal from "@/components/shared/ConfirmModal";
+import api from "@/lib/api";
+import InstructorFormModal from "./InstructorFormModal";
+import type { Instructor } from "@/types";
 
 export default function ManageInstructorsTab() {
   const [instructors, setInstructors] = useState<Instructor[]>([]);
@@ -22,11 +22,11 @@ export default function ManageInstructorsTab() {
   const fetchInstructors = async () => {
     setLoading(true);
     try {
-      const res = await api.get('/admin/instructors');
+      const res = await api.get("/admin/instructors");
       setInstructors(res.data.data ?? res.data);
     } catch (err) {
       console.error(err);
-      notify.error('فشل تحميل قائمة المدربين');
+      notify.error("فشل تحميل قائمة المدربين");
     } finally {
       setLoading(false);
     }
@@ -47,7 +47,7 @@ export default function ManageInstructorsTab() {
       fetchInstructors();
     } catch (err: any) {
       console.error(err);
-      const msg = err?.response?.data?.message || 'تعذر حذف المدرب، يرجى المحاولة لاحقاً';
+      const msg = err?.response?.data?.message || "تعذر حذف المدرب، يرجى المحاولة لاحقاً";
       notify.error(msg);
     } finally {
       setIsDeleting(false);
@@ -64,7 +64,10 @@ export default function ManageInstructorsTab() {
         </div>
         <Button
           className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl h-11 px-4 font-medium min-h-[44px]"
-          onClick={() => { setEditingInstructor(null); setShowModal(true); }}
+          onClick={() => {
+            setEditingInstructor(null);
+            setShowModal(true);
+          }}
         >
           <Plus className="w-4 h-4 ml-1" />
           إضافة مدرب
@@ -108,21 +111,33 @@ export default function ManageInstructorsTab() {
                     <h3 className="font-bold text-foreground text-sm">{ins.name}</h3>
                     <p className="text-xs text-muted-foreground mt-0.5 truncate">{ins.title}</p>
                     {ins.years_experience && ins.years_experience > 0 && (
-                      <p className="text-xs text-primary mt-0.5">{ins.years_experience} سنوات خبرة</p>
+                      <p className="text-xs text-primary mt-0.5">
+                        {ins.years_experience} سنوات خبرة
+                      </p>
                     )}
                   </div>
                 </div>
 
                 {ins.specializations && (
                   <div className="flex flex-wrap gap-1.5 mb-3">
-                    {ins.specializations.split(',').slice(0, 3).map((s, j) => (
-                      <span key={j} className="bg-primary/10 text-primary text-xs px-2 py-0.5 rounded-lg">{s.trim()}</span>
-                    ))}
+                    {ins.specializations
+                      .split(",")
+                      .slice(0, 3)
+                      .map((s, j) => (
+                        <span
+                          key={j}
+                          className="bg-primary/10 text-primary text-xs px-2 py-0.5 rounded-lg"
+                        >
+                          {s.trim()}
+                        </span>
+                      ))}
                   </div>
                 )}
 
                 {ins.bio && (
-                  <p className="text-xs text-muted-foreground mb-3 line-clamp-2 leading-relaxed">{ins.bio}</p>
+                  <p className="text-xs text-muted-foreground mb-3 line-clamp-2 leading-relaxed">
+                    {ins.bio}
+                  </p>
                 )}
               </div>
 
@@ -131,7 +146,10 @@ export default function ManageInstructorsTab() {
                   variant="outline"
                   size="sm"
                   className="flex-1 rounded-xl h-11 min-h-[44px] text-xs font-medium focus-visible:ring-2 focus-visible:ring-primary"
-                  onClick={() => { setEditingInstructor(ins); setShowModal(true); }}
+                  onClick={() => {
+                    setEditingInstructor(ins);
+                    setShowModal(true);
+                  }}
                   aria-label={`تعديل بيانات المدرب ${ins.name}`}
                 >
                   <Pencil className="w-3.5 h-3.5 ml-1" /> تعديل
@@ -160,10 +178,13 @@ export default function ManageInstructorsTab() {
         description={
           deletingInstructor ? (
             <>
-              هل أنت متأكد من رغبتك في حذف المدرب <strong className="text-foreground">{deletingInstructor.name}</strong>؟{' '}
-              لا يمكن التراجع عن هذا الإجراء وسيتم إلغاء ربطه من كافة الكورسات المرتبطة.
+              هل أنت متأكد من رغبتك في حذف المدرب{" "}
+              <strong className="text-foreground">{deletingInstructor.name}</strong>؟ لا يمكن التراجع
+              عن هذا الإجراء وسيتم إلغاء ربطه من كافة الكورسات المرتبطة.
             </>
-          ) : ''
+          ) : (
+            ""
+          )
         }
         isLoading={isDeleting}
       />
@@ -179,7 +200,7 @@ export default function ManageInstructorsTab() {
             const wasEditing = !!editingInstructor;
             setShowModal(false);
             setEditingInstructor(null);
-            notify.success(wasEditing ? 'تم تحديث بيانات المدرب بنجاح' : 'تمت إضافة المدرب بنجاح');
+            notify.success(wasEditing ? "تم تحديث بيانات المدرب بنجاح" : "تمت إضافة المدرب بنجاح");
             fetchInstructors();
           }}
         />

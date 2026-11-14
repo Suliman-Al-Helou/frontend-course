@@ -27,4 +27,3 @@ describe("courseQueries factory", () => {
     expect(landingKey.slice(0, 2)).toEqual([...listKey]);
   });
 });
-

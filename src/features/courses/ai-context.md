@@ -1,9 +1,11 @@
 # courses (Public Catalog & Overview) — Architectural Context & PRD (immutable anchor)
 
 ## Purpose & Scope
+
 This feature encapsulates the **Public Courses Domain** exclusively. It is designed for visitors, guests, and exploring students to browse courses, inspect curricula, and request enrollment.
 
 ### Explicit Domain Boundaries
+
 - ✅ **IN SCOPE (This Feature):**
   - Public Course Catalog (`/courses`) with client-side search and level filtering.
   - Landing Page Course Highlights (`CoursesSection` on `/`).
@@ -68,4 +70,3 @@ src/features/courses/
 4. **DERIVED STATE VIA `useMemo`:** Never copy query data into a `useState` for local filtering or search. Use `useMemo` over `courses`.
 5. **ZERO DUPLICATE BRIDGES:** Never keep legacy files or proxy re-exports after moving components to `src/features/courses/`.
 6. **DESIGN TOKENS ONLY:** Enforce semantic tokens (`bg-background`, `text-foreground`, `bg-muted`, `border-border`, `bg-primary`, `text-success`). Never hardcode hex values or arbitrary colors.
-

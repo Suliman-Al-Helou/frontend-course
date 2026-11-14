@@ -113,9 +113,7 @@ export default function CourseCard({
 
         {/* Price row: مجاني + حالة التسجيل */}
         <div className="flex items-center justify-between border-t border-border pt-3">
-          {course.is_public && (
-            <span className="text-sm text-success font-bold">مجاني</span>
-          )}
+          {course.is_public && <span className="text-sm text-success font-bold">مجاني</span>}
           {isEnrolled ? (
             <span className="flex items-center gap-1 text-xs font-medium text-success">
               <Check className="size-3.5" />
@@ -154,4 +152,3 @@ export default function CourseCard({
     </motion.article>
   );
 }
-

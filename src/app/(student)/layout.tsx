@@ -12,10 +12,5 @@ export default async function StudentLayout({ children }: { children: React.Reac
     redirect("/admin");
   }
 
-
-  return (
-    <StudentLayoutClient user={session.user}>
-      {children}
-    </StudentLayoutClient>
-  );
+  return <StudentLayoutClient user={session.user}>{children}</StudentLayoutClient>;
 }

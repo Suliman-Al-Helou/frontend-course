@@ -30,9 +30,7 @@ export default function LessonPage() {
   } = useQuery(courseQueries.detail(courseId));
 
   // 2. استعلام تقدم الدرس الحالي
-  const { data: progressData } = useQuery(
-    studentCourseQueries.lessonProgress(numericLessonId),
-  );
+  const { data: progressData } = useQuery(studentCourseQueries.lessonProgress(numericLessonId));
 
   // 3. استعلام مهمة الدرس الحالي إن وجدت
   const { data: task, isLoading: taskLoading } = useQuery(
@@ -40,10 +38,7 @@ export default function LessonPage() {
   );
 
   // 4. استخراج جميع الدروس وتحديد الدرس الحالي والسابق والتالي
-  const allLessons = useMemo(
-    () => course?.sections?.flatMap((s) => s.lessons) ?? [],
-    [course],
-  );
+  const allLessons = useMemo(() => course?.sections?.flatMap((s) => s.lessons) ?? [], [course]);
 
   const allLessonIds = useMemo(() => allLessons.map((l) => l.id), [allLessons]);
 
@@ -66,8 +61,7 @@ export default function LessonPage() {
   );
 
   // حالة إتمام الفيديو واجتياز المهمة للدرس الحالي
-  const isInitiallyCompleted =
-    progressData?.completed || completedIds.includes(numericLessonId);
+  const isInitiallyCompleted = progressData?.completed || completedIds.includes(numericLessonId);
 
   const [videoCompleted, setVideoCompleted] = useState<boolean>(false);
   const [taskPassed, setTaskPassed] = useState<boolean>(false);
@@ -247,7 +241,10 @@ export default function LessonPage() {
           {/* مؤشر تحميل المهمة */}
           {taskLoading && (
             <div className="flex items-center gap-3 p-4 bg-muted rounded-2xl">
-              <Loader2 className="w-5 h-5 text-primary animate-spin flex-shrink-0" aria-hidden="true" />
+              <Loader2
+                className="w-5 h-5 text-primary animate-spin flex-shrink-0"
+                aria-hidden="true"
+              />
               <p className="text-sm text-muted-foreground">جارٍ تحميل المهمة التطبيقية للدرس...</p>
             </div>
           )}

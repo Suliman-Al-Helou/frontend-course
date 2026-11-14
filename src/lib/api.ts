@@ -9,9 +9,7 @@ const isServer = typeof window === "undefined";
  * يتعامل بمرونة مع بيئتي الخادم (SSR) والمتصفح (Client)
  */
 export const api = axios.create({
-  baseURL: isServer
-    ? process.env.LARAVEL_API_URL || "http://127.0.0.1:8000/api"
-    : "/api",
+  baseURL: isServer ? process.env.LARAVEL_API_URL || "http://127.0.0.1:8000/api" : "/api",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -69,13 +67,13 @@ api.interceptors.response.use(
         const retryAfter = Number(headers["retry-after"]) || 60;
         if (!isServer) {
           notify.error(
-            `تم تجاوز الحد المسموح به من الطلبات. يرجى الانتظار ${retryAfter} ثانية قبل إعادة المحاولة.`
+            `تم تجاوز الحد المسموح به من الطلبات. يرجى الانتظار ${retryAfter} ثانية قبل إعادة المحاولة.`,
           );
 
           window.dispatchEvent(
             new CustomEvent("api:rate-limit-cooldown", {
               detail: { retryAfter },
-            })
+            }),
           );
         }
         break;
@@ -86,7 +84,7 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

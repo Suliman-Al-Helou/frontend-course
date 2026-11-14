@@ -28,8 +28,15 @@ import {
 import { extractYouTubeVideoId } from "@/lib/youtube";
 import { notify } from "@/lib/toast";
 import { uploadVideoChunk, getYouTubeAuthUrl } from "@/features/admin-courses/api";
-import { adminVideoAssetQueries, adminYouTubeQueries } from "@/features/admin-courses/queries/adminCourses.queries";
-import type { AdminVideoAsset, VideoAssetFormData, AdminZoomMeeting } from "@/features/admin-courses/types";
+import {
+  adminVideoAssetQueries,
+  adminYouTubeQueries,
+} from "@/features/admin-courses/queries/adminCourses.queries";
+import type {
+  AdminVideoAsset,
+  VideoAssetFormData,
+  AdminZoomMeeting,
+} from "@/features/admin-courses/types";
 
 interface Props {
   open: boolean;
@@ -85,7 +92,9 @@ export default function VideoAssetModal({
     if (editingAsset) {
       setMode("manual");
       setCourseId(String(editingAsset.course_id));
-      setZoomMeetingId(editingAsset.zoom_meeting_id ? String(editingAsset.zoom_meeting_id) : "none");
+      setZoomMeetingId(
+        editingAsset.zoom_meeting_id ? String(editingAsset.zoom_meeting_id) : "none",
+      );
       setTitle(editingAsset.title);
       setRawVideoInput(editingAsset.provider_video_id);
       setDurationMinutes(String(Math.round(editingAsset.duration_seconds / 60) || 0));
@@ -255,12 +264,16 @@ export default function VideoAssetModal({
         }
 
         void queryClient.invalidateQueries({ queryKey: adminVideoAssetQueries.all() });
-        notify.success("تم استلام الفيديو بنجاح، وجاري الآن رفعه ومعالجته على قناتك في YouTube بالخلفية.");
+        notify.success(
+          "تم استلام الفيديو بنجاح، وجاري الآن رفعه ومعالجته على قناتك في YouTube بالخلفية.",
+        );
         onClose();
       } catch (err: unknown) {
         if (!isCancelledRef.current) {
           const e = err as { response?: { data?: { message?: string } } };
-          setError(e.response?.data?.message || "فشل رفع الفيديو على مراحل. تحقق من الاتصال بالإنترنت.");
+          setError(
+            e.response?.data?.message || "فشل رفع الفيديو على مراحل. تحقق من الاتصال بالإنترنت.",
+          );
         }
       } finally {
         isSubmittingRef.current = false;
@@ -303,7 +316,9 @@ export default function VideoAssetModal({
   };
 
   const totalFileSizeMb = selectedFile ? (selectedFile.size / (1024 * 1024)).toFixed(1) : "0";
-  const uploadedBytes = selectedFile ? Math.min((uploadProgress / 100) * selectedFile.size, selectedFile.size) : 0;
+  const uploadedBytes = selectedFile
+    ? Math.min((uploadProgress / 100) * selectedFile.size, selectedFile.size)
+    : 0;
   const uploadedMb = (uploadedBytes / (1024 * 1024)).toFixed(1);
 
   return (
@@ -416,7 +431,8 @@ export default function VideoAssetModal({
                     قناة YouTube غير مربوطة بالمنصة بعد
                   </p>
                   <p className="text-muted-foreground leading-relaxed">
-                    يتطلب رفع ملفات الفيديو من جهازك اتصالاً بقناة YouTube معتمدة لإنشاء قوائم التشغيل التلقائية وحفظ الفيديوهات غير المدرجة (Unlisted).
+                    يتطلب رفع ملفات الفيديو من جهازك اتصالاً بقناة YouTube معتمدة لإنشاء قوائم التشغيل
+                    التلقائية وحفظ الفيديوهات غير المدرجة (Unlisted).
                   </p>
                 </div>
               </div>
@@ -456,8 +472,19 @@ export default function VideoAssetModal({
               <label htmlFor="video-modal-course" className="text-xs font-semibold text-foreground">
                 الكورس المرتبط *
               </label>
-              <Select dir="rtl" value={courseId} onValueChange={(v) => { setCourseId(v); setZoomMeetingId("none"); }} disabled={isSubmitting}>
-                <SelectTrigger id="video-modal-course" className="h-11 w-full rounded-xl border border-input bg-background">
+              <Select
+                dir="rtl"
+                value={courseId}
+                onValueChange={(v) => {
+                  setCourseId(v);
+                  setZoomMeetingId("none");
+                }}
+                disabled={isSubmitting}
+              >
+                <SelectTrigger
+                  id="video-modal-course"
+                  className="h-11 w-full rounded-xl border border-input bg-background"
+                >
                   <SelectValue placeholder="اختر الكورس..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -474,8 +501,16 @@ export default function VideoAssetModal({
               <label htmlFor="video-modal-type" className="text-xs font-semibold text-foreground">
                 تصنيف الفيديو
               </label>
-              <Select dir="rtl" value={type} onValueChange={(v: "recording" | "lesson") => setType(v)} disabled={isSubmitting}>
-                <SelectTrigger id="video-modal-type" className="h-11 w-full rounded-xl border border-input bg-background">
+              <Select
+                dir="rtl"
+                value={type}
+                onValueChange={(v: "recording" | "lesson") => setType(v)}
+                disabled={isSubmitting}
+              >
+                <SelectTrigger
+                  id="video-modal-type"
+                  className="h-11 w-full rounded-xl border border-input bg-background"
+                >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -489,12 +524,23 @@ export default function VideoAssetModal({
           {/* ربط اختياري بلقاء Zoom */}
           {filteredMeetings.length > 0 && (
             <div className="space-y-1.5 p-3 rounded-xl bg-muted/30 border border-border/60">
-              <label htmlFor="video-modal-meeting" className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+              <label
+                htmlFor="video-modal-meeting"
+                className="text-xs font-semibold text-foreground flex items-center gap-1.5"
+              >
                 <Video className="w-3.5 h-3.5 text-primary" />
                 <span>ربط بلقاء Zoom سابق (اختياري)</span>
               </label>
-              <Select dir="rtl" value={zoomMeetingId} onValueChange={setZoomMeetingId} disabled={isSubmitting}>
-                <SelectTrigger id="video-modal-meeting" className="h-11 w-full rounded-xl border border-input bg-background text-xs">
+              <Select
+                dir="rtl"
+                value={zoomMeetingId}
+                onValueChange={setZoomMeetingId}
+                disabled={isSubmitting}
+              >
+                <SelectTrigger
+                  id="video-modal-meeting"
+                  className="h-11 w-full rounded-xl border border-input bg-background text-xs"
+                >
                   <SelectValue placeholder="بدون ربط بلقاء زووم محدد" />
                 </SelectTrigger>
                 <SelectContent>
@@ -535,8 +581,8 @@ export default function VideoAssetModal({
                   isDragging
                     ? "border-primary bg-primary/10 scale-[1.01]"
                     : selectedFile
-                    ? "border-primary/50 bg-primary/5"
-                    : "border-border hover:border-primary/50 hover:bg-muted/30"
+                      ? "border-primary/50 bg-primary/5"
+                      : "border-border hover:border-primary/50 hover:bg-muted/30"
                 }`}
               >
                 <input
@@ -557,7 +603,9 @@ export default function VideoAssetModal({
                     <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-2">
                       <FileVideo className="w-6 h-6" />
                     </div>
-                    <p className="text-sm font-bold text-foreground max-w-sm truncate">{selectedFile.name}</p>
+                    <p className="text-sm font-bold text-foreground max-w-sm truncate">
+                      {selectedFile.name}
+                    </p>
                     <p className="text-xs text-muted-foreground mt-0.5 font-mono">
                       الحجم الإجمالي: {totalFileSizeMb} MB
                     </p>
@@ -616,7 +664,10 @@ export default function VideoAssetModal({
           ) : (
             /* MODE 2: MANUAL YOUTUBE LINK / ID */
             <div className="space-y-1.5">
-              <label htmlFor="video-modal-id-input" className="text-xs font-semibold text-foreground flex items-center justify-between">
+              <label
+                htmlFor="video-modal-id-input"
+                className="text-xs font-semibold text-foreground flex items-center justify-between"
+              >
                 <span className="flex items-center gap-1.5">
                   <LinkIcon className="w-3.5 h-3.5 text-muted-foreground" />
                   <span>رابط الفيديو على YouTube أو المعرف (ID) *</span>
@@ -653,8 +704,12 @@ export default function VideoAssetModal({
                     }}
                   />
                   <div className="text-xs min-w-0">
-                    <p className="font-semibold text-foreground truncate">معاينة غلاف الفيديو الجاهز</p>
-                    <p className="text-[11px] text-muted-foreground font-mono mt-0.5">ID: {extractedId}</p>
+                    <p className="font-semibold text-foreground truncate">
+                      معاينة غلاف الفيديو الجاهز
+                    </p>
+                    <p className="text-[11px] text-muted-foreground font-mono mt-0.5">
+                      ID: {extractedId}
+                    </p>
                   </div>
                 </div>
               )}
@@ -663,7 +718,10 @@ export default function VideoAssetModal({
 
           {/* عنوان الفيديو */}
           <div className="space-y-1.5">
-            <label htmlFor="video-modal-title-input" className="text-xs font-semibold text-foreground">
+            <label
+              htmlFor="video-modal-title-input"
+              className="text-xs font-semibold text-foreground"
+            >
               عنوان الفيديو أو المحاضرة *
             </label>
             <input
@@ -679,7 +737,10 @@ export default function VideoAssetModal({
           {/* المدة والوصف (في الوضع اليدوي فقط) */}
           {mode === "manual" && (
             <div className="space-y-1.5">
-              <label htmlFor="video-modal-duration" className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+              <label
+                htmlFor="video-modal-duration"
+                className="text-xs font-semibold text-foreground flex items-center gap-1.5"
+              >
                 <Clock className="w-3.5 h-3.5 text-muted-foreground" />
                 <span>مدة الفيديو التقريبية (بالدقائق)</span>
               </label>
@@ -697,7 +758,10 @@ export default function VideoAssetModal({
           )}
 
           <div className="space-y-1.5">
-            <label htmlFor="video-modal-desc" className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+            <label
+              htmlFor="video-modal-desc"
+              className="text-xs font-semibold text-foreground flex items-center gap-1.5"
+            >
               <FileText className="w-3.5 h-3.5 text-muted-foreground" />
               <span>وصف محتوى التسجيل (اختياري)</span>
             </label>
@@ -731,11 +795,17 @@ export default function VideoAssetModal({
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>{mode === "upload" ? `جارٍ الرفع (${uploadProgress}%)` : "جارٍ الحفظ..."}</span>
+                  <span>
+                    {mode === "upload" ? `جارٍ الرفع (${uploadProgress}%)` : "جارٍ الحفظ..."}
+                  </span>
                 </>
               ) : (
                 <span>
-                  {editingAsset ? "حفظ التعديلات" : mode === "upload" ? "بدء الرفع على مراحل" : "إدراج الفيديو"}
+                  {editingAsset
+                    ? "حفظ التعديلات"
+                    : mode === "upload"
+                      ? "بدء الرفع على مراحل"
+                      : "إدراج الفيديو"}
                 </span>
               )}
             </Button>

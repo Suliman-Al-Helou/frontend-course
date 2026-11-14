@@ -2,13 +2,7 @@
 
 import { useThemeStore } from "@/store/themeStore";
 import { Toaster as Sonner, toast } from "sonner";
-import {
-  CheckCircle2,
-  AlertCircle,
-  AlertTriangle,
-  Info,
-  Loader2,
-} from "lucide-react";
+import { CheckCircle2, AlertCircle, AlertTriangle, Info, Loader2 } from "lucide-react";
 import { ERROR_MESSAGES_AR, SUCCESS_MESSAGES_AR } from "@/lib/errors/messages";
 import type { ErrorCode, SuccessCode } from "@/lib/errors/codes";
 import { ApiError } from "@/lib/errors/ApiError";
@@ -24,7 +18,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
 
   return (
     <Sonner
-      theme={theme as "light" | "dark"}
+      theme={theme === "dark" ? "dark" : "light"}
       className="toaster group font-arabic"
       dir="rtl"
       position="top-center"
@@ -45,8 +39,10 @@ const Toaster = ({ ...props }: ToasterProps) => {
         classNames: {
           toast:
             "group toast group-[.toaster]:bg-card group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-2xl group-[.toaster]:rounded-2xl group-[.toaster]:p-4 group-[.toaster]:gap-3 group-[.toaster]:font-arabic group-[.toaster]:max-w-[420px] group-[.toaster]:w-full border motion-reduce:transition-none",
-          title: "group-[.toast]:font-semibold group-[.toast]:text-sm group-[.toast]:text-foreground",
-          description: "group-[.toast]:text-xs group-[.toast]:text-muted-foreground group-[.toast]:leading-relaxed break-words",
+          title:
+            "group-[.toast]:font-semibold group-[.toast]:text-sm group-[.toast]:text-foreground",
+          description:
+            "group-[.toast]:text-xs group-[.toast]:text-muted-foreground group-[.toast]:leading-relaxed break-words",
           actionButton:
             "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground group-[.toast]:hover:bg-primary-hover group-[.toast]:font-semibold group-[.toast]:rounded-xl group-[.toast]:h-9 group-[.toast]:px-3.5 group-[.toast]:text-xs transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none motion-reduce:transition-none",
           cancelButton:
@@ -59,8 +55,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
             "group-[.toaster]:border-destructive/30 group-[.toaster]:bg-card group-[.toaster]:text-foreground",
           warning:
             "group-[.toaster]:border-warning/30 group-[.toaster]:bg-card group-[.toaster]:text-foreground",
-          info:
-            "group-[.toaster]:border-primary/30 group-[.toaster]:bg-card group-[.toaster]:text-foreground",
+          info: "group-[.toaster]:border-primary/30 group-[.toaster]:bg-card group-[.toaster]:text-foreground",
         },
       }}
       {...props}
@@ -82,7 +77,9 @@ export const notify = {
 
   error: (input: ApiError | ErrorCode | string) => {
     if (typeof input === "string") {
-      const message = input in ERROR_MESSAGES_AR ? ERROR_MESSAGES_AR[input as ErrorCode] : input;
+      const message = Object.prototype.hasOwnProperty.call(ERROR_MESSAGES_AR, input)
+        ? ERROR_MESSAGES_AR[input as ErrorCode]
+        : input;
       toast.error(message);
       return;
     }

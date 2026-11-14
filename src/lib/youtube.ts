@@ -13,7 +13,7 @@ export function extractYouTubeVideoId(input: string): string {
 
   // فحص أنماط روابط يوتيوب المختلفة (watch, youtu.be, embed, shorts, v)
   const match = trimmed.match(
-    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([a-zA-Z0-9_-]{11})/
+    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([a-zA-Z0-9_-]{11})/,
   );
 
   if (match && match[1]) {

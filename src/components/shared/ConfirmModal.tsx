@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useRef, useEffect, type ReactNode } from 'react';
-import { AlertTriangle, Trash2, Info, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useRef, useEffect, type ReactNode } from "react";
+import { AlertTriangle, Trash2, Info, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export interface ConfirmModalProps {
   isOpen: boolean;
@@ -12,8 +12,8 @@ export interface ConfirmModalProps {
   description: ReactNode;
   confirmText?: string;
   cancelText?: string;
-  variant?: 'destructive' | 'warning' | 'primary';
-  icon?: 'trash' | 'warning' | 'info';
+  variant?: "destructive" | "warning" | "primary";
+  icon?: "trash" | "warning" | "info";
   isLoading?: boolean;
 }
 
@@ -28,9 +28,9 @@ export default function ConfirmModal({
   onConfirm,
   title,
   description,
-  confirmText = 'تأكيد الحذف',
-  cancelText = 'إلغاء',
-  variant = 'destructive',
+  confirmText = "تأكيد الحذف",
+  cancelText = "إلغاء",
+  variant = "destructive",
   icon,
   isLoading = false,
 }: ConfirmModalProps) {
@@ -39,15 +39,15 @@ export default function ConfirmModal({
   // إغلاق المودال عند الضغط على زر Escape في الكيبورد
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && !isLoading) {
+      if (e.key === "Escape" && !isLoading) {
         onClose();
       }
     };
     if (isOpen) {
-      window.addEventListener('keydown', handleKeyDown);
+      window.addEventListener("keydown", handleKeyDown);
     }
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen, isLoading, onClose]);
 
@@ -64,13 +64,14 @@ export default function ConfirmModal({
   };
 
   const getIcon = () => {
-    const chosenIcon = icon || (variant === 'destructive' ? 'trash' : variant === 'warning' ? 'warning' : 'info');
+    const chosenIcon =
+      icon || (variant === "destructive" ? "trash" : variant === "warning" ? "warning" : "info");
     switch (chosenIcon) {
-      case 'trash':
+      case "trash":
         return <Trash2 className="w-6 h-6" />;
-      case 'warning':
+      case "warning":
         return <AlertTriangle className="w-6 h-6" />;
-      case 'info':
+      case "info":
       default:
         return <Info className="w-6 h-6" />;
     }
@@ -78,25 +79,25 @@ export default function ConfirmModal({
 
   const getIconStyles = () => {
     switch (variant) {
-      case 'destructive':
-        return 'bg-destructive/10 text-destructive';
-      case 'warning':
-        return 'bg-amber-500/10 text-amber-600 dark:text-amber-400';
-      case 'primary':
+      case "destructive":
+        return "bg-destructive/10 text-destructive";
+      case "warning":
+        return "bg-amber-500/10 text-amber-600 dark:text-amber-400";
+      case "primary":
       default:
-        return 'bg-primary/10 text-primary';
+        return "bg-primary/10 text-primary";
     }
   };
 
   const getConfirmButtonStyles = () => {
     switch (variant) {
-      case 'destructive':
-        return 'bg-destructive hover:bg-destructive/90 text-destructive-foreground';
-      case 'warning':
-        return 'bg-amber-600 hover:bg-amber-700 text-white';
-      case 'primary':
+      case "destructive":
+        return "bg-destructive hover:bg-destructive/90 text-destructive-foreground";
+      case "warning":
+        return "bg-amber-600 hover:bg-amber-700 text-white";
+      case "primary":
       default:
-        return 'bg-primary hover:bg-primary/90 text-primary-foreground';
+        return "bg-primary hover:bg-primary/90 text-primary-foreground";
     }
   };
 
@@ -116,7 +117,9 @@ export default function ConfirmModal({
         className="bg-card border border-border rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mx-auto ${getIconStyles()}`}>
+        <div
+          className={`w-12 h-12 rounded-2xl flex items-center justify-center mx-auto ${getIconStyles()}`}
+        >
           {getIcon()}
         </div>
 
@@ -124,7 +127,10 @@ export default function ConfirmModal({
           <h3 id="confirm-dialog-title" className="text-base font-bold text-foreground">
             {title}
           </h3>
-          <div id="confirm-dialog-description" className="text-sm text-muted-foreground leading-relaxed">
+          <div
+            id="confirm-dialog-description"
+            className="text-sm text-muted-foreground leading-relaxed"
+          >
             {description}
           </div>
         </div>
@@ -146,7 +152,7 @@ export default function ConfirmModal({
             onClick={() => void handleConfirm()}
           >
             {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : getIcon()}
-            <span>{isLoading ? 'جارٍ التنفيذ...' : confirmText}</span>
+            <span>{isLoading ? "جارٍ التنفيذ..." : confirmText}</span>
           </Button>
         </div>
       </div>

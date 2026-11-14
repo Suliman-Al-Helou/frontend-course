@@ -11,11 +11,15 @@ describe("extractYouTubeVideoId", () => {
   });
 
   it("extracts ID from standard watch URL", () => {
-    expect(extractYouTubeVideoId("https://www.youtube.com/watch?v=dQw4w9WgXcQ")).toBe("dQw4w9WgXcQ");
+    expect(extractYouTubeVideoId("https://www.youtube.com/watch?v=dQw4w9WgXcQ")).toBe(
+      "dQw4w9WgXcQ",
+    );
   });
 
   it("extracts ID from watch URL with extra query parameters", () => {
-    expect(extractYouTubeVideoId("https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=42s&feature=shared")).toBe("dQw4w9WgXcQ");
+    expect(
+      extractYouTubeVideoId("https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=42s&feature=shared"),
+    ).toBe("dQw4w9WgXcQ");
   });
 
   it("extracts ID from youtu.be short URL", () => {

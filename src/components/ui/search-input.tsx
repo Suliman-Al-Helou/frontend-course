@@ -2,8 +2,7 @@ import * as React from "react";
 import { Search, X, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export interface SearchInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface SearchInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   /** Shows a spinning indicator when active searching is in flight */
   loading?: boolean;
   /** Callback fired when the clear button is clicked */

@@ -11,4 +11,3 @@ export const LEVEL_STYLES: Record<string, string> = {
   intermediate: "bg-primary/15 text-primary",
   advanced: "bg-warning/15 text-warning",
 };
-

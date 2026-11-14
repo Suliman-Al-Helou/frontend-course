@@ -88,7 +88,9 @@ export default function CourseFilterDropdown({
               }`}
             >
               <span>{course.title}</span>
-              {course.id === selectedId && <span className="text-primary text-xs font-semibold">محدد</span>}
+              {course.id === selectedId && (
+                <span className="text-primary text-xs font-semibold">محدد</span>
+              )}
             </button>
           ))}
         </div>

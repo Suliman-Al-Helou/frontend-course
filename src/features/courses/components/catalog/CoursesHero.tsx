@@ -9,11 +9,7 @@ export interface CoursesHeroProps {
   totalCourses?: number;
 }
 
-export function CoursesHero({
-  search,
-  onSearch,
-  totalCourses = 60,
-}: CoursesHeroProps) {
+export function CoursesHero({ search, onSearch, totalCourses = 60 }: CoursesHeroProps) {
   const shouldReduceMotion = useReducedMotion();
 
   return (
@@ -24,16 +20,16 @@ export function CoursesHero({
         transition={{ duration: 0.5 }}
         className="max-w-4xl mx-auto"
       >
-        <div className="inline-flex items-center gap-2 bg-white/10 text-white rounded-full px-4 py-1.5 text-sm font-medium mb-6 backdrop-blur-xs">
+        <div className="inline-flex items-center gap-2 bg-white/10 text-main rounded-full px-4 py-1.5 text-sm font-medium mb-6 backdrop-blur-xs">
           <BookOpen className="w-4 h-4" />
           جميع الكورسات
         </div>
 
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 tracking-tight">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-main mb-4 tracking-tight">
           اختر مسارك التقني
         </h1>
 
-        <p className="text-white/80 text-lg mb-10 max-w-xl mx-auto">
+        <p className="text-main/80 text-lg mb-10 max-w-xl mx-auto">
           +{totalCourses} كورس تقني عربي لكل المستويات
         </p>
 
@@ -66,4 +62,3 @@ export function CoursesHero({
     </header>
   );
 }
-

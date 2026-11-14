@@ -15,8 +15,7 @@ export default function CoursesSection() {
   const { data: enrolledIds = new Set<number>() } = useQuery({
     ...studentCourseQueries.enrolled(),
     enabled: isAuthenticated,
-    select: (list) =>
-      new Set(list.filter((e) => e.status === "approved").map((e) => e.course?.id)),
+    select: (list) => new Set(list.filter((e) => e.status === "approved").map((e) => e.course?.id)),
   });
 
   return (

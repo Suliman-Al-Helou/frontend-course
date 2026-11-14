@@ -11,7 +11,8 @@ const badgeVariants = cva(
       variant: {
         default: "border border-primary/20 bg-primary/10 text-primary",
         primary: "border border-primary/20 bg-primary/10 text-primary",
-        success: "border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+        success:
+          "border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
         warning: "border border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400",
         destructive: "border border-destructive/20 bg-destructive/10 text-destructive",
         info: "border border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400",
@@ -20,7 +21,8 @@ const badgeVariants = cva(
         outline: "border border-border bg-transparent text-foreground",
         // Backward compatibility
         upcoming: "border border-primary/20 bg-primary/15 text-primary",
-        attended: "border border-emerald-500/20 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
+        attended:
+          "border border-emerald-500/20 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
         missed: "border border-destructive/20 bg-destructive/15 text-destructive",
       },
       shape: {
@@ -42,8 +44,7 @@ const badgeVariants = cva(
 );
 
 export interface BadgeProps
-  extends React.HTMLAttributes<HTMLSpanElement>,
-    VariantProps<typeof badgeVariants> {}
+  extends React.HTMLAttributes<HTMLSpanElement>, VariantProps<typeof badgeVariants> {}
 
 function Badge({ className, variant, shape, size, ...props }: BadgeProps) {
   return <span className={cn(badgeVariants({ variant, shape, size }), className)} {...props} />;

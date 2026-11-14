@@ -200,11 +200,17 @@ export default function ZoomMeetingModal({
 
           {/* الكورس المرتبط */}
           <div className="space-y-1.5">
-            <label htmlFor="zoom-modal-course" className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+            <label
+              htmlFor="zoom-modal-course"
+              className="text-xs font-semibold text-foreground flex items-center gap-1.5"
+            >
               <span>الكورس المرتبط *</span>
             </label>
             <Select dir="rtl" value={courseId} onValueChange={setCourseId} disabled={isSubmitting}>
-              <SelectTrigger id="zoom-modal-course" className="h-10 w-full rounded-xl border border-input bg-background">
+              <SelectTrigger
+                id="zoom-modal-course"
+                className="h-10 w-full rounded-xl border border-input bg-background"
+              >
                 <SelectValue placeholder="اختر الكورس..." />
               </SelectTrigger>
               <SelectContent>
@@ -219,7 +225,10 @@ export default function ZoomMeetingModal({
 
           {/* عنوان اللقاء */}
           <div className="space-y-1.5">
-            <label htmlFor="zoom-modal-title-input" className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+            <label
+              htmlFor="zoom-modal-title-input"
+              className="text-xs font-semibold text-foreground flex items-center gap-1.5"
+            >
               <span>عنوان اللقاء *</span>
             </label>
             <input
@@ -234,7 +243,10 @@ export default function ZoomMeetingModal({
 
           {/* رابط Zoom */}
           <div className="space-y-1.5">
-            <label htmlFor="zoom-modal-link-input" className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+            <label
+              htmlFor="zoom-modal-link-input"
+              className="text-xs font-semibold text-foreground flex items-center gap-1.5"
+            >
               <LinkIcon className="w-3.5 h-3.5 text-muted-foreground" />
               <span>رابط لقاء Zoom *</span>
             </label>
@@ -252,7 +264,10 @@ export default function ZoomMeetingModal({
           {/* الموعد والمدة */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label htmlFor="zoom-modal-starts-at" className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+              <label
+                htmlFor="zoom-modal-starts-at"
+                className="text-xs font-semibold text-foreground flex items-center gap-1.5"
+              >
                 <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
                 <span>التاريخ والوقت *</span>
               </label>
@@ -269,7 +284,10 @@ export default function ZoomMeetingModal({
             </div>
 
             <div className="space-y-1.5">
-              <label htmlFor="zoom-modal-duration" className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+              <label
+                htmlFor="zoom-modal-duration"
+                className="text-xs font-semibold text-foreground flex items-center gap-1.5"
+              >
                 <Clock className="w-3.5 h-3.5 text-muted-foreground" />
                 <span>المدة المتوقعة (بالدقائق)</span>
               </label>
@@ -288,7 +306,10 @@ export default function ZoomMeetingModal({
 
           {/* وصف اللقاء */}
           <div className="space-y-1.5">
-            <label htmlFor="zoom-modal-desc" className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+            <label
+              htmlFor="zoom-modal-desc"
+              className="text-xs font-semibold text-foreground flex items-center gap-1.5"
+            >
               <FileText className="w-3.5 h-3.5 text-muted-foreground" />
               <span>وصف أو ملاحظات (اختياري)</span>
             </label>
@@ -334,4 +355,3 @@ export default function ZoomMeetingModal({
     </div>
   );
 }
-

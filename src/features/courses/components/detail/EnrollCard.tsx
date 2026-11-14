@@ -3,13 +3,7 @@
 import { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  Clock,
-  CheckCircle,
-  BookOpen,
-  Loader2,
-  Play,
-} from "lucide-react";
+import { Clock, CheckCircle, BookOpen, Loader2, Play } from "lucide-react";
 import type { CourseDetail } from "../../index";
 import { useAuthStore } from "@/store/authStore";
 import { useQueryClient } from "@tanstack/react-query";
@@ -136,9 +130,7 @@ export function EnrollCard({
             <>
               <div className="flex items-center gap-2 mb-4">
                 <CheckCircle className="w-5 h-5 text-success flex-shrink-0" />
-                <span className="text-sm text-success font-medium">
-                  كورس مجاني — متاح للمشاهدة
-                </span>
+                <span className="text-sm text-success font-medium">كورس مجاني — متاح للمشاهدة</span>
               </div>
               {hasLessons ? (
                 <Link
@@ -216,9 +208,7 @@ export function EnrollCard({
                   </button>
                   <div className="flex items-center gap-2 mb-2">
                     <CheckCircle className="w-5 h-5 text-success flex-shrink-0" />
-                    <span className="text-sm text-success font-medium">
-                      ضمان استرداد ٧ أيام
-                    </span>
+                    <span className="text-sm text-success font-medium">ضمان استرداد ٧ أيام</span>
                   </div>
                   <p className="text-center text-xs text-muted-foreground">
                     الوصول الكامل بعد موافقة الإدارة والدفع
@@ -232,4 +222,3 @@ export function EnrollCard({
     </>
   );
 }
-

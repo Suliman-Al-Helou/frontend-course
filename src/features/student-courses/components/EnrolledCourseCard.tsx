@@ -83,4 +83,3 @@ export function EnrolledCourseCard({ enrollment }: EnrolledCourseCardProps) {
     </div>
   );
 }
-

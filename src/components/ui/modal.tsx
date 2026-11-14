@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { X } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import * as React from "react";
+import { X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface ModalContextValue {
   onClose: () => void;
@@ -16,21 +16,21 @@ const ModalContext = React.createContext<ModalContextValue | null>(null);
 function useModalContext() {
   const context = React.useContext(ModalContext);
   if (!context) {
-    throw new Error('Modal compound components must be rendered within a Modal component');
+    throw new Error("Modal compound components must be rendered within a Modal component");
   }
   return context;
 }
 
-export type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full';
+export type ModalSize = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full";
 
 const sizeClasses: Record<ModalSize, string> = {
-  sm: 'max-w-sm',
-  md: 'max-w-md',
-  lg: 'max-w-lg',
-  xl: 'max-w-xl',
-  '2xl': 'max-w-2xl',
-  '3xl': 'max-w-3xl',
-  full: 'max-w-5xl',
+  sm: "max-w-sm",
+  md: "max-w-md",
+  lg: "max-w-lg",
+  xl: "max-w-xl",
+  "2xl": "max-w-2xl",
+  "3xl": "max-w-3xl",
+  full: "max-w-5xl",
 };
 
 export interface ModalProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -44,7 +44,7 @@ export interface ModalProps extends React.HTMLAttributes<HTMLDivElement> {
 function ModalRoot({
   isOpen,
   onClose,
-  size = 'md',
+  size = "md",
   preventClose = false,
   className,
   children,
@@ -56,15 +56,15 @@ function ModalRoot({
   // إغلاق النافذة بزر Escape في لوحة المفاتيح
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && !preventClose) {
+      if (e.key === "Escape" && !preventClose) {
         onClose();
       }
     };
     if (isOpen) {
-      window.addEventListener('keydown', handleKeyDown);
+      window.addEventListener("keydown", handleKeyDown);
     }
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen, preventClose, onClose]);
 
@@ -85,7 +85,7 @@ function ModalRoot({
       >
         <div
           className={cn(
-            'bg-card border border-border rounded-2xl shadow-2xl w-full max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none',
+            "bg-card border border-border rounded-2xl shadow-2xl w-full max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none",
             sizeClasses[size],
             className,
           )}
@@ -99,7 +99,7 @@ function ModalRoot({
   );
 }
 
-export interface ModalHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
+export interface ModalHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   title?: React.ReactNode;
   description?: React.ReactNode;
   icon?: React.ReactNode;
@@ -120,7 +120,7 @@ function ModalHeader({
   return (
     <div
       className={cn(
-        'flex items-center justify-between p-5 border-b border-border shrink-0 bg-muted/10',
+        "flex items-center justify-between p-5 border-b border-border shrink-0 bg-muted/10",
         className,
       )}
       {...props}
@@ -161,7 +161,7 @@ export interface ModalBodyProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 function ModalBody({ className, children, ...props }: ModalBodyProps) {
   return (
-    <div className={cn('p-5 sm:p-6 overflow-y-auto flex-1 space-y-4', className)} {...props}>
+    <div className={cn("p-5 sm:p-6 overflow-y-auto flex-1 space-y-4", className)} {...props}>
       {children}
     </div>
   );
@@ -173,7 +173,7 @@ function ModalFooter({ className, children, ...props }: ModalFooterProps) {
   return (
     <div
       className={cn(
-        'flex items-center justify-end gap-3 p-4 sm:p-5 border-t border-border bg-card shrink-0',
+        "flex items-center justify-end gap-3 p-4 sm:p-5 border-t border-border bg-card shrink-0",
         className,
       )}
       {...props}
