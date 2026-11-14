@@ -173,14 +173,11 @@ export default function CourseFormModal({ course, isOpen, onClose }: Props) {
       aria-busy={isSaving}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs"
       dir="rtl"
-      onClick={() => {
-        if (!isSaving) onClose();
+      onClick={(e) => {
+        if (e.target === e.currentTarget && !isSaving) onClose();
       }}
     >
-      <div
-        className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none">
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-border shrink-0 bg-muted/10">
           <div>

@@ -79,8 +79,8 @@ function ModalRoot({
         aria-describedby={descriptionId}
         className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
         dir="rtl"
-        onClick={() => {
-          if (!preventClose) onClose();
+        onClick={(e) => {
+          if (e.target === e.currentTarget && !preventClose) onClose();
         }}
       >
         <div
@@ -89,7 +89,6 @@ function ModalRoot({
             sizeClasses[size],
             className,
           )}
-          onClick={(e) => e.stopPropagation()}
           {...props}
         >
           {children}

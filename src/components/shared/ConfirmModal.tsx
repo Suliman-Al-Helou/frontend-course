@@ -109,14 +109,11 @@ export default function ConfirmModal({
       aria-describedby="confirm-dialog-description"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
       dir="rtl"
-      onClick={() => {
-        if (!isLoading) onClose();
+      onClick={(e) => {
+        if (e.target === e.currentTarget && !isLoading) onClose();
       }}
     >
-      <div
-        className="bg-card border border-border rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="bg-card border border-border rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none">
         <div
           className={`w-12 h-12 rounded-2xl flex items-center justify-center mx-auto ${getIconStyles()}`}
         >

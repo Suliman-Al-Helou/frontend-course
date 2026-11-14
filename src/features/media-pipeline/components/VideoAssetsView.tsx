@@ -269,12 +269,11 @@ export default function VideoAssetsView({
           role="dialog"
           aria-modal="true"
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm"
-          onClick={() => setPreviewVideo(null)}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setPreviewVideo(null);
+          }}
         >
-          <div
-            className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden animate-in fade-in-0 zoom-in-95"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden animate-in fade-in-0 zoom-in-95">
             <div className="px-5 py-3 border-b border-border flex items-center justify-between bg-muted/20">
               <h3 className="text-sm font-bold text-foreground truncate">{previewVideo.title}</h3>
               <button

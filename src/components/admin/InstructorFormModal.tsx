@@ -137,6 +137,9 @@ export default function InstructorFormModal({ instructor, onClose, onSuccess }: 
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="instructor-form-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
       dir="rtl"
       onClick={(e) => {
@@ -147,7 +150,7 @@ export default function InstructorFormModal({ instructor, onClose, onSuccess }: 
     >
       <div className="bg-card rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-5 border-b border-border sticky top-0 bg-card z-10">
-          <h2 className="font-bold text-foreground text-base">
+          <h2 id="instructor-form-title" className="font-bold text-foreground text-base">
             {isEdit ? "تعديل المدرب" : "إضافة مدرب جديد"}
           </h2>
           <button

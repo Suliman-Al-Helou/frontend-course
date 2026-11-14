@@ -34,7 +34,7 @@ export default function ManageInstructorsTab() {
   };
 
   useEffect(() => {
-    fetchInstructors();
+    void fetchInstructors();
   }, []);
 
   const confirmDelete = async () => {
@@ -45,7 +45,7 @@ export default function ManageInstructorsTab() {
       await api.delete(`/admin/instructors/${deletingInstructor.id}`);
       notify.success(`تم حذف المدرب "${deletingInstructor.name}" بنجاح`);
       setDeletingInstructor(null);
-      fetchInstructors();
+      await fetchInstructors();
     } catch (err: any) {
       console.error(err);
       const msg = err?.response?.data?.message || "تعذر حذف المدرب، يرجى المحاولة لاحقاً";
@@ -191,7 +191,7 @@ export default function ManageInstructorsTab() {
             setShowModal(false);
             setEditingInstructor(null);
             notify.success(wasEditing ? "تم تحديث بيانات المدرب بنجاح" : "تمت إضافة المدرب بنجاح");
-            fetchInstructors();
+            void fetchInstructors();
           }}
         />
       )}

@@ -47,7 +47,7 @@ export default function ManageFaqTab() {
   };
 
   useEffect(() => {
-    fetchFaqs();
+    void fetchFaqs();
   }, []);
 
   const handleAdd = async () => {
@@ -59,7 +59,7 @@ export default function ManageFaqTab() {
       notify.success("تمت إضافة السؤال بنجاح");
       setNewQ("");
       setNewA("");
-      fetchFaqs();
+      await fetchFaqs();
     } catch (err: any) {
       console.error(err);
       const msg = err?.response?.data?.message || "تعذر إضافة السؤال، يرجى المحاولة مجدداً";
@@ -77,7 +77,7 @@ export default function ManageFaqTab() {
     try {
       await api.put(`/admin/faqs/${faq.id}`, { question: faq.question, answer: faq.answer });
       notify.success("تم حفظ تعديلات السؤال بنجاح");
-      fetchFaqs();
+      await fetchFaqs();
     } catch (err: any) {
       console.error(err);
       const msg = err?.response?.data?.message || "تعذر حفظ التعديلات، يرجى المحاولة مجدداً";
@@ -96,7 +96,7 @@ export default function ManageFaqTab() {
       await api.delete(`/admin/faqs/${deletingFaq.id}`);
       notify.success("تم حذف السؤال بنجاح");
       setDeletingFaq(null);
-      fetchFaqs();
+      await fetchFaqs();
     } catch (err: any) {
       console.error(err);
       const msg = err?.response?.data?.message || "تعذر حذف السؤال، يرجى المحاولة لاحقاً";
