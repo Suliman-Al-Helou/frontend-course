@@ -125,10 +125,7 @@ export default function StudentDetailsModal({ student, isOpen, onClose }: Props)
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-border shrink-0 bg-muted/20">
           <div className="flex items-center gap-3">
-            <Avatar
-              name={student.name || student.email}
-              size="lg"
-            />
+            <Avatar name={student.name || student.email} size="lg" />
             <div>
               <h3 id="student-details-title" className="font-bold text-foreground text-base">
                 {student.name || "طالب بدون اسم"}

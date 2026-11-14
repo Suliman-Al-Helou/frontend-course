@@ -112,10 +112,7 @@ export const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
             {initials}
           </span>
         ) : (
-          <User
-            aria-hidden="true"
-            className="w-1/2 h-1/2 text-primary/70 shrink-0"
-          />
+          <User aria-hidden="true" className="w-1/2 h-1/2 text-primary/70 shrink-0" />
         )}
       </div>
     );

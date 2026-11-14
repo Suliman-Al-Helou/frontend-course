@@ -40,12 +40,7 @@ export default function HomeHeader() {
     <Card className="p-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4 min-w-0">
-          <Avatar
-            name={displayName}
-            size="lg"
-            bordered
-            className="shrink-0"
-          />
+          <Avatar name={displayName} size="lg" bordered className="shrink-0" />
           <div className="min-w-0">
             <p className="text-xs font-semibold text-primary">{greeting}، مرحباً بك 👋</p>
             <h1 className="text-xl sm:text-2xl font-semibold text-foreground truncate mt-0.5">
@@ -54,7 +49,7 @@ export default function HomeHeader() {
             {user?.email && (
               <p
                 dir="ltr"
-                className="text-xs text-muted-foreground mt-0.5 truncate text-end sm:text-start"
+                className="text-xs text-muted-foreground mt-0.5 truncate text-end sm:text-end"
               >
                 {user.email}
               </p>

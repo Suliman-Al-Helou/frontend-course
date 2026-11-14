@@ -1144,6 +1144,7 @@ const page = (g) =>
     .replace(/__FLOORPLAN_LOGO__/g, () => dataUri("logo.png"))
     .replace(/__FLOORPLAN_FAVICON__/g, () => dataUri("favicon.png"))
     .replace("<!--__UI_EXTENSIONS__-->", () => uiScripts)
+    .replace("/*__FLOORPLAN_DATA__*/ null", () => scriptJson(g))
     .replace("/*__FLOORPLAN_DATA__*/null", () => scriptJson(g));
 const uiDir = path.join(SKILL_DIR, "assets", "ui");
 const uiScripts = fs.existsSync(uiDir)

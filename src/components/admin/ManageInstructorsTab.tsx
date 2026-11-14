@@ -96,12 +96,7 @@ export default function ManageInstructorsTab() {
             >
               <div>
                 <div className="flex items-start gap-3 mb-3">
-                  <Avatar
-                    src={ins.avatar_url}
-                    name={ins.name}
-                    size="lg"
-                    shape="square"
-                  />
+                  <Avatar src={ins.avatar_url} name={ins.name} size="lg" shape="square" />
                   <div className="flex-1 min-w-0">
                     <h3 className="font-bold text-foreground text-sm">{ins.name}</h3>
                     <p className="text-xs text-muted-foreground mt-0.5 truncate">{ins.title}</p>

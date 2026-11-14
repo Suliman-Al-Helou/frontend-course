@@ -66,7 +66,7 @@ export default function FeaturesSection() {
     <section
       id="methodology"
       aria-labelledby="methodology-title"
-      className="relative scroll-mt-20 overflow-hidden border-y border-border bg-background py-20 md:py-24"
+      className="relative scroll-mt-20 overflow-hidden bg-background py-20 md:py-24"
     >
       {/* خلفية التوهجات ونقاط الشبكة للوضعين الداكن والفاتح */}
       <BackgroundDecorations />

@@ -167,7 +167,7 @@ export default function StudentsManagementTab() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onClear={() => setSearch("")}
-            className="flex-1 text-sm border-input"
+            className=" text-sm border-input"
           />
 
           <div className="flex items-center gap-1.5 bg-muted/40 p-1 rounded-xl border border-border flex-wrap">
@@ -270,10 +270,7 @@ export default function StudentsManagementTab() {
                     <tr key={student.id} className="hover:bg-muted/30 transition-colors">
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-3">
-                          <Avatar
-                            name={student.name || student.email}
-                            size="sm"
-                          />
+                          <Avatar name={student.name || student.email} size="sm" />
                           <div>
                             <span className="font-semibold text-foreground text-sm block">
                               {student.name || "—"}

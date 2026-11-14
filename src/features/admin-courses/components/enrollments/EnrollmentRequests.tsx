@@ -160,11 +160,7 @@ export default function EnrollmentRequests() {
               >
                 {/* User info */}
                 <div className="flex items-start gap-3.5 min-w-0">
-                  <Avatar
-                    name={studentName}
-                    size="md"
-                    shape="square"
-                  />
+                  <Avatar name={studentName} size="md" shape="square" />
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className="font-semibold text-foreground text-sm truncate">
