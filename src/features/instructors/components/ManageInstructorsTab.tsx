@@ -8,7 +8,6 @@ import {
   Trash2,
   Users,
   Award,
-  BookOpen,
   Twitter,
   Linkedin,
   Youtube,

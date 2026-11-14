@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { X, Plus, Trash2, Upload, Loader2, BookOpen } from "lucide-react";
+import { X, Plus, Upload, Loader2, BookOpen } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { adminCourseQueries } from "@/features/admin-courses";
 import { Button } from "@/components/ui/button";

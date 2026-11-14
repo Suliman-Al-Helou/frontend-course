@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect, useId } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { X, Layers, Sparkles, DollarSign } from "lucide-react";
 import { notify } from "@/components/ui/sonner";
-import { useInstructorsStore } from "@/store/instructorsStore";
+import { instructorQueries } from "@/features/instructors";
 import {
   useCreateCourseMutation,
   useUpdateCourseMutation,
@@ -40,7 +41,9 @@ export default function CourseFormModal({ course, isOpen, onClose }: Props) {
   const isEdit = !!course;
   const isSubmittingRef = useRef(false);
 
-  const { instructors, loading: loadingInstructors, fetchInstructors } = useInstructorsStore();
+  const { data: instructors = [], isLoading: loadingInstructors } = useQuery(
+    instructorQueries.list(),
+  );
   const createMutation = useCreateCourseMutation();
   const updateMutation = useUpdateCourseMutation();
 
@@ -71,12 +74,6 @@ export default function CourseFormModal({ course, isOpen, onClose }: Props) {
   const [generalError, setGeneralError] = useState("");
 
   const isSaving = createMutation.isPending || updateMutation.isPending;
-
-  useEffect(() => {
-    if (instructors.length === 0) {
-      void fetchInstructors();
-    }
-  }, [fetchInstructors, instructors.length]);
 
   // إغلاق المودال بزر Escape في لوحة المفاتيح
   useEffect(() => {

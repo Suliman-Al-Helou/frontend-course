@@ -39,10 +39,8 @@ export interface InstructorCourseItem {
   price?: number;
 }
 
-export interface InstructorDetail extends Instructor {
-  courses_list?: InstructorCourseItem[];
-  courses_details?: InstructorCourseItem[];
-  courses?: any;
+export interface InstructorDetail extends Omit<Instructor, "courses"> {
+  courses?: InstructorCourseItem[];
 }
 
 export interface InstructorFormData {

@@ -1,26 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Star, Users, BookOpen, Award, MessageSquare } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { Avatar } from "@/components/ui/avatar";
-import api from "@/lib/api";
-
-interface Instructor {
-  id: number;
-  name: string;
-  title?: string;
-  avatar_url?: string;
-  specializations?: string;
-  years_experience?: number;
-  rating?: number;
-  total_reviews?: number;
-  courses_count?: number;
-  students_count?: number;
-}
+import { instructorQueries, type Instructor } from "@/features/instructors";
 
 function SkeletonCard() {
   return (
@@ -143,16 +130,7 @@ function InstructorCard({ ins, index }: { ins: Instructor; index: number }) {
 }
 
 export default function InstructorsPage() {
-  const [instructors, setInstructors] = useState<Instructor[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    api
-      .get("/instructors")
-      .then((res) => setInstructors(res.data.data ?? res.data))
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
+  const { data: instructors = [], isLoading: loading } = useQuery(instructorQueries.list());
 
   return (
     <div className="min-h-screen bg-background font-arabic" dir="rtl">

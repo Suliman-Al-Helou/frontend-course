@@ -30,11 +30,10 @@ import {
 } from "@/features/admin-courses";
 import { StudentsManagementTab, adminUserQueries } from "@/features/admin-users";
 import { MediaPipelineTab } from "@/features/media-pipeline";
-import ManageInstructorsTab from "@/components/admin/ManageInstructorsTab";
+import { ManageInstructorsTab } from "@/features/instructors";
 import ManageFaqTab from "@/components/admin/ManageFaqTab";
 import type { Enrollment, AdminUser, AdminStats } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useInstructorsStore } from "@/store/instructorsStore";
 
 const TABS = [
   { id: "overview", label: "نظرة عامة", icon: LayoutDashboard },
@@ -325,12 +324,6 @@ function AdminContent() {
 }
 
 export default function AdminPage() {
-  // داخل AdminContent:
-  const fetchInstructors = useInstructorsStore((state) => state.fetchInstructors);
-
-  useEffect(() => {
-    fetchInstructors();
-  }, [fetchInstructors]);
   return (
     <Suspense
       fallback={

@@ -3,12 +3,14 @@
 ## 1. Domain Scope & Boundaries
 
 ### In-Scope:
+
 - **Faculty Directory & Profiles**: Public listing of instructors and dedicated instructor detail profiles (`/instructors` and `/instructors/[id]`).
 - **Instructor CRUD & Administration**: Administrative management of faculty credentials, avatars, bios, and social links.
 - **Relational Course Assignment**: Assigning course IDs to instructors and selecting instructors in course forms via memory cache sharing (`instructorQueries.list()`).
 - **Zustand Elimination**: Complete eradication of client-side ad-hoc stores (`instructorsStore.ts`) in favor of TanStack Query v5 declarative queries.
 
 ### Out-of-Scope:
+
 - **Course Content & Syllabus Editing**: Handled inside `src/features/admin-courses/`.
 - **Student Enrollments & Attendance**: Handled inside `src/features/admin-users/` and `src/features/media-pipeline/`.
 
@@ -16,14 +18,14 @@
 
 ## 2. Backend Contracts & Endpoints
 
-| Method | Endpoint | Description | Payload / Response |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/instructors` | Public listing of instructors | `InstructorWithCoursesCount[]` |
-| `GET` | `/instructors/:id` | Single instructor detailed dossier | `InstructorDetail` |
-| `GET` | `/admin/instructors` | Administrative list of instructors | `Instructor[]` |
-| `POST` | `/admin/instructors` | Create instructor | `InstructorFormData` -> `Instructor` |
-| `PUT` | `/admin/instructors/:id` | Update instructor | `Partial<InstructorFormData>` -> `Instructor` |
-| `DELETE`| `/admin/instructors/:id` | Delete instructor | `void` |
+| Method   | Endpoint                 | Description                        | Payload / Response                            |
+| :------- | :----------------------- | :--------------------------------- | :-------------------------------------------- |
+| `GET`    | `/instructors`           | Public listing of instructors      | `InstructorWithCoursesCount[]`                |
+| `GET`    | `/instructors/:id`       | Single instructor detailed dossier | `InstructorDetail`                            |
+| `GET`    | `/admin/instructors`     | Administrative list of instructors | `Instructor[]`                                |
+| `POST`   | `/admin/instructors`     | Create instructor                  | `InstructorFormData` -> `Instructor`          |
+| `PUT`    | `/admin/instructors/:id` | Update instructor                  | `Partial<InstructorFormData>` -> `Instructor` |
+| `DELETE` | `/admin/instructors/:id` | Delete instructor                  | `void`                                        |
 
 ---
 
