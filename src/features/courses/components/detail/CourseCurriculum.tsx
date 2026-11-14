@@ -26,25 +26,36 @@ export function CourseCurriculum({ sections, courseId, enrolled }: CourseCurricu
     <section>
       <h2 className="text-xl font-bold text-foreground mb-5">منهج الكورس</h2>
       <div className="space-y-3">
-        {sections.map((section, i) => (
-          <div key={section.id ?? i} className="border border-border rounded-xl overflow-hidden">
-            <button
-              id={`section-btn-${section.id ?? i}`}
-              onClick={() => toggle(i)}
-              aria-expanded={Boolean(openSections[i])}
-              aria-controls={`section-panel-${section.id ?? i}`}
-              className="w-full flex items-center justify-between p-4 bg-muted/50 hover:bg-muted transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none text-start"
-            >
-              <div className="flex items-center gap-3">
-                <span className="font-semibold text-foreground">{section.title}</span>
-                <span className="text-xs text-muted-foreground">{section.lessons.length} دروس</span>
-              </div>
-              {openSections[i] ? (
-                <ChevronUp className="w-4 h-4 text-muted-foreground" />
-              ) : (
-                <ChevronDown className="w-4 h-4 text-muted-foreground" />
-              )}
-            </button>
+        {sections.map((section, i) => {
+          const lessonCount = section.lessons?.length || 0;
+          const lessonCountLabel =
+            lessonCount === 1
+              ? "درس واحد"
+              : lessonCount === 2
+                ? "درسان"
+                : lessonCount <= 10
+                  ? `${lessonCount} دروس`
+                  : `${lessonCount} درساً`;
+
+          return (
+            <div key={section.id ?? i} className="border border-border rounded-xl overflow-hidden">
+              <button
+                id={`section-btn-${section.id ?? i}`}
+                onClick={() => toggle(i)}
+                aria-expanded={Boolean(openSections[i])}
+                aria-controls={`section-panel-${section.id ?? i}`}
+                className="w-full flex items-center justify-between p-4 bg-muted/50 hover:bg-muted transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none text-start"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="font-semibold text-foreground">{section.title}</span>
+                  <span className="text-xs text-muted-foreground">{lessonCountLabel}</span>
+                </div>
+                {openSections[i] ? (
+                  <ChevronUp className="w-4 h-4 text-muted-foreground" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                )}
+              </button>
 
             {openSections[i] && (
               <div
@@ -105,7 +116,8 @@ export function CourseCurriculum({ sections, courseId, enrolled }: CourseCurricu
               </div>
             )}
           </div>
-        ))}
+        );
+      })}
       </div>
     </section>
   );

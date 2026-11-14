@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Clock, Users, Star, BookOpen, ArrowLeft } from "lucide-react";
+import { Clock, Users, Star, BookOpen, ArrowRight } from "lucide-react";
 import type { CourseDetail } from "../../index";
 import { EnrollCard } from "./EnrollCard";
 
@@ -26,6 +26,33 @@ export function CourseHero({
 }: CourseHeroProps) {
   const durationHours = Math.round(Number(course.total_duration || 0) / 60);
 
+  const studentsLabel =
+    course.students === 1
+      ? "طالب واحد"
+      : course.students === 2
+        ? "طالبان"
+        : course.students <= 10
+          ? `${course.students} طلاب`
+          : `${course.students} طالباً`;
+
+  const hoursLabel =
+    durationHours === 1
+      ? "ساعة واحدة"
+      : durationHours === 2
+        ? "ساعتان"
+        : durationHours <= 10
+          ? `${durationHours} ساعات`
+          : `${durationHours} ساعة`;
+
+  const lessonsLabel =
+    course.lessons === 1
+      ? "درس واحد"
+      : course.lessons === 2
+        ? "درسان"
+        : course.lessons <= 10
+          ? `${course.lessons} دروس`
+          : `${course.lessons} درساً`;
+
   return (
     <header className="bg-gradient-to-br from-blue-deep to-blue-mid pt-24 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,7 +60,8 @@ export function CourseHero({
           href="/courses"
           className="inline-flex items-center gap-1.5 text-white/70 hover:text-white text-sm mb-6 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-lg p-1 -m-1"
         >
-          <ArrowLeft className="w-4 h-4" /> الكورسات
+          <ArrowRight className="w-4 h-4 rtl:rotate-0" aria-hidden="true" />
+          <span>الكورسات</span>
         </Link>
 
         <div className="grid lg:grid-cols-3 gap-8 items-start">
@@ -55,15 +83,15 @@ export function CourseHero({
               </span>
               <span className="flex items-center gap-1.5">
                 <Users className="w-4 h-4" />
-                {course.students} طالب
+                {studentsLabel}
               </span>
               <span className="flex items-center gap-1.5">
                 <Clock className="w-4 h-4" />
-                {durationHours} ساعة
+                {hoursLabel}
               </span>
               <span className="flex items-center gap-1.5">
                 <BookOpen className="w-4 h-4" />
-                {course.lessons} درس
+                {lessonsLabel}
               </span>
             </div>
 

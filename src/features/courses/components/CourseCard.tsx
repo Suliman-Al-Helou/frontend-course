@@ -29,6 +29,26 @@ export default function CourseCard({
   const shouldReduceMotion = useReducedMotion();
   const hours = Math.round((course.total_duration || 0) / 60);
 
+  const hoursLabel =
+    hours === 1
+      ? "ساعة واحدة"
+      : hours === 2
+        ? "ساعتان"
+        : hours <= 10
+          ? `${hours} ساعات`
+          : `${hours} ساعة`;
+
+  const studentsLabel =
+    typeof course.students_count === "number"
+      ? course.students_count === 1
+        ? "طالب واحد"
+        : course.students_count === 2
+          ? "طالبان"
+          : course.students_count <= 10
+            ? `${course.students_count} طلاب`
+            : `${course.students_count} طالباً`
+      : null;
+
   const rawInstructor = course.instructor as unknown;
   const instructorName =
     typeof rawInstructor === "string"
@@ -100,13 +120,15 @@ export default function CourseCard({
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <StarRating rating={course.rating ?? 0} />
           <span className="flex items-center gap-3">
+            {studentsLabel && (
+              <span className="flex items-center gap-1">
+                <Users className="size-3.5" aria-hidden="true" />
+                <span>{studentsLabel}</span>
+              </span>
+            )}
             <span className="flex items-center gap-1">
-              <Users className="size-3.5" />
-              {course.students_count}
-            </span>
-            <span className="flex items-center gap-1">
-              <Clock className="size-3.5" />
-              {hours} ساعة
+              <Clock className="size-3.5" aria-hidden="true" />
+              <span>{hoursLabel}</span>
             </span>
           </span>
         </div>
