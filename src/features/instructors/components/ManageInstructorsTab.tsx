@@ -14,6 +14,8 @@ import {
   Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
 import { notify } from "@/components/ui/sonner";
 import ConfirmModal from "@/components/shared/ConfirmModal";
@@ -75,7 +77,7 @@ export default function ManageInstructorsTab() {
   return (
     <div className="space-y-6">
       {/* ─── Top Header ─────────────────────────────────────────── */}
-      <div className="bg-card border border-border rounded-2xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <Card className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
             <Users className="w-5 h-5 text-primary" />
@@ -92,21 +94,21 @@ export default function ManageInstructorsTab() {
             setEditingInstructor(null);
             setShowModal(true);
           }}
-          className="rounded-xl h-10 px-4 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-semibold shadow-xs"
+          className="rounded-xl h-10 px-4 gap-2 text-xs font-semibold shadow-xs"
         >
           <Plus className="w-4 h-4" />
           <span>+ إضافة مدرب جديد</span>
         </Button>
-      </div>
+      </Card>
 
       {/* ─── Body List ──────────────────────────────────────────── */}
       {isLoading ? (
-        <div className="flex flex-col items-center justify-center p-12 space-y-3 bg-card border border-border rounded-2xl">
+        <Card className="flex flex-col items-center justify-center p-12 space-y-3">
           <Loader2 className="w-6 h-6 animate-spin text-primary" />
           <p className="text-xs text-muted-foreground">جارٍ تحميل قائمة المدربين...</p>
-        </div>
+        </Card>
       ) : instructors.length === 0 ? (
-        <div className="p-12 text-center bg-card border border-border rounded-2xl space-y-3">
+        <Card className="p-12 text-center space-y-3">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
             <Users className="w-6 h-6" />
           </div>
@@ -114,7 +116,7 @@ export default function ManageInstructorsTab() {
           <p className="text-xs text-muted-foreground max-w-sm mx-auto">
             ابدأ بإضافة أول مدرب بالمنصة لإسناد الكورسات وشهادات الإنجاز إليه.
           </p>
-        </div>
+        </Card>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
           {instructors.map((ins) => {
@@ -127,9 +129,9 @@ export default function ManageInstructorsTab() {
               : [];
 
             return (
-              <div
+              <Card
                 key={ins.id}
-                className="bg-card border border-border rounded-2xl p-5 shadow-xs flex flex-col justify-between transition-all hover:border-primary/40 space-y-4"
+                className="p-5 flex flex-col justify-between transition-colors hover:border-primary/40 space-y-4"
               >
                 <div>
                   <div className="flex items-start gap-3">
@@ -163,12 +165,13 @@ export default function ManageInstructorsTab() {
                   {specs.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-3">
                       {specs.map((s) => (
-                        <span
+                        <Badge
                           key={s}
-                          className="bg-muted px-2 py-0.5 rounded-md text-[11px] text-muted-foreground"
+                          variant="secondary"
+                          size="sm"
                         >
                           {s}
-                        </span>
+                        </Badge>
                       ))}
                     </div>
                   )}
@@ -239,7 +242,7 @@ export default function ManageInstructorsTab() {
                     </Button>
                   </div>
                 </div>
-              </div>
+              </Card>
             );
           })}
         </div>
