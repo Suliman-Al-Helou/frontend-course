@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, Suspense } from "react";
 import { motion } from "framer-motion";
 import {
   Shield,
@@ -18,7 +18,6 @@ import {
 } from "lucide-react";
 import { useCurrentUser } from "@/features/auth";
 import { useThemeStore } from "@/store/themeStore";
-import api from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import {
   AdminStatsCards,
@@ -30,9 +29,9 @@ import {
 } from "@/features/admin-courses";
 import { StudentsManagementTab, adminUserQueries } from "@/features/admin-users";
 import { MediaPipelineTab } from "@/features/media-pipeline";
-import { ManageInstructorsTab } from "@/features/instructors";
+import { ManageInstructorsTab, instructorQueries } from "@/features/instructors";
 import { ManageFaqTab } from "@/features/faqs";
-import type { Enrollment, AdminUser, AdminStats } from "@/types";
+import type { AdminStats } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const TABS = [
@@ -90,9 +89,10 @@ function AdminContent() {
   const { data: enrollments = [] } = useQuery(adminEnrollmentQueries.list());
   const { data: courses = [] } = useQuery(adminCourseQueries.list());
   const { data: users = [], isLoading: usersLoading } = useQuery(adminUserQueries.list());
+  const { data: instructors = [], isLoading: instructorsLoading } = useQuery(
+    instructorQueries.adminList(),
+  );
 
-  const [totalInstructors, setTotalInstructors] = useState(0);
-  const [instructorsLoading, setInstructorsLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const pendingEnrollmentsCount = enrollments.filter((e) => e.status === "pending").length;
@@ -100,26 +100,9 @@ function AdminContent() {
   const stats: AdminStats = {
     totalStudents: users.filter((u) => u.role !== "admin").length,
     totalCourses: courses.length,
-    totalInstructors,
+    totalInstructors: instructors.length,
     pendingEnrollments: pendingEnrollmentsCount,
   };
-
-  const fetchInstructorsCount = async () => {
-    setInstructorsLoading(true);
-    try {
-      const insRes = await api.get("/admin/instructors").catch(() => null);
-      const insData = insRes ? (insRes.data.data ?? insRes.data) : [];
-      setTotalInstructors(Array.isArray(insData) ? insData.length : 0);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setInstructorsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    void fetchInstructorsCount();
-  }, []);
 
   const loading = usersLoading || instructorsLoading;
 

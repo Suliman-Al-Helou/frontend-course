@@ -1,6 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 import { getCourses, type GetCoursesParams } from "../api/getCourses";
 import { getCourseById } from "../api/getCourseDetail";
+import { getCourseEnrollment } from "../api/getCourseEnrollment";
 
 export const courseQueries = {
   all: () => ["courses"] as const,
@@ -20,5 +21,11 @@ export const courseQueries = {
       queryFn: () => getCourseById(id),
       staleTime: 1000 * 60 * 60, // 1 hour cache
       gcTime: 1000 * 60 * 60 * 24, // 24 hours garbage collection
+    }),
+  enrollmentStatus: (courseId: string | number) =>
+    queryOptions({
+      queryKey: [...courseQueries.all(), "enrollment", String(courseId)] as const,
+      queryFn: () => getCourseEnrollment(courseId),
+      staleTime: 1000 * 60 * 2, // 2 minutes
     }),
 };
