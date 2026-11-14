@@ -2,7 +2,6 @@
 
 import { useState, useMemo } from "react";
 import {
-  Search,
   Trash2,
   Eye,
   BookOpen,
@@ -13,7 +12,8 @@ import {
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { SearchInput } from "@/components/ui/search-input";
+import { Avatar } from "@/components/ui/avatar";
 import { notify } from "@/components/ui/sonner";
 import { adminUserQueries } from "../queries/adminUsers.queries";
 import { useDeleteUserMutation } from "../queries/adminUsers.mutations";
@@ -162,15 +162,13 @@ export default function StudentsManagementTab() {
 
         {/* Search & Filter Bar */}
         <div className="flex flex-col sm:flex-row gap-3 pt-2">
-          <div className="relative flex-1">
-            <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-            <Input
-              placeholder="ابحث باسم الطالب أو البريد الإلكتروني..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pr-10 h-11 rounded-xl text-sm border-input"
-            />
-          </div>
+          <SearchInput
+            placeholder="ابحث باسم الطالب أو البريد الإلكتروني..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            onClear={() => setSearch("")}
+            className="flex-1 text-sm border-input"
+          />
 
           <div className="flex items-center gap-1.5 bg-muted/40 p-1 rounded-xl border border-border flex-wrap">
             <button
@@ -272,9 +270,10 @@ export default function StudentsManagementTab() {
                     <tr key={student.id} className="hover:bg-muted/30 transition-colors">
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-primary/10 text-primary font-bold text-xs flex items-center justify-center shrink-0">
-                            {(student.name || student.email || "?")[0].toUpperCase()}
-                          </div>
+                          <Avatar
+                            name={student.name || student.email}
+                            size="sm"
+                          />
                           <div>
                             <span className="font-semibold text-foreground text-sm block">
                               {student.name || "—"}
