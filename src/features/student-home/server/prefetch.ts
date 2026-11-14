@@ -1,6 +1,6 @@
 import "server-only";
 import { QueryClient, dehydrate, type DehydratedState } from "@tanstack/react-query";
-import { queryKeys } from "@/lib/queryKeys";
+import { studentHomeKeys } from "../queries/studentHome.queries";
 import { fetchStudentHomeServer } from "./getStudentHome";
 
 // If Laravel is slow (cold start), skip SSR data and let the client fetch + show skeleton.
@@ -12,7 +12,7 @@ export async function getDehydratedStudentHome(): Promise<DehydratedState> {
   const queryClient = new QueryClient();
 
   const prefetch = queryClient.prefetchQuery({
-    queryKey: queryKeys.studentHome.stats(),
+    queryKey: studentHomeKeys.stats(),
     queryFn: async () => {
       const data = await fetchStudentHomeServer();
       if (!data) throw new Error("student-home prefetch failed");

@@ -74,6 +74,16 @@ _Avoid_: Course owner, Author tagging, Store instructor
 An administrative modal dialog capturing comprehensive faculty metadata (bio, experience years, social links, achievements, and courses) with concurrency-safe mutation handling.
 _Avoid_: Add teacher modal, Profile edit popup
 
+## Student Learning Dashboard Domain
+
+**Student Home Stats**:
+The real-time aggregated metrics representing an active student's learning progress (enrolled courses, completed lessons, accumulated learning hours, and certificates).
+_Avoid_: Dashboard numbers, Student metrics, User counts
+
+**Monthly Zoom Schedule**:
+The temporal aggregation of live conference sessions scheduled across visible months in the student dashboard interactive calendar.
+_Avoid_: Meeting list, Zoom calendar data, Session slots
+
 ## Frequently Asked Questions (FAQ) Domain
 
 **FAQ Pair**:

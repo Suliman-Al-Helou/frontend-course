@@ -6,10 +6,9 @@ Student dashboard home: stats cards, exam results, Zoom attendance calendar.
 
 ## Layers
 
-- types/ Contracts mirroring Laravel JSON (raw, no API Resource yet). Ids are `number` (bigint tables; UUID rule NOT retroactive).
-- lib/api/studentHome.ts ONLY place that calls api.* for this feature.
-- lib/queryKeys.ts ONLY place for keys: queryKeys.studentHome.{stats,zoomAll,zoom(sig)}.
-- queries/ TanStack hooks. Server data hooks MUST return UseQueryResult. `select` fns are module-level (stable).
+- types/ Contracts mirroring Laravel JSON.
+- api/ Pure Axios client (`getStudentHomeStats`, `getZoomMeetingsByMonth`, `joinZoomMeeting`).
+- queries/ TanStack Query v5 `studentHomeQueries` factory (`queryOptions`). `select` fns are module-level (stable).
 - server/ server-only. Reads iron-session token, prefetches stats with a 1500ms budget, returns dehydrated state.
 - components/ UI only. page.tsx is a Server Component that wraps <StudentHome/> in <HydrationBoundary/>.
 - index.ts client-safe barrel. NEVER export server/ from it (server-only would leak into client bundles).
