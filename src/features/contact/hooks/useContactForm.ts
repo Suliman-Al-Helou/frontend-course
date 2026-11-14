@@ -52,4 +52,3 @@ export function useContactForm(initial?: Partial<ContactFormState>) {
 
   return { form, sent, loading, error, updateField, handleSubmit, resetForm };
 }
-

@@ -150,7 +150,10 @@ export default function ManageFaqTab() {
           <h3 className="text-sm font-bold text-foreground">إضافة سؤال شائع جديد</h3>
           <div className="space-y-3">
             <div>
-              <label htmlFor="new-faq-q" className="block text-xs font-semibold text-foreground mb-1">
+              <label
+                htmlFor="new-faq-q"
+                className="block text-xs font-semibold text-foreground mb-1"
+              >
                 نص السؤال *
               </label>
               <input
@@ -164,7 +167,10 @@ export default function ManageFaqTab() {
               />
             </div>
             <div>
-              <label htmlFor="new-faq-a" className="block text-xs font-semibold text-foreground mb-1">
+              <label
+                htmlFor="new-faq-a"
+                className="block text-xs font-semibold text-foreground mb-1"
+              >
                 الإجابة النموذجية *
               </label>
               <textarea

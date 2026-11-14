@@ -31,4 +31,3 @@ export function useCurrentUser(): CurrentUserHookResult {
     isLoggingOut: logoutMutation.isPending,
   };
 }
-

@@ -15,7 +15,9 @@ function StatCardItem({ stat }: { stat: StatCardView }) {
         <Icon className="size-4 text-muted-foreground shrink-0 ms-2" aria-hidden />
       </CardHeader>
       <CardContent className="pt-4">
-        <p className="text-2xl font-semibold font-mono tabular-nums text-foreground">{stat.value}</p>
+        <p className="text-2xl font-semibold font-mono tabular-nums text-foreground">
+          {stat.value}
+        </p>
       </CardContent>
     </Card>
   );

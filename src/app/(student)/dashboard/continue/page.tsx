@@ -18,13 +18,11 @@ export default function ContinuePage() {
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-foreground">تابع التعلم</h1>
-          <p className="text-sm text-muted-foreground mt-1">الدروس التي بدأت بمشاهدتها ولم تكملها بعد</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            الدروس التي بدأت بمشاهدتها ولم تكملها بعد
+          </p>
         </div>
-        <div
-          role="status"
-          aria-label="جارٍ تحميل الدروس الجاري تعلمها"
-          className="space-y-3"
-        >
+        <div role="status" aria-label="جارٍ تحميل الدروس الجاري تعلمها" className="space-y-3">
           {[1, 2, 3].map((i) => (
             <div
               key={i}
@@ -49,7 +47,9 @@ export default function ContinuePage() {
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-foreground">تابع التعلم</h1>
-          <p className="text-sm text-muted-foreground mt-1">الدروس التي بدأت بمشاهدتها ولم تكملها بعد</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            الدروس التي بدأت بمشاهدتها ولم تكملها بعد
+          </p>
         </div>
         <div
           role="alert"
@@ -59,7 +59,9 @@ export default function ContinuePage() {
             <AlertCircle className="w-6 h-6" aria-hidden="true" />
           </div>
           <h2 className="text-base font-semibold text-foreground mb-1">تعذر تحميل تقدم الدروس</h2>
-          <p className="text-sm text-muted-foreground mb-4">حدث خطأ أثناء جلب قائمة الدروس، يرجى المحاولة ثانية.</p>
+          <p className="text-sm text-muted-foreground mb-4">
+            حدث خطأ أثناء جلب قائمة الدروس، يرجى المحاولة ثانية.
+          </p>
           <button
             type="button"
             onClick={() => refetch()}
@@ -78,7 +80,9 @@ export default function ContinuePage() {
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-foreground">تابع التعلم</h1>
-          <p className="text-sm text-muted-foreground mt-1">الدروس التي بدأت بمشاهدتها ولم تكملها بعد</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            الدروس التي بدأت بمشاهدتها ولم تكملها بعد
+          </p>
         </div>
         <div className="text-center py-16 bg-card border border-border rounded-2xl p-8 max-w-xl mx-auto">
           <div className="w-16 h-16 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4">
@@ -105,7 +109,15 @@ export default function ContinuePage() {
       <div>
         <h1 className="text-2xl font-bold text-foreground">تابع التعلم</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          لديك {lessons.length} {lessons.length === 1 ? "درس" : lessons.length === 2 ? "درسان" : lessons.length <= 10 ? "دروس" : "درساً"} قيد المتابعة
+          لديك {lessons.length}{" "}
+          {lessons.length === 1
+            ? "درس"
+            : lessons.length === 2
+              ? "درسان"
+              : lessons.length <= 10
+                ? "دروس"
+                : "درساً"}{" "}
+          قيد المتابعة
         </p>
       </div>
 

@@ -36,6 +36,14 @@ export const studentCourseQueries = {
       staleTime: 1000 * 60 * 2, // 2 minutes
     }),
 
+  // ملخص تقدم الكورس والدروس المكتملة
+  courseSummary: (courseId: number | string) =>
+    queryOptions({
+      queryKey: [...studentCourseQueries.all(), "summary", String(courseId)] as const,
+      queryFn: () => getCourseProgressSummary(courseId),
+      staleTime: 1000 * 60 * 2, // 2 minutes
+    }),
+
   // مهمة درس محدد
   lessonTask: (lessonId: number | string) =>
     queryOptions({
@@ -47,11 +55,7 @@ export const studentCourseQueries = {
   // معرفات الدروس المكتملة في الكورس عبر مسار التلخيص المجمّع
   completedLessons: (courseId: number | string, _lessonIds?: number[]) =>
     queryOptions({
-      queryKey: [
-        ...studentCourseQueries.all(),
-        "completed-lessons",
-        String(courseId),
-      ] as const,
+      queryKey: [...studentCourseQueries.all(), "completed-lessons", String(courseId)] as const,
       queryFn: async (): Promise<number[]> => {
         try {
           const summary = await getCourseProgressSummary(courseId);

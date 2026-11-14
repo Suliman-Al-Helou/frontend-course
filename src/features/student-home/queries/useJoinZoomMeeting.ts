@@ -19,9 +19,8 @@ export function useJoinZoomMeeting() {
     mutationFn: ({ meeting }: JoinVariables) => joinZoomMeeting(meeting.id),
     onSuccess: ({ zoom_link }, { meeting, popup }) => {
       // "joined" only. "attended" is set by the server after code/manual confirmation.
-      queryClient.setQueriesData<ZoomMeeting[]>(
-        { queryKey: studentHomeKeys.zoomAll() },
-        (old) => old?.map((m) => (m.id === meeting.id ? { ...m, joined: true } : m)),
+      queryClient.setQueriesData<ZoomMeeting[]>({ queryKey: studentHomeKeys.zoomAll() }, (old) =>
+        old?.map((m) => (m.id === meeting.id ? { ...m, joined: true } : m)),
       );
 
       if (popup) {

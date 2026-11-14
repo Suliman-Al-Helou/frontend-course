@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vite-plus/test";
 import { sendContactMessage } from "../api";
 import { WHATSAPP_URL, SUPPORT_EMAIL, FORMSPREE_URL } from "../constants";
 
@@ -55,4 +55,3 @@ describe("Contact Feature", () => {
     ).rejects.toThrow("Failed to send contact message");
   });
 });
-

@@ -109,16 +109,16 @@ export default function LessonPage() {
       });
 
       // إبطال كاش تقدم الدرس لتحديث الواجهة فوراً
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: studentCourseQueries.lessonProgress(numericLessonId).queryKey,
       });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: studentCourseQueries.lesson(numericLessonId).queryKey,
       });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: [...studentCourseQueries.all(), "completed-lessons", String(courseId)],
       });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: studentCourseQueries.enrolled().queryKey,
       });
     } catch {

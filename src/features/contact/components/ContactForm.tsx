@@ -10,11 +10,7 @@ interface ContactFormProps {
   className?: string;
 }
 
-export function ContactForm({
-  initial,
-  title = "أرسل رسالة",
-  className = "",
-}: ContactFormProps) {
+export function ContactForm({ initial, title = "أرسل رسالة", className = "" }: ContactFormProps) {
   const { form, sent, loading, error, updateField, handleSubmit, resetForm } =
     useContactForm(initial);
 
@@ -109,4 +105,3 @@ export function ContactForm({
     </div>
   );
 }
-

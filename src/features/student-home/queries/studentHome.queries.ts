@@ -39,4 +39,3 @@ export const studentHomeQueries = {
       refetchInterval: 60_000,
     }),
 };
-

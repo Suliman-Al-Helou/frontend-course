@@ -27,4 +27,3 @@ describe("Student Home Queries Factory & Cache Management", () => {
     expect(studentHomeQueries.zoom("2026-10").queryKey[0]).toBe(rootKey);
   });
 });
-

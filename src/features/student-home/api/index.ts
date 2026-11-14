@@ -3,11 +3,7 @@
  */
 
 import api from "@/lib/api";
-import type {
-  JoinZoomResponse,
-  StudentHomeResponse,
-  ZoomMeeting,
-} from "../types";
+import type { JoinZoomResponse, StudentHomeResponse, ZoomMeeting } from "../types";
 
 export async function getStudentHomeStats(): Promise<StudentHomeResponse> {
   const { data } = await api.get<StudentHomeResponse>("/dashboard/stats");
@@ -24,4 +20,3 @@ export async function joinZoomMeeting(meetingId: number): Promise<JoinZoomRespon
   const { data } = await api.post<JoinZoomResponse>(`/zoom-meetings/${meetingId}/attend`);
   return data;
 }
-

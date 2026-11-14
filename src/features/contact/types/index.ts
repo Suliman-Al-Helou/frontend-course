@@ -9,4 +9,3 @@ export interface ContactMessagePayload {
   email: string;
   message: string;
 }
-

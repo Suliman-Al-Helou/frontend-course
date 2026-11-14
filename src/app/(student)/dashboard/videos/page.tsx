@@ -1,44 +1,44 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useMemo, Suspense } from "react";
 import Link from "next/link";
 import { Video, CheckCircle } from "lucide-react";
-import api from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
+import { courseQueries } from "@/features/courses";
 import {
+  studentCourseQueries,
   CourseFilterDropdown,
   useEnrolledCourses,
 } from "@/features/student-courses";
 
 function VideosContent() {
   const { courses, selectedId, isLoading: loadingCourses, selectCourse } = useEnrolledCourses();
-  const [lessons, setLessons] = useState<any[]>([]);
-  const [loadingLessons, setLoadingLessons] = useState(false);
 
-  // جلب فيديوهات الكورس المحدد
-  useEffect(() => {
-    if (!selectedId) return;
-    setLoadingLessons(true);
-    setLessons([]);
+  const { data: course, isLoading: loadingCourse } = useQuery({
+    ...courseQueries.detail(String(selectedId)),
+    enabled: Boolean(selectedId),
+  });
 
-    api
-      .get(`/courses/${selectedId}`)
-      .then(async (res) => {
-        const fullCourse = res.data;
-        const result: any[] = [];
-        for (const section of fullCourse?.sections ?? []) {
-          for (const lesson of section.lessons ?? []) {
-            let progress = { completed: false, watched_percent: 0 };
-            try {
-              const p = await api.get(`/lessons/${lesson.id}/progress`);
-              progress = p.data;
-            } catch {}
-            result.push({ ...lesson, course: fullCourse, section, progress });
-          }
-        }
-        setLessons(result);
-      })
-      .finally(() => setLoadingLessons(false));
-  }, [selectedId]);
+  const { data: summary, isLoading: loadingSummary } = useQuery({
+    ...studentCourseQueries.courseSummary(String(selectedId)),
+    enabled: Boolean(selectedId),
+  });
+
+  const loadingLessons = Boolean(selectedId) && (loadingCourse || loadingSummary);
+
+  const lessons = useMemo(() => {
+    if (!course?.sections) return [];
+    const completedSet = new Set(summary?.completed_lesson_ids ?? []);
+
+    return course.sections.flatMap((section) =>
+      (section.lessons ?? []).map((lesson) => ({
+        ...lesson,
+        course,
+        section,
+        isCompleted: completedSet.has(lesson.id),
+      })),
+    );
+  }, [course, summary]);
 
   if (loadingCourses)
     return (
@@ -71,8 +71,7 @@ function VideosContent() {
       ) : (
         <div className="space-y-3">
           {lessons.map((lesson) => {
-            const isCompleted = lesson.progress?.completed;
-            const percent = lesson.progress?.watched_percent ?? 0;
+            const isCompleted = lesson.isCompleted;
 
             return (
               <div
@@ -102,16 +101,11 @@ function VideosContent() {
                 </div>
 
                 <div className="flex items-center gap-4 shrink-0">
-                  {percent > 0 && !isCompleted && (
-                    <span className="text-xs text-muted-foreground hidden sm:inline">
-                      %{percent}
-                    </span>
-                  )}
                   <Link
                     href={`/courses/${lesson.course?.id}/lessons/${lesson.id}`}
                     className="text-xs font-semibold px-4 py-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition"
                   >
-                    {isCompleted ? "مراجعة" : percent > 0 ? "متابعة" : "مشاهدة"}
+                    {isCompleted ? "مراجعة" : "مشاهدة"}
                   </Link>
                 </div>
               </div>

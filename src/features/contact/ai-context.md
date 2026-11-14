@@ -1,9 +1,11 @@
 # Contact Vertical Slice (`src/features/contact/`)
 
 ## Architectural Anchor & Responsibility
+
 This slice provides the unified public and in-app contact mechanisms, inquiry forms, and support communication channels across the platform.
 
 ## Directory Structure
+
 ```
 src/features/contact/
 ├── api/
@@ -20,7 +22,7 @@ src/features/contact/
 ```
 
 ## Boundaries & Rules
+
 - **No Double Submits**: `useContactForm` enforces an atomic submit lock via `isSubmittingRef = useRef(false)`.
 - **Pure Tokens**: All components utilize semantic design tokens (`bg-card`, `text-foreground`, `border-border`, etc.).
 - **Zero Duplication**: Consumed by both the public `/contact` route and the student dashboard `/dashboard/contact` (via FAQSection).
-
