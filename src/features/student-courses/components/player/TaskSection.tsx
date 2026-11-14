@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { CheckCircle2, XCircle, RefreshCw, Send, HelpCircle, Loader2 } from "lucide-react";
+import { CheckCircle2, XCircle, RefreshCw, Send, HelpCircle } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { notify } from "@/components/ui/sonner";
 import { submitLessonTask } from "../../api";
 import type { Task, TaskResult } from "../../types";
@@ -57,7 +59,7 @@ export function TaskSection({ task, lessonId, onPassed }: TaskSectionProps) {
     const canRetry = attempts < task.max_attempts;
 
     return (
-      <div className="bg-card rounded-2xl border border-border p-6 sm:p-8 space-y-6">
+      <Card className="p-6 sm:p-8 space-y-6">
         {/* النتيجة الإجمالية */}
         <div
           role="alert"
@@ -135,23 +137,24 @@ export function TaskSection({ task, lessonId, onPassed }: TaskSectionProps) {
           </span>
 
           {!isPassed && canRetry && (
-            <button
+            <Button
               type="button"
+              variant="outline"
               onClick={handleRetry}
-              className="min-h-[44px] inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-card border border-border text-foreground font-semibold text-sm hover:bg-muted/50 active:scale-[0.99] transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+              className="gap-2"
             >
               <RefreshCw className="w-4 h-4" aria-hidden="true" />
               <span>إعادة المحاولة</span>
-            </button>
+            </Button>
           )}
         </div>
-      </div>
+      </Card>
     );
   }
 
   // ── نموذج الإجابة عن الأسئلة ──────────────────────────────────
   return (
-    <div className="bg-card rounded-2xl border border-border p-6 sm:p-8 space-y-6">
+    <Card className="p-6 sm:p-8 space-y-6">
       <div className="flex items-center justify-between border-b border-border pb-4">
         <div>
           <h3 className="text-lg font-bold text-foreground">مهمة الدرس التطبيقية</h3>
@@ -209,26 +212,17 @@ export function TaskSection({ task, lessonId, onPassed }: TaskSectionProps) {
           {Object.keys(answers).length} من {task.questions.length} أسئلة مجاب عنها
         </span>
 
-        <button
+        <Button
           type="button"
           onClick={handleSubmit}
           disabled={!allAnswered || loading}
-          aria-busy={loading}
-          className="min-h-[44px] inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.99] transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
+          loading={loading}
+          className="gap-2 px-6"
         >
-          {loading ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
-              <span>جارٍ التحقق...</span>
-            </>
-          ) : (
-            <>
-              <Send className="w-4 h-4" aria-hidden="true" />
-              <span>إرسال الإجابات</span>
-            </>
-          )}
-        </button>
+          <Send className="w-4 h-4" aria-hidden="true" />
+          <span>إرسال الإجابات</span>
+        </Button>
       </div>
-    </div>
+    </Card>
   );
 }

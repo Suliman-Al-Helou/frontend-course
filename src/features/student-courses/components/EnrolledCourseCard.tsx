@@ -3,6 +3,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Clock, Users, Play, BookOpen } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import type { StudentEnrollment } from "../types";
 
 interface EnrolledCourseCardProps {
@@ -44,7 +47,7 @@ export function EnrolledCourseCard({ enrollment }: EnrolledCourseCardProps) {
     : `/dashboard/videos?course=${course.id}`;
 
   return (
-    <div className="group bg-card border border-border rounded-2xl overflow-hidden flex flex-col justify-between hover:border-primary/40 hover:shadow-md transition-all duration-200 motion-reduce:transition-none">
+    <Card interactive className="group overflow-hidden flex flex-col justify-between">
       <div>
         {/* Course Cover */}
         <div className="relative w-full h-44 bg-muted overflow-hidden">
@@ -63,9 +66,9 @@ export function EnrolledCourseCard({ enrollment }: EnrolledCourseCardProps) {
           )}
 
           <div className="absolute top-3 start-3">
-            <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-background/80 backdrop-blur-md border border-border text-foreground">
+            <Badge variant="outline" className="bg-background/80 backdrop-blur-md">
               مسجل
-            </span>
+            </Badge>
           </div>
         </div>
 
@@ -94,14 +97,13 @@ export function EnrolledCourseCard({ enrollment }: EnrolledCourseCardProps) {
 
       {/* Action Footer */}
       <div className="p-5 pt-0 mt-auto">
-        <Link
-          href={learnHref}
-          className="w-full min-h-[44px] flex items-center justify-center gap-2 bg-primary text-primary-foreground font-semibold px-4 py-2.5 rounded-xl hover:bg-primary/90 active:scale-[0.99] transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
-        >
-          <Play className="w-4 h-4 fill-current" aria-hidden="true" />
-          <span>متابعة التعلم</span>
-        </Link>
+        <Button asChild className="w-full">
+          <Link href={learnHref}>
+            <Play className="w-4 h-4 fill-current ml-2" aria-hidden="true" />
+            <span>متابعة التعلم</span>
+          </Link>
+        </Button>
       </div>
-    </div>
+    </Card>
   );
 }
