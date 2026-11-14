@@ -39,6 +39,10 @@ const STATIC_FAQS: FAQItem[] = [
     q: "هل يوجد ضمان لاسترداد الاشتراك؟",
     a: "نعم، نقدم ضمان استرداد كامل بنسبة 100% خلال أول ٧ أيام بدون أي شروط معقدة.",
   },
+  {
+    q: "هل أحصل على وصول دائم وتحديثات للمحتوى؟",
+    a: "نعم، بمجرد تسجيلك في أي مسار تحصل على وصول دائم مدى الحياة للدروس والتطبيقات، بالإضافة إلى كافة التحديثات والتحسينات المعمارية التي تُضاف مستقبلاً مجاناً.",
+  },
 ];
 
 function WhatsAppIcon({ className }: { className?: string }) {
@@ -83,7 +87,7 @@ export default function FAQSection() {
       .then((res) => {
         const data = res.data.data ?? res.data;
         if (Array.isArray(data) && data.length > 0) {
-          setDynamicFaqs(data.slice(0, 6).map((f: any) => ({ q: f.question, a: f.answer })));
+          setDynamicFaqs(data.slice(0, 7).map((f: any) => ({ q: f.question, a: f.answer })));
         }
       })
       .catch(() => {});
