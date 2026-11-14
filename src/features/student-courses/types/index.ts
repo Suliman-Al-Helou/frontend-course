@@ -13,4 +13,36 @@ export interface StudentTaskAnswer {
   answer: string;
 }
 
+export interface InProgressLesson {
+  id: number;
+  title: string;
+  watched_percent: number;
+  course: {
+    id: number;
+    title: string;
+  };
+  section: {
+    id: number;
+    title: string;
+  };
+}
+
+export interface LessonDetail {
+  id: number;
+  title: string;
+  description?: string;
+  video_id: string;
+  duration?: number;
+  order: number;
+  is_preview?: boolean;
+}
+
+export interface CourseProgressSummary {
+  total_lessons: number;
+  completed_count: number;
+  completed_lesson_ids?: number[];
+  percent: number;
+  course_complete: boolean;
+}
+
 export type { Course, Question, Task, TaskResult, LessonProgress };

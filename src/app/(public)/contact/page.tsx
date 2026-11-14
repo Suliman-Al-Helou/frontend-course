@@ -3,8 +3,7 @@
 import { motion } from "framer-motion";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
-import { ContactInfo } from "@/app/(public)/contact/_components/ContactInfo";
-import { ContactForm } from "@/app/(public)/contact/_components/ContactForm";
+import { ContactInfo, ContactForm } from "@/features/contact";
 // import { ContactFAQ }   from '@/app/(public)/contact/_components/ContactFAQ';
 
 // export const metadata = {

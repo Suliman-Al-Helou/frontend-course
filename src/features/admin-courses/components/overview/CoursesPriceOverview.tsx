@@ -3,6 +3,8 @@
 import { useMemo } from "react";
 import { Users, DollarSign, BookOpen } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { adminCourseQueries, adminEnrollmentQueries } from "../../queries/adminCourses.queries";
 import type { AdminCourse, CourseLevel } from "../../types";
 
@@ -27,15 +29,11 @@ export default function CoursesPriceOverview() {
   }, [enrollments]);
 
   return (
-    <div className="bg-card border border-border rounded-2xl shadow-xs overflow-hidden">
-      <div className="p-5 sm:p-6 border-b border-border">
-        <h2 className="text-base sm:text-lg font-bold text-foreground">
-          نظرة عامة على الكورسات والأسعار
-        </h2>
-        <p className="text-xs text-muted-foreground mt-1">
-          إحصائيات فورية مشتقة من كاش المنصة مباشرة
-        </p>
-      </div>
+    <Card className="shadow-xs overflow-hidden">
+      <CardHeader className="border-b border-border p-5 sm:p-6">
+        <CardTitle>نظرة عامة على الكورسات والأسعار</CardTitle>
+        <CardDescription>إحصائيات فورية مشتقة من كاش المنصة مباشرة</CardDescription>
+      </CardHeader>
 
       <div className="divide-y divide-border">
         {isLoading ? (
@@ -67,26 +65,20 @@ export default function CoursesPriceOverview() {
                 </div>
 
                 <div className="flex items-center gap-3 shrink-0 self-end sm:self-auto">
-                  <span className="flex items-center gap-1.5 text-primary bg-primary/10 border border-primary/20 px-2.5 py-1 rounded-full text-xs font-semibold">
+                  <Badge variant="primary" shape="rounded">
                     <Users className="w-3.5 h-3.5" />
                     {students} طالب
-                  </span>
-                  <span
-                    className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold border ${
-                      isFree
-                        ? "text-blue-600 dark:text-blue-400 bg-blue-500/10 border-blue-500/20"
-                        : "text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
-                    }`}
-                  >
+                  </Badge>
+                  <Badge variant={isFree ? "info" : "success"} shape="rounded">
                     <DollarSign className="w-3.5 h-3.5" />
                     {isFree ? "مجاني" : `${course.price}$`}
-                  </span>
+                  </Badge>
                 </div>
               </div>
             );
           })
         )}
       </div>
-    </div>
+    </Card>
   );
 }

@@ -71,7 +71,15 @@ export function LessonSidebar({
         </h2>
         <div className="flex items-center justify-between text-xs text-muted-foreground mt-2 mb-1.5">
           <span>
-            {completedCount} من {totalLessons} درس مكتمل
+            {completedCount} من {totalLessons}{" "}
+            {totalLessons === 1
+              ? "درس"
+              : totalLessons === 2
+                ? "درسين"
+                : totalLessons <= 10
+                  ? "دروس"
+                  : "درساً"}{" "}
+            مكتملة
           </span>
           <span className="font-semibold text-foreground">{progressPercent}%</span>
         </div>
@@ -92,103 +100,109 @@ export function LessonSidebar({
 
       {/* Syllabus Sections Accordion */}
       <div className="overflow-y-auto max-h-[calc(100vh-280px)] divide-y divide-border">
-        {sections.map((section) => {
-          const isOpen = openSections.includes(section.id);
-          const headerId = `section-header-${section.id}`;
-          const contentId = `section-content-${section.id}`;
+        {totalLessons === 0 ? (
+          <div className="p-8 text-center text-xs text-muted-foreground">
+            لم تتم إضافة أي دروس لهذا الكورس بعد.
+          </div>
+        ) : (
+          sections.map((section) => {
+            const isOpen = openSections.includes(section.id);
+            const headerId = `section-header-${section.id}`;
+            const contentId = `section-content-${section.id}`;
 
-          return (
-            <div key={section.id}>
-              <button
-                type="button"
-                id={headerId}
-                aria-expanded={isOpen}
-                aria-controls={contentId}
-                onClick={() => toggleSection(section.id)}
-                className="w-full min-h-[44px] flex items-center justify-between px-4 py-3 hover:bg-muted/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
-              >
-                <span className="text-sm font-semibold text-foreground text-start">
-                  {section.title}
-                </span>
-                <ChevronDown
-                  className={`w-4 h-4 text-muted-foreground flex-shrink-0 transition-transform duration-200 ${
-                    isOpen ? "rotate-180" : ""
-                  }`}
-                  aria-hidden="true"
-                />
-              </button>
-
-              {isOpen && (
-                <div
-                  id={contentId}
-                  role="region"
-                  aria-labelledby={headerId}
-                  className="pb-1 bg-muted/10"
+            return (
+              <div key={section.id}>
+                <button
+                  type="button"
+                  id={headerId}
+                  aria-expanded={isOpen}
+                  aria-controls={contentId}
+                  onClick={() => toggleSection(section.id)}
+                  className="w-full min-h-[44px] flex items-center justify-between px-4 py-3 hover:bg-muted/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
                 >
-                  {section.lessons.map((lesson) => {
-                    const unlocked = isUnlocked(lesson);
-                    const completed = isCompleted(lesson.id);
-                    const current = isCurrent(lesson.id);
+                  <span className="text-sm font-semibold text-foreground text-start">
+                    {section.title}
+                  </span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-muted-foreground flex-shrink-0 transition-transform duration-200 ${
+                      isOpen ? "rotate-180" : ""
+                    }`}
+                    aria-hidden="true"
+                  />
+                </button>
 
-                    if (unlocked) {
+                {isOpen && (
+                  <div
+                    id={contentId}
+                    role="region"
+                    aria-labelledby={headerId}
+                    className="pb-1 bg-muted/10"
+                  >
+                    {section.lessons.map((lesson) => {
+                      const unlocked = isUnlocked(lesson);
+                      const completed = isCompleted(lesson.id);
+                      const current = isCurrent(lesson.id);
+
+                      if (unlocked) {
+                        return (
+                          <Link
+                            key={lesson.id}
+                            href={`/courses/${courseId}/lessons/${lesson.id}`}
+                            aria-current={current ? "step" : undefined}
+                            className={`min-h-[44px] flex items-center gap-3 px-4 py-2.5 text-sm transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-lg ${
+                              current
+                                ? "bg-primary/10 text-primary font-semibold border-s-2 border-primary"
+                                : "hover:bg-muted/60 text-foreground/80 hover:text-foreground"
+                            }`}
+                          >
+                            {completed ? (
+                              <CheckCircle2
+                                className="w-4 h-4 text-success flex-shrink-0"
+                                aria-label="درس مكتمل"
+                              />
+                            ) : (
+                              <PlayCircle
+                                className={`w-4 h-4 flex-shrink-0 ${
+                                  current ? "text-primary" : "text-muted-foreground"
+                                }`}
+                                aria-hidden="true"
+                              />
+                            )}
+                            <span className="truncate flex-1 text-start">{lesson.title}</span>
+                            {lesson.duration && (
+                              <span className="text-xs text-muted-foreground flex-shrink-0 font-mono">
+                                {lesson.duration}
+                              </span>
+                            )}
+                          </Link>
+                        );
+                      }
+
                       return (
-                        <Link
+                        <button
                           key={lesson.id}
-                          href={`/courses/${courseId}/lessons/${lesson.id}`}
-                          aria-current={current ? "step" : undefined}
-                          className={`min-h-[44px] flex items-center gap-3 px-4 py-2.5 text-sm transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-lg ${
-                            current
-                              ? "bg-primary/10 text-primary font-semibold border-s-2 border-primary"
-                              : "hover:bg-muted/60 text-foreground/80 hover:text-foreground"
-                          }`}
+                          type="button"
+                          onClick={triggerLockedAlert}
+                          className="w-full min-h-[44px] flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground/60 hover:bg-muted/20 transition-colors text-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-lg motion-reduce:transition-none"
+                          aria-label={`${lesson.title} - درس مغلق، اضغط لمعرفة كيفية الفتح`}
                         >
-                          {completed ? (
-                            <CheckCircle2
-                              className="w-4 h-4 text-success flex-shrink-0"
-                              aria-label="درس مكتمل"
-                            />
-                          ) : (
-                            <PlayCircle
-                              className={`w-4 h-4 flex-shrink-0 ${
-                                current ? "text-primary" : "text-muted-foreground"
-                              }`}
-                              aria-hidden="true"
-                            />
-                          )}
-                          <span className="truncate flex-1 text-start">{lesson.title}</span>
-                          {lesson.duration && (
-                            <span className="text-xs text-muted-foreground flex-shrink-0 font-mono">
-                              {lesson.duration}
-                            </span>
-                          )}
-                        </Link>
+                          <Lock
+                            className="w-4 h-4 text-muted-foreground/50 flex-shrink-0"
+                            aria-hidden="true"
+                          />
+                          <span className="truncate flex-1">{lesson.title}</span>
+                          <span className="text-xs bg-muted px-2 py-0.5 rounded text-muted-foreground flex-shrink-0">
+                            مغلق
+                          </span>
+                        </button>
                       );
-                    }
-
-                    return (
-                      <button
-                        key={lesson.id}
-                        type="button"
-                        onClick={triggerLockedAlert}
-                        className="w-full min-h-[44px] flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground/60 hover:bg-muted/20 transition-colors text-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-lg motion-reduce:transition-none"
-                        aria-label={`${lesson.title} - درس مغلق، اضغط لمعرفة كيفية الفتح`}
-                      >
-                        <Lock
-                          className="w-4 h-4 text-muted-foreground/50 flex-shrink-0"
-                          aria-hidden="true"
-                        />
-                        <span className="truncate flex-1">{lesson.title}</span>
-                        <span className="text-xs bg-muted px-2 py-0.5 rounded text-muted-foreground flex-shrink-0">
-                          مغلق
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          );
-        })}
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
       </div>
     </aside>
   );

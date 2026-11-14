@@ -2,7 +2,7 @@
 
 // 1. Imports
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "../ui/button";
 
@@ -11,8 +11,8 @@ function BackgroundEffects() {
   return (
     <>
       <div className="absolute inset-0 bg-gradient-to-br from-blue-deep via-blue-mid to-blue-light" />
-      <div className="absolute top-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-      <div className="absolute bottom-0 right-0 w-80 h-80 bg-white/5 rounded-full blur-3xl translate-x-1/3 translate-y-1/3" />
+      <div className="absolute top-0 start-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+      <div className="absolute bottom-0 end-0 w-80 h-80 bg-white/5 rounded-full blur-3xl translate-x-1/3 translate-y-1/3" />
       <div
         className="absolute inset-0 opacity-5"
         style={{
@@ -26,16 +26,18 @@ function BackgroundEffects() {
 
 // 3. Main Component
 export default function CTASection() {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <section className="py-24 relative overflow-hidden bg-primary dark:bg-background">
       <BackgroundEffects />
 
       <div className="relative max-w-4xl mx-auto px-4 sm:px-6 text-center">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 30 }}
+          whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
+          transition={{ duration: shouldReduceMotion ? 0 : 0.7 }}
         >
           {/* Badge */}
 
@@ -52,12 +54,12 @@ export default function CTASection() {
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center ">
-            <Button href="/register" size={"lg"}>
-              ابدأ رحلتك مجاناً
-              <ArrowLeft className="w-5 h-5 mr-2" />
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button href="/register" size="lg" className="min-h-[44px]">
+              <span>ابدأ رحلتك مجاناً</span>
+              <ArrowLeft className="w-5 h-5 ms-2 rtl:rotate-0" aria-hidden="true" />
             </Button>
-            <Button href="/courses" size={"lg"} variant={"outline"}>
+            <Button href="/courses" size="lg" variant="outline" className="min-h-[44px]">
               تصفح الكورسات
             </Button>
           </div>

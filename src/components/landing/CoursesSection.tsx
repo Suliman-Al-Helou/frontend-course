@@ -6,12 +6,12 @@ import { BookOpen, ArrowLeft } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useCoursesSection } from "@/components/landing/_hooks/Usecoursessection";
 import { studentCourseQueries } from "@/features/student-courses";
-import { useAuthStore } from "@/store/authStore";
+import { useCurrentUser } from "@/features/auth";
 import { CourseCard, SkeletonCard, getCourseLinks } from "@/features/courses";
 
 export default function CoursesSection() {
   const { courses, loading } = useCoursesSection();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useCurrentUser();
   const { data: enrolledIds = new Set<number>() } = useQuery({
     ...studentCourseQueries.enrolled(),
     enabled: isAuthenticated,

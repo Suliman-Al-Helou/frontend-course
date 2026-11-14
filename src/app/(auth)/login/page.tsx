@@ -27,7 +27,7 @@ function LoginContent() {
         ليس لديك حساب؟{" "}
         <Link
           href="/register"
-          className="text-primary font-semibold hover:underline inline-block py-1 px-1.5 -my-1 focus:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded-sm transition-colors"
+          className="text-primary font-semibold hover:underline inline-flex items-center min-h-[44px] py-1 px-1.5 focus:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded-sm transition-colors"
         >
           سجّل الآن
         </Link>
@@ -80,7 +80,7 @@ export default function LoginPage() {
         <div className="text-center mt-6">
           <Link
             href="/"
-            className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center justify-center gap-1.5 py-1.5 px-3 -my-1.5 transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded-md"
+            className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center justify-center gap-1.5 min-h-[44px] py-1.5 px-3 transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded-md"
           >
             <ArrowRight className="w-4 h-4" />
             <span>العودة للصفحة الرئيسية</span>

@@ -6,30 +6,41 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { SearchInput } from "@/components/ui/search-input";
 import { Avatar } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import { notify } from "@/components/ui/sonner";
 import { adminEnrollmentQueries } from "../../queries/adminCourses.queries";
 import { useEnrollmentMutations } from "../../queries/adminCourses.mutations";
 import type { AdminEnrollment, EnrollmentStatus } from "../../types";
 
-const statusConfig: Record<EnrollmentStatus, { label: string; color: string; icon: typeof Clock }> =
-  {
-    pending: {
-      label: "معلّق",
-      color: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20",
-      icon: Clock,
-    },
-    approved: {
-      label: "مقبول",
-      color:
-        "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20",
-      icon: CheckCircle,
-    },
-    rejected: {
-      label: "مرفوض",
-      color: "bg-destructive/10 text-destructive border border-destructive/20",
-      icon: XCircle,
-    },
-  };
+const statusConfig: Record<
+  EnrollmentStatus,
+  { label: string; variant: "warning" | "success" | "destructive"; icon: typeof Clock }
+> = {
+  pending: {
+    label: "معلّق",
+    variant: "warning",
+    icon: Clock,
+  },
+  approved: {
+    label: "مقبول",
+    variant: "success",
+    icon: CheckCircle,
+  },
+  rejected: {
+    label: "مرفوض",
+    variant: "destructive",
+    icon: XCircle,
+  },
+};
+
+function formatRequestsCount(count: number): string {
+  if (count === 0) return "لا توجد طلبات";
+  if (count === 1) return "طلب واحد";
+  if (count === 2) return "طلبان";
+  if (count >= 3 && count <= 10) return `${count} طلبات`;
+  return `${count} طلباً`;
+}
 
 const FILTER_LABELS = {
   all: "الكل",
@@ -96,13 +107,13 @@ export default function EnrollmentRequests() {
   };
 
   return (
-    <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
+    <Card className="shadow-sm overflow-hidden border-border bg-card">
       {/* Header & Controls */}
       <div className="p-5 sm:p-6 border-b border-border space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-bold text-foreground">طلبات التسجيل في الكورسات</h2>
           <span className="text-xs bg-muted px-2.5 py-1 rounded-full text-muted-foreground font-medium">
-            {enrollments.length} طلب إجمالي
+            {formatRequestsCount(enrollments.length)} إجمالي
           </span>
         </div>
 
@@ -166,14 +177,15 @@ export default function EnrollmentRequests() {
                       <p className="font-semibold text-foreground text-sm truncate">
                         {studentName}
                       </p>
-                      <span
-                        className={`text-[11px] px-2.5 py-0.5 rounded-full font-bold flex items-center gap-1 ${cfg.color}`}
-                      >
+                      <Badge variant={cfg.variant} shape="rounded" size="sm">
                         <StatusIcon className="w-3 h-3" />
                         {cfg.label}
-                      </span>
+                      </Badge>
                     </div>
-                    <p className="text-xs text-muted-foreground truncate mt-0.5 dir-ltr text-right">
+                    <p
+                      className="text-xs text-muted-foreground truncate mt-0.5 font-mono text-left"
+                      dir="ltr"
+                    >
                       {studentEmail}
                     </p>
                     <p className="text-xs text-foreground font-medium mt-1 truncate">
@@ -198,7 +210,7 @@ export default function EnrollmentRequests() {
                             courseTitle,
                           )
                         }
-                        className="rounded-xl h-11 min-h-[44px] px-4 text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow-xs focus-visible:ring-2 focus-visible:ring-emerald-500"
+                        className="rounded-xl h-11 min-h-[44px] px-4 text-xs bg-success hover:bg-success/90 text-success-foreground font-semibold shadow-xs focus-visible:ring-2 focus-visible:ring-success"
                         aria-label={`قبول وتفعيل تسجيل ${studentName} في ${courseTitle}`}
                       >
                         <Check className="w-4 h-4 ml-1" />
@@ -261,7 +273,7 @@ export default function EnrollmentRequests() {
                           courseTitle,
                         )
                       }
-                      className="rounded-xl h-11 min-h-[44px] px-3.5 text-xs text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 focus-visible:ring-2 focus-visible:ring-emerald-500"
+                      className="rounded-xl h-11 min-h-[44px] px-3.5 text-xs text-success hover:bg-success/10 focus-visible:ring-2 focus-visible:ring-success"
                       aria-label={`إعادة قبول تسجيل ${studentName} في ${courseTitle}`}
                     >
                       إعادة القبول
@@ -273,6 +285,6 @@ export default function EnrollmentRequests() {
           })
         )}
       </div>
-    </div>
+    </Card>
   );
 }

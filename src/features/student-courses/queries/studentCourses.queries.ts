@@ -1,8 +1,24 @@
 import { queryOptions } from "@tanstack/react-query";
-import { getMyCourses, getLessonProgress, getLessonTask } from "../api";
+import {
+  getMyCourses,
+  getLesson,
+  getLessonProgress,
+  getLessonTask,
+  getInProgressLessons,
+  getCourseProgressSummary,
+} from "../api";
+import type { InProgressLesson, LessonDetail } from "../types";
 
 export const studentCourseQueries = {
   all: () => ["student-courses"] as const,
+
+  // تفاصيل درس محدد مع رابط/معرّف الفيديو المحمي
+  lesson: (lessonId: number | string) =>
+    queryOptions({
+      queryKey: [...studentCourseQueries.all(), "lesson", String(lessonId)] as const,
+      queryFn: (): Promise<LessonDetail> => getLesson(lessonId),
+      staleTime: 1000 * 60 * 5, // 5 minutes cache
+    }),
 
   // قائمة الكورسات المسجل بها الطالب
   enrolled: () =>
@@ -20,6 +36,14 @@ export const studentCourseQueries = {
       staleTime: 1000 * 60 * 2, // 2 minutes
     }),
 
+  // ملخص تقدم الكورس والدروس المكتملة
+  courseSummary: (courseId: number | string) =>
+    queryOptions({
+      queryKey: [...studentCourseQueries.all(), "summary", String(courseId)] as const,
+      queryFn: () => getCourseProgressSummary(courseId),
+      staleTime: 1000 * 60 * 2, // 2 minutes
+    }),
+
   // مهمة درس محدد
   lessonTask: (lessonId: number | string) =>
     queryOptions({
@@ -28,26 +52,26 @@ export const studentCourseQueries = {
       staleTime: 1000 * 60 * 10, // 10 minutes
     }),
 
-  // معرفات الدروس المكتملة في الكورس (مخزنة في الكاش لمنع التكرار)
-  completedLessons: (courseId: number | string, lessonIds: number[]) =>
+  // معرفات الدروس المكتملة في الكورس عبر مسار التلخيص المجمّع
+  completedLessons: (courseId: number | string, _lessonIds?: number[]) =>
     queryOptions({
-      queryKey: [
-        ...studentCourseQueries.all(),
-        "completed-lessons",
-        String(courseId),
-        lessonIds.join(","),
-      ] as const,
+      queryKey: [...studentCourseQueries.all(), "completed-lessons", String(courseId)] as const,
       queryFn: async (): Promise<number[]> => {
-        if (!lessonIds.length) return [];
-        const results = await Promise.all(
-          lessonIds.map((id) =>
-            getLessonProgress(id)
-              .then((p) => (p.completed ? id : null))
-              .catch(() => null),
-          ),
-        );
-        return results.filter((id): id is number => id !== null);
+        try {
+          const summary = await getCourseProgressSummary(courseId);
+          return summary.completed_lesson_ids ?? [];
+        } catch {
+          return [];
+        }
       },
       staleTime: 1000 * 60 * 5, // 5 minutes cache
+    }),
+
+  // الدروس الجاري تعلمها بطلب مفرد ومجمّع من الباك إند
+  inProgressLessons: () =>
+    queryOptions({
+      queryKey: [...studentCourseQueries.all(), "in-progress-lessons"] as const,
+      queryFn: (): Promise<InProgressLesson[]> => getInProgressLessons(),
+      staleTime: 1000 * 60 * 2, // 2 minutes
     }),
 };

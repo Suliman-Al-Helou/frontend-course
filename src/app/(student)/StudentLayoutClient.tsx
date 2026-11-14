@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Menu } from "lucide-react";
-import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+import DashboardSidebar from "./_components/DashboardSidebar";
 import Link from "next/link";
 import Image from "next/image";
 import type { User } from "@/types";

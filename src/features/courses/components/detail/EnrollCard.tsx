@@ -1,15 +1,16 @@
 "use client";
 
 import { useState, useRef } from "react";
-import Link from "next/link";
 import Image from "next/image";
-import { Clock, CheckCircle, BookOpen, Loader2, Play } from "lucide-react";
+import { Clock, CheckCircle, BookOpen, Play } from "lucide-react";
 import type { CourseDetail } from "../../index";
-import { useAuthStore } from "@/store/authStore";
+import { useCurrentUser } from "@/features/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { studentCourseQueries } from "@/features/student-courses";
 import api from "@/lib/api";
 import { notify } from "@/components/ui/sonner";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 export interface EnrollCardProps {
   course: CourseDetail;
@@ -25,7 +26,7 @@ export function EnrollCard({
   enrollmentStatus = null,
   onEnrollSuccess,
 }: EnrollCardProps) {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const { isAuthenticated } = useCurrentUser();
   const queryClient = useQueryClient();
   const isSubmittingRef = useRef(false);
   const [loading, setLoading] = useState(false);
@@ -80,145 +81,125 @@ export function EnrollCard({
   };
 
   return (
-    <>
-      <div className="bg-card rounded-2xl border border-border shadow-2xl overflow-hidden">
-        {/* Course Cover */}
-        {course.cover_image ? (
-          <div className="relative w-full h-44 bg-muted">
-            <Image
-              src={course.cover_image}
-              alt={course.title}
-              fill
-              sizes="(max-width: 768px) 100vw, 33vw"
-              className="object-cover"
-            />
-          </div>
-        ) : (
-          <div className="w-full h-44 bg-muted/60 flex items-center justify-center">
-            <BookOpen className="w-12 h-12 text-muted-foreground/40" />
-          </div>
-        )}
-
-        <div className="p-6">
-          {/* 1. غير مسجل دخول في الموقع */}
-          {!isAuthenticated ? (
-            <>
-              <div className="flex items-center gap-2 mb-4">
-                <CheckCircle className="w-5 h-5 text-success flex-shrink-0" />
-                <span className="text-sm text-success font-medium">
-                  {isFree ? "كورس مجاني 100%" : "ضمان استرداد ٧ أيام"}
-                </span>
-              </div>
-              <Link
-                href="/register"
-                className="w-full min-h-[44px] mb-3 inline-flex items-center justify-center bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-bold text-base transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-              >
-                سجّل وابدأ الآن
-              </Link>
-              <Link
-                href="/login"
-                className="w-full min-h-[44px] inline-flex items-center justify-center border border-border rounded-xl text-sm text-foreground/80 hover:bg-muted transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-              >
-                لديك حساب؟ سجّل دخولك
-              </Link>
-              <p className="text-center text-xs text-muted-foreground mt-3">
-                {isFree ? "سجّل الدخول للمشاهدة فوراً" : "الوصول الكامل بعد التسجيل والدفع"}
-              </p>
-            </>
-          ) : isFree ? (
-            /* 2. مسجل دخول والكورس مجاني: ابدأ المشاهدة فوراً */
-            <>
-              <div className="flex items-center gap-2 mb-4">
-                <CheckCircle className="w-5 h-5 text-success flex-shrink-0" />
-                <span className="text-sm text-success font-medium">كورس مجاني — متاح للمشاهدة</span>
-              </div>
-              {hasLessons ? (
-                <Link
-                  href={learnHref!}
-                  onClick={handleFreeStartLearning}
-                  className="w-full min-h-[44px] mb-3 inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-bold text-base transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-                >
-                  <Play className="w-4 h-4 fill-current" />
-                  {isEnrolled ? "تابع التعلم" : "ابدأ المشاهدة"}
-                </Link>
-              ) : (
-                <div className="w-full min-h-[44px] mb-3 inline-flex items-center justify-center gap-2 bg-muted text-muted-foreground rounded-xl font-bold text-base cursor-not-allowed">
-                  <BookOpen className="w-4 h-4" />
-                  الدروس قيد الإعداد
-                </div>
-              )}
-              <p className="text-center text-xs text-muted-foreground">
-                {hasLessons ? "يمكنك مشاهدة جميع الدروس مباشرة" : "سيتم إضافة الدروس قريبًا"}
-              </p>
-            </>
-          ) : (
-            /* 3. مسجل دخول والكورس مدفوع */
-            <>
-              {isEnrolled || enrollmentStatus === "approved" ? (
-                <>
-                  <div className="flex items-center gap-2 mb-4">
-                    <CheckCircle className="w-5 h-5 text-success flex-shrink-0" />
-                    <span className="text-sm text-success font-medium">
-                      أنت مسجّل في هذا الكورس ومقبول
-                    </span>
-                  </div>
-                  {hasLessons ? (
-                    <Link
-                      href={learnHref!}
-                      className="w-full min-h-[44px] mb-3 inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-bold text-base transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-                    >
-                      <Play className="w-4 h-4 fill-current" />
-                      تابع التعلم
-                    </Link>
-                  ) : (
-                    <div className="w-full min-h-[44px] mb-3 inline-flex items-center justify-center gap-2 bg-muted text-muted-foreground rounded-xl font-bold text-base cursor-not-allowed">
-                      <BookOpen className="w-4 h-4" />
-                      الدروس قيد الإعداد
-                    </div>
-                  )}
-                </>
-              ) : enrollmentStatus === "pending" ? (
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3 p-3 bg-warning/10 border border-warning/20 rounded-xl text-warning">
-                    <Clock className="w-5 h-5 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm font-bold">طلبك قيد المراجعة</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        تم إرسال طلبك للإدارة، وبانتظار الموافقة لتفعيل الكورس.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  {enrollmentStatus === "rejected" && (
-                    <div className="mb-3 p-3 bg-destructive/10 border border-destructive/20 rounded-xl text-xs text-destructive text-center">
-                      تم رفض طلبك السابق، يمكنك إعادة إرسال الطلب.
-                    </div>
-                  )}
-                  <button
-                    onClick={handleEnroll}
-                    disabled={loading}
-                    className="w-full min-h-[44px] mb-3 inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 disabled:opacity-60 text-primary-foreground rounded-xl font-bold text-base transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none cursor-pointer"
-                  >
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                    {enrollmentStatus === "rejected"
-                      ? "إعادة إرسال طلب التسجيل"
-                      : "طلب التسجيل في الكورس"}
-                  </button>
-                  <div className="flex items-center gap-2 mb-2">
-                    <CheckCircle className="w-5 h-5 text-success flex-shrink-0" />
-                    <span className="text-sm text-success font-medium">ضمان استرداد ٧ أيام</span>
-                  </div>
-                  <p className="text-center text-xs text-muted-foreground">
-                    الوصول الكامل بعد موافقة الإدارة والدفع
-                  </p>
-                </>
-              )}
-            </>
-          )}
+    <Card className="shadow-2xl overflow-hidden border-border bg-card">
+      {/* Course Cover */}
+      {course.cover_image ? (
+        <div className="relative w-full h-44 bg-muted">
+          <Image
+            src={course.cover_image}
+            alt={course.title}
+            fill
+            sizes="(max-width: 768px) 100vw, 33vw"
+            className="object-cover"
+          />
         </div>
-      </div>
-    </>
+      ) : (
+        <div className="w-full h-44 bg-muted/60 flex items-center justify-center">
+          <BookOpen className="w-12 h-12 text-muted-foreground/40" />
+        </div>
+      )}
+
+      <CardContent className="p-6">
+        {/* 1. غير مسجل دخول في الموقع */}
+        {!isAuthenticated ? (
+          <>
+            <div className="flex items-center gap-2 mb-4">
+              <CheckCircle className="w-5 h-5 text-success flex-shrink-0" />
+              <span className="text-sm text-success font-medium">
+                {isFree ? "كورس مجاني 100%" : "ضمان استرداد ٧ أيام"}
+              </span>
+            </div>
+            <Button href="/register" className="w-full mb-3">
+              سجّل وابدأ الآن
+            </Button>
+            <Button href="/login" variant="outline" className="w-full">
+              لديك حساب؟ سجّل دخولك
+            </Button>
+            <p className="text-center text-xs text-muted-foreground mt-3">
+              {isFree ? "سجّل الدخول للمشاهدة فوراً" : "الوصول الكامل بعد التسجيل والدفع"}
+            </p>
+          </>
+        ) : isFree ? (
+          /* 2. مسجل دخول والكورس مجاني: ابدأ المشاهدة فوراً */
+          <>
+            <div className="flex items-center gap-2 mb-4">
+              <CheckCircle className="w-5 h-5 text-success flex-shrink-0" />
+              <span className="text-sm text-success font-medium">كورس مجاني — متاح للمشاهدة</span>
+            </div>
+            {hasLessons ? (
+              <Button href={learnHref!} onClick={handleFreeStartLearning} className="w-full mb-3">
+                <Play className="w-4 h-4 fill-current" />
+                {isEnrolled ? "تابع التعلم" : "ابدأ المشاهدة"}
+              </Button>
+            ) : (
+              <Button disabled variant="secondary" className="w-full mb-3">
+                <BookOpen className="w-4 h-4" />
+                الدروس قيد الإعداد
+              </Button>
+            )}
+            <p className="text-center text-xs text-muted-foreground">
+              {hasLessons ? "يمكنك مشاهدة جميع الدروس مباشرة" : "سيتم إضافة الدروس قريبًا"}
+            </p>
+          </>
+        ) : (
+          /* 3. مسجل دخول والكورس مدفوع */
+          <>
+            {isEnrolled || enrollmentStatus === "approved" ? (
+              <>
+                <div className="flex items-center gap-2 mb-4">
+                  <CheckCircle className="w-5 h-5 text-success flex-shrink-0" />
+                  <span className="text-sm text-success font-medium">
+                    أنت مسجّل في هذا الكورس ومقبول
+                  </span>
+                </div>
+                {hasLessons ? (
+                  <Button href={learnHref!} className="w-full mb-3">
+                    <Play className="w-4 h-4 fill-current" />
+                    تابع التعلم
+                  </Button>
+                ) : (
+                  <Button disabled variant="secondary" className="w-full mb-3">
+                    <BookOpen className="w-4 h-4" />
+                    الدروس قيد الإعداد
+                  </Button>
+                )}
+              </>
+            ) : enrollmentStatus === "pending" ? (
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 p-3 bg-warning/10 border border-warning/20 rounded-xl text-warning">
+                  <Clock className="w-5 h-5 flex-shrink-0" />
+                  <div>
+                    <p className="text-sm font-bold">طلبك قيد المراجعة</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      تم إرسال طلبك للإدارة، وبانتظار الموافقة لتفعيل الكورس.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <>
+                {enrollmentStatus === "rejected" && (
+                  <div className="mb-3 p-3 bg-destructive/10 border border-destructive/20 rounded-xl text-xs text-destructive text-center">
+                    تم رفض طلبك السابق، يمكنك إعادة إرسال الطلب.
+                  </div>
+                )}
+                <Button onClick={handleEnroll} loading={loading} className="w-full mb-3">
+                  {enrollmentStatus === "rejected"
+                    ? "إعادة إرسال طلب التسجيل"
+                    : "طلب التسجيل في الكورس"}
+                </Button>
+                <div className="flex items-center gap-2 mb-2">
+                  <CheckCircle className="w-5 h-5 text-success flex-shrink-0" />
+                  <span className="text-sm text-success font-medium">ضمان استرداد ٧ أيام</span>
+                </div>
+                <p className="text-center text-xs text-muted-foreground">
+                  الوصول الكامل بعد موافقة الإدارة والدفع
+                </p>
+              </>
+            )}
+          </>
+        )}
+      </CardContent>
+    </Card>
   );
 }

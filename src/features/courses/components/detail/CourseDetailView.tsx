@@ -10,10 +10,10 @@ import {
   useCourseDetail,
   SkeletonCard,
 } from "../../index";
-import { useAuthStore } from "@/store/authStore";
-import api from "@/lib/api";
+import { useCurrentUser } from "@/features/auth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { QueryState } from "@/components/shared/QueryState";
+import { courseQueries } from "../../queries/courses.queries";
 
 interface Props {
   courseId: string;
@@ -26,22 +26,10 @@ export default function CourseDetailView({ courseId }: Props) {
   const courseQuery = useCourseDetail(isValidId ? id : "");
   const queryClient = useQueryClient();
 
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useCurrentUser();
 
   const enrollmentQuery = useQuery({
-    queryKey: ["courses", "enrollment", courseId],
-    queryFn: async () => {
-      const res = await api.get(`/courses/${courseId}/enrollment`);
-      const status = (res.data?.status ?? (res.data?.enrolled ? "approved" : null)) as
-        | "pending"
-        | "approved"
-        | "rejected"
-        | null;
-      return {
-        status,
-        isEnrolled: status === "approved" || Boolean(res.data?.enrolled),
-      };
-    },
+    ...courseQueries.enrollmentStatus(courseId),
     enabled: isAuthenticated && isValidId,
     retry: false,
   });
@@ -81,7 +69,7 @@ export default function CourseDetailView({ courseId }: Props) {
                   enrollmentStatus={enrollmentStatus}
                   onEnrollSuccess={() => {
                     void queryClient.invalidateQueries({
-                      queryKey: ["courses", "enrollment", courseId],
+                      queryKey: courseQueries.enrollmentStatus(courseId).queryKey,
                     });
                   }}
                 />

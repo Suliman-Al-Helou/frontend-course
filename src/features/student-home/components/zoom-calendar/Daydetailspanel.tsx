@@ -1,4 +1,5 @@
 import { CalendarDays } from "lucide-react";
+import { EmptyState } from "@/components/shared/states/EmptyState";
 import { MeetingDetails } from "./Meetingdetails";
 import { MiniCalendar } from "./Minicalendar";
 import { getStatus } from "./date-utils";
@@ -48,10 +49,11 @@ export function DayDetailsPanel({
         <h4 className="mb-3 text-sm font-semibold text-foreground">لقاءات هذا اليوم</h4>
 
         {dayMeetings.length === 0 ? (
-          <div className="rounded-md border border-dashed border-border px-4 py-8 text-center">
-            <CalendarDays className="mx-auto size-5 text-muted-foreground" aria-hidden />
-            <p className="mt-2 text-sm text-foreground">لا توجد لقاءات في هذا اليوم</p>
-          </div>
+          <EmptyState
+            icon={CalendarDays}
+            title="لا توجد لقاءات في هذا اليوم"
+            description="اختر يوماً آخر من التقويم للاطلاع على جدول الحصص"
+          />
         ) : (
           <div className="space-y-3">
             {dayMeetings.map((meeting) => (

@@ -192,4 +192,5 @@ export const Modal = Object.assign(ModalRoot, {
   Footer: ModalFooter,
 });
 
+export { ModalRoot, ModalHeader, ModalBody, ModalFooter };
 export default Modal;

@@ -1,11 +1,11 @@
 "use client";
 
-import { useAuthStore } from "@/store/authStore";
+import { useCurrentUser } from "@/features/auth";
 import { User, Mail, GraduationCap } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 
 export default function ProfilePage() {
-  const user = useAuthStore((state) => state.user);
+  const { user } = useCurrentUser();
 
   return (
     <div className="min-h-screen bg-background" dir="rtl">

@@ -2,8 +2,10 @@
 
 import { useState, useRef, useEffect, useId } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { X, Layers, Sparkles, DollarSign } from "lucide-react";
+import { Layers, Sparkles, DollarSign } from "lucide-react";
 import { notify } from "@/components/ui/sonner";
+import { Button } from "@/components/ui/button";
+import { Modal, ModalHeader, ModalBody } from "@/components/ui/modal";
 import { instructorQueries } from "@/features/instructors";
 import {
   useCreateCourseMutation,
@@ -163,43 +165,13 @@ export default function CourseFormModal({ course, isOpen, onClose }: Props) {
   };
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby={titleId}
-      aria-busy={isSaving}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      dir="rtl"
-    >
-      <button
-        type="button"
-        tabIndex={-1}
-        aria-label="إغلاق النافذة"
-        className="fixed inset-0 bg-black/60 backdrop-blur-xs cursor-default"
-        onClick={isSaving ? undefined : onClose}
+    <Modal isOpen={isOpen} onClose={onClose} size="xl" preventClose={isSaving}>
+      <ModalHeader
+        title={isEdit ? "تعديل الكورس" : "إضافة كورس جديد"}
+        description="قم بتهيئة بيانات الكورس، التسعير، والمنهج الأكاديمي"
       />
-      <div className="relative z-10 bg-card border border-border rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none">
-        {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-border shrink-0 bg-muted/10">
-          <div>
-            <h2 id={titleId} className="font-bold text-foreground text-base">
-              {isEdit ? "تعديل الكورس" : "إضافة كورس جديد"}
-            </h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              قم بتهيئة بيانات الكورس، التسعير، والمنهج الأكاديمي
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            disabled={isSaving}
-            className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-            aria-label="إغلاق النافذة"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
 
+      <ModalBody className="p-0 flex flex-col max-h-[75vh] overflow-hidden">
         {/* Tab Controls */}
         <div className="flex border-b border-border bg-muted/20 px-5 pt-2 gap-2 shrink-0">
           <button
@@ -339,24 +311,21 @@ export default function CourseFormModal({ course, isOpen, onClose }: Props) {
 
           {/* Actions */}
           <div className="flex gap-3 pt-4 border-t border-border">
-            <button
+            <Button
               type="button"
+              variant="outline"
               onClick={onClose}
               disabled={isSaving}
-              className="flex-1 min-h-[44px] rounded-xl border border-input text-foreground text-sm font-medium hover:bg-muted transition-colors disabled:opacity-50"
+              className="flex-1"
             >
               إلغاء
-            </button>
-            <button
-              type="submit"
-              disabled={isSaving}
-              className="flex-1 min-h-[44px] rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 disabled:opacity-60 transition-colors shadow-sm"
-            >
-              {isSaving ? "جارٍ الحفظ..." : isEdit ? "حفظ التعديلات" : "إضافة الكورس"}
-            </button>
+            </Button>
+            <Button type="submit" loading={isSaving} className="flex-1">
+              {isEdit ? "حفظ التعديلات" : "إضافة الكورس"}
+            </Button>
           </div>
         </form>
-      </div>
-    </div>
+      </ModalBody>
+    </Modal>
   );
 }

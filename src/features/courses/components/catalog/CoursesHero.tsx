@@ -1,7 +1,6 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { BookOpen } from "lucide-react";
 import { SearchInput } from "@/components/ui/search-input";
 
 export interface CoursesHeroProps {
@@ -21,11 +20,6 @@ export function CoursesHero({ search, onSearch, totalCourses = 60 }: CoursesHero
         transition={{ duration: 0.5 }}
         className="max-w-4xl mx-auto"
       >
-        <div className="inline-flex items-center gap-2 bg-white/10 text-main rounded-full px-4 py-1.5 text-sm font-medium mb-6 backdrop-blur-xs">
-          <BookOpen className="w-4 h-4" />
-          جميع الكورسات
-        </div>
-
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-main mb-4 tracking-tight">
           اختر مسارك التقني
         </h1>
@@ -42,7 +36,7 @@ export function CoursesHero({ search, onSearch, totalCourses = 60 }: CoursesHero
             value={search}
             onChange={(e) => onSearch(e.target.value)}
             onClear={() => onSearch("")}
-            className="h-12 py-3 shadow-2xl rounded-2xl bg-card border-border"
+            className="shadow-xl bg-card border-border"
           />
         </div>
       </motion.div>

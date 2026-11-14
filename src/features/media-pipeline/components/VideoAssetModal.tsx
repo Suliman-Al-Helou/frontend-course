@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  X,
   Loader2,
   Video,
   Film,
@@ -17,7 +16,9 @@ import {
   FileVideo,
   Ban,
 } from "lucide-react";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -314,59 +315,31 @@ export default function VideoAssetModal({
   const uploadedMb = (uploadedBytes / (1024 * 1024)).toFixed(1);
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="video-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
-    >
-      <button
-        type="button"
-        tabIndex={-1}
-        aria-label="إغلاق النافذة"
-        className="fixed inset-0 bg-background/80 backdrop-blur-sm cursor-default"
-        onClick={isSubmitting ? undefined : onClose}
-      />
-      <div className="relative z-10 bg-card border border-border rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none">
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-border flex items-center justify-between shrink-0 bg-muted/30">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
-              <Film className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 id="video-modal-title" className="text-base font-bold text-foreground">
-                  {editingAsset ? "تعديل الفيديو" : "رفع وإدراج وسائط الفيديو"}
-                </h2>
-                {ytStatus?.connected ? (
-                  <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3" /> متصل بـ YouTube
-                  </span>
-                ) : (
-                  <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold">
-                    غير متصل
-                  </span>
-                )}
-              </div>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                {ytStatus?.connected
-                  ? `القناة: ${ytStatus.channel_title}`
-                  : "رفع ملفات الفيديو إلى YouTube أو إدراج روابط مباشرة"}
-              </p>
-            </div>
+    <Modal isOpen={open} onClose={onClose} size="lg">
+      <ModalHeader
+        title={
+          <div className="flex items-center gap-2">
+            <span>{editingAsset ? "تعديل الفيديو" : "رفع وإدراج وسائط الفيديو"}</span>
+            <Badge variant={ytStatus?.connected ? "success" : "warning"} size="sm">
+              {ytStatus?.connected ? (
+                <span className="flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3" /> متصل بـ YouTube
+                </span>
+              ) : (
+                "غير متصل"
+              )}
+            </Badge>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            disabled={isSubmitting}
-            className="h-10 w-10 rounded-xl flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-colors disabled:opacity-50"
-            aria-label="إغلاق النافذة"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+        }
+        description={
+          ytStatus?.connected
+            ? `القناة: ${ytStatus.channel_title}`
+            : "رفع ملفات الفيديو إلى YouTube أو إدراج روابط مباشرة"
+        }
+        icon={<Film className="w-5 h-5 text-primary" />}
+      />
 
+      <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
         {/* Mode Selector Tabs */}
         {!editingAsset && (
           <div className="px-6 pt-3 shrink-0 flex items-center gap-2 border-b border-border bg-muted/20 pb-3">
@@ -400,8 +373,7 @@ export default function VideoAssetModal({
           </div>
         )}
 
-        {/* Form Body */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-4">
+        <ModalBody className="p-6 space-y-4">
           {error && (
             <div
               role="alert"
@@ -417,14 +389,12 @@ export default function VideoAssetModal({
             <div
               role="alert"
               aria-live="polite"
-              className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/10 text-foreground text-xs space-y-3"
+              className="p-4 rounded-xl border border-warning/30 bg-warning/10 text-foreground text-xs space-y-3"
             >
               <div className="flex items-start gap-2.5">
-                <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
+                <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5 text-warning" />
                 <div className="space-y-1">
-                  <p className="font-bold text-amber-900 dark:text-amber-200">
-                    قناة YouTube غير مربوطة بالمنصة بعد
-                  </p>
+                  <p className="font-bold text-foreground">قناة YouTube غير مربوطة بالمنصة بعد</p>
                   <p className="text-muted-foreground leading-relaxed">
                     يتطلب رفع ملفات الفيديو من جهازك اتصالاً بقناة YouTube معتمدة لإنشاء قوائم التشغيل
                     التلقائية وحفظ الفيديوهات غير المدرجة (Unlisted).
@@ -437,11 +407,11 @@ export default function VideoAssetModal({
                   size="sm"
                   onClick={handleConnectYouTube}
                   disabled={isConnectingYouTube || isSubmitting}
-                  className="h-10 px-4 rounded-xl text-xs font-semibold bg-red-600 hover:bg-red-700 text-white gap-2 shadow-xs"
+                  className="h-10 px-4 rounded-xl text-xs font-semibold bg-destructive hover:bg-destructive/90 text-destructive-foreground gap-2 shadow-xs"
                 >
                   {isConnectingYouTube ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin motion-reduce:animate-none" />
                       <span>جارٍ الاتصال بـ Google...</span>
                     </>
                   ) : (
@@ -635,7 +605,14 @@ export default function VideoAssetModal({
                     </span>
                     <span className="font-mono text-primary font-bold">{uploadProgress}%</span>
                   </div>
-                  <div className="w-full h-2 rounded-full bg-border overflow-hidden">
+                  <div
+                    role="progressbar"
+                    aria-valuenow={uploadProgress}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-label="نسبة تقدم رفع الفيديو"
+                    className="w-full h-2 rounded-full bg-border overflow-hidden"
+                  >
                     <div
                       className="h-full bg-primary transition-all duration-300 motion-reduce:transition-none rounded-full"
                       style={{ width: `${uploadProgress}%` }}
@@ -668,7 +645,7 @@ export default function VideoAssetModal({
                   <span>رابط الفيديو أو معرف YouTube (11 خانة) *</span>
                 </span>
                 {extractedId && (
-                  <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono font-bold flex items-center gap-1">
+                  <span className="text-[11px] text-success font-mono font-bold flex items-center gap-1">
                     <CheckCircle2 className="w-3 h-3" /> تم استخراج المعرّف: {extractedId}
                   </span>
                 )}
@@ -742,37 +719,34 @@ export default function VideoAssetModal({
               className="w-full rounded-xl border border-input bg-background p-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary resize-none"
             />
           </div>
+        </ModalBody>
 
-          {/* Footer Actions */}
-          <div className="pt-3 border-t border-border flex items-center justify-end gap-2.5">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-              disabled={isSubmitting}
-              className="rounded-xl h-10 px-4 text-xs font-medium"
-            >
-              إلغاء
-            </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="rounded-xl h-10 px-5 text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5"
-            >
-              {isSubmitting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-              <span>
-                {isSubmitting
-                  ? "جارٍ الرفع والحفظ..."
-                  : editingAsset
-                    ? "حفظ التعديلات"
-                    : mode === "upload"
-                      ? "بدء الرفع الآمن"
-                      : "إدراج الفيديو"}
-              </span>
-            </Button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <ModalFooter>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            disabled={isSubmitting}
+            className="rounded-xl h-10 px-4 text-xs font-medium"
+          >
+            إلغاء
+          </Button>
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            loading={isSubmitting}
+            className="rounded-xl h-10 px-5 text-xs font-semibold"
+          >
+            {isSubmitting
+              ? "جارٍ الرفع والحفظ..."
+              : editingAsset
+                ? "حفظ التعديلات"
+                : mode === "upload"
+                  ? "بدء الرفع الآمن"
+                  : "إدراج الفيديو"}
+          </Button>
+        </ModalFooter>
+      </form>
+    </Modal>
   );
 }

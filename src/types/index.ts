@@ -86,14 +86,17 @@ export interface TaskResult {
   passed: boolean;
   pass_score: number;
   message?: string;
+  reveal_answers?: boolean;
+  attempts_used?: number;
+  attempts_remaining?: number;
   // Backend returns results as object keyed by question_id
   results: Record<
     string,
     {
       correct: boolean;
       your_answer: string;
-      correct_answer: string;
-      explanation: string | null;
+      correct_answer?: string;
+      explanation?: string | null;
       type?: string;
       pending?: boolean;
     }

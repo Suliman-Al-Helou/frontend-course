@@ -5,8 +5,9 @@ import Link from "next/link";
 import { Instagram, LucideIcon, MessageCircle } from "lucide-react";
 import LogoIcon from "@/components/Logo";
 import { Button } from "@/components/ui/button";
-import { useCourses } from "@/hooks/useCourses";
-import { WHATSAPP_URL } from "@/lib/contact";
+import { useQuery } from "@tanstack/react-query";
+import { courseQueries } from "@/features/courses";
+import { WHATSAPP_URL } from "@/features/contact";
 
 // 2. Types & Data
 interface SocialLink {
@@ -70,8 +71,14 @@ function Brand() {
 }
 
 function CoursesColumn() {
-  const { data: courses = [], isPending } = useCourses();
-  const topCourses = courses.slice(0, 5);
+  const { data: topCourses = [], isPending } = useQuery({
+    ...courseQueries.list(),
+    select: (allCourses) =>
+      allCourses.slice(0, 5).map((course) => ({
+        id: Number(course.id),
+        title: String(course.title ?? ""),
+      })),
+  });
 
   return (
     <div>

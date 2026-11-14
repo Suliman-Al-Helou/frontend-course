@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/shared/Themetoggle";
-import { useAuthStore } from "@/store/authStore";
+import { useCurrentUser } from "@/features/auth";
 import { cn } from "@/lib/utils";
 import InstallButton from "@/components/InstallButton";
 
@@ -23,7 +23,7 @@ function AuthActions({
   stacked?: boolean;
   onNavigate?: () => void;
 }) {
-  const { isAuthenticated, isLoading, logout, user } = useAuthStore();
+  const { isAuthenticated, isLoading, logout, user } = useCurrentUser();
   const width = stacked ? "w-full" : undefined;
   const dashboardHref = user?.role === "admin" ? "/admin" : "/dashboard";
 

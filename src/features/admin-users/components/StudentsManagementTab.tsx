@@ -14,6 +14,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { SearchInput } from "@/components/ui/search-input";
 import { Avatar } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import { notify } from "@/components/ui/sonner";
 import { adminUserQueries } from "../queries/adminUsers.queries";
 import { useDeleteUserMutation } from "../queries/adminUsers.mutations";
@@ -25,6 +27,22 @@ import { authQueries } from "@/features/auth";
 import DeleteStudentDialog from "./DeleteStudentDialog";
 import StudentDetailsModal from "./StudentDetailsModal";
 import type { AdminUser, UserFilterStatus } from "../types";
+
+function formatStudentsCount(count: number): string {
+  if (count === 0) return "لا يوجد طلاب";
+  if (count === 1) return "طالب واحد";
+  if (count === 2) return "طالبان";
+  if (count >= 3 && count <= 10) return `${count} طلاب`;
+  return `${count} طالباً`;
+}
+
+function formatCoursesCount(count: number, type?: "مدفوع" | "مجاني"): string {
+  if (count === 0) return type ? `لا يوجد كورسات ${type}ة` : "لا يوجد كورسات";
+  if (count === 1) return type ? `كورس ${type} واحد` : "كورس واحد";
+  if (count === 2) return type ? `كورسان ${type}ان` : "كورسان";
+  if (count >= 3 && count <= 10) return type ? `${count} كورسات ${type}ة` : `${count} كورسات`;
+  return type ? `${count} كورساً ${type}اً` : `${count} كورساً`;
+}
 
 export default function StudentsManagementTab() {
   const { data: users = [], isLoading: isLoadingUsers } = useQuery(adminUserQueries.list());
@@ -155,7 +173,7 @@ export default function StudentsManagementTab() {
           </div>
           <div className="flex items-center gap-2">
             <span className="text-xs bg-muted px-3 py-1.5 rounded-full text-foreground font-medium">
-              إجمالي الطلاب: {students.length}
+              إجمالي الطلاب: {formatStudentsCount(students.length)}
             </span>
           </div>
         </div>
@@ -198,8 +216,8 @@ export default function StudentsManagementTab() {
               onClick={() => setFilter("paid")}
               className={`px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all ${
                 filter === "paid"
-                  ? "bg-emerald-600 text-white shadow-2xs"
-                  : "text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10"
+                  ? "bg-success text-white shadow-2xs"
+                  : "text-success hover:bg-success/10"
               }`}
             >
               <DollarSign className="w-3.5 h-3.5" />
@@ -221,7 +239,7 @@ export default function StudentsManagementTab() {
       </div>
 
       {/* Table Container */}
-      <div className="bg-card border border-border rounded-2xl shadow-2xs overflow-hidden">
+      <Card className="shadow-2xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -284,7 +302,10 @@ export default function StudentsManagementTab() {
                         </div>
                       </td>
 
-                      <td className="px-5 py-4 text-xs font-mono text-muted-foreground">
+                      <td
+                        className="px-5 py-4 text-xs font-mono text-muted-foreground text-left"
+                        dir="ltr"
+                      >
                         {student.email}
                       </td>
 
@@ -293,24 +314,24 @@ export default function StudentsManagementTab() {
                           <div className="flex items-center gap-1.5 flex-wrap">
                             {/* Paid badge with Green & $ */}
                             {stats.paidCount > 0 && (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25">
+                              <Badge variant="success" size="sm" shape="rounded">
                                 <DollarSign className="w-3.5 h-3.5" />
-                                {stats.paidCount} مدفوع
-                              </span>
+                                {formatCoursesCount(stats.paidCount, "مدفوع")}
+                              </Badge>
                             )}
 
                             {/* Free badge */}
                             {stats.freeCount > 0 && (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                              <Badge variant="primary" size="sm" shape="rounded">
                                 <BookOpen className="w-3 h-3" />
-                                {stats.freeCount} مجاني
-                              </span>
+                                {formatCoursesCount(stats.freeCount, "مجاني")}
+                              </Badge>
                             )}
                           </div>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground border border-border">
+                          <Badge variant="secondary" size="sm" shape="rounded">
                             بدون كورسات
-                          </span>
+                          </Badge>
                         )}
                       </td>
 
@@ -327,7 +348,7 @@ export default function StudentsManagementTab() {
                             variant="outline"
                             size="sm"
                             onClick={() => setSelectedStudent(student)}
-                            className="h-8 rounded-lg text-xs gap-1 hover:bg-primary/10 hover:text-primary hover:border-primary/30"
+                            className="h-9 min-h-[36px] rounded-lg text-xs gap-1 hover:bg-primary/10 hover:text-primary hover:border-primary/30"
                           >
                             <Eye className="w-3.5 h-3.5" />
                             ملف الطالب
@@ -339,7 +360,7 @@ export default function StudentsManagementTab() {
                               variant="outline"
                               size="sm"
                               onClick={() => setDeletingStudent(student)}
-                              className="h-8 rounded-lg text-xs gap-1 border-destructive/20 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                              className="h-9 min-h-[36px] rounded-lg text-xs gap-1 border-destructive/20 text-destructive hover:bg-destructive/10 hover:text-destructive"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                               حذف
@@ -359,7 +380,7 @@ export default function StudentsManagementTab() {
             </tbody>
           </table>
         </div>
-      </div>
+      </Card>
 
       {/* Student Details Dossier Modal */}
       {selectedStudent && (

@@ -1,8 +1,8 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { joinZoomMeeting } from "@/lib/api/studentHome";
-import { queryKeys } from "@/lib/queryKeys";
+import { joinZoomMeeting } from "../api";
+import { studentHomeKeys } from "./studentHome.queries";
 import { mapApiError } from "@/lib/errors/mapApiError";
 import { notify } from "@/lib/toast";
 import type { ZoomMeeting } from "../types";
@@ -19,9 +19,8 @@ export function useJoinZoomMeeting() {
     mutationFn: ({ meeting }: JoinVariables) => joinZoomMeeting(meeting.id),
     onSuccess: ({ zoom_link }, { meeting, popup }) => {
       // "joined" only. "attended" is set by the server after code/manual confirmation.
-      queryClient.setQueriesData<ZoomMeeting[]>(
-        { queryKey: queryKeys.studentHome.zoomAll() },
-        (old) => old?.map((m) => (m.id === meeting.id ? { ...m, joined: true } : m)),
+      queryClient.setQueriesData<ZoomMeeting[]>({ queryKey: studentHomeKeys.zoomAll() }, (old) =>
+        old?.map((m) => (m.id === meeting.id ? { ...m, joined: true } : m)),
       );
 
       if (popup) {

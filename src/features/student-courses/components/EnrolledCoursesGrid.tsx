@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { BookOpen, GraduationCap } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { studentCourseQueries } from "../queries/studentCourses.queries";
 import { EnrolledCourseCard } from "./EnrolledCourseCard";
 import type { StudentEnrollment } from "../types";
@@ -49,19 +51,16 @@ export function EnrolledCoursesGrid({ initialEnrollments }: EnrolledCoursesGridP
 
   if (isError) {
     return (
-      <div
-        role="alert"
-        className="text-center py-16 bg-card border border-destructive/20 rounded-2xl p-6"
-      >
+      <Card role="alert" className="text-center py-16 border-destructive/20 p-6">
         <p className="text-destructive font-semibold mb-2">تعذر تحميل الكورسات</p>
         <p className="text-muted-foreground text-sm">يرجى المحاولة مرة أخرى لاحقاً</p>
-      </div>
+      </Card>
     );
   }
 
   if (!enrollments || enrollments.length === 0) {
     return (
-      <div className="text-center py-16 bg-card border border-border rounded-2xl p-8 max-w-xl mx-auto">
+      <Card className="text-center py-16 p-8 max-w-xl mx-auto">
         <div className="w-16 h-16 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4">
           <GraduationCap className="w-8 h-8" aria-hidden="true" />
         </div>
@@ -69,14 +68,13 @@ export function EnrolledCoursesGrid({ initialEnrollments }: EnrolledCoursesGridP
         <p className="text-sm text-muted-foreground mb-6">
           استكشف المسارات التعليمية المتاحة وابدأ رحلتك البرمجية الاحترافية اليوم.
         </p>
-        <Link
-          href="/courses"
-          className="inline-flex items-center justify-center min-h-[44px] px-6 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
-        >
-          <BookOpen className="w-4 h-4 me-2" aria-hidden="true" />
-          <span>تصفح الكورسات المتاحة</span>
-        </Link>
-      </div>
+        <Button asChild className="px-6">
+          <Link href="/courses">
+            <BookOpen className="w-4 h-4 ml-2" aria-hidden="true" />
+            <span>تصفح الكورسات المتاحة</span>
+          </Link>
+        </Button>
+      </Card>
     );
   }
 

@@ -7,7 +7,7 @@ import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { Button } from "@/components/ui/button";
 import { studentCourseQueries } from "@/features/student-courses";
-import { useAuthStore } from "@/store/authStore";
+import { useCurrentUser } from "@/features/auth";
 import { courseQueries } from "../../queries/courses.queries";
 import CourseCard from "../CourseCard";
 import { SkeletonCard } from "../CourseCardSkeleton";
@@ -19,7 +19,7 @@ import { getCourseLinks } from "../../utils/courseLinks";
 export default function CoursesCatalogView() {
   const [search, setSearch] = useState("");
   const [level, setLevel] = useState("الكل");
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useCurrentUser();
 
   const { data: enrolledIds = new Set<number>() } = useQuery({
     ...studentCourseQueries.enrolled(),

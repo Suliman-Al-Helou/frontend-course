@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { Avatar } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
-import { useAuthStore } from "@/store/authStore";
+import { useCurrentUser } from "@/features/auth";
 
 function getGreeting(hour: number): string {
   if (hour < 12) return "صباح الخير";
@@ -12,8 +12,7 @@ function getGreeting(hour: number): string {
 }
 
 export default function HomeHeader() {
-  const user = useAuthStore((state) => state.user);
-  const isLoading = useAuthStore((state) => state.isLoading);
+  const { user, isLoading } = useCurrentUser();
 
   const greeting = useMemo(() => {
     return getGreeting(new Date().getHours());

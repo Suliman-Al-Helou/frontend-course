@@ -35,15 +35,15 @@ export function BrandSide() {
       {/* Trust & Community Signals */}
       <div className="relative z-10 grid grid-cols-3 gap-4 pt-4 border-t border-white/10 text-xs text-white/70">
         <div className="flex items-center gap-1.5">
-          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+          <CheckCircle2 className="w-3.5 h-3.5 text-success shrink-0" />
           <span>تطبيق عملي من اليوم الأول</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+          <CheckCircle2 className="w-3.5 h-3.5 text-success shrink-0" />
           <span>لقاءات مباشرة مع المدربين</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+          <CheckCircle2 className="w-3.5 h-3.5 text-success shrink-0" />
           <span>مجتمع برمجي تفاعلي</span>
         </div>
       </div>

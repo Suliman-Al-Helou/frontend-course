@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export interface CourseBottomCtaProps {
   isFree: boolean;
@@ -19,29 +19,23 @@ export function CourseBottomCta({ isFree, enrolled, isAuthenticated }: CourseBot
   return (
     <section
       aria-labelledby="cta-heading"
-      className="mt-16 bg-gradient-to-br from-primary to-primary/85 rounded-3xl p-8 sm:p-12 text-center text-primary-foreground shadow-xl"
+      className="mt-16 rounded-2xl border border-border bg-card p-8 sm:p-12 text-center shadow-md"
     >
-      <h3 id="cta-heading" className="text-2xl font-bold mb-3">
+      <h3 id="cta-heading" className="text-2xl font-bold text-foreground mb-3">
         مستعد تبدأ؟
       </h3>
-      <p className="text-primary-foreground/80 mb-6 max-w-xl mx-auto text-base">
+      <p className="text-muted-foreground mb-6 max-w-xl mx-auto text-base">
         سجّل الآن وابدأ الكورس فوراً — الوصول الكامل بعد موافقة الإدارة
       </p>
 
       {isAuthenticated ? (
-        <button
-          onClick={scrollToTop}
-          className="inline-flex items-center justify-center bg-background text-foreground hover:bg-background/90 rounded-xl px-10 py-3 font-bold transition-colors cursor-pointer min-h-[44px] focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-        >
+        <Button onClick={scrollToTop} size="lg" className="px-10">
           سجّل وابدأ الآن
-        </button>
+        </Button>
       ) : (
-        <Link
-          href="/register"
-          className="inline-flex items-center justify-center bg-background text-foreground hover:bg-background/90 rounded-xl px-10 py-3 font-bold transition-colors min-h-[44px] focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-        >
+        <Button href="/register" size="lg" className="px-10">
           أنشئ حساباً مجانياً
-        </Link>
+        </Button>
       )}
     </section>
   );

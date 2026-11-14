@@ -3,6 +3,8 @@
 import { useState, useRef } from "react";
 import { Video, Clock, Eye, Pencil, Trash2, Check, X, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { extractYouTubeVideoId } from "@/lib/youtube";
 import LessonTaskEditor from "./LessonTaskEditor";
 import type { AdminLesson } from "../../types";
@@ -71,26 +73,26 @@ export default function LessonRow({ lesson, onUpdate, onDelete }: Props) {
 
           {isEditing ? (
             <div className="flex-1 grid sm:grid-cols-3 gap-2">
-              <input
+              <Input
                 placeholder="عنوان الدرس"
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
-                className="h-8 rounded-lg border border-input bg-background px-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-primary col-span-2 sm:col-span-1"
+                className="h-8 min-h-0 text-xs px-2.5 col-span-2 sm:col-span-1"
               />
-              <input
+              <Input
                 placeholder="رابط YouTube أو المعرف (ID)"
                 value={editVideoId}
                 onChange={(e) => setEditVideoId(e.target.value)}
                 onBlur={() => setEditVideoId(extractYouTubeVideoId(editVideoId))}
-                className="h-8 rounded-lg border border-input bg-background px-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-primary"
+                className="h-8 min-h-0 text-xs px-2.5"
               />
               <div className="flex items-center gap-2">
-                <input
+                <Input
                   type="number"
                   placeholder="المدة (دقيقة)"
                   value={editDuration}
                   onChange={(e) => setEditDuration(e.target.value)}
-                  className="w-20 h-8 rounded-lg border border-input bg-background px-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="w-20 h-8 min-h-0 text-xs px-2"
                 />
                 <label className="flex items-center gap-1.5 text-xs cursor-pointer select-none">
                   <input
@@ -110,9 +112,9 @@ export default function LessonRow({ lesson, onUpdate, onDelete }: Props) {
                   {lesson.title}
                 </p>
                 {lesson.is_preview && (
-                  <span className="text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                  <Badge variant="success" size="sm" shape="rounded">
                     <Eye className="w-3 h-3" /> معاينة
-                  </span>
+                  </Badge>
                 )}
               </div>
               <div className="flex items-center gap-3 text-[11px] text-muted-foreground mt-0.5">

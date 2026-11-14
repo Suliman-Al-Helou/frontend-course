@@ -1,7 +1,6 @@
 import { useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useRegisterMutation } from "@/features/auth";
-import { useAuthStore } from "@/store/authStore";
 import { registerSchema } from "@/lib/validations/auth";
 import { flattenZodErrors } from "@/lib/validations/flattenZodErrors";
 import { handleFormError } from "@/lib/errors/handleFormError";
@@ -19,7 +18,6 @@ export interface RegisterForm {
 export function useRegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const setAuth = useAuthStore((state) => state.setAuth);
   const registerMutation = useRegisterMutation();
 
   const [form, setForm] = useState<RegisterForm>({
@@ -58,7 +56,6 @@ export function useRegisterForm() {
         password: form.password,
         password_confirmation: form.confirm,
       });
-      setAuth(data.user);
       notify.success(SUCCESS_CODES.AUTH_REGISTER_OK);
 
       // توجيه ذكي: قراءة باراميتر redirect إن وُجد أو التوجيه للوحة الطالب

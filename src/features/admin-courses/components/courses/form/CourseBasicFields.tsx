@@ -7,6 +7,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import type { Instructor } from "@/types";
 import type { CourseLevel, CourseStatus } from "../../../types";
 
@@ -54,19 +56,14 @@ export default function CourseBasicFields({
     <div className="space-y-4">
       {/* عنوان الكورس */}
       <div className="space-y-1.5">
-        <label htmlFor="course-title-field" className="text-sm font-medium text-foreground">
-          عنوان الكورس *
-        </label>
-        <input
+        <Label htmlFor="course-title-field">عنوان الكورس *</Label>
+        <Input
           id="course-title-field"
           placeholder="مثال: هندسة الواجهات الأمامية المتقدمة مع Next.js"
           value={title}
           onChange={(e) => onTitleChange(e.target.value)}
           aria-invalid={!!errors.title}
           aria-describedby={errors.title ? "title-error" : undefined}
-          className={`w-full h-11 rounded-xl border bg-background px-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all ${
-            errors.title ? "border-destructive text-destructive" : "border-input"
-          }`}
         />
         {errors.title && (
           <span id="title-error" className="text-destructive text-xs block font-medium">
@@ -77,9 +74,7 @@ export default function CourseBasicFields({
 
       {/* اختيار المدرب */}
       <div className="space-y-1.5">
-        <label htmlFor="course-instructor-field" className="text-sm font-medium text-foreground">
-          اسم المدرب المسؤول *
-        </label>
+        <Label htmlFor="course-instructor-field">اسم المدرب المسؤول *</Label>
         <Select dir="rtl" value={instructorId} onValueChange={onInstructorChange}>
           <SelectTrigger id="course-instructor-field" className="w-full h-11 rounded-xl">
             <SelectValue
@@ -112,9 +107,7 @@ export default function CourseBasicFields({
       {/* المستوى والحالة بتنسيق موحد باستخدام Radix Select */}
       <div className="grid sm:grid-cols-2 gap-3">
         <div className="space-y-1.5">
-          <label htmlFor="course-level-select" className="text-sm font-medium text-foreground">
-            المستوى التعليمي *
-          </label>
+          <Label htmlFor="course-level-select">المستوى التعليمي *</Label>
           <Select
             dir="rtl"
             value={level}
@@ -134,9 +127,7 @@ export default function CourseBasicFields({
         </div>
 
         <div className="space-y-1.5">
-          <label htmlFor="course-status-select" className="text-sm font-medium text-foreground">
-            حالة النشر *
-          </label>
+          <Label htmlFor="course-status-select">حالة النشر *</Label>
           <Select
             dir="rtl"
             value={status}

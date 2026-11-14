@@ -3,13 +3,13 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight, ArrowLeft, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
+import { ArrowRight, ArrowLeft, Loader2, AlertCircle, CheckCircle2, Lock } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import api from "@/lib/api";
 import { courseQueries } from "@/features/courses";
 import {
   studentCourseQueries,
   saveLessonProgress,
+  enrollInCourse,
   VideoPlayer,
   LessonSidebar,
   TaskSection,
@@ -28,6 +28,17 @@ export default function LessonPage() {
     isLoading: courseLoading,
     isError: courseError,
   } = useQuery(courseQueries.detail(courseId));
+
+  // 1.1 استعلام بيانات الدرس المحمي ومصدر الفيديو المصرح به
+  const {
+    data: lessonDetail,
+    isLoading: lessonLoading,
+    isError: lessonError,
+    error: lessonErrorObj,
+  } = useQuery({
+    ...studentCourseQueries.lesson(numericLessonId),
+    enabled: Boolean(numericLessonId),
+  });
 
   // 2. استعلام تقدم الدرس الحالي
   const { data: progressData } = useQuery(studentCourseQueries.lessonProgress(numericLessonId));
@@ -76,8 +87,7 @@ export default function LessonPage() {
     const isFree = Number(course.price ?? 0) === 0 || Boolean(course.is_public);
     if (isFree && course.id) {
       hasAutoEnrolledRef.current = true;
-      api
-        .post(`/courses/${course.id}/enroll`)
+      enrollInCourse(course.id)
         .then(() => {
           void queryClient.invalidateQueries({
             queryKey: studentCourseQueries.enrolled().queryKey,
@@ -99,13 +109,16 @@ export default function LessonPage() {
       });
 
       // إبطال كاش تقدم الدرس لتحديث الواجهة فوراً
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: studentCourseQueries.lessonProgress(numericLessonId).queryKey,
       });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
+        queryKey: studentCourseQueries.lesson(numericLessonId).queryKey,
+      });
+      void queryClient.invalidateQueries({
         queryKey: [...studentCourseQueries.all(), "completed-lessons", String(courseId)],
       });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: studentCourseQueries.enrolled().queryKey,
       });
     } catch {
@@ -134,7 +147,7 @@ export default function LessonPage() {
   );
 
   // شاشة التحميل الأولية
-  if (courseLoading) {
+  if (courseLoading || lessonLoading) {
     return (
       <div
         role="status"
@@ -147,22 +160,28 @@ export default function LessonPage() {
     );
   }
 
-  // شاشة الخطأ في حال عدم وجود الكورس أو الدرس
-  if (courseError || !course || !currentLesson) {
+  // شاشة الخطأ في حال عدم وجود الكورس أو الدرس أو عدم امتلاك الصلاحية
+  if (courseError || lessonError || !course || !currentLesson) {
+    const isForbidden =
+      (lessonErrorObj as { response?: { status?: number } })?.response?.status === 403;
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-background px-4 text-center">
         <div className="w-16 h-16 rounded-2xl bg-destructive/10 text-destructive flex items-center justify-center mb-2">
           <AlertCircle className="w-8 h-8" aria-hidden="true" />
         </div>
-        <h1 className="text-xl font-bold text-foreground">الدرس غير متاح حالياً</h1>
+        <h1 className="text-xl font-bold text-foreground">
+          {isForbidden ? "الدرس مقفل أو يتطلب الاشتراك" : "الدرس غير متاح حالياً"}
+        </h1>
         <p className="text-sm text-muted-foreground max-w-md">
-          تعذر العثور على بيانات هذا الدرس. تأكد من صحة الرابط أو عُد لصفحة الكورس.
+          {isForbidden
+            ? "لا تملك صلاحية مشاهدة هذا الدرس. يرجى الاشتراك في الكورس أو التأكد من إكمال الدروس السابقة أولاً."
+            : "تعذر العثور على بيانات هذا الدرس. تأكد من صحة الرابط أو عُد لصفحة الكورس."}
         </p>
         <Link
           href={`/courses/${courseId}`}
           className="min-h-[44px] inline-flex items-center justify-center px-6 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition"
         >
-          العودة للكورس
+          {isForbidden ? "العودة لصفحة الكورس للاشتراك" : "العودة للكورس"}
         </Link>
       </div>
     );
@@ -192,15 +211,27 @@ export default function LessonPage() {
               </Link>
             )}
 
-            {nextLesson && isVideoDone && isTaskDone && (
-              <Link
-                href={`/courses/${courseId}/lessons/${nextLesson.id}`}
-                className="min-h-[44px] inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-              >
-                <span>التالي</span>
-                <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
-              </Link>
-            )}
+            {nextLesson &&
+              (isVideoDone && isTaskDone ? (
+                <Link
+                  href={`/courses/${courseId}/lessons/${nextLesson.id}`}
+                  className="min-h-[44px] inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                >
+                  <span>التالي</span>
+                  <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  title="أكمل مشاهدة الدرس واجتز مهمته لفتح الدرس التالي"
+                  className="min-h-[44px] inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl bg-muted/60 text-muted-foreground/60 cursor-not-allowed border border-border/40"
+                  aria-label="الدرس التالي مغلق حتى إكمال الدرس الحالي"
+                >
+                  <span>التالي</span>
+                  <Lock className="w-3.5 h-3.5" aria-hidden="true" />
+                </button>
+              ))}
           </nav>
         </div>
       </header>
@@ -220,7 +251,7 @@ export default function LessonPage() {
 
           {/* مشغل الفيديو المحصن */}
           <VideoPlayer
-            videoId={currentLesson.video_id ?? "dQw4w9WgXcQ"}
+            videoId={lessonDetail?.video_id || currentLesson.video_id || "dQw4w9WgXcQ"}
             onProgress={handleVideoProgress}
             onComplete={handleVideoComplete}
           />

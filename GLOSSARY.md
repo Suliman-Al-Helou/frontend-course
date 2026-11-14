@@ -74,6 +74,36 @@ _Avoid_: Course owner, Author tagging, Store instructor
 An administrative modal dialog capturing comprehensive faculty metadata (bio, experience years, social links, achievements, and courses) with concurrency-safe mutation handling.
 _Avoid_: Add teacher modal, Profile edit popup
 
+## Student Learning Dashboard Domain
+
+**Student Home Stats**:
+The real-time aggregated metrics representing an active student's learning progress (enrolled courses, completed lessons, accumulated learning hours, and certificates).
+_Avoid_: Dashboard numbers, Student metrics, User counts
+
+**Monthly Zoom Schedule**:
+The temporal aggregation of live conference sessions scheduled across visible months in the student dashboard interactive calendar.
+_Avoid_: Meeting list, Zoom calendar data, Session slots
+
+## Frequently Asked Questions (FAQ) Domain
+
+**FAQ Pair**:
+A structured informational entry comprising a canonical user query and an authoritative editorial response, rendered across public landing accordions and maintained via administrative CRUD.
+_Avoid_: Help item, Accordion text, Question box
+
+**FAQ Ordering**:
+The deterministic sequence index governing the display order of FAQ pairs on the public landing page.
+_Avoid_: Priority, Rank, Position number
+
+## Contact & Support Inquiries Domain
+
+**Inquiry Dispatch**:
+The secure, concurrency-guarded transmission of a visitor or student support message via the platform's external gateway or direct WhatsApp communication link.
+_Avoid_: Contact post, Feedback send, Form submit
+
+**Enrolled Course Selector**:
+A reactive dropdown component dynamically populated from the active student's approved enrollments cache (`studentCourseQueries.enrolled()`) via query selection, avoiding redundant network round-trips.
+_Avoid_: Course picker, Filter select, Course list box
+
 ## Feedback & Notifications Domain
 
 **Feedback Notification (Toast)**:

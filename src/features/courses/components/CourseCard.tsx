@@ -8,6 +8,7 @@ import CourseLevelBadge from "./CourseLevelBadge";
 import StarRating from "./StarRating";
 import type { Course } from "@/types";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 export interface CourseCardProps {
   course: Course;
@@ -28,6 +29,26 @@ export default function CourseCard({
 }: CourseCardProps) {
   const shouldReduceMotion = useReducedMotion();
   const hours = Math.round((course.total_duration || 0) / 60);
+
+  const hoursLabel =
+    hours === 1
+      ? "ساعة واحدة"
+      : hours === 2
+        ? "ساعتان"
+        : hours <= 10
+          ? `${hours} ساعات`
+          : `${hours} ساعة`;
+
+  const studentsLabel =
+    typeof course.students_count === "number"
+      ? course.students_count === 1
+        ? "طالب واحد"
+        : course.students_count === 2
+          ? "طالبان"
+          : course.students_count <= 10
+            ? `${course.students_count} طلاب`
+            : `${course.students_count} طالباً`
+      : null;
 
   const rawInstructor = course.instructor as unknown;
   const instructorName =
@@ -79,10 +100,10 @@ export default function CourseCard({
           </Link>
           <div className="flex flex-col gap-1.5 items-end shrink-0">
             {course.hot && (
-              <span className="flex items-center gap-1 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 px-2 py-0.5 text-xs font-semibold">
+              <Badge variant="hot" shape="rounded" size="sm">
                 <Zap className="size-3" />
                 الأكثر طلباً
-              </span>
+              </Badge>
             )}
             <CourseLevelBadge level={course.level} className="w-fit" />
           </div>
@@ -100,13 +121,15 @@ export default function CourseCard({
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <StarRating rating={course.rating ?? 0} />
           <span className="flex items-center gap-3">
+            {studentsLabel && (
+              <span className="flex items-center gap-1">
+                <Users className="size-3.5" aria-hidden="true" />
+                <span>{studentsLabel}</span>
+              </span>
+            )}
             <span className="flex items-center gap-1">
-              <Users className="size-3.5" />
-              {course.students_count}
-            </span>
-            <span className="flex items-center gap-1">
-              <Clock className="size-3.5" />
-              {hours} ساعة
+              <Clock className="size-3.5" aria-hidden="true" />
+              <span>{hoursLabel}</span>
             </span>
           </span>
         </div>
@@ -129,22 +152,15 @@ export default function CourseCard({
 
         {isEnrolled ? (
           <div className="flex gap-2 w-full mt-auto pt-1">
-            <Button
-              className="flex-1 min-h-[44px]"
-              href={learnHref ?? href}
-              variant="outlineSuccess"
-            >
+            <Button className="flex-1" href={learnHref ?? href} variant="outlineSuccess">
               {ctaLabel}
             </Button>
-            <Button href={href} variant="default" className="min-h-[44px]">
+            <Button href={href} variant="default">
               عرض الكورس
             </Button>
           </div>
         ) : (
-          <Button
-            href={href}
-            className="w-full mt-auto rounded-lg py-2.5 min-h-[44px] text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors flex items-center justify-center"
-          >
+          <Button href={href} className="w-full mt-auto">
             {ctaLabel}
           </Button>
         )}

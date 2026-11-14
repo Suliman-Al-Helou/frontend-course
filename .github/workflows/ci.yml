@@ -1,0 +1,56 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  continuous-integration:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. جلب الكود من مستودع Git
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. تهيئة بيئة Node.js مع تفعيل الكاش الافتراضي لـ npm
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      # 3. تثبيت حزم الاعتمادات للمشروع
+      - name: Install Dependencies
+        run: npm ci --ignore-scripts
+
+      # 4. تشغيل الفحص الموحد الشامل (Lint + Format + Typecheck)
+      # لن يمر الـ Pipeline إذا وجد محرك Rust أي مخالفة معايير أو خطأ بأنواع TypeScript
+      - name: Run Toolchain Check
+        run: npm run check
+
+      # 5. تشغيل الاختبارات تلقائياً (في حال وجود ملفات اختبار)
+      - name: Run Tests
+        run: npm test
+
+      # 6. بناء المشروع البرمجي النهائي للإنتاج (Next.js App)
+      - name: Build Application
+        run: npm run build
+        env:
+          SESSION_SECRET: "ci-build-session-secret-32-chars-minimum-safe-token"
+          LARAVEL_API_URL: "https://api.example.com"
+          NEXT_PUBLIC_API_URL: "https://api.example.com"
+
+  # مرحلة الـ CD (التوصيل المستمر) - يتم تشغيلها فقط إذا نجحت مرحلة الفحص والبناء السابقة
+  continuous-deployment:
+    needs: continuous-integration
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Server
+        run: |
+          echo "تم فحص وبناء المشروع بنجاح بواسطة Vite+ الشاملة!"
+          echo "ضع هنا أوامر الرفع الخاصة بسيرفرك (مثل Vercel، Netlify، أو AWS)..."

@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface Props {
   label: string;
@@ -53,7 +55,7 @@ export default function CourseTagListField({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <label className="text-sm font-medium text-foreground">{label}</label>
+        <Label>{label}</Label>
         {items.length > 0 && (
           <span className="text-xs text-muted-foreground font-medium">
             {items.length} {items.length === 1 ? "عنصر" : "عناصر"}
@@ -75,14 +77,16 @@ export default function CourseTagListField({
                 <span className="text-primary font-bold shrink-0">{badgePrefix}</span>
                 <span className="truncate">{item}</span>
               </span>
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="iconSm"
                 onClick={() => handleRemove(idx)}
-                className="min-w-[44px] min-h-[44px] flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors shrink-0"
+                className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 shrink-0"
                 aria-label={`حذف العنصر: ${item}`}
               >
                 <X className="w-4 h-4" />
-              </button>
+              </Button>
             </div>
           ))}
         </div>
@@ -90,18 +94,19 @@ export default function CourseTagListField({
 
       {/* حقل الإضافة */}
       <div className="flex gap-2">
-        <input
+        <Input
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className="flex-1 h-11 rounded-xl border border-input bg-background px-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 placeholder:text-muted-foreground/60 transition-all"
+          className="flex-1"
         />
         <Button
           type="button"
+          variant="outlinePrimary"
           onClick={handleAdd}
           disabled={!inputValue.trim()}
-          className="min-w-[44px] h-11 px-4 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 disabled:opacity-40 transition-colors font-medium shrink-0"
+          className="shrink-0"
           aria-label="إضافة عنصر"
         >
           <Plus className="w-4 h-4 ml-1" />

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { IBM_Plex_Sans_Arabic } from "next/font/google";
 import Script from "next/script";
-import AuthBootstrap from "@/components/shared/AuthBootstrap";
 import { Toaster } from "@/components/ui/sonner";
 import QueryProvider from "@/providers/QueryProvider";
 
@@ -46,7 +45,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body suppressHydrationWarning>
-        <AuthBootstrap />
         <Toaster />
         <QueryProvider>{children}</QueryProvider>
       </body>

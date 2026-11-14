@@ -4,6 +4,9 @@ import { useState, useMemo } from "react";
 import { Plus, Pencil, Trash2, BookOpen, Users, LayoutList, Clock, DollarSign } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/shared/states/EmptyState";
 import { notify } from "@/components/ui/sonner";
 import { adminCourseQueries, adminEnrollmentQueries } from "../../queries/adminCourses.queries";
 import { useDeleteCourseMutation } from "../../queries/adminCourses.mutations";
@@ -17,6 +20,30 @@ const LEVEL_LABEL: Record<CourseLevel, string> = {
   intermediate: "متوسط",
   advanced: "متقدم",
 };
+
+function formatCoursesCount(count: number): string {
+  if (count === 0) return "لا توجد كورسات";
+  if (count === 1) return "كورس واحد";
+  if (count === 2) return "كورسان";
+  if (count >= 3 && count <= 10) return `${count} كورسات`;
+  return `${count} كورساً`;
+}
+
+function formatStudentsCount(count: number): string {
+  if (count === 0) return "لا يوجد طلاب";
+  if (count === 1) return "طالب واحد";
+  if (count === 2) return "طالبان";
+  if (count >= 3 && count <= 10) return `${count} طلاب`;
+  return `${count} طالباً`;
+}
+
+function formatHoursCount(hours: number): string {
+  if (hours === 0) return "أقل من ساعة";
+  if (hours === 1) return "ساعة واحدة";
+  if (hours === 2) return "ساعتان";
+  if (hours >= 3 && hours <= 10) return `${hours} ساعات`;
+  return `${hours} ساعة`;
+}
 
 export default function ManageCoursesTab() {
   const { data: courses = [], isLoading } = useQuery(adminCourseQueries.list());
@@ -59,10 +86,11 @@ export default function ManageCoursesTab() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h2 className="text-xl font-bold text-foreground">إدارة الكورسات</h2>
-          <p className="text-xs text-muted-foreground mt-1">{courses.length} كورس متاح في المنصة</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            {formatCoursesCount(courses.length)} متاح في المنصة
+          </p>
         </div>
         <Button
-          className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl h-11 min-h-[44px] px-5 font-semibold shadow-sm transition-all"
           onClick={() => {
             setEditingCourse(null);
             setFormModalOpen(true);
@@ -91,23 +119,21 @@ export default function ManageCoursesTab() {
           ))}
         </div>
       ) : courses.length === 0 ? (
-        <div className="text-center py-20 bg-card border border-border rounded-2xl p-6">
-          <BookOpen className="w-14 h-14 text-muted-foreground/30 mx-auto mb-4" />
-          <h3 className="text-base font-semibold text-foreground mb-1">لا توجد أي كورسات بعد</h3>
-          <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6 leading-relaxed">
-            ابدأ ببناء المحتوى التعليمي عبر إضافة الكورس الأول ومشاركة المعرفة مع الطلاب.
-          </p>
+        <EmptyState
+          icon={BookOpen}
+          title="لا توجد أي كورسات بعد"
+          description="ابدأ ببناء المحتوى التعليمي عبر إضافة الكورس الأول ومشاركة المعرفة مع الطلاب."
+        >
           <Button
             onClick={() => {
               setEditingCourse(null);
               setFormModalOpen(true);
             }}
-            className="rounded-xl h-11 min-h-[44px] px-5 font-semibold"
           >
             <Plus className="w-4 h-4 ml-1" />
             إضافة أول كورس
           </Button>
-        </div>
+        </EmptyState>
       ) : (
         <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
           {courses.map((course) => {
@@ -115,9 +141,9 @@ export default function ManageCoursesTab() {
             const hours = course.total_duration ? Math.round(course.total_duration / 60) : 0;
 
             return (
-              <div
+              <Card
                 key={course.id}
-                className="bg-card border border-border rounded-2xl overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow motion-reduce:transition-none"
+                className="overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow motion-reduce:transition-none"
               >
                 {/* Image Cover */}
                 <div className="relative w-full h-44 bg-muted overflow-hidden">
@@ -136,32 +162,35 @@ export default function ManageCoursesTab() {
 
                   {/* Badges on top */}
                   <div className="absolute top-3 right-3 flex items-center gap-1.5">
-                    <span
-                      className={`text-xs px-2.5 py-1 rounded-full font-bold shadow-sm backdrop-blur-md ${
+                    <Badge
+                      variant={
                         course.status === "published"
-                          ? "bg-emerald-500/90 text-white"
+                          ? "success"
                           : course.status === "draft"
-                            ? "bg-amber-500/90 text-white"
-                            : "bg-blue-500/90 text-white"
-                      }`}
+                            ? "warning"
+                            : "info"
+                      }
+                      shape="rounded"
+                      size="sm"
+                      className="backdrop-blur-md"
                     >
                       {course.status === "published"
                         ? "منشور"
                         : course.status === "draft"
                           ? "مسودة"
                           : "قريباً"}
-                    </span>
+                    </Badge>
                     {(course.is_popular || course.hot) && (
-                      <span className="bg-orange-500/90 text-white text-xs px-2 py-1 rounded-full font-bold shadow-sm backdrop-blur-md">
+                      <Badge variant="hot" shape="rounded" size="sm" className="backdrop-blur-md">
                         🔥 الأكثر طلباً
-                      </span>
+                      </Badge>
                     )}
                   </div>
 
                   {/* Price badge */}
                   <div className="absolute bottom-3 left-3">
                     <span className="bg-card/90 backdrop-blur-md text-foreground font-bold text-xs px-2.5 py-1 rounded-lg border border-border shadow-sm flex items-center gap-1">
-                      <DollarSign className="w-3 h-3 text-emerald-500" />
+                      <DollarSign className="w-3 h-3 text-success" />
                       {course.price && course.price > 0 ? `${course.price}$` : "مجاني"}
                     </span>
                   </div>
@@ -181,19 +210,19 @@ export default function ManageCoursesTab() {
                     )}
 
                     <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mb-4">
-                      <span className="bg-muted px-2.5 py-1 rounded-lg font-medium">
+                      <Badge variant="secondary" shape="rounded" size="sm">
                         {LEVEL_LABEL[course.level] ?? course.level}
-                      </span>
+                      </Badge>
                       {hours > 0 && (
-                        <span className="bg-muted px-2.5 py-1 rounded-lg flex items-center gap-1 font-medium">
+                        <Badge variant="secondary" shape="rounded" size="sm">
                           <Clock className="w-3 h-3" />
-                          {hours} ساعة
-                        </span>
+                          {formatHoursCount(hours)}
+                        </Badge>
                       )}
-                      <span className="bg-primary/10 text-primary px-2.5 py-1 rounded-lg flex items-center gap-1 font-medium">
+                      <Badge variant="primary" shape="rounded" size="sm">
                         <Users className="w-3 h-3" />
-                        {studentCount} طالب
-                      </span>
+                        {formatStudentsCount(studentCount)}
+                      </Badge>
                     </div>
                   </div>
 
@@ -201,8 +230,7 @@ export default function ManageCoursesTab() {
                   <div className="flex items-center gap-2 pt-3 border-t border-border">
                     <Button
                       variant="outline"
-                      size="sm"
-                      className="flex-1 rounded-xl h-11 min-h-[44px] text-xs font-medium hover:bg-primary/10 hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+                      className="flex-1 text-xs"
                       onClick={() => setManagingCourse(course)}
                       aria-label={`إدارة محتوى كورس ${course.title}`}
                     >
@@ -210,8 +238,7 @@ export default function ManageCoursesTab() {
                     </Button>
                     <Button
                       variant="outline"
-                      size="sm"
-                      className="flex-1 rounded-xl h-11 min-h-[44px] text-xs font-medium hover:bg-muted transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+                      className="flex-1 text-xs"
                       onClick={() => {
                         setEditingCourse(course);
                         setFormModalOpen(true);
@@ -221,9 +248,8 @@ export default function ManageCoursesTab() {
                       <Pencil className="w-3.5 h-3.5 ml-1" /> تعديل
                     </Button>
                     <Button
-                      variant="outline"
-                      size="sm"
-                      className="rounded-xl h-11 min-h-[44px] px-3.5 text-xs border-destructive/20 text-destructive hover:bg-destructive/10 transition-colors focus-visible:ring-2 focus-visible:ring-destructive"
+                      variant="outlineDestructive"
+                      size="icon"
                       onClick={() => setDeletingCourse(course)}
                       aria-label={`حذف كورس ${course.title}`}
                     >
@@ -231,7 +257,7 @@ export default function ManageCoursesTab() {
                     </Button>
                   </div>
                 </div>
-              </div>
+              </Card>
             );
           })}
         </div>

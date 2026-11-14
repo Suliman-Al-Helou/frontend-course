@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { Image as ImageIcon, AlertCircle, Trash2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface Props {
   rating: number;
@@ -39,10 +41,8 @@ export default function CoursePricingMediaFields({
       {/* التقييم + السعر */}
       <div className="grid sm:grid-cols-2 gap-3">
         <div className="space-y-1.5">
-          <label htmlFor="course-rating-input" className="text-sm font-medium text-foreground">
-            التقييم الافتراضي (1.0 - 5.0)
-          </label>
-          <input
+          <Label htmlFor="course-rating-input">التقييم الافتراضي (1.0 - 5.0)</Label>
+          <Input
             id="course-rating-input"
             type="number"
             min="1"
@@ -51,16 +51,14 @@ export default function CoursePricingMediaFields({
             dir="ltr"
             value={rating}
             onChange={(e) => onRatingChange(Number.parseFloat(e.target.value) || 0)}
-            className="w-full h-11 rounded-xl border border-input bg-background px-3.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-right"
+            className="font-mono text-right"
           />
         </div>
 
         <div className="space-y-1.5">
-          <label htmlFor="course-price-input" className="text-sm font-medium text-foreground">
-            السعر بالدولار ($)
-          </label>
+          <Label htmlFor="course-price-input">السعر بالدولار ($)</Label>
           <div className="relative">
-            <input
+            <Input
               id="course-price-input"
               type="number"
               min="0"
@@ -69,7 +67,7 @@ export default function CoursePricingMediaFields({
               disabled={isPublic}
               value={price}
               onChange={(e) => onPriceChange(Math.max(0, Number.parseFloat(e.target.value) || 0))}
-              className="w-full h-11 rounded-xl border border-input bg-background pl-8 pr-3.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-right disabled:opacity-60 disabled:bg-muted/50 disabled:cursor-not-allowed"
+              className="pl-8 font-mono text-right"
             />
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm font-bold">
               $
@@ -86,16 +84,14 @@ export default function CoursePricingMediaFields({
       {/* مدة الكورس */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
-          <label htmlFor="course-duration-input" className="text-sm font-medium text-foreground">
-            المدة الإجمالية للكورس (بالدقائق)
-          </label>
+          <Label htmlFor="course-duration-input">المدة الإجمالية للكورس (بالدقائق)</Label>
           {totalDuration > 0 && (
             <span className="text-xs text-primary font-bold">
               ~ {Math.round(totalDuration / 60)} ساعة
             </span>
           )}
         </div>
-        <input
+        <Input
           id="course-duration-input"
           type="number"
           min="0"
@@ -104,17 +100,15 @@ export default function CoursePricingMediaFields({
           onChange={(e) =>
             onDurationChange(Math.max(0, Number.parseInt(e.target.value, 10) || 0) * 60)
           }
-          className="w-full h-11 rounded-xl border border-input bg-background px-3.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-right"
+          className="font-mono text-right"
         />
       </div>
 
       {/* رابط صورة الغلاف مع BiDi وعزل المعاينة */}
       <div className="space-y-2">
-        <label htmlFor="course-cover-input" className="text-sm font-medium text-foreground">
-          رابط صورة الغلاف (URL)
-        </label>
+        <Label htmlFor="course-cover-input">رابط صورة الغلاف (URL)</Label>
         <div className="relative">
-          <input
+          <Input
             id="course-cover-input"
             type="url"
             dir="ltr"
@@ -124,7 +118,7 @@ export default function CoursePricingMediaFields({
               onCoverImageChange(e.target.value);
               setImageLoadError(false);
             }}
-            className="w-full h-11 rounded-xl border border-input bg-background px-3.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 placeholder:font-sans placeholder:text-muted-foreground/60 transition-all text-left"
+            className="font-mono text-left"
           />
           {coverImage && (
             <button

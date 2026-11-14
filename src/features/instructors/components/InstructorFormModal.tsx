@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { X, Plus, Upload, Loader2, BookOpen } from "lucide-react";
+import { useState, useRef } from "react";
+import { X, Plus, Upload, BookOpen } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { adminCourseQueries } from "@/features/admin-courses";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
 import type { Instructor, InstructorFormData } from "../types";
 
@@ -50,16 +52,6 @@ export default function InstructorFormModal({ instructor, onClose, onSave }: Pro
   const isSubmittingRef = useRef(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && !loading) {
-        onClose();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [loading, onClose]);
 
   const set = (key: string, val: string) => setForm((f) => ({ ...f, [key]: val }));
 
@@ -133,39 +125,14 @@ export default function InstructorFormModal({ instructor, onClose, onSave }: Pro
   };
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="instructor-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm overflow-y-auto"
-      onClick={(e) => {
-        if (e.target === e.currentTarget && !loading) onClose();
-      }}
-    >
-      <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none">
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-border flex items-center justify-between shrink-0 bg-muted/20">
-          <div>
-            <h2 id="instructor-modal-title" className="text-base font-bold text-foreground">
-              {isEdit ? "تعديل بيانات المدرب" : "إضافة مدرب جديد"}
-            </h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              بيانات المدرب وخبراته وروابط حساباته والكورسات المسندة إليه
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            disabled={loading}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-colors disabled:opacity-50"
-            aria-label="إغلاق"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
+    <Modal isOpen={true} onClose={onClose} size="lg">
+      <ModalHeader
+        title={isEdit ? "تعديل بيانات المدرب" : "إضافة مدرب جديد"}
+        description="بيانات المدرب وخبراته وروابط حساباته والكورسات المسندة إليه"
+      />
 
-        {/* Form Body */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5">
+      <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
+        <ModalBody className="p-6 space-y-5">
           {error && (
             <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium">
               {error}
@@ -369,20 +336,17 @@ export default function InstructorFormModal({ instructor, onClose, onSave }: Pro
             {achievements.length > 0 && (
               <div className="flex flex-wrap gap-1.5 pt-1">
                 {achievements.map((ach, idx) => (
-                  <span
-                    key={idx}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-xs font-medium"
-                  >
+                  <Badge key={idx} variant="primary" className="gap-1.5">
                     <span>{ach}</span>
                     <button
                       type="button"
                       onClick={() => removeAchievement(idx)}
-                      className="text-primary/70 hover:text-destructive transition-colors"
+                      className="hover:opacity-75 transition-opacity"
                       aria-label="إزالة الإنجاز"
                     >
                       <X className="w-3 h-3" />
                     </button>
-                  </span>
+                  </Badge>
                 ))}
               </div>
             )}
@@ -436,29 +400,28 @@ export default function InstructorFormModal({ instructor, onClose, onSave }: Pro
               </div>
             )}
           </div>
+        </ModalBody>
 
-          {/* Footer Actions */}
-          <div className="pt-3 border-t border-border flex items-center justify-end gap-2.5">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-              disabled={loading}
-              className="rounded-xl h-10 px-4 text-xs font-medium"
-            >
-              إلغاء
-            </Button>
-            <Button
-              type="submit"
-              disabled={loading}
-              className="rounded-xl h-10 px-5 text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5"
-            >
-              {loading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-              <span>{isEdit ? "حفظ التعديلات" : "إضافة المدرب"}</span>
-            </Button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <ModalFooter>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            disabled={loading}
+            className="rounded-xl h-10 px-4 text-xs font-medium"
+          >
+            إلغاء
+          </Button>
+          <Button
+            type="submit"
+            disabled={loading}
+            loading={loading}
+            className="rounded-xl h-10 px-5 text-xs font-semibold"
+          >
+            {isEdit ? "حفظ التعديلات" : "إضافة المدرب"}
+          </Button>
+        </ModalFooter>
+      </form>
+    </Modal>
   );
 }
