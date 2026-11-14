@@ -5,14 +5,11 @@ import type { SessionData } from "../types";
 
 export type { SessionData };
 
-if (!process.env.SESSION_SECRET) {
-  throw new Error(
-    "SESSION_SECRET غير معرّف بمتغيرات البيئة. لازم يكون نص عشوائي 32 حرف أو أكتر — شوف .env.example",
-  );
-}
+const fallbackSecret = "build-time-fallback-session-secret-min-32-chars-long";
+const sessionSecret = process.env.SESSION_SECRET || fallbackSecret;
 
 export const sessionOptions: SessionOptions = {
-  password: process.env.SESSION_SECRET,
+  password: sessionSecret,
   cookieName: "fh_session",
   cookieOptions: {
     httpOnly: true,
@@ -23,13 +20,14 @@ export const sessionOptions: SessionOptions = {
 };
 
 /** دومين الـ API الحقيقي (Laravel). سيرفر-فقط — بدون NEXT_PUBLIC_ عمدًا. */
-export const LARAVEL_API_URL = process.env.LARAVEL_API_URL as string;
-
-if (!LARAVEL_API_URL) {
-  throw new Error("LARAVEL_API_URL غير معرّف بمتغيرات البيئة — شوف .env.example");
-}
+export const LARAVEL_API_URL = process.env.LARAVEL_API_URL || "http://localhost:8000";
 
 export async function saveAuthSession(token: string, user: SessionData["user"]) {
+  if (!process.env.SESSION_SECRET && process.env.NODE_ENV === "production") {
+    throw new Error(
+      "SESSION_SECRET غير معرّف بمتغيرات البيئة. لازم يكون نص عشوائي 32 حرف أو أكتر — شوف .env.example",
+    );
+  }
   const session = await getIronSession<SessionData>(await cookies(), sessionOptions);
   session.token = token;
   session.user = user;

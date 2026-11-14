@@ -26,22 +26,22 @@ jobs:
       - name: Install Dependencies
         run: npm ci --ignore-scripts
 
-      # 4. تثبيت أداة vite-plus عالمياً داخل السيرفر لتمكين أوامر الـ vp
-      - name: Install Vite+ Global CLI
-        run: npm install -g vite-plus --ignore-scripts
-
-      # 5. تشغيل الفحص الموحد الشامل (Lint + Format + Typecheck)
+      # 4. تشغيل الفحص الموحد الشامل (Lint + Format + Typecheck)
       # لن يمر الـ Pipeline إذا وجد محرك Rust أي مخالفة معايير أو خطأ بأنواع TypeScript
       - name: Run Toolchain Check
-        run: vp check
+        run: npx vp check
 
-      # 6. تشغيل الاختبارات تلقائياً (في حال وجود ملفات اختبار)
+      # 5. تشغيل الاختبارات تلقائياً (في حال وجود ملفات اختبار)
       - name: Run Tests
-        run: vp test --run
+        run: npx vp test --run
 
-      # 7. بناء المشروع البرمجي النهائي للإنتاج (Next.js App)
+      # 6. بناء المشروع البرمجي النهائي للإنتاج (Next.js App)
       - name: Build Application
         run: npm run build
+        env:
+          SESSION_SECRET: "ci-build-session-secret-32-chars-minimum-safe-token"
+          LARAVEL_API_URL: "https://api.example.com"
+          NEXT_PUBLIC_API_URL: "https://api.example.com"
 
   # مرحلة الـ CD (التوصيل المستمر) - يتم تشغيلها فقط إذا نجحت مرحلة الفحص والبناء السابقة
   continuous-deployment:
