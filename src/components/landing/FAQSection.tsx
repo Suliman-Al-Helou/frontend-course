@@ -24,6 +24,10 @@ const STATIC_FAQS: FAQItem[] = [
     a: "كل درس يُفتح بعد استيفاء شروط الدرس السابق واجتياز التحدي لضمان ترسيخ الفهم الهندسي الحقيقي.",
   },
   {
+    q: "هل أحتاج خبرة سابقة في البرمجة للبدء في المسارات؟",
+    a: "تتدرج المسارات من الأساسيات المعمارية الصلبة وحتى المستويات المتقدمة، مع اختبارات تحديد مستوى ومسارات تمهيدية تنطلق بك خطوة بخطوة مهما كانت خلفيتك السابقة.",
+  },
+  {
     q: "هل تتوفر مراجعات كود ولقاءات حية؟",
     a: "بالتأكيد، تُراجع الأكواد أسبوعياً مع لقاءات دورية مباشرة عبر Zoom لمناقشة المعماريات والحلول.",
   },
@@ -50,11 +54,11 @@ function BackgroundDecorations() {
     <>
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-20 -left-20 size-[28rem] rounded-full bg-slate-400/[0.05] blur-3xl dark:bg-white/[0.05]"
+        className="pointer-events-none absolute -top-24 -left-20 size-[32rem] rounded-full bg-slate-400/[0.05] blur-3xl dark:bg-white/[0.05]"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-20 -right-20 size-[28rem] rounded-full bg-slate-400/[0.05] blur-3xl dark:bg-white/[0.05]"
+        className="pointer-events-none absolute -bottom-24 -right-20 size-[32rem] rounded-full bg-slate-400/[0.05] blur-3xl dark:bg-white/[0.05]"
       />
       <div
         aria-hidden="true"
@@ -79,7 +83,7 @@ export default function FAQSection() {
       .then((res) => {
         const data = res.data.data ?? res.data;
         if (Array.isArray(data) && data.length > 0) {
-          setDynamicFaqs(data.slice(0, 5).map((f: any) => ({ q: f.question, a: f.answer })));
+          setDynamicFaqs(data.slice(0, 6).map((f: any) => ({ q: f.question, a: f.answer })));
         }
       })
       .catch(() => {});
@@ -95,25 +99,25 @@ export default function FAQSection() {
   return (
     <section
       id="faq"
-      className="relative scroll-mt-20 overflow-hidden border-t border-border bg-background py-20 md:py-24"
+      className="relative flex min-h-screen flex-col justify-center scroll-mt-20 overflow-hidden border-t border-border bg-background py-16 md:py-24"
     >
       <BackgroundDecorations />
 
-      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* الترويسة الثنائية الصارمة */}
-        <div className="mx-auto mb-14 max-w-xl text-center space-y-2">
-          <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+        <div className="mx-auto mb-12 max-w-xl text-center space-y-2">
+          <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl">
             الأسئلة الشائعة والتواصل المباشر
           </h2>
-          <p className="text-sm leading-relaxed text-muted-foreground">
-            إجابات فورية على أكثر الاستفسارات شيوعاً، أو تواصل مع فريقنا الهندسي مباشرة.
+          <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+            إجابات شاملة على أكثر الاستفسارات شيوعاً، أو تواصل مع فريقنا الهندسي مباشرة.
           </p>
         </div>
 
-        {/* شبكة العمودين: الشق الأيمن (الأسئلة الشائعة) والشق الأيسر (النموذج) */}
+        {/* شبكة متوازنة: الشق الأيمن (الأسئلة الشائعة) والشق الأيسر (النموذج الموسع) */}
         <div className="grid gap-8 lg:grid-cols-12 lg:items-start">
-          {/* الشق الأيمن: الأسئلة الشائعة (متطابقة الطول ومحكومة الأكورديون) */}
-          <div className="space-y-3 lg:col-span-7">
+          {/* الشق الأيمن: الأسئلة الشائعة (6 أسئلة محكومة الأكورديون) */}
+          <div className="space-y-3 lg:col-span-6">
             {faqs.map((faq, i) => {
               const isOpen = openIndex === i;
               return (
@@ -124,7 +128,7 @@ export default function FAQSection() {
                   <button
                     type="button"
                     onClick={() => handleToggle(i)}
-                    className="flex w-full items-center justify-between p-4 text-right transition-colors hover:bg-muted/40"
+                    className="flex w-full items-center justify-between p-4 text-right transition-colors hover:bg-muted/40 sm:p-4.5"
                     aria-expanded={isOpen}
                   >
                     <span className="text-sm font-semibold text-foreground sm:text-base">
@@ -151,7 +155,7 @@ export default function FAQSection() {
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <div className="border-t border-border px-4 pb-4 pt-3 text-xs leading-relaxed text-muted-foreground sm:text-sm">
+                        <div className="border-t border-border px-4.5 pb-4.5 pt-3.5 text-xs leading-relaxed text-muted-foreground sm:text-sm">
                           {faq.a}
                         </div>
                       </motion.div>
@@ -162,25 +166,28 @@ export default function FAQSection() {
             })}
           </div>
 
-          {/* الشق الأيسر: نموذج تواصل معنا وزري الواتساب والبريد */}
-          <div id="contact" className="scroll-mt-24 lg:col-span-5">
+          {/* الشق الأيسر: نموذج تواصل موسع ومريح بدون تشتيت */}
+          <div id="contact" className="scroll-mt-24 lg:col-span-6">
             {sent ? (
-              <div className="flex flex-col items-center justify-center rounded-2xl border border-border bg-card p-8 text-center shadow-xs">
-                <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-success/15 text-success">
-                  <Check className="size-6" />
+              <div className="flex flex-col items-center justify-center rounded-2xl border border-border bg-card p-10 text-center shadow-xs">
+                <div className="mb-4 flex size-14 items-center justify-center rounded-full bg-success/15 text-success">
+                  <Check className="size-7" />
                 </div>
-                <h3 className="mb-1 text-base font-bold text-foreground">تم استلام رسالتك بنجاح</h3>
-                <p className="text-xs text-muted-foreground">
-                  سنرد عليك في أقرب وقت عبر البريد الإلكتروني.
+                <h3 className="mb-2 text-lg font-bold text-foreground">تم استلام رسالتك بنجاح</h3>
+                <p className="text-sm text-muted-foreground">
+                  سنعاود الرد عليك خلال أقل من 24 ساعة عبر البريد الإلكتروني.
                 </p>
               </div>
             ) : (
               <form
                 onSubmit={handleSubmit}
-                className="space-y-4 rounded-2xl border border-border bg-card p-6 shadow-xs"
+                className="space-y-4.5 rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-xs"
               >
                 <div className="space-y-1.5">
-                  <label htmlFor="c-name" className="text-xs font-semibold text-foreground">
+                  <label
+                    htmlFor="c-name"
+                    className="text-xs font-semibold text-foreground sm:text-sm"
+                  >
                     الاسم الكامل
                   </label>
                   <Input
@@ -189,11 +196,15 @@ export default function FAQSection() {
                     value={form.name}
                     onChange={updateField("name")}
                     placeholder="مثال: أحمد عبد الله"
+                    className="h-12 text-sm sm:text-base"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label htmlFor="c-email" className="text-xs font-semibold text-foreground">
+                  <label
+                    htmlFor="c-email"
+                    className="text-xs font-semibold text-foreground sm:text-sm"
+                  >
                     البريد الإلكتروني
                   </label>
                   <Input
@@ -204,22 +215,25 @@ export default function FAQSection() {
                     onChange={updateField("email")}
                     placeholder="name@example.com"
                     dir="ltr"
-                    className="text-right"
+                    className="h-12 text-right text-sm sm:text-base"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label htmlFor="c-msg" className="text-xs font-semibold text-foreground">
-                    الرسالة
+                  <label
+                    htmlFor="c-msg"
+                    className="text-xs font-semibold text-foreground sm:text-sm"
+                  >
+                    الرسالة أو الاستفسار
                   </label>
                   <textarea
                     id="c-msg"
-                    rows={3}
+                    rows={5}
                     required
                     value={form.message}
                     onChange={updateField("message")}
-                    placeholder="اكتب استفسارك بالتفصيل..."
-                    className="flex min-h-[85px] w-full resize-none rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50"
+                    placeholder="اشرح استفسارك أو هدفك بالتفصيل... نرحب بأي سؤال حول المسارات، المشاريع، أو منهجية التدريب."
+                    className="flex min-h-[130px] w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-sm leading-relaxed text-foreground transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50 sm:text-base"
                   />
                 </div>
 
@@ -233,7 +247,7 @@ export default function FAQSection() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="تواصل عبر واتساب"
-                    className="h-11 w-full justify-center border-border bg-background hover:border-[#25D366]/50 hover:bg-[#25D366]/10 transition-colors"
+                    className="h-12 w-full justify-center border-border bg-background hover:border-[#25D366]/50 hover:bg-[#25D366]/10 transition-colors"
                   >
                     <WhatsAppIcon className="size-5 text-[#25D366]" />
                   </Button>
@@ -242,15 +256,20 @@ export default function FAQSection() {
                     variant="outline"
                     href={`mailto:${SUPPORT_EMAIL}`}
                     aria-label="راسلنا عبر البريد الإلكتروني"
-                    className="h-11 w-full justify-center border-border bg-background hover:border-primary/50 hover:bg-primary/10 transition-colors"
+                    className="h-12 w-full justify-center border-border bg-background hover:border-primary/50 hover:bg-primary/10 transition-colors"
                   >
                     <Mail className="size-5 text-primary" />
                   </Button>
                 </div>
 
                 {/* زر الإرسال الرئيسي */}
-                <Button type="submit" disabled={loading} className="w-full h-11" size="default">
-                  <Send className="size-4 rtl:-scale-x-100" />
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full h-12 text-sm sm:text-base font-semibold"
+                  size="default"
+                >
+                  <Send className="size-4.5 rtl:-scale-x-100" />
                   {loading ? "جارٍ الإرسال..." : "إرسال الرسالة"}
                 </Button>
               </form>

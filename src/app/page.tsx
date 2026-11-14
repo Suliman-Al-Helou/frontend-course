@@ -22,8 +22,8 @@ export default function HomePage() {
         <CoursesSection />
         <FeaturesSection />
         <TestimonialsSection />
-        <FAQSection />
         <CTASection />
+        <FAQSection />
       </main>
       <Footer />
     </div>
