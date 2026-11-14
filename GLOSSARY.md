@@ -74,6 +74,16 @@ _Avoid_: Course owner, Author tagging, Store instructor
 An administrative modal dialog capturing comprehensive faculty metadata (bio, experience years, social links, achievements, and courses) with concurrency-safe mutation handling.
 _Avoid_: Add teacher modal, Profile edit popup
 
+## Frequently Asked Questions (FAQ) Domain
+
+**FAQ Pair**:
+A structured informational entry comprising a canonical user query and an authoritative editorial response, rendered across public landing accordions and maintained via administrative CRUD.
+_Avoid_: Help item, Accordion text, Question box
+
+**FAQ Ordering**:
+The deterministic sequence index governing the display order of FAQ pairs on the public landing page.
+_Avoid_: Priority, Rank, Position number
+
 ## Feedback & Notifications Domain
 
 **Feedback Notification (Toast)**:

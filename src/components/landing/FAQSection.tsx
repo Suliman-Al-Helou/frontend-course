@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ChevronDown, Mail, Send, Check } from "lucide-react";
-import api from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useContactForm } from "@/components/contact/useContactForm";
 import { SUPPORT_EMAIL, WHATSAPP_URL } from "@/lib/contact";
+import { faqQueries } from "@/features/faqs";
 
 interface FAQItem {
   q: string;
@@ -60,7 +61,7 @@ interface FAQSectionProps {
 
 export default function FAQSection({ initial, isDashboard = false }: FAQSectionProps = {}) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
-  const [dynamicFaqs, setDynamicFaqs] = useState<FAQItem[]>([]);
+  const { data: serverFaqs = [] } = useQuery(faqQueries.list());
   const { form, sent, loading, error, updateField, handleSubmit } = useContactForm(initial);
   const isSubmittingRef = useRef(false);
   const shouldReduceMotion = useReducedMotion();
@@ -76,19 +77,10 @@ export default function FAQSection({ initial, isDashboard = false }: FAQSectionP
     }
   };
 
-  useEffect(() => {
-    api
-      .get("/faqs")
-      .then((res) => {
-        const data = res.data.data ?? res.data;
-        if (Array.isArray(data) && data.length > 0) {
-          setDynamicFaqs(data.slice(0, 7).map((f: any) => ({ q: f.question, a: f.answer })));
-        }
-      })
-      .catch(() => {});
-  }, []);
-
-  const faqs = dynamicFaqs.length > 0 ? dynamicFaqs : STATIC_FAQS;
+  const faqs =
+    Array.isArray(serverFaqs) && serverFaqs.length > 0
+      ? serverFaqs.slice(0, 7).map((f) => ({ q: f.question, a: f.answer }))
+      : STATIC_FAQS;
 
   const handleToggle = (index: number) => {
     // فتح سؤال يغلق السؤال المفتوح حالياً لمنع تمدد الطول والـ scroll

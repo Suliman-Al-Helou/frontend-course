@@ -31,7 +31,7 @@ import {
 import { StudentsManagementTab, adminUserQueries } from "@/features/admin-users";
 import { MediaPipelineTab } from "@/features/media-pipeline";
 import { ManageInstructorsTab } from "@/features/instructors";
-import ManageFaqTab from "@/components/admin/ManageFaqTab";
+import { ManageFaqTab } from "@/features/faqs";
 import type { Enrollment, AdminUser, AdminStats } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
 
