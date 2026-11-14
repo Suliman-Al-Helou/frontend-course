@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { X, Plus, Trash2, Upload, Loader2, BookOpen } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { adminCourseQueries } from "@/features/admin-courses";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Avatar } from "@/components/ui/avatar";
 import api from "@/lib/api";
 import type { Instructor } from "@/types";
 
@@ -48,6 +49,16 @@ export default function InstructorFormModal({ instructor, onClose, onSuccess }: 
   const isSubmittingRef = useRef(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && !loading) {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [loading, onClose]);
 
   const set = (key: string, val: string) => setForm((f) => ({ ...f, [key]: val }));
 
@@ -128,14 +139,24 @@ export default function InstructorFormModal({ instructor, onClose, onSuccess }: 
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
       dir="rtl"
+      onClick={(e) => {
+        if (e.target === e.currentTarget && !loading) {
+          onClose();
+        }
+      }}
     >
       <div className="bg-card rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-5 border-b border-border sticky top-0 bg-card z-10">
           <h2 className="font-bold text-foreground text-base">
             {isEdit ? "تعديل المدرب" : "إضافة مدرب جديد"}
           </h2>
-          <button onClick={onClose} className="p-2 rounded-xl hover:bg-muted transition-colors">
-            <X className="w-4 h-4" />
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl hover:bg-muted text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
+            aria-label="إغلاق النافذة"
+          >
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -144,21 +165,21 @@ export default function InstructorFormModal({ instructor, onClose, onSuccess }: 
           <div className="space-y-2">
             <Label>صورة المدرب</Label>
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-xl overflow-hidden bg-muted flex items-center justify-center flex-shrink-0 border border-border">
-                {form.avatar_url ? (
-                  <img src={form.avatar_url} alt="avatar" className="w-full h-full object-cover" />
-                ) : (
-                  <Upload className="w-6 h-6 text-muted-foreground" />
-                )}
-              </div>
+              <Avatar
+                src={form.avatar_url}
+                name={form.name}
+                size="xl"
+                shape="square"
+                fallback={<Upload className="w-6 h-6 text-muted-foreground" />}
+              />
               <div className="flex-1 space-y-2">
                 <button
                   type="button"
                   onClick={() => fileRef.current?.click()}
-                  className="flex items-center gap-2 h-9 px-4 rounded-xl border border-border text-sm hover:bg-muted transition-colors"
+                  className="flex items-center gap-2 h-11 min-h-[44px] px-4 rounded-xl border border-border text-sm hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
                 >
                   {uploading ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin motion-reduce:animate-none" />
                   ) : (
                     <Upload className="w-4 h-4" />
                   )}
