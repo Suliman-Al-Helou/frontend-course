@@ -1,9 +1,16 @@
 "use client";
 
 import { useState, useRef, useMemo } from "react";
-import { X, Calendar, DollarSign, Gift, AlertCircle } from "lucide-react";
+import { Calendar, DollarSign, Gift, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "@/components/ui/modal";
 import { useQuery } from "@tanstack/react-query";
 import { notify } from "@/components/ui/sonner";
 import {
@@ -122,154 +129,137 @@ export default function StudentDetailsModal({ student, isOpen, onClose }: Props)
   };
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="student-details-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs"
-      dir="rtl"
-    >
-      <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none">
-        {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-border shrink-0 bg-muted/20">
-          <div className="flex items-center gap-3">
-            <Avatar name={student.name || student.email} size="lg" />
-            <div>
-              <h3 id="student-details-title" className="font-bold text-foreground text-base">
-                {student.name || "طالب بدون اسم"}
-              </h3>
-              <p className="text-xs text-muted-foreground mt-0.5 text-left font-mono" dir="ltr">{student.email}</p>
-            </div>
+    <Modal isOpen={isOpen} onClose={onClose} size="lg">
+      <ModalHeader
+        title={student.name || "طالب بدون اسم"}
+        description={
+          <span className="font-mono text-left block" dir="ltr">
+            {student.email}
+          </span>
+        }
+        icon={<Avatar name={student.name || student.email} size="lg" />}
+      />
+
+      <ModalBody className="p-5 space-y-5">
+        {/* Metadata Cards: التاريخ - كورسات مدفوعة (مع أيقونة $) - كورسات مجانية (بدون أيقونة) */}
+        <div className="grid grid-cols-3 gap-2.5">
+          {/* 1. التاريخ */}
+          <div className="bg-muted/40 border border-border/80 rounded-xl p-3 flex flex-col justify-between">
+            <span className="text-[11px] text-muted-foreground font-medium flex items-center gap-1">
+              <Calendar className="w-3.5 h-3.5" />
+              الانضمام
+            </span>
+            <p className="text-xs font-semibold text-foreground mt-1 truncate">
+              {student.created_at
+                ? new Date(student.created_at).toLocaleDateString("ar-EG")
+                : "—"}
+            </p>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
-            aria-label="إغلاق النافذة"
-          >
-            <X className="w-5 h-5" />
-          </button>
+
+          {/* 2. كورسات مدفوعة (مع إظهار أيقونة $ فقط) */}
+          <div className="bg-success/10 border border-success/20 rounded-xl p-3 flex flex-col justify-between">
+            <span className="text-[11px] text-success font-bold flex items-center gap-1">
+              <DollarSign className="w-3.5 h-3.5" />
+              كورسات مدفوعة
+            </span>
+            <p className="text-xs font-extrabold text-success mt-1">
+              {formatCoursesCount(paidActiveCount, "مدفوع")}
+            </p>
+          </div>
+
+          {/* 3. كورسات مجانية (بدون أيقونة) */}
+          <div className="bg-muted/40 border border-border/80 rounded-xl p-3 flex flex-col justify-between">
+            <span className="text-[11px] text-muted-foreground font-medium">كورسات مجانية</span>
+            <p className="text-xs font-bold text-foreground mt-1">
+              {formatCoursesCount(freeActiveCount, "مجاني")}
+            </p>
+          </div>
         </div>
 
-        {/* Body */}
-        <div className="flex-1 overflow-y-auto p-5 space-y-5">
-          {/* Metadata Cards: التاريخ - كورسات مدفوعة (مع أيقونة $) - كورسات مجانية (بدون أيقونة) */}
-          <div className="grid grid-cols-3 gap-2.5">
-            {/* 1. التاريخ */}
-            <div className="bg-muted/40 border border-border/80 rounded-xl p-3 flex flex-col justify-between">
-              <span className="text-[11px] text-muted-foreground font-medium flex items-center gap-1">
-                <Calendar className="w-3.5 h-3.5" />
-                الانضمام
-              </span>
-              <p className="text-xs font-semibold text-foreground mt-1 truncate">
-                {student.created_at
-                  ? new Date(student.created_at).toLocaleDateString("ar-EG")
-                  : "—"}
-              </p>
+        {/* Enrolled Courses Dossier */}
+        <div>
+          <h4 className="text-xs font-bold text-foreground mb-3">
+            سجل الكورسات الخاصة بالطالب ({enrichedEnrollments.length})
+          </h4>
+
+          {enrichedEnrollments.length === 0 ? (
+            <div className="text-center py-8 bg-muted/20 border border-dashed border-border rounded-xl p-4">
+              <AlertCircle className="w-6 h-6 text-muted-foreground/40 mx-auto mb-1.5" />
+              <p className="text-xs text-muted-foreground">الطالب غير مسجل في أي كورس بعد.</p>
             </div>
+          ) : (
+            <div className="space-y-2.5">
+              {enrichedEnrollments.map((enr) => {
+                const isApproved = enr.status === "approved";
+                const isRevoking = revokingId === enr.id;
 
-            {/* 2. كورسات مدفوعة (مع إظهار أيقونة $ فقط) */}
-            <div className="bg-success/10 border border-success/20 rounded-xl p-3 flex flex-col justify-between">
-              <span className="text-[11px] text-success font-bold flex items-center gap-1">
-                <DollarSign className="w-3.5 h-3.5" />
-                كورسات مدفوعة
-              </span>
-              <p className="text-xs font-extrabold text-success mt-1">
-                {formatCoursesCount(paidActiveCount, "مدفوع")}
-              </p>
-            </div>
+                return (
+                  <div
+                    key={enr.id}
+                    className="bg-card border border-border rounded-xl p-3.5 shadow-2xs hover:border-primary/30 transition-all flex items-center justify-between gap-3"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p className="font-semibold text-sm text-foreground truncate">
+                          {enr.courseTitle}
+                        </p>
 
-            {/* 3. كورسات مجانية (بدون أيقونة) */}
-            <div className="bg-muted/40 border border-border/80 rounded-xl p-3 flex flex-col justify-between">
-              <span className="text-[11px] text-muted-foreground font-medium">كورسات مجانية</span>
-              <p className="text-xs font-bold text-foreground mt-1">
-                {formatCoursesCount(freeActiveCount, "مجاني")}
-              </p>
-            </div>
-          </div>
-
-          {/* Enrolled Courses Dossier */}
-          <div>
-            <h4 className="text-xs font-bold text-foreground mb-3">
-              سجل الكورسات الخاصة بالطالب ({enrichedEnrollments.length})
-            </h4>
-
-            {enrichedEnrollments.length === 0 ? (
-              <div className="text-center py-8 bg-muted/20 border border-dashed border-border rounded-xl p-4">
-                <AlertCircle className="w-6 h-6 text-muted-foreground/40 mx-auto mb-1.5" />
-                <p className="text-xs text-muted-foreground">الطالب غير مسجل في أي كورس بعد.</p>
-              </div>
-            ) : (
-              <div className="space-y-2.5">
-                {enrichedEnrollments.map((enr) => {
-                  const isApproved = enr.status === "approved";
-                  const isRevoking = revokingId === enr.id;
-
-                  return (
-                    <div
-                      key={enr.id}
-                      className="bg-card border border-border rounded-xl p-3.5 shadow-2xs hover:border-primary/30 transition-all flex items-center justify-between gap-3"
-                    >
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <p className="font-semibold text-sm text-foreground truncate">
-                            {enr.courseTitle}
-                          </p>
-
-                          {/* تمييز الكورس المدفوع بشارة $، أو أيقونة فقط للكورس المجاني بدون كلمة */}
-                          {!enr.isFree ? (
-                            <span className="inline-flex items-center gap-0.5 text-[11px] font-bold px-2 py-0.5 rounded-md bg-success/10 text-success border border-success/25">
-                              <DollarSign className="w-3 h-3" />
-                              {enr.price}$
-                            </span>
-                          ) : (
-                            <span
-                              title="كورس مجاني"
-                              className="inline-flex items-center justify-center p-1 rounded-md bg-primary/10 text-primary border border-primary/20"
-                            >
-                              <Gift className="w-3.5 h-3.5" />
-                            </span>
-                          )}
-                        </div>
+                        {/* تمييز الكورس المدفوع بشارة $، أو أيقونة فقط للكورس المجاني بدون كلمة */}
+                        {!enr.isFree ? (
+                          <Badge variant="success" size="sm" shape="rounded">
+                            <DollarSign className="w-3 h-3" />
+                            {enr.price}$
+                          </Badge>
+                        ) : (
+                          <Badge
+                            variant="primary"
+                            size="sm"
+                            shape="rounded"
+                            title="كورس مجاني"
+                            className="p-1"
+                          >
+                            <Gift className="w-3.5 h-3.5" />
+                          </Badge>
+                        )}
                       </div>
-
-                      {/* زر سحب الكورس بدون أي أيقونة */}
-                      {isApproved ? (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          disabled={isRevoking || revokingId !== null}
-                          onClick={() => void handleRevoke(enr.id, enr.courseTitle)}
-                          className="h-9 min-h-[38px] px-3.5 rounded-xl text-xs border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive shrink-0 font-medium"
-                        >
-                          {isRevoking ? "جارٍ السحب..." : "سحب الكورس"}
-                        </Button>
-                      ) : (
-                        <span className="text-[11px] text-muted-foreground font-medium bg-muted px-2 py-1 rounded-md shrink-0">
-                          تم سحب الكورس
-                        </span>
-                      )}
                     </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </div>
 
-        {/* Footer */}
-        <div className="p-4 border-t border-border shrink-0 bg-muted/10">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onClose}
-            className="w-full rounded-xl h-11 min-h-[44px] text-sm"
-          >
-            إغلاق
-          </Button>
+                    {/* زر سحب الكورس بدون أي أيقونة */}
+                    {isApproved ? (
+                      <Button
+                        type="button"
+                        variant="outlineDestructive"
+                        size="sm"
+                        disabled={isRevoking || revokingId !== null}
+                        loading={isRevoking}
+                        onClick={() => void handleRevoke(enr.id, enr.courseTitle)}
+                        className="shrink-0 text-xs"
+                      >
+                        سحب الكورس
+                      </Button>
+                    ) : (
+                      <Badge variant="secondary" size="sm" shape="rounded" className="shrink-0">
+                        تم سحب الكورس
+                      </Badge>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
-      </div>
-    </div>
+      </ModalBody>
+
+      <ModalFooter>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onClose}
+          className="w-full"
+        >
+          إغلاق
+        </Button>
+      </ModalFooter>
+    </Modal>
   );
 }

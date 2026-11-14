@@ -14,6 +14,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { SearchInput } from "@/components/ui/search-input";
 import { Avatar } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import { notify } from "@/components/ui/sonner";
 import { adminUserQueries } from "../queries/adminUsers.queries";
 import { useDeleteUserMutation } from "../queries/adminUsers.mutations";
@@ -237,7 +239,7 @@ export default function StudentsManagementTab() {
       </div>
 
       {/* Table Container */}
-      <div className="bg-card border border-border rounded-2xl shadow-2xs overflow-hidden">
+      <Card className="shadow-2xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -312,24 +314,24 @@ export default function StudentsManagementTab() {
                           <div className="flex items-center gap-1.5 flex-wrap">
                             {/* Paid badge with Green & $ */}
                             {stats.paidCount > 0 && (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-success/10 text-success border border-success/25">
+                              <Badge variant="success" size="sm" shape="rounded">
                                 <DollarSign className="w-3.5 h-3.5" />
                                 {formatCoursesCount(stats.paidCount, "مدفوع")}
-                              </span>
+                              </Badge>
                             )}
 
                             {/* Free badge */}
                             {stats.freeCount > 0 && (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20">
+                              <Badge variant="primary" size="sm" shape="rounded">
                                 <BookOpen className="w-3 h-3" />
                                 {formatCoursesCount(stats.freeCount, "مجاني")}
-                              </span>
+                              </Badge>
                             )}
                           </div>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground border border-border">
+                          <Badge variant="secondary" size="sm" shape="rounded">
                             بدون كورسات
-                          </span>
+                          </Badge>
                         )}
                       </td>
 
@@ -378,7 +380,7 @@ export default function StudentsManagementTab() {
             </tbody>
           </table>
         </div>
-      </div>
+      </Card>
 
       {/* Student Details Dossier Modal */}
       {selectedStudent && (
