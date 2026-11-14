@@ -2,7 +2,7 @@
 
 import { useAuthStore } from "@/store/authStore";
 import { User, Mail, GraduationCap } from "lucide-react";
-import Image from "next/image";
+import { Avatar } from "@/components/ui/avatar";
 
 export default function ProfilePage() {
   const user = useAuthStore((state) => state.user);
@@ -18,16 +18,12 @@ export default function ProfilePage() {
 
           {/* Avatar + Info */}
           <div className="flex flex-col items-center -mt-12 pb-6 px-6">
-            {/* صورة مدورة في المنتصف */}
-            <div className="w-24 h-24 rounded-full border-4 border-card bg-white overflow-hidden shadow-lg">
-              <Image
-                src="/logo.jpg"
-                alt="logo"
-                width={96}
-                height={96}
-                className="w-full h-full object-contain"
-              />
-            </div>
+            {/* الصورة الرمزية للمستخدم في المنتصف */}
+            <Avatar
+              name={user?.name || user?.email}
+              size="2xl"
+              className="w-24 h-24 text-2xl border-4 border-card shadow-lg"
+            />
 
             {/* الاسم والإيميل تحت الصورة */}
             <h2 className="text-lg font-bold text-foreground mt-3">{user?.name}</h2>
