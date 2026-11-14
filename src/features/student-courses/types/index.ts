@@ -13,4 +13,18 @@ export interface StudentTaskAnswer {
   answer: string;
 }
 
+export interface InProgressLesson {
+  id: number;
+  title: string;
+  watched_percent: number;
+  course: {
+    id: number;
+    title: string;
+  };
+  section: {
+    id: number;
+    title: string;
+  };
+}
+
 export type { Course, Question, Task, TaskResult, LessonProgress };

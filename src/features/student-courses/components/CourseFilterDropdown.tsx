@@ -55,32 +55,44 @@ export default function CourseFilterDropdown({
     <div className="relative mb-6">
       <button
         type="button"
+        aria-haspopup="listbox"
+        aria-expanded={dropdownOpen}
+        aria-label="تصفية حسب الكورس"
         onClick={() => setDropdownOpen((o) => !o)}
-        className="w-full flex items-center justify-between bg-card border border-border rounded-2xl px-4 py-3 text-sm font-medium text-foreground hover:bg-muted/50 transition"
+        className="w-full min-h-[44px] flex items-center justify-between bg-card border border-border rounded-2xl px-4 py-3 text-sm font-medium text-foreground hover:bg-muted/50 transition motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
       >
         <span>{selectedCourse?.title ?? "اختر كورساً"}</span>
         <ChevronDown
-          className={`w-4 h-4 text-muted-foreground transition-transform ${dropdownOpen ? "rotate-180" : ""}`}
+          className={`w-4 h-4 text-muted-foreground transition-transform duration-200 motion-reduce:transition-none ${
+            dropdownOpen ? "rotate-180" : ""
+          }`}
+          aria-hidden="true"
         />
       </button>
 
       {dropdownOpen && (
-        <div className="absolute top-full mt-2 w-full bg-card border border-border rounded-2xl shadow-xl z-20 overflow-hidden py-1">
+        <div
+          role="listbox"
+          aria-label="قائمة الكورسات"
+          className="absolute top-full mt-2 w-full bg-card border border-border rounded-2xl shadow-xl z-20 overflow-hidden py-1 divide-y divide-border/40"
+        >
           {courses.map((course) => (
             <button
               type="button"
+              role="option"
+              aria-selected={course.id === selectedId}
               key={course.id}
               onClick={() => {
                 onSelect(course.id);
                 setDropdownOpen(false);
               }}
-              className={`w-full text-right px-4 py-3 text-sm hover:bg-muted/60 transition flex items-center justify-between ${
+              className={`w-full min-h-[44px] text-right px-4 py-3 text-sm hover:bg-muted/60 transition motion-reduce:transition-none flex items-center justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 ${
                 course.id === selectedId ? "text-primary font-bold bg-primary/5" : "text-foreground"
               }`}
             >
-              <span>{course.title}</span>
+              <span className="truncate">{course.title}</span>
               {course.id === selectedId && (
-                <span className="text-primary text-xs font-semibold">محدد</span>
+                <span className="text-primary text-xs font-semibold shrink-0 ms-2">محدد</span>
               )}
             </button>
           ))}

@@ -51,3 +51,4 @@
 - [ ] **Step 2**: Polish (`/impeccable polish`): Resolve P0 N+1 in continue page via TanStack Query, add Arabic pluralization, enhance empty state
 - [ ] **Step 3**: Harden (`/impeccable harden`): Full ARIA listbox semantics, touch targets >= 44px, reduced-motion guards
 - [ ] **Step 4**: Hygiene & Audit: Dead code cleanup, final audit score card (20/20), `closed: true`
+
