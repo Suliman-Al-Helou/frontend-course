@@ -13,7 +13,7 @@ export function PasswordStrength({ password }: { password: string }) {
   const allPassed = passedCount === 3;
 
   return (
-    <div className="mt-2 space-y-2 animate-in fade-in-50 duration-200">
+    <div className="mt-2 space-y-2 animate-in fade-in-50 motion-reduce:animate-none duration-200">
       <div className="flex gap-1.5">
         {[0, 1, 2].map((i) => (
           <div
@@ -21,9 +21,9 @@ export function PasswordStrength({ password }: { password: string }) {
             className={`h-1 flex-1 rounded-full transition-all duration-300 ${
               i < passedCount
                 ? allPassed
-                  ? "bg-emerald-500"
+                  ? "bg-success"
                   : passedCount === 2
-                    ? "bg-amber-500"
+                    ? "bg-warning"
                     : "bg-destructive/80"
                 : "bg-muted"
             }`}
@@ -36,7 +36,7 @@ export function PasswordStrength({ password }: { password: string }) {
           <div
             key={i}
             className={`inline-flex items-center gap-1 transition-colors ${
-              c.ok ? "text-emerald-500 font-medium" : "text-muted-foreground/80"
+              c.ok ? "text-success font-medium" : "text-muted-foreground/80"
             }`}
           >
             {c.ok ? (

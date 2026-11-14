@@ -37,7 +37,7 @@ export function LoginForm({ form, fieldErrors, error, loading, updateField, onSu
         action={
           <Link
             href="/forgot-password"
-            className="text-xs text-primary font-medium hover:underline inline-block py-1 px-1.5 -my-1 focus:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded-sm transition-colors"
+            className="text-xs text-primary font-medium hover:underline inline-flex items-center min-h-[36px] py-1 px-1.5 focus:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded-sm transition-colors"
           >
             نسيت كلمة المرور؟
           </Link>

@@ -33,8 +33,8 @@ function Logo() {
 
 function SuccessState() {
   return (
-    <div className="text-center space-y-5 py-2 animate-in fade-in-50 duration-300">
-      <div className="w-16 h-16 bg-emerald-500/10 text-emerald-500 rounded-2xl flex items-center justify-center mx-auto">
+    <div className="text-center space-y-5 py-2 animate-in fade-in-50 motion-reduce:animate-none duration-300">
+      <div className="w-16 h-16 bg-success/10 text-success rounded-2xl flex items-center justify-center mx-auto">
         <CheckCircle2 className="w-8 h-8" />
       </div>
       <div className="space-y-1">
@@ -170,7 +170,7 @@ export default function ResetPasswordPage() {
             تذكرت كلمة المرور؟{" "}
             <Link
               href="/login"
-              className="text-primary font-semibold hover:underline inline-block py-1 px-1.5 -my-1 focus:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded-sm transition-colors"
+              className="text-primary font-semibold hover:underline inline-flex items-center min-h-[44px] py-1 px-1.5 focus:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded-sm transition-colors"
             >
               العودة لتسجيل الدخول
             </Link>
@@ -180,7 +180,7 @@ export default function ResetPasswordPage() {
         <div className="text-center mt-6">
           <Link
             href="/"
-            className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center justify-center gap-1.5 py-1.5 px-3 -my-1.5 transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded-md"
+            className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center justify-center gap-1.5 min-h-[44px] py-1.5 px-3 transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded-md"
           >
             <ArrowRight className="w-4 h-4" />
             <span>العودة للصفحة الرئيسية</span>

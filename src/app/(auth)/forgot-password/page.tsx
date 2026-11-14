@@ -7,6 +7,7 @@ import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { Code2, ArrowRight, Mail } from "lucide-react";
 import { SubmitButton } from "../_components/SubmitButton";
+import { FormField } from "../_components/FormField";
 
 function Logo() {
   return (
@@ -26,7 +27,7 @@ function Logo() {
 
 function SuccessState({ email }: { email: string }) {
   return (
-    <div className="text-center space-y-4 py-2 animate-in fade-in-50 duration-300">
+    <div className="text-center space-y-4 py-2 animate-in fade-in-50 motion-reduce:animate-none duration-300">
       <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto text-primary">
         <Mail className="w-8 h-8" />
       </div>
@@ -97,26 +98,17 @@ export default function ForgotPasswordPage() {
         <div className="bg-card rounded-2xl shadow-xl border border-border p-8">
           {!sent ? (
             <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="space-y-1.5">
-                <label htmlFor="forgot-email" className="text-sm font-medium text-foreground">
-                  البريد الإلكتروني
-                </label>
-                <input
-                  id="forgot-email"
-                  type="email"
-                  placeholder="example@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  dir="ltr"
-                  autoCapitalize="none"
-                  autoCorrect="off"
-                  inputMode="email"
-                  autoComplete="email"
-                  disabled={loading}
-                  className="w-full h-11 rounded-xl border border-border hover:border-foreground/30 bg-background px-4 text-sm text-left placeholder:text-right transition-colors focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
-                />
-              </div>
+              <FormField
+                id="forgot-email"
+                label="البريد الإلكتروني"
+                type="email"
+                placeholder="example@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+                disabled={loading}
+              />
 
               <SubmitButton loading={loading} loadingText="جارٍ الإرسال...">
                 إرسال رابط الإعادة
@@ -130,7 +122,7 @@ export default function ForgotPasswordPage() {
             تذكرت كلمة المرور؟{" "}
             <Link
               href="/login"
-              className="text-primary font-semibold hover:underline inline-block py-1 px-1.5 -my-1 focus:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded-sm transition-colors"
+              className="text-primary font-semibold hover:underline inline-flex items-center min-h-[44px] py-1 px-1.5 focus:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded-sm transition-colors"
             >
               العودة لتسجيل الدخول
             </Link>
@@ -141,7 +133,7 @@ export default function ForgotPasswordPage() {
         <div className="text-center mt-6">
           <Link
             href="/"
-            className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center justify-center gap-1.5 py-1.5 px-3 -my-1.5 transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded-md"
+            className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center justify-center gap-1.5 min-h-[44px] py-1.5 px-3 transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded-md"
           >
             <ArrowRight className="w-4 h-4" />
             <span>العودة للصفحة الرئيسية</span>
