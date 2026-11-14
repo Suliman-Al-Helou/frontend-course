@@ -94,8 +94,8 @@ export default function VideoAssetsView({
         {/* Minimalist YouTube Status Pill */}
         <div className="flex items-center gap-2.5 self-end md:self-auto">
           {youtubeStatus?.connected ? (
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs">
-              <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-success/10 border border-success/20 text-xs">
+              <span className="flex items-center gap-1.5 text-success font-semibold">
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>YouTube: {youtubeStatus.channel_title}</span>
               </span>
@@ -116,12 +116,12 @@ export default function VideoAssetsView({
               size="sm"
               onClick={onConnectYouTube}
               disabled={isConnectingYouTube}
-              className="h-9 rounded-xl text-xs gap-1.5 border-red-500/30 text-red-600 hover:bg-red-500/10"
+              className="h-9 rounded-xl text-xs gap-1.5 border-destructive/30 text-destructive hover:bg-destructive/10"
             >
               {isConnectingYouTube ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin motion-reduce:animate-none" />
               ) : (
-                <Radio className="w-3.5 h-3.5 text-red-600" />
+                <Radio className="w-3.5 h-3.5 text-destructive" />
               )}
               <span>ربط قناة YouTube</span>
             </Button>
@@ -187,8 +187,8 @@ export default function VideoAssetsView({
 
                   {/* Status Indicator */}
                   {isProcessing && (
-                    <span className="absolute top-2 right-2 bg-amber-500/90 text-white text-[10px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1 backdrop-blur-xs">
-                      <Loader2 className="w-2.5 h-2.5 animate-spin" />
+                    <span className="absolute top-2 right-2 bg-warning/90 text-white text-[10px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1 backdrop-blur-xs">
+                      <Loader2 className="w-2.5 h-2.5 animate-spin motion-reduce:animate-none" />
                       جارٍ المعالجة
                     </span>
                   )}
@@ -282,7 +282,7 @@ export default function VideoAssetsView({
             className="fixed inset-0 bg-background/80 backdrop-blur-sm cursor-default"
             onClick={() => setPreviewVideo(null)}
           />
-          <div className="relative z-10 bg-card border border-border rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden animate-in fade-in-0 zoom-in-95">
+          <div className="relative z-10 bg-card border border-border rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none">
             <div className="px-5 py-3 border-b border-border flex items-center justify-between bg-muted/20">
               <h3 className="text-sm font-bold text-foreground truncate">{previewVideo.title}</h3>
               <button

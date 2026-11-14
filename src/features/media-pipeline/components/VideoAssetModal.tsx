@@ -417,12 +417,12 @@ export default function VideoAssetModal({
             <div
               role="alert"
               aria-live="polite"
-              className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/10 text-foreground text-xs space-y-3"
+              className="p-4 rounded-xl border border-warning/30 bg-warning/10 text-foreground text-xs space-y-3"
             >
               <div className="flex items-start gap-2.5">
-                <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
+                <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5 text-warning" />
                 <div className="space-y-1">
-                  <p className="font-bold text-amber-900 dark:text-amber-200">
+                  <p className="font-bold text-foreground">
                     قناة YouTube غير مربوطة بالمنصة بعد
                   </p>
                   <p className="text-muted-foreground leading-relaxed">
@@ -437,11 +437,11 @@ export default function VideoAssetModal({
                   size="sm"
                   onClick={handleConnectYouTube}
                   disabled={isConnectingYouTube || isSubmitting}
-                  className="h-10 px-4 rounded-xl text-xs font-semibold bg-red-600 hover:bg-red-700 text-white gap-2 shadow-xs"
+                  className="h-10 px-4 rounded-xl text-xs font-semibold bg-destructive hover:bg-destructive/90 text-destructive-foreground gap-2 shadow-xs"
                 >
                   {isConnectingYouTube ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin motion-reduce:animate-none" />
                       <span>جارٍ الاتصال بـ Google...</span>
                     </>
                   ) : (
@@ -635,7 +635,14 @@ export default function VideoAssetModal({
                     </span>
                     <span className="font-mono text-primary font-bold">{uploadProgress}%</span>
                   </div>
-                  <div className="w-full h-2 rounded-full bg-border overflow-hidden">
+                  <div
+                    role="progressbar"
+                    aria-valuenow={uploadProgress}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-label="نسبة تقدم رفع الفيديو"
+                    className="w-full h-2 rounded-full bg-border overflow-hidden"
+                  >
                     <div
                       className="h-full bg-primary transition-all duration-300 motion-reduce:transition-none rounded-full"
                       style={{ width: `${uploadProgress}%` }}
@@ -668,7 +675,7 @@ export default function VideoAssetModal({
                   <span>رابط الفيديو أو معرف YouTube (11 خانة) *</span>
                 </span>
                 {extractedId && (
-                  <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono font-bold flex items-center gap-1">
+                  <span className="text-[11px] text-success font-mono font-bold flex items-center gap-1">
                     <CheckCircle2 className="w-3 h-3" /> تم استخراج المعرّف: {extractedId}
                   </span>
                 )}

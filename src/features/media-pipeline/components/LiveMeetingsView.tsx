@@ -14,7 +14,8 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import api from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
+import { mediaPipelineQueries } from "../queries/mediaPipeline.queries";
 import type { AdminZoomMeeting, AttendanceRecord } from "../types";
 
 interface LiveMeetingsViewProps {
@@ -27,6 +28,62 @@ interface LiveMeetingsViewProps {
 const fmt = (iso: string) =>
   new Date(iso).toLocaleString("ar", { dateStyle: "medium", timeStyle: "short" });
 
+function formatStudentsCount(count: number): string {
+  if (count === 0) return "لا يوجد طلاب";
+  if (count === 1) return "طالب واحد";
+  if (count === 2) return "طالبان";
+  if (count >= 3 && count <= 10) return `${count} طلاب`;
+  return `${count} طالباً`;
+}
+
+function MeetingAttendancesDrawer({ meetingId }: { meetingId: number }) {
+  const { data: attendances = [], isLoading } = useQuery(mediaPipelineQueries.attendances(meetingId));
+
+  return (
+    <div className="border-t border-border pt-4 mt-2 space-y-3 animate-in fade-in-50 motion-reduce:animate-none duration-200">
+      <h4 className="text-xs font-bold text-foreground flex items-center gap-1.5">
+        <Users className="w-4 h-4 text-primary" />
+        <span>سجل الحضور المسجل للقاء ({formatStudentsCount(attendances.length)})</span>
+      </h4>
+
+      {isLoading ? (
+        <div className="flex items-center gap-2 p-4 text-xs text-muted-foreground">
+          <Loader2 className="w-4 h-4 animate-spin text-primary" />
+          <span>جارٍ جلب الحضور...</span>
+        </div>
+      ) : attendances.length === 0 ? (
+        <p className="text-xs text-muted-foreground p-3 rounded-xl bg-muted/20">
+          لم يتم تسجيل دخول أي طالب لهذا اللقاء حتى الآن.
+        </p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+          {attendances.map((att: AttendanceRecord) => (
+            <div
+              key={att.id}
+              className="flex items-center justify-between p-2.5 rounded-xl bg-muted/30 border border-border/50 text-xs"
+            >
+              <div className="truncate">
+                <p className="font-semibold text-foreground truncate">
+                  {att.user?.name}
+                </p>
+                <p className="text-[11px] text-muted-foreground truncate font-mono" dir="ltr">
+                  {att.user?.email}
+                </p>
+              </div>
+              <span className="text-[10px] text-muted-foreground shrink-0 font-mono">
+                {new Date(att.attended_at).toLocaleTimeString("ar", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function LiveMeetingsView({
   meetings,
   isLoading,
@@ -34,24 +91,9 @@ export default function LiveMeetingsView({
   onDelete,
 }: LiveMeetingsViewProps) {
   const [openMeetingId, setOpenMeetingId] = useState<number | null>(null);
-  const [attendances, setAttendances] = useState<AttendanceRecord[]>([]);
-  const [loadingAtt, setLoadingAtt] = useState(false);
 
-  const toggleAttendees = async (meetingId: number) => {
-    if (openMeetingId === meetingId) {
-      setOpenMeetingId(null);
-      return;
-    }
-    setOpenMeetingId(meetingId);
-    setLoadingAtt(true);
-    try {
-      const res = await api.get(`/admin/zoom-meetings/${meetingId}/attendances`);
-      setAttendances(res.data?.data ?? res.data ?? []);
-    } catch {
-      setAttendances([]);
-    } finally {
-      setLoadingAtt(false);
-    }
+  const toggleAttendees = (meetingId: number) => {
+    setOpenMeetingId((prev) => (prev === meetingId ? null : meetingId));
   };
 
   if (isLoading) {
@@ -133,7 +175,7 @@ export default function LiveMeetingsView({
                     className="h-9 px-3 rounded-xl text-xs gap-1.5"
                   >
                     <Users className="w-3.5 h-3.5 text-primary" />
-                    <span>الحضور ({m.attendances_count ?? 0})</span>
+                    <span>الحضور ({m.attendances_count ? formatStudentsCount(m.attendances_count) : "0"})</span>
                     {isDrawerOpen ? (
                       <ChevronUp className="w-3 h-3" />
                     ) : (
@@ -174,49 +216,7 @@ export default function LiveMeetingsView({
               )}
 
               {/* Attendance Roster Drawer */}
-              {isDrawerOpen && (
-                <div className="border-t border-border pt-4 mt-2 space-y-3">
-                  <h4 className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                    <Users className="w-4 h-4 text-primary" />
-                    <span>سجل الحضور المسجل للقاء ({attendances.length} طالب)</span>
-                  </h4>
-
-                  {loadingAtt ? (
-                    <div className="flex items-center gap-2 p-4 text-xs text-muted-foreground">
-                      <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                      <span>جارٍ جلب الحضور...</span>
-                    </div>
-                  ) : attendances.length === 0 ? (
-                    <p className="text-xs text-muted-foreground p-3 rounded-xl bg-muted/20">
-                      لم يتم تسجيل دخول أي طالب لهذا اللقاء حتى الآن.
-                    </p>
-                  ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-                      {attendances.map((att) => (
-                        <div
-                          key={att.id}
-                          className="flex items-center justify-between p-2.5 rounded-xl bg-muted/30 border border-border/50 text-xs"
-                        >
-                          <div className="truncate">
-                            <p className="font-semibold text-foreground truncate">
-                              {att.user?.name}
-                            </p>
-                            <p className="text-[11px] text-muted-foreground truncate" dir="ltr">
-                              {att.user?.email}
-                            </p>
-                          </div>
-                          <span className="text-[10px] text-muted-foreground shrink-0 font-mono">
-                            {new Date(att.attended_at).toLocaleTimeString("ar", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
+              {isDrawerOpen && <MeetingAttendancesDrawer meetingId={m.id} />}
             </div>
           );
         })}
