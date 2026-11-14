@@ -108,70 +108,80 @@ export default function FAQSection() {
       <BackgroundDecorations />
 
       <div className="relative z-10 mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-        {/* الترويسة الثنائية الصارمة */}
-        <div className="mx-auto mb-12 max-w-xl text-center space-y-2">
-          <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl">
-            الأسئلة الشائعة والتواصل المباشر
-          </h2>
-          <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
-            إجابات شاملة على أكثر الاستفسارات شيوعاً، أو تواصل مع فريقنا الهندسي مباشرة.
-          </p>
-        </div>
+        {/* شبكة متوازنة بمسافة واسعة: الشق الأيمن (الأسئلة الشائعة) والشق الأيسر (تواصل معنا) */}
+        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16 lg:items-start">
+          {/* الشق الأيمن: الأسئلة الشائعة */}
+          <div className="lg:col-span-6">
+            <div className="mb-6 text-center space-y-1.5">
+              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                الأسئلة الشائعة
+              </h2>
+              <p className="text-xs text-muted-foreground sm:text-sm">
+                إجابات فورية على أكثر الاستفسارات التي يطرحها طلابنا
+              </p>
+            </div>
 
-        {/* شبكة متوازنة: الشق الأيمن (الأسئلة الشائعة) والشق الأيسر (النموذج الموسع) */}
-        <div className="grid gap-8 lg:grid-cols-12 lg:items-start">
-          {/* الشق الأيمن: الأسئلة الشائعة (6 أسئلة محكومة الأكورديون) */}
-          <div className="space-y-3 lg:col-span-6">
-            {faqs.map((faq, i) => {
-              const isOpen = openIndex === i;
-              return (
-                <div
-                  key={i}
-                  className="overflow-hidden rounded-xl border border-border bg-card transition-colors hover:border-border/80"
-                >
-                  <button
-                    type="button"
-                    onClick={() => handleToggle(i)}
-                    className="flex w-full items-center justify-between p-4 text-right transition-colors hover:bg-muted/40 sm:p-4.5"
-                    aria-expanded={isOpen}
+            <div className="space-y-3">
+              {faqs.map((faq, i) => {
+                const isOpen = openIndex === i;
+                return (
+                  <div
+                    key={i}
+                    className="overflow-hidden rounded-xl border border-border bg-card transition-colors hover:border-border/80"
                   >
-                    <span className="text-sm font-semibold text-foreground sm:text-base">
-                      {faq.q}
-                    </span>
-                    <motion.div
-                      animate={{ rotate: isOpen ? 180 : 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="mr-3 shrink-0"
+                    <button
+                      type="button"
+                      onClick={() => handleToggle(i)}
+                      className="flex w-full items-center justify-between p-4 text-right transition-colors hover:bg-muted/40 sm:p-4.5"
+                      aria-expanded={isOpen}
                     >
-                      <ChevronDown
-                        className={`size-4 transition-colors ${
-                          isOpen ? "text-primary" : "text-muted-foreground"
-                        }`}
-                      />
-                    </motion.div>
-                  </button>
-
-                  <AnimatePresence initial={false}>
-                    {isOpen && (
+                      <span className="text-sm font-semibold text-foreground sm:text-base">
+                        {faq.q}
+                      </span>
                       <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
+                        animate={{ rotate: isOpen ? 180 : 0 }}
                         transition={{ duration: 0.2 }}
+                        className="mr-3 shrink-0"
                       >
-                        <div className="border-t border-border px-4.5 pb-4.5 pt-3.5 text-xs leading-relaxed text-muted-foreground sm:text-sm">
-                          {faq.a}
-                        </div>
+                        <ChevronDown
+                          className={`size-4 transition-colors ${
+                            isOpen ? "text-primary" : "text-muted-foreground"
+                          }`}
+                        />
                       </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              );
-            })}
+                    </button>
+
+                    <AnimatePresence initial={false}>
+                      {isOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <div className="border-t border-border px-4.5 pb-4.5 pt-3.5 text-xs leading-relaxed text-muted-foreground sm:text-sm">
+                            {faq.a}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
-          {/* الشق الأيسر: نموذج تواصل موسع ومريح بدون تشتيت */}
+          {/* الشق الأيسر: نموذج تواصل معنا الموسع والمريح */}
           <div id="contact" className="scroll-mt-24 lg:col-span-6">
+            <div className="mb-6 text-center space-y-1.5">
+              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                تواصل معنا
+              </h2>
+              <p className="text-xs text-muted-foreground sm:text-sm">
+                راسلنا مباشرة وسنرد عليك في أقرب وقت ممكن
+              </p>
+            </div>
+
             {sent ? (
               <div className="flex flex-col items-center justify-center rounded-2xl border border-border bg-card p-10 text-center shadow-xs">
                 <div className="mb-4 flex size-14 items-center justify-center rounded-full bg-success/15 text-success">
