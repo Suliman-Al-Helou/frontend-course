@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 // تعريف نوع الحدث الخاص بالتثبيت
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: Array<string>;
   readonly userChoice: Promise<{
-    outcome: 'accepted' | 'dismissed';
+    outcome: "accepted" | "dismissed";
     platform: string;
   }>;
   prompt(): Promise<void>;
@@ -26,15 +26,15 @@ export default function InstallButton() {
       setIsInstallable(true);
     };
 
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
 
     // التحقق مما إذا كان التطبيق مثبتاً بالفعل
-    if (window.matchMedia('(display-mode: standalone)').matches) {
+    if (window.matchMedia("(display-mode: standalone)").matches) {
       setIsInstallable(false);
     }
 
     return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     };
   }, []);
 
@@ -46,11 +46,11 @@ export default function InstallButton() {
 
     // معرفة خيار المستخدم (هل وافق أم رفض؟)
     const { outcome } = await deferredPrompt.userChoice;
-    
-    if (outcome === 'accepted') {
-      console.log('المستخدم وافق على تثبيت تطبيق Future House');
+
+    if (outcome === "accepted") {
+      console.log("المستخدم وافق على تثبيت تطبيق Future House");
     } else {
-      console.log('المستخدم رفض التثبيت');
+      console.log("المستخدم رفض التثبيت");
     }
 
     // إخفاء الزر المخصص بعد التفاعل

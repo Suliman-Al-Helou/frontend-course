@@ -43,7 +43,7 @@ export async function GET() {
     session.destroy();
     const response = NextResponse.json(
       { user: null, message: "تم تعطيل هذا الحساب، يرجى التواصل مع الإدارة" },
-      { status: 403 }
+      { status: 403 },
     );
     response.cookies.delete(sessionOptions.cookieName);
     return response;

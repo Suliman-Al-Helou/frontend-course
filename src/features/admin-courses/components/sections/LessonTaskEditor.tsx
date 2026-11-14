@@ -40,10 +40,7 @@ export default function LessonTaskEditor({ lessonId, lessonTitle, onClose }: Pro
     const base: AdminQuestion = { id, type, text: "", explanation: "" };
 
     if (type === "mcq") {
-      setQuestions((prev) => [
-        ...prev,
-        { ...base, options: ["", "", "", ""], correct_answer: "" },
-      ]);
+      setQuestions((prev) => [...prev, { ...base, options: ["", "", "", ""], correct_answer: "" }]);
     } else if (type === "true_false") {
       setQuestions((prev) => [...prev, { ...base, correct_answer: "صح" }]);
     } else {
@@ -52,9 +49,7 @@ export default function LessonTaskEditor({ lessonId, lessonTitle, onClose }: Pro
   };
 
   const updateQuestion = (id: string, field: keyof AdminQuestion, value: unknown) => {
-    setQuestions((prev) =>
-      prev.map((q) => (q.id === id ? { ...q, [field]: value } : q))
-    );
+    setQuestions((prev) => prev.map((q) => (q.id === id ? { ...q, [field]: value } : q)));
   };
 
   const updateOption = (qId: string, optIndex: number, text: string) => {
@@ -64,7 +59,7 @@ export default function LessonTaskEditor({ lessonId, lessonTitle, onClose }: Pro
         const opts = [...(q.options ?? [])];
         opts[optIndex] = text;
         return { ...q, options: opts };
-      })
+      }),
     );
   };
 
@@ -113,7 +108,7 @@ export default function LessonTaskEditor({ lessonId, lessonTitle, onClose }: Pro
   };
 
   return (
-    <div className="bg-muted/30 border border-border rounded-2xl p-5 my-4 space-y-5 animate-in fade-in-0 duration-200">
+    <div className="bg-muted/30 border border-border rounded-2xl p-5 my-4 space-y-5 animate-in fade-in-0 duration-200 motion-reduce:animate-none">
       {/* Header */}
       <div className="flex items-center justify-between pb-3 border-b border-border">
         <div>
@@ -141,7 +136,10 @@ export default function LessonTaskEditor({ lessonId, lessonTitle, onClose }: Pro
           {/* Settings */}
           <div className="grid sm:grid-cols-2 gap-4 bg-card p-4 rounded-xl border border-border">
             <div className="space-y-1.5">
-              <label htmlFor="task-pass-percentage" className="text-xs font-semibold text-foreground">
+              <label
+                htmlFor="task-pass-percentage"
+                className="text-xs font-semibold text-foreground"
+              >
                 نسبة النجاح المطلوبة (%)
               </label>
               <input
@@ -174,9 +172,7 @@ export default function LessonTaskEditor({ lessonId, lessonTitle, onClose }: Pro
           {/* Questions List */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <p className="text-xs font-bold text-foreground">
-                الأسئلة ({questions.length})
-              </p>
+              <p className="text-xs font-bold text-foreground">الأسئلة ({questions.length})</p>
               <div className="flex items-center gap-2">
                 <Button
                   type="button"
@@ -223,7 +219,13 @@ export default function LessonTaskEditor({ lessonId, lessonTitle, onClose }: Pro
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md">
-                      سؤال {idx + 1} ({q.type === "mcq" ? "خيارات متعددة" : q.type === "true_false" ? "صح أو خطأ" : "سؤال مقالي"})
+                      سؤال {idx + 1} (
+                      {q.type === "mcq"
+                        ? "خيارات متعددة"
+                        : q.type === "true_false"
+                          ? "صح أو خطأ"
+                          : "سؤال مقالي"}
+                      )
                     </span>
                     <button
                       type="button"
@@ -347,4 +349,3 @@ export default function LessonTaskEditor({ lessonId, lessonTitle, onClose }: Pro
     </div>
   );
 }
-

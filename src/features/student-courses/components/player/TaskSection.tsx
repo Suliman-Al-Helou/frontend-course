@@ -75,8 +75,8 @@ export function TaskSection({ task, lessonId, onPassed }: TaskSectionProps) {
               {isPassed ? "أحسنت! لقد اجتزت المهمة بنجاح 🎉" : "للأسف، لم تجتز المهمة هذه المرة"}
             </h3>
             <p className="text-sm text-muted-foreground mt-1.5">
-              نتيجتك: <span className="font-bold text-foreground">{result.score}%</span> — درجة النجاح
-              المطلوبة: {task.pass_percentage}%
+              نتيجتك: <span className="font-bold text-foreground">{result.score}%</span> — درجة
+              النجاح المطلوبة: {task.pass_percentage}%
             </p>
           </div>
         </div>
@@ -103,12 +103,16 @@ export function TaskSection({ task, lessonId, onPassed }: TaskSectionProps) {
                 <div className="mt-2.5 text-xs space-y-1">
                   <p className="text-muted-foreground">
                     إجابتك:{" "}
-                    <span className={`font-semibold ${isCorrect ? "text-success" : "text-destructive"}`}>
+                    <span
+                      className={`font-semibold ${isCorrect ? "text-success" : "text-destructive"}`}
+                    >
                       {answers[q.id] || "لم تجب"}
                     </span>
                   </p>
                   {!isCorrect && fb?.correct_answer && (
-                    <p className="text-success font-semibold">الإجابة الصحيحة: {fb.correct_answer}</p>
+                    <p className="text-success font-semibold">
+                      الإجابة الصحيحة: {fb.correct_answer}
+                    </p>
                   )}
                   {fb?.explanation && (
                     <p className="text-muted-foreground pt-2 mt-2 border-t border-border/50">
@@ -153,7 +157,8 @@ export function TaskSection({ task, lessonId, onPassed }: TaskSectionProps) {
           </p>
         </div>
         <div className="text-xs text-muted-foreground text-end">
-          <span className="font-semibold text-foreground">نسبة النجاح:</span> {task.pass_percentage}%
+          <span className="font-semibold text-foreground">نسبة النجاح:</span> {task.pass_percentage}
+          %
         </div>
       </div>
 
@@ -224,4 +229,3 @@ export function TaskSection({ task, lessonId, onPassed }: TaskSectionProps) {
     </div>
   );
 }
-

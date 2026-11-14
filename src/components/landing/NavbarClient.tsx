@@ -33,7 +33,7 @@ function AuthActions({
   if (isAuthenticated) {
     return (
       <>
-        <Button href={dashboardHref} onClick={onNavigate} className={width}>
+        <Button href={dashboardHref} onClick={onNavigate} className={width} size={"sm"}>
           لوحة التحكم
         </Button>
         <Button
@@ -43,6 +43,7 @@ function AuthActions({
             onNavigate?.();
             logout();
           }}
+          size={"sm"}
         >
           تسجيل الخروج
         </Button>
@@ -52,10 +53,10 @@ function AuthActions({
 
   return (
     <>
-      <Button href="/login" variant="outline" onClick={onNavigate} className={width}>
+      <Button href="/login" variant="outline" onClick={onNavigate} className={width} size={"sm"}>
         تسجيل الدخول
       </Button>
-      <Button href="/register" onClick={onNavigate} className={width}>
+      <Button href="/register" onClick={onNavigate} className={width} size={"sm"}>
         إنشاء حساب
       </Button>
     </>
@@ -94,8 +95,7 @@ export default function NavbarClient() {
             {link.label}
           </Link>
         ))}
-                <InstallButton /> 
-
+        <InstallButton />
       </nav>
 
       <div className="ms-auto flex items-center gap-2">
@@ -105,7 +105,7 @@ export default function NavbarClient() {
         </div>
         <Button
           variant="ghost"
-          size="icon"
+          size={"sm"}
           className="lg:hidden"
           aria-label={open ? "إغلاق القائمة" : "فتح القائمة"}
           aria-expanded={open}
@@ -140,7 +140,6 @@ export default function NavbarClient() {
             ))}
             <div className="mt-3 flex flex-col gap-2 border-t border-border pt-4">
               <AuthActions stacked onNavigate={close} />
-              
             </div>
           </div>
         </div>

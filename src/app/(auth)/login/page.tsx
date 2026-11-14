@@ -69,7 +69,11 @@ export default function LoginPage() {
           <p className="text-sm text-muted-foreground mt-1">سجّل دخولك لمتابعة رحلتك التعليمية</p>
         </div>
 
-        <Suspense fallback={<div className="bg-card rounded-2xl p-8 h-[380px] animate-pulse border border-border" />}>
+        <Suspense
+          fallback={
+            <div className="bg-card rounded-2xl p-8 h-[380px] animate-pulse border border-border" />
+          }
+        >
           <LoginContent />
         </Suspense>
 

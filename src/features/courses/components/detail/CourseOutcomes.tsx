@@ -50,4 +50,3 @@ export function CourseOutcomes({ outcomes, requirements, target }: CourseOutcome
     </>
   );
 }
-

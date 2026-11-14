@@ -1,9 +1,11 @@
 # admin-courses (Admin Course CRUD, Curriculum & Enrollments) — Architectural Context & PRD (immutable anchor)
 
 ## Purpose & Scope
+
 This feature encapsulates the **Admin Courses & Curriculum Domain** exclusively. It is designed for platform administrators to manage the full lifecycle of courses, structured sections, lessons, interactive tasks/quizzes, and student enrollment verification.
 
 ### Explicit Domain Boundaries
+
 - ✅ **IN SCOPE (This Feature):**
   - Admin Courses CRUD (`/admin?tab=courses`):
     - Course creation, modification, deletion, and status management (`draft`, `published`, `coming_soon`).
@@ -51,6 +53,8 @@ src/features/admin-courses/
 │   └── overview/
 │       ├── AdminStatsCards.tsx   # Metric cards derived from in-memory cache
 │       └── CoursesPriceOverview.tsx# Course pricing and enrollment summary table
+├── __tests__/
+│   └── admin-courses.test.ts     # Unit tests verifying queryKey hierarchy and factory contracts
 ├── ai-context.md                 # Immutable PRD & architectural anchor
 └── index.ts                      # Client-safe barrel export
 ```
@@ -87,4 +91,3 @@ src/features/admin-courses/
 5. **ZERO DOM BUGS:** Modals (such as `CourseSectionsModal`) must NEVER be rendered inside a `.map()` iteration.
 6. **ACCESSIBILITY & DESIGN TOKENS:** Native browser `confirm()` is banned; accessible dialogs with focus states are mandatory. Colors must use semantic tokens (`bg-card`, `border-border`, `text-foreground`, `bg-primary`, `text-destructive`).
 7. **ZERO LINGERING BRIDGES:** Delete old legacy components immediately upon migration.
-

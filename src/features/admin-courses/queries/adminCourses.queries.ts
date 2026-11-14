@@ -5,6 +5,9 @@ import {
   getCourseSections,
   getAdminLessonTask,
   getAdminEnrollments,
+  getAdminZoomMeetings,
+  getAdminVideoAssets,
+  getYouTubeStatus,
 } from "../api";
 
 export const adminCourseQueries = {
@@ -55,3 +58,35 @@ export const adminEnrollmentQueries = {
     }),
 };
 
+export const adminZoomQueries = {
+  all: () => ["admin-zoom-meetings"] as const,
+
+  list: () =>
+    queryOptions({
+      queryKey: [...adminZoomQueries.all(), "list"] as const,
+      queryFn: getAdminZoomMeetings,
+      staleTime: 1000 * 60 * 2,
+    }),
+};
+
+export const adminVideoAssetQueries = {
+  all: () => ["admin-video-assets"] as const,
+
+  list: (params?: { course_id?: number | string; zoom_meeting_id?: number | string }) =>
+    queryOptions({
+      queryKey: [...adminVideoAssetQueries.all(), "list", params ?? {}] as const,
+      queryFn: () => getAdminVideoAssets(params),
+      staleTime: 1000 * 60 * 2,
+    }),
+};
+
+export const adminYouTubeQueries = {
+  all: () => ["admin-youtube"] as const,
+
+  status: () =>
+    queryOptions({
+      queryKey: [...adminYouTubeQueries.all(), "status"] as const,
+      queryFn: getYouTubeStatus,
+      staleTime: 1000 * 60 * 5,
+    }),
+};

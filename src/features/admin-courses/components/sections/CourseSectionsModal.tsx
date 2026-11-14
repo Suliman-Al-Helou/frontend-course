@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import { X, Plus, BookOpen } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { adminCourseQueries } from "../../queries/adminCourses.queries";
+import { adminCourseQueries, adminVideoAssetQueries } from "../../queries/adminCourses.queries";
 import { useSectionMutations } from "../../queries/adminCourses.mutations";
 import SectionAccordion from "./SectionAccordion";
 import type { AdminCourse, AdminLesson } from "../../types";
@@ -22,13 +22,11 @@ export default function CourseSectionsModal({ course, isOpen, onClose }: Props) 
   const isAddingSectionRef = useRef(false);
 
   const { data: sections = [], isLoading } = useQuery(adminCourseQueries.sections(course.id));
-  const {
-    createSection,
-    deleteSection,
-    createLesson,
-    updateLesson,
-    deleteLesson,
-  } = useSectionMutations(course.id);
+  const { data: courseVideos = [] } = useQuery(
+    adminVideoAssetQueries.list({ course_id: course.id }),
+  );
+  const { createSection, deleteSection, createLesson, updateLesson, deleteLesson } =
+    useSectionMutations(course.id);
 
   if (!isOpen) return null;
 
@@ -53,10 +51,7 @@ export default function CourseSectionsModal({ course, isOpen, onClose }: Props) 
     }
   };
 
-  const handleUpdateLesson = async (
-    lessonId: number | string,
-    data: Partial<AdminLesson>
-  ) => {
+  const handleUpdateLesson = async (lessonId: number | string, data: Partial<AdminLesson>) => {
     await updateLesson.mutateAsync({ lessonId, data });
   };
 
@@ -68,7 +63,7 @@ export default function CourseSectionsModal({ course, isOpen, onClose }: Props) 
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
       dir="rtl"
     >
-      <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95">
+      <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none">
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-border shrink-0 bg-muted/10">
           <div>
@@ -120,6 +115,7 @@ export default function CourseSectionsModal({ course, isOpen, onClose }: Props) 
                   }
                   onUpdateLesson={handleUpdateLesson}
                   onDeleteLesson={(lessonId) => deleteLesson.mutateAsync(lessonId)}
+                  courseVideos={courseVideos}
                 />
               ))}
             </div>
@@ -162,4 +158,3 @@ export default function CourseSectionsModal({ course, isOpen, onClose }: Props) 
     </div>
   );
 }
-

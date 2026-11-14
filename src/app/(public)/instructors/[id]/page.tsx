@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 import {
   Star,
   Users,
@@ -19,34 +19,8 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
-import api from "@/lib/api";
-
-interface InstructorDetail {
-  id: number;
-  name: string;
-  title?: string;
-  bio?: string;
-  avatar_url?: string;
-  cover_url?: string;
-  specializations?: string;
-  years_experience?: number;
-  rating?: number;
-  total_reviews?: number;
-  students_count?: number;
-  achievements?: string[];
-  twitter?: string;
-  linkedin?: string;
-  youtube?: string;
-  courses?: {
-    id: number;
-    title: string;
-    cover_image?: string;
-    level: string;
-    total_duration: number;
-    students_count: number;
-    rating: number;
-  }[];
-}
+import { Avatar } from "@/components/ui/avatar";
+import { instructorQueries, type InstructorDetail } from "@/features/instructors";
 
 const LEVEL_LABEL: Record<string, string> = {
   beginner: "مبتدئ",
@@ -68,17 +42,7 @@ function fmt(n?: number) {
 export default function InstructorProfile() {
   const params = useParams();
   const id = params?.id as string;
-  const [instructor, setInstructor] = useState<InstructorDetail | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    api
-      .get(`/instructors/${id}`)
-      .then((res) => setInstructor(res.data))
-      .catch(() => setError("المدرب غير موجود"))
-      .finally(() => setLoading(false));
-  }, [id]);
+  const { data: instructor, isLoading: loading, isError } = useQuery(instructorQueries.detail(id));
 
   if (loading)
     return (
@@ -87,10 +51,10 @@ export default function InstructorProfile() {
       </div>
     );
 
-  if (error || !instructor)
+  if (isError || !instructor)
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-background">
-        <p className="text-muted-foreground">{error}</p>
+        <p className="text-muted-foreground">المدرب غير موجود أو تعذر تحميل بياناته.</p>
         <Link href="/instructors" className="text-primary hover:underline text-sm">
           العودة للمدربين
         </Link>
@@ -132,16 +96,19 @@ export default function InstructorProfile() {
         <div className="bg-background border-b border-border">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col sm:flex-row sm:items-end gap-5 py-12 -mt-16 sm:-mt-20">
-              <motion.img
+              <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                src={
-                  instructor.avatar_url ??
-                  `https://ui-avatars.com/api/?name=${instructor.name}&background=0d2258&color=fff`
-                }
-                alt={instructor.name}
-                className="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl border-4 border-background shadow-xl object-cover flex-shrink-0 relative z-10"
-              />
+                className="relative z-10 shrink-0"
+              >
+                <Avatar
+                  src={instructor.avatar_url}
+                  name={instructor.name}
+                  size="3xl"
+                  shape="card"
+                  className="border-4 border-background shadow-xl"
+                />
+              </motion.div>
 
               <div className="flex-1 sm:pb-2 relative z-10">
                 <motion.div
@@ -323,7 +290,7 @@ export default function InstructorProfile() {
                 </div>
               ) : (
                 <div className="space-y-5">
-                  {instructor.courses.map((course, i) => (
+                  {instructor.courses.map((course: any, i: number) => (
                     <motion.div
                       key={course.id}
                       initial={{ opacity: 0, y: 15 }}

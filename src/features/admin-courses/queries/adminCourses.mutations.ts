@@ -11,14 +11,27 @@ import {
   saveAdminLessonTask,
   updateEnrollmentStatus,
   createAdminEnrollment,
+  createAdminZoomMeeting,
+  updateAdminZoomMeeting,
+  deleteAdminZoomMeeting,
+  createAdminVideoAsset,
+  updateAdminVideoAsset,
+  deleteAdminVideoAsset,
 } from "../api";
-import { adminCourseQueries, adminEnrollmentQueries } from "./adminCourses.queries";
+import {
+  adminCourseQueries,
+  adminEnrollmentQueries,
+  adminZoomQueries,
+  adminVideoAssetQueries,
+} from "./adminCourses.queries";
 import type {
   CourseFormData,
   AdminLesson,
   AdminTaskPayload,
   EnrollmentStatus,
   CreateEnrollmentPayload,
+  ZoomMeetingFormData,
+  VideoAssetFormData,
 } from "../types";
 
 /**
@@ -105,13 +118,8 @@ export function useSectionMutations(courseId: number | string) {
   });
 
   const updateLesson = useMutation({
-    mutationFn: ({
-      lessonId,
-      data,
-    }: {
-      lessonId: number | string;
-      data: Partial<AdminLesson>;
-    }) => updateCourseLesson(lessonId, data),
+    mutationFn: ({ lessonId, data }: { lessonId: number | string; data: Partial<AdminLesson> }) =>
+      updateCourseLesson(lessonId, data),
     onSuccess: invalidateSections,
   });
 
@@ -135,13 +143,8 @@ export function useSectionMutations(courseId: number | string) {
 export function useSaveTaskMutation(lessonId: number | string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({
-      payload,
-      isUpdate,
-    }: {
-      payload: AdminTaskPayload;
-      isUpdate: boolean;
-    }) => saveAdminLessonTask(lessonId, payload, isUpdate),
+    mutationFn: ({ payload, isUpdate }: { payload: AdminTaskPayload; isUpdate: boolean }) =>
+      saveAdminLessonTask(lessonId, payload, isUpdate),
     onSuccess: () => {
       void queryClient.invalidateQueries({
         queryKey: adminCourseQueries.task(lessonId).queryKey,
@@ -172,6 +175,7 @@ export function useEnrollmentMutations() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: adminEnrollmentQueries.all() });
       void queryClient.invalidateQueries({ queryKey: adminCourseQueries.all() });
+      void queryClient.invalidateQueries({ queryKey: ["admin-users"] });
       void queryClient.invalidateQueries({ queryKey: ["student-courses"] });
     },
   });
@@ -190,3 +194,64 @@ export function useEnrollmentMutations() {
   };
 }
 
+/**
+ * هوكس لقاءات زووم للأدمن
+ */
+export function useZoomMeetingMutations() {
+  const queryClient = useQueryClient();
+
+  const createMeeting = useMutation({
+    mutationFn: (payload: ZoomMeetingFormData) => createAdminZoomMeeting(payload),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: adminZoomQueries.all() });
+    },
+  });
+
+  const updateMeeting = useMutation({
+    mutationFn: ({ id, data }: { id: number | string; data: Partial<ZoomMeetingFormData> }) =>
+      updateAdminZoomMeeting(id, data),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: adminZoomQueries.all() });
+    },
+  });
+
+  const deleteMeeting = useMutation({
+    mutationFn: (id: number | string) => deleteAdminZoomMeeting(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: adminZoomQueries.all() });
+    },
+  });
+
+  return { createMeeting, updateMeeting, deleteMeeting };
+}
+
+/**
+ * هوكس أصول الفيديوهات والتسجيلات للأدمن
+ */
+export function useVideoAssetMutations() {
+  const queryClient = useQueryClient();
+
+  const createAsset = useMutation({
+    mutationFn: (payload: VideoAssetFormData) => createAdminVideoAsset(payload),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: adminVideoAssetQueries.all() });
+    },
+  });
+
+  const updateAsset = useMutation({
+    mutationFn: ({ id, data }: { id: number | string; data: Partial<VideoAssetFormData> }) =>
+      updateAdminVideoAsset(id, data),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: adminVideoAssetQueries.all() });
+    },
+  });
+
+  const deleteAsset = useMutation({
+    mutationFn: (id: number | string) => deleteAdminVideoAsset(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: adminVideoAssetQueries.all() });
+    },
+  });
+
+  return { createAsset, updateAsset, deleteAsset };
+}

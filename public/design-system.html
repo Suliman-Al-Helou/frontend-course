@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="ar" dir="rtl" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Future House — نظام التصميم المعتمد (Design System)</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"IBM Plex Sans Arabic"', "system-ui", "sans-serif"],
+              mono: ['"JetBrains Mono"', "monospace"],
+            },
+            colors: {
+              // ألوان منصة Future House الرسمية من DESIGN.md
+              bgCanvas: "#0c0f18", // خلفية التطبيق الكلية
+              sectionTone: "#161b27", // تباين الأقسام الوسطى
+              cardSurface: "#10141e", // أسطح الكروت
+              cardSubtle: "#141824", // تدرج داخلي ناعم
+              borderStroke: "#222939", // حدود 1px الرسمية
+              borderHover: "#323b50", // حدود التحويم والتفاعل
+              textWhite: "#eff2f5", // نصوص عالية التباين
+              textMuted: "#98a3b3", // نصوص ثانوية هادئة
+              primaryIndigo: "#6d5ef0", // اللون النيلي الأساسي
+              primaryHover: "#5d4fe0", // حالة التحويم
+              ringIndigo: "#8b7cf6", // إطار التركيز
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        background-color: #0c0f18;
+        color: #eff2f5;
+        font-family: "IBM Plex Sans Arabic", sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .code-font {
+        font-family: "JetBrains Mono", monospace;
+      }
+      .component-box {
+        background-color: #10141e;
+        border: 1px solid #222939;
+        border-radius: 8px;
+      }
+      .spec-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: #98a3b3;
+      }
+      .syn-kw {
+        color: #f472b6;
+      }
+      .syn-fn {
+        color: #60a5fa;
+      }
+      .syn-str {
+        color: #34d399;
+      }
+      .syn-type {
+        color: #38bdf8;
+      }
+      .syn-var {
+        color: #eff2f5;
+      }
+      .syn-comment {
+        color: #565f89;
+      }
+    </style>
+  </head>
+  <body
+    class="min-h-screen bg-bgCanvas text-textWhite selection:bg-primaryIndigo/30 selection:text-white"
+  >
+    <!-- ======================== HEADER ======================== -->
+    <header class="border-b border-borderStroke bg-bgCanvas/95 sticky top-0 z-50 backdrop-blur-md">
+      <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-6 h-6 rounded bg-primaryIndigo text-white flex items-center justify-center font-bold text-xs code-font"
+          >
+            &lt;/&gt;
+          </div>
+          <span class="font-semibold text-sm tracking-tight text-white"
+            >Future House Design System</span
+          >
+          <span
+            class="text-[10px] code-font px-2 py-0.5 rounded bg-cardSurface text-textMuted border border-borderStroke"
+            >DESIGN.md Aligned</span
+          >
+        </div>
+
+        <div class="flex items-center gap-4 text-xs text-textMuted code-font">
+          <span>Obsidian Canvas #0c0f18</span>
+          <span>&bull;</span>
+          <span>Electric Indigo #6d5ef0</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ======================== MAIN CONTENT ======================== -->
+    <main class="max-w-6xl mx-auto px-6 py-12 space-y-20">
+      <!-- المقدمة -->
+      <section class="space-y-3 border-b border-borderStroke pb-8">
+        <h1 class="text-3xl font-bold text-white tracking-tight">
+          نظام التصميم المعتمد (Living Styleguide)
+        </h1>
+        <p class="text-sm text-textMuted max-w-3xl leading-relaxed">
+          توثيق شامل لمكونات المنصة باستخدام **ألوان هويتنا الأصلية** الموثقة في
+          <code class="text-primaryIndigo code-font">DESIGN.md</code>، مع تطبيق القواعد المعمارية
+          الصارمة لمنع قوالب الـ AI.
+        </p>
+      </section>
+
+      <!-- 1. لوحة الألوان الرسمية للمنصة (Our Official Brand Palette) -->
+      <section class="space-y-6">
+        <div class="space-y-1">
+          <h2 class="text-xl font-bold text-white tracking-tight">
+            1. لوحة ألوان المنصة الرسمية (Brand Palette)
+          </h2>
+          <p class="text-xs text-textMuted">
+            الألوان المعتمدة رسمياً في المشروع وقاعدة الـ 10% للون النيلي.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
+          <div class="p-4 rounded-lg bg-cardSurface border border-borderStroke space-y-2">
+            <div class="w-full h-10 rounded bg-[#0c0f18] border border-borderStroke"></div>
+            <div class="text-xs font-semibold text-white">Canvas</div>
+            <div class="spec-label">#0c0f18</div>
+          </div>
+
+          <div class="p-4 rounded-lg bg-cardSurface border border-borderStroke space-y-2">
+            <div class="w-full h-10 rounded bg-[#161b27] border border-borderStroke"></div>
+            <div class="text-xs font-semibold text-white">Section Tone</div>
+            <div class="spec-label">#161b27</div>
+          </div>
+
+          <div class="p-4 rounded-lg bg-cardSurface border border-borderStroke space-y-2">
+            <div class="w-full h-10 rounded bg-[#10141e] border border-borderStroke"></div>
+            <div class="text-xs font-semibold text-white">Card Surface</div>
+            <div class="spec-label">#10141e</div>
+          </div>
+
+          <div class="p-4 rounded-lg bg-cardSurface border border-borderStroke space-y-2">
+            <div class="w-full h-10 rounded bg-[#222939] border border-borderStroke"></div>
+            <div class="text-xs font-semibold text-white">Border 1px</div>
+            <div class="spec-label">#222939</div>
+          </div>
+
+          <div class="p-4 rounded-lg bg-cardSurface border border-borderStroke space-y-2">
+            <div
+              class="w-full h-10 rounded bg-[#6d5ef0] flex items-center justify-center text-xs font-bold text-white code-font"
+            >
+              CTA
+            </div>
+            <div class="text-xs font-semibold text-white">Electric Indigo</div>
+            <div class="spec-label">#6d5ef0</div>
+          </div>
+
+          <div class="p-4 rounded-lg bg-cardSurface border border-borderStroke space-y-2">
+            <div
+              class="w-full h-10 rounded bg-[#eff2f5] text-black font-bold flex items-center justify-center text-xs code-font"
+            >
+              TXT
+            </div>
+            <div class="text-xs font-semibold text-white">Foreground</div>
+            <div class="spec-label">#eff2f5</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. رأس السكشن الثنائي الصارم (The Pure 2-Element Header) -->
+      <section class="space-y-6">
+        <div class="space-y-1">
+          <h2 class="text-xl font-bold text-white tracking-tight">
+            2. قاعدة رأس السكشن (Section Header Rule)
+          </h2>
+          <p class="text-xs text-textMuted">
+            كل سكشن يبدأ فقط بعنصرين: عنوان عريض أبيض (#eff2f5) + سطر شفاف رمادي (#98a3b3) تحته
+            مباشرة.
+          </p>
+        </div>
+
+        <div class="component-box p-8 space-y-2 text-right">
+          <h3 class="text-2xl font-bold text-textWhite tracking-tight">
+            المسارات الهندسية المتاحة
+          </h3>
+          <p class="text-sm text-textMuted leading-relaxed">
+            مناهج متكاملة تنتهي بنشر مستودع كود حقيقي معتمد في مجالك.
+          </p>
+        </div>
+        <div class="text-xs code-font text-textMuted flex items-center gap-2">
+          <span class="text-emerald-400">✓ Rule Verified:</span>
+          <span>Bold Headline (#eff2f5) + Subtitle (#98a3b3) &bull; Zero Eyebrow Badges</span>
+        </div>
+      </section>
+
+      <!-- 3. الأزرار وعناصر الإجراء (Buttons & CTAs) -->
+      <section class="space-y-6">
+        <div class="space-y-1">
+          <h2 class="text-xl font-bold text-white tracking-tight">
+            3. الأزرار وعناصر الإجراء (Buttons)
+          </h2>
+          <p class="text-xs text-textMuted">
+            ارتفاع 40px (h-10)، حواف حادة 8px (`rounded-md`)، مع زر رئيسي بلون الهوية (#6d5ef0).
+          </p>
+        </div>
+
+        <div class="component-box p-8 flex flex-wrap items-center gap-4">
+          <!-- Primary Brand Button -->
+          <button
+            class="h-10 px-5 rounded-md bg-primaryIndigo hover:bg-primaryHover text-white font-semibold text-xs transition-colors flex items-center gap-2 shadow-sm shadow-primaryIndigo/20"
+          >
+            <span>الزر الأساسي (Electric Indigo)</span>
+            <span class="code-font text-xs">&larr;</span>
+          </button>
+
+          <!-- Secondary Button -->
+          <button
+            class="h-10 px-4 rounded-md border border-borderStroke bg-cardSurface text-textMuted hover:text-white hover:border-borderHover font-medium text-xs transition-colors flex items-center justify-center"
+          >
+            الزر الثانوي (Framed Slate)
+          </button>
+
+          <!-- Subtle Action Button -->
+          <button
+            class="h-10 px-3 rounded-md text-textMuted hover:text-white text-xs font-medium transition-colors flex items-center gap-1.5 code-font"
+          >
+            <span>رابط إجرائي</span>
+            <span>&larr;</span>
+          </button>
+
+          <!-- Disabled Button -->
+          <button
+            disabled
+            class="h-10 px-4 rounded-md border border-borderStroke bg-[#0e121b] text-[#555f75] cursor-not-allowed text-xs font-medium"
+          >
+            معطّل (Disabled)
+          </button>
+        </div>
+      </section>
+
+      <!-- 4. الكروت البصرية مع صور واقعية (Real Visual Cards) -->
+      <section class="space-y-6">
+        <div class="space-y-1">
+          <h2 class="text-xl font-bold text-white tracking-tight">
+            4. الكروت البصرية الواقعية (Real Visual Cards)
+          </h2>
+          <p class="text-xs text-textMuted">
+            كروت تضم صوراً هندسية حقيقية في النصف العلوي، وتفاصيل دقيقة في النصف السفلي بأسطح
+            #10141e وحدود #222939.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Feature Card -->
+          <div
+            class="component-box overflow-hidden flex flex-col justify-between hover:border-borderHover transition-all"
+          >
+            <div class="h-44 overflow-hidden relative border-b border-borderStroke bg-black">
+              <img
+                src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop"
+                alt="Feature Mockup"
+                class="w-full h-full object-cover opacity-85 hover:opacity-100 transition-opacity"
+              />
+            </div>
+            <div class="p-5 space-y-2 text-right">
+              <h3 class="text-sm font-bold text-textWhite">مسار تعليمي متدرج هرمياً</h3>
+              <p class="text-xs text-textMuted leading-relaxed">
+                الانتقال من الأساسيات إلى تصميم الأنظمة الموزعة وفق شجرة مهارات هندسية واضحة
+                ومترابطة.
+              </p>
+            </div>
+          </div>
+
+          <!-- Course Card -->
+          <div
+            class="component-box overflow-hidden flex flex-col justify-between hover:border-borderHover transition-all"
+          >
+            <div class="h-44 overflow-hidden relative border-b border-borderStroke bg-black">
+              <img
+                src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=800&auto=format&fit=crop"
+                alt="Course Mockup"
+                class="w-full h-full object-cover opacity-85 hover:opacity-100 transition-opacity"
+              />
+            </div>
+            <div class="p-5 space-y-3 text-right">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-textWhite">Fullstack React & Next.js 16</span>
+                <span
+                  class="spec-label px-2 py-0.5 rounded bg-sectionTone border border-borderStroke text-slate-300"
+                  dir="ltr"
+                  >48 Hours</span
+                >
+              </div>
+              <p class="text-xs text-textMuted leading-relaxed">
+                معمارية الواجهات المتقدمة بأسلوب Vertical Slices، إدارة الكاش بـ TanStack Query v5.
+              </p>
+              <div class="pt-3 border-t border-borderStroke flex items-center justify-between">
+                <span class="text-xs font-bold text-textWhite code-font">$89</span>
+                <span class="text-xs text-primaryIndigo font-medium hover:underline cursor-pointer"
+                  >تفاصيل المسار &larr;</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. مكون الأكواد ومحرر الـ IDE -->
+      <section class="space-y-6">
+        <div class="space-y-1">
+          <h2 class="text-xl font-bold text-white tracking-tight">
+            5. مكون محرر الأكواد (Code Component)
+          </h2>
+          <p class="text-xs text-textMuted">
+            أسطح كودية داكنة برصانة معمارية ودعم كامل للـ LTR البرمجي.
+          </p>
+        </div>
+
+        <div class="component-box overflow-hidden">
+          <div
+            class="bg-[#121622] px-4 py-2.5 border-b border-borderStroke flex items-center justify-between select-none"
+          >
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-500/70"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-500/70"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/70"></span>
+              <span class="ms-2 code-font text-xs text-slate-300">courses.queries.ts</span>
+            </div>
+            <span class="spec-label">Tokyo Night Theme</span>
+          </div>
+          <div
+            class="p-5 code-font text-xs leading-relaxed overflow-x-auto text-left bg-[#090c14]"
+            dir="ltr"
+          >
+            <pre
+              class="font-mono"
+            ><code><span class="syn-comment">// Strict 3-Layer Feature Pattern: api -> queries -> components</span>
+<span class="syn-kw">export const</span> <span class="syn-var">courseQueries</span> = {
+  <span class="syn-fn">list</span>: () =&gt; <span class="syn-fn">queryOptions</span>({
+    <span class="syn-var">queryKey</span>: [<span class="syn-str">'courses'</span>, <span class="syn-str">'list'</span>],
+    <span class="syn-fn">queryFn</span>: <span class="syn-var">fetchCourses</span>,
+    <span class="syn-var">staleTime</span>: <span class="syn-type">1000 * 60 * 5</span>,
+  }),
+};</code></pre>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ======================== FOOTER ======================== -->
+    <footer class="border-t border-borderStroke py-8 text-center text-xs text-textMuted code-font">
+      <div class="max-w-6xl mx-auto px-6 flex items-center justify-between">
+        <span>Future House Design System &bull; Canonical Reference</span>
+        <span>DESIGN.md Original Tokens</span>
+      </div>
+    </footer>
+  </body>
+</html>

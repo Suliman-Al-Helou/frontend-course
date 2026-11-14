@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { CheckCircle2, Lock, PlayCircle, ChevronDown, BookOpen } from "lucide-react";
+import { CheckCircle2, Lock, PlayCircle, ChevronDown } from "lucide-react";
+import { notify } from "@/components/ui/sonner";
 
 export interface SidebarLesson {
   id: number;
@@ -33,15 +34,10 @@ export function LessonSidebar({
   currentLessonId,
   completedIds,
 }: LessonSidebarProps) {
-  const [openSections, setOpenSections] = useState<number[]>(() =>
-    sections.map((s) => s.id),
-  );
-  const [lockedToast, setLockedToast] = useState<string | null>(null);
+  const [openSections, setOpenSections] = useState<number[]>(() => sections.map((s) => s.id));
 
   const toggleSection = (id: number) => {
-    setOpenSections((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    );
+    setOpenSections((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   };
 
   const isCompleted = (id: number) => completedIds.includes(id);
@@ -60,8 +56,7 @@ export function LessonSidebar({
   };
 
   const triggerLockedAlert = () => {
-    setLockedToast("يرجى إكمال الدرس السابق واجتياز مهمته لفتح هذا الدرس");
-    setTimeout(() => setLockedToast(null), 3500);
+    notify.warning("يرجى إكمال الدرس السابق واجتياز مهمته لفتح هذا الدرس");
   };
 
   return (
@@ -69,17 +64,6 @@ export function LessonSidebar({
       aria-label="فهرس دروس الكورس"
       className="w-full lg:w-80 bg-card rounded-2xl border border-border overflow-hidden flex-shrink-0 flex flex-col relative"
     >
-      {/* Toast Alert */}
-      {lockedToast && (
-        <div
-          role="alert"
-          aria-live="assertive"
-          className="absolute top-3 inset-x-3 z-50 bg-destructive text-destructive-foreground text-xs font-semibold px-4 py-3 rounded-xl shadow-lg text-center"
-        >
-          {lockedToast}
-        </div>
-      )}
-
       {/* Header & Course Progress */}
       <div className="p-4 border-b border-border bg-muted/40">
         <h2 className="font-bold text-foreground text-sm line-clamp-2 leading-snug">
@@ -100,7 +84,7 @@ export function LessonSidebar({
           className="h-1.5 w-full bg-border rounded-full overflow-hidden"
         >
           <div
-            className="h-full bg-primary rounded-full transition-all duration-300"
+            className="h-full bg-primary rounded-full transition-all duration-300 motion-reduce:transition-none"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
@@ -135,7 +119,12 @@ export function LessonSidebar({
               </button>
 
               {isOpen && (
-                <div id={contentId} role="region" aria-labelledby={headerId} className="pb-1 bg-muted/10">
+                <div
+                  id={contentId}
+                  role="region"
+                  aria-labelledby={headerId}
+                  className="pb-1 bg-muted/10"
+                >
                   {section.lessons.map((lesson) => {
                     const unlocked = isUnlocked(lesson);
                     const completed = isCompleted(lesson.id);
@@ -147,7 +136,7 @@ export function LessonSidebar({
                           key={lesson.id}
                           href={`/courses/${courseId}/lessons/${lesson.id}`}
                           aria-current={current ? "step" : undefined}
-                          className={`min-h-[44px] flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
+                          className={`min-h-[44px] flex items-center gap-3 px-4 py-2.5 text-sm transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-lg ${
                             current
                               ? "bg-primary/10 text-primary font-semibold border-s-2 border-primary"
                               : "hover:bg-muted/60 text-foreground/80 hover:text-foreground"
@@ -181,10 +170,13 @@ export function LessonSidebar({
                         key={lesson.id}
                         type="button"
                         onClick={triggerLockedAlert}
-                        className="w-full min-h-[44px] flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground/60 cursor-not-allowed hover:bg-muted/20 transition-colors text-start"
-                        aria-label={`${lesson.title} - مغلق`}
+                        className="w-full min-h-[44px] flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground/60 hover:bg-muted/20 transition-colors text-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-lg motion-reduce:transition-none"
+                        aria-label={`${lesson.title} - درس مغلق، اضغط لمعرفة كيفية الفتح`}
                       >
-                        <Lock className="w-4 h-4 text-muted-foreground/50 flex-shrink-0" aria-hidden="true" />
+                        <Lock
+                          className="w-4 h-4 text-muted-foreground/50 flex-shrink-0"
+                          aria-hidden="true"
+                        />
                         <span className="truncate flex-1">{lesson.title}</span>
                         <span className="text-xs bg-muted px-2 py-0.5 rounded text-muted-foreground flex-shrink-0">
                           مغلق

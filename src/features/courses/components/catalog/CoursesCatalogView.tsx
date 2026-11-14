@@ -24,18 +24,12 @@ export default function CoursesCatalogView() {
   const { data: enrolledIds = new Set<number>() } = useQuery({
     ...studentCourseQueries.enrolled(),
     enabled: isAuthenticated,
-    select: (list) =>
-      new Set(list.filter((e) => e.status === "approved").map((e) => e.course?.id)),
+    select: (list) => new Set(list.filter((e) => e.status === "approved").map((e) => e.course?.id)),
   });
 
   const shouldReduceMotion = useReducedMotion();
 
-  const {
-    data: courses = [],
-    isLoading,
-    isError,
-    refetch,
-  } = useQuery(courseQueries.list());
+  const { data: courses = [], isLoading, isError, refetch } = useQuery(courseQueries.list());
 
   const filtered = useMemo(() => {
     let result = courses;
@@ -43,9 +37,7 @@ export default function CoursesCatalogView() {
     if (search.trim()) {
       const q = search.toLowerCase();
       result = result.filter(
-        (c) =>
-          c.title.toLowerCase().includes(q) ||
-          c.description?.toLowerCase().includes(q)
+        (c) => c.title.toLowerCase().includes(q) || c.description?.toLowerCase().includes(q),
       );
     }
     return result;
@@ -60,11 +52,7 @@ export default function CoursesCatalogView() {
     <div className="min-h-screen bg-background font-arabic" dir="rtl">
       <Navbar />
 
-      <CoursesHero
-        search={search}
-        onSearch={setSearch}
-        totalCourses={courses.length || 60}
-      />
+      <CoursesHero search={search} onSearch={setSearch} totalCourses={courses.length || 60} />
 
       <CourseLevelFilters level={level} onChange={setLevel} />
 
@@ -72,14 +60,8 @@ export default function CoursesCatalogView() {
         {/* Error State */}
         {isError && (
           <div role="alert" className="text-center py-16 text-muted-foreground">
-            <p className="text-lg font-medium text-destructive mb-3">
-              تعذر تحميل الكورسات
-            </p>
-            <Button
-              onClick={() => refetch()}
-              variant="outline"
-              className="min-h-[44px] px-6"
-            >
+            <p className="text-lg font-medium text-destructive mb-3">تعذر تحميل الكورسات</p>
+            <Button onClick={() => refetch()} variant="outline" className="min-h-[44px] px-6">
               إعادة المحاولة
             </Button>
           </div>
@@ -107,11 +89,7 @@ export default function CoursesCatalogView() {
 
         {/* Empty State */}
         {!isLoading && !isError && filtered.length === 0 && (
-          <CoursesEmptyState
-            search={search}
-            level={level}
-            onReset={handleResetFilters}
-          />
+          <CoursesEmptyState search={search} level={level} onReset={handleResetFilters} />
         )}
 
         {/* Catalog Grid */}
@@ -144,4 +122,3 @@ export default function CoursesCatalogView() {
     </div>
   );
 }
-

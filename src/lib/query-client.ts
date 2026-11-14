@@ -16,7 +16,7 @@ function makeQueryClient() {
       // 👇 الميزة المضافة لضمان هيدريشن متكامل بدون مشاكل مع Next.js
       dehydrate: {
         shouldDehydrateQuery: (query) =>
-          defaultShouldDehydrateQuery(query) || query.state.status === 'pending',
+          defaultShouldDehydrateQuery(query) || query.state.status === "pending",
       },
     },
   });

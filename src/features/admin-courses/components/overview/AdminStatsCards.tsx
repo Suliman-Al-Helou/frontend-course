@@ -15,8 +15,7 @@ export default function AdminStatsCards({ stats }: Props) {
 
   const totalCourses = stats?.totalCourses ?? courses.length;
   const pendingEnrollments =
-    stats?.pendingEnrollments ??
-    enrollments.filter((e) => e.status === "pending").length;
+    stats?.pendingEnrollments ?? enrollments.filter((e) => e.status === "pending").length;
   const totalStudents = stats?.totalStudents ?? 0;
   const totalInstructors = stats?.totalInstructors ?? 0;
 
@@ -69,4 +68,3 @@ export default function AdminStatsCards({ stats }: Props) {
     </div>
   );
 }
-

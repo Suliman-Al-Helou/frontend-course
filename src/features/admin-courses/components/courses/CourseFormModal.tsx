@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect, useId } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { X, Layers, Sparkles, DollarSign } from "lucide-react";
-import { useInstructorsStore } from "@/store/instructorsStore";
+import { notify } from "@/components/ui/sonner";
+import { instructorQueries } from "@/features/instructors";
 import {
   useCreateCourseMutation,
   useUpdateCourseMutation,
@@ -25,7 +27,10 @@ const toArray = (val: unknown): string[] => {
       const parsed = JSON.parse(val);
       return Array.isArray(parsed) ? parsed.filter(Boolean).map(String) : [val];
     } catch {
-      return val.split("\n").map((s) => s.trim()).filter(Boolean);
+      return val
+        .split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean);
     }
   }
   return [];
@@ -36,7 +41,9 @@ export default function CourseFormModal({ course, isOpen, onClose }: Props) {
   const isEdit = !!course;
   const isSubmittingRef = useRef(false);
 
-  const { instructors, loading: loadingInstructors, fetchInstructors } = useInstructorsStore();
+  const { data: instructors = [], isLoading: loadingInstructors } = useQuery(
+    instructorQueries.list(),
+  );
   const createMutation = useCreateCourseMutation();
   const updateMutation = useUpdateCourseMutation();
 
@@ -51,8 +58,8 @@ export default function CourseFormModal({ course, isOpen, onClose }: Props) {
     instructor_id: course?.instructor?.id
       ? String(course.instructor.id)
       : course?.instructor_id
-      ? String(course.instructor_id)
-      : undefined,
+        ? String(course.instructor_id)
+        : undefined,
     rating: course?.rating ?? 4.5,
     is_popular: course?.is_popular ?? course?.hot ?? false,
     total_duration: course?.total_duration ?? 0,
@@ -66,11 +73,22 @@ export default function CourseFormModal({ course, isOpen, onClose }: Props) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [generalError, setGeneralError] = useState("");
 
+  const isSaving = createMutation.isPending || updateMutation.isPending;
+
+  // إغلاق المودال بزر Escape في لوحة المفاتيح
   useEffect(() => {
-    if (instructors.length === 0) {
-      void fetchInstructors();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && !isSaving) {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      window.addEventListener("keydown", handleKeyDown);
     }
-  }, [fetchInstructors, instructors.length]);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, isSaving, onClose]);
 
   if (!isOpen) return null;
 
@@ -117,8 +135,10 @@ export default function CourseFormModal({ course, isOpen, onClose }: Props) {
           id: course.id,
           data: submitPayload,
         });
+        notify.success(`تم تحديث كورس "${submitPayload.title}" بنجاح`);
       } else {
         await createMutation.mutateAsync(submitPayload);
+        notify.success(`تم إنشاء كورس "${submitPayload.title}" بنجاح`);
       }
       onClose();
     } catch (err: unknown) {
@@ -131,15 +151,16 @@ export default function CourseFormModal({ course, isOpen, onClose }: Props) {
           mappedErrors[key] = msgs[0];
         }
         setErrors(mappedErrors);
+        notify.error("يرجى تصحيح أخطاء الحقول المحددة قبل الحفظ.");
       } else {
-        setGeneralError("تعذر حفظ الكورس. يرجى مراجعة البيانات المدخلة والمحاولة ثانية.");
+        const errorMsg = "تعذر حفظ الكورس. يرجى مراجعة البيانات المدخلة والمحاولة ثانية.";
+        setGeneralError(errorMsg);
+        notify.error(errorMsg);
       }
     } finally {
       isSubmittingRef.current = false;
     }
   };
-
-  const isSaving = createMutation.isPending || updateMutation.isPending;
 
   return (
     <div
@@ -147,10 +168,17 @@ export default function CourseFormModal({ course, isOpen, onClose }: Props) {
       aria-modal="true"
       aria-labelledby={titleId}
       aria-busy={isSaving}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
       dir="rtl"
     >
-      <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none">
+      <button
+        type="button"
+        tabIndex={-1}
+        aria-label="إغلاق النافذة"
+        className="fixed inset-0 bg-black/60 backdrop-blur-xs cursor-default"
+        onClick={isSaving ? undefined : onClose}
+      />
+      <div className="relative z-10 bg-card border border-border rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none">
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-border shrink-0 bg-muted/10">
           <div>
@@ -216,7 +244,7 @@ export default function CourseFormModal({ course, isOpen, onClose }: Props) {
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-5 space-y-5">
           {/* تبويب المعلومات الأساسية */}
           {activeTab === "basic" && (
-            <div className="space-y-4 animate-in fade-in-0 duration-150">
+            <div className="space-y-4 animate-in fade-in-0 duration-150 motion-reduce:animate-none">
               <CourseBasicFields
                 title={form.title}
                 instructorId={form.instructor_id}
@@ -250,7 +278,7 @@ export default function CourseFormModal({ course, isOpen, onClose }: Props) {
 
           {/* تبويب التسعير والوسائط */}
           {activeTab === "pricing" && (
-            <div className="space-y-4 animate-in fade-in-0 duration-150">
+            <div className="space-y-4 animate-in fade-in-0 duration-150 motion-reduce:animate-none">
               <CoursePricingMediaFields
                 rating={form.rating}
                 price={form.price}
@@ -275,7 +303,7 @@ export default function CourseFormModal({ course, isOpen, onClose }: Props) {
 
           {/* تبويب المخرجات والمتطلبات والجمهور */}
           {activeTab === "content" && (
-            <div className="space-y-5 animate-in fade-in-0 duration-150">
+            <div className="space-y-5 animate-in fade-in-0 duration-150 motion-reduce:animate-none">
               <CourseTagListField
                 label="ماذا سيتعلم الطالب (Learning Outcomes)"
                 items={form.what_you_learn}

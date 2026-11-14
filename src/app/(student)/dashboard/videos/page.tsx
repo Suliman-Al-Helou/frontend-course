@@ -4,7 +4,9 @@ import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { Video, CheckCircle } from "lucide-react";
 import api from "@/lib/api";
-import CourseFilterDropdown, { useEnrolledCourses } from "@/components/dashboard/CourseFilterDropdown";
+import CourseFilterDropdown, {
+  useEnrolledCourses,
+} from "@/components/dashboard/CourseFilterDropdown";
 
 function VideosContent() {
   const { courses, selectedId, isLoading: loadingCourses, selectCourse } = useEnrolledCourses();
@@ -52,11 +54,7 @@ function VideosContent() {
       <h1 className="text-2xl font-bold text-foreground mb-6">الفيديوهات</h1>
 
       {/* Course Dropdown */}
-      <CourseFilterDropdown
-        courses={courses}
-        selectedId={selectedId}
-        onSelect={selectCourse}
-      />
+      <CourseFilterDropdown courses={courses} selectedId={selectedId} onSelect={selectCourse} />
 
       {loadingLessons ? (
         <div className="space-y-3">
@@ -83,20 +81,30 @@ function VideosContent() {
                 <div className="flex items-center gap-3 min-w-0">
                   <div
                     className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
-                      isCompleted ? "bg-emerald-500/10 text-emerald-500" : "bg-muted text-muted-foreground"
+                      isCompleted
+                        ? "bg-emerald-500/10 text-emerald-500"
+                        : "bg-muted text-muted-foreground"
                     }`}
                   >
-                    {isCompleted ? <CheckCircle className="w-5 h-5" /> : <Video className="w-5 h-5" />}
+                    {isCompleted ? (
+                      <CheckCircle className="w-5 h-5" />
+                    ) : (
+                      <Video className="w-5 h-5" />
+                    )}
                   </div>
                   <div className="min-w-0">
-                    <p className="text-xs text-muted-foreground truncate">{lesson.section?.title}</p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {lesson.section?.title}
+                    </p>
                     <p className="text-sm font-semibold text-foreground truncate">{lesson.title}</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-4 shrink-0">
                   {percent > 0 && !isCompleted && (
-                    <span className="text-xs text-muted-foreground hidden sm:inline">%{percent}</span>
+                    <span className="text-xs text-muted-foreground hidden sm:inline">
+                      %{percent}
+                    </span>
                   )}
                   <Link
                     href={`/courses/${lesson.course?.id}/lessons/${lesson.id}`}

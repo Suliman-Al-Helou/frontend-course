@@ -79,7 +79,9 @@ export function CourseCurriculum({ sections, courseId, enrolled }: CourseCurricu
                           </span>
                         )}
                       </div>
-                      <span className="text-xs text-muted-foreground shrink-0 ms-2">{lesson.duration}</span>
+                      <span className="text-xs text-muted-foreground shrink-0 ms-2">
+                        {lesson.duration}
+                      </span>
                     </div>
                   );
 
@@ -92,7 +94,10 @@ export function CourseCurriculum({ sections, courseId, enrolled }: CourseCurricu
                       {content}
                     </Link>
                   ) : (
-                    <div key={lesson.id} className="flex items-center opacity-60 cursor-not-allowed">
+                    <div
+                      key={lesson.id}
+                      className="flex items-center opacity-60 cursor-not-allowed"
+                    >
                       {content}
                     </div>
                   );
@@ -105,4 +110,3 @@ export function CourseCurriculum({ sections, courseId, enrolled }: CourseCurricu
     </section>
   );
 }
-

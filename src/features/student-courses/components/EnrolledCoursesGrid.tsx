@@ -12,7 +12,11 @@ interface EnrolledCoursesGridProps {
 }
 
 export function EnrolledCoursesGrid({ initialEnrollments }: EnrolledCoursesGridProps) {
-  const { data: enrollments, isLoading, isError } = useQuery({
+  const {
+    data: enrollments,
+    isLoading,
+    isError,
+  } = useQuery({
     ...studentCourseQueries.enrolled(),
     select: (list) => list.filter((e) => e.status === "approved"),
     initialData: initialEnrollments,
@@ -84,4 +88,3 @@ export function EnrolledCoursesGrid({ initialEnrollments }: EnrolledCoursesGridP
     </div>
   );
 }
-

@@ -18,9 +18,7 @@ interface Props {
 export default function AddEnrollmentModal({ isOpen, onClose }: Props) {
   const isSubmittingRef = useRef(false);
 
-  const { data: courses = [], isLoading: isLoadingCourses } = useQuery(
-    adminCourseQueries.list()
-  );
+  const { data: courses = [], isLoading: isLoadingCourses } = useQuery(adminCourseQueries.list());
   const { createEnrollment } = useEnrollmentMutations();
 
   const [studentName, setStudentName] = useState("");
@@ -72,7 +70,7 @@ export default function AddEnrollmentModal({ isOpen, onClose }: Props) {
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
       dir="rtl"
     >
-      <div className="bg-card border border-border rounded-2xl p-6 w-full max-w-md shadow-2xl animate-in fade-in-0 zoom-in-95">
+      <div className="bg-card border border-border rounded-2xl p-6 w-full max-w-md shadow-2xl animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none">
         {/* Header */}
         <div className="flex items-center justify-between mb-5 pb-3 border-b border-border">
           <div className="flex items-center gap-2.5">
@@ -151,14 +149,14 @@ export default function AddEnrollmentModal({ isOpen, onClose }: Props) {
               variant="outline"
               onClick={onClose}
               disabled={createEnrollment.isPending}
-              className="flex-1 rounded-xl h-10 text-sm"
+              className="flex-1 rounded-xl h-11 min-h-[44px] text-sm"
             >
               إلغاء
             </Button>
             <Button
               type="submit"
               disabled={createEnrollment.isPending}
-              className="flex-1 rounded-xl h-10 text-sm bg-primary text-primary-foreground font-medium"
+              className="flex-1 rounded-xl h-11 min-h-[44px] text-sm bg-primary text-primary-foreground font-medium"
             >
               {createEnrollment.isPending ? "جارٍ التسجيل..." : "تأكيد التسجيل"}
             </Button>
@@ -168,4 +166,3 @@ export default function AddEnrollmentModal({ isOpen, onClose }: Props) {
     </div>
   );
 }
-

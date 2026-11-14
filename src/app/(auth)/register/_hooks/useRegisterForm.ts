@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import api from "@/lib/api";
+import { useRegisterMutation } from "@/features/auth";
 import { useAuthStore } from "@/store/authStore";
 import { registerSchema } from "@/lib/validations/auth";
 import { flattenZodErrors } from "@/lib/validations/flattenZodErrors";
@@ -20,6 +20,7 @@ export function useRegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const setAuth = useAuthStore((state) => state.setAuth);
+  const registerMutation = useRegisterMutation();
 
   const [form, setForm] = useState<RegisterForm>({
     name: "",
@@ -29,7 +30,6 @@ export function useRegisterForm() {
   });
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const isSubmittingRef = useRef(false);
 
   const updateField = (field: keyof RegisterForm) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,7 +39,7 @@ export function useRegisterForm() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (loading || isSubmittingRef.current) return;
+    if (registerMutation.isPending || isSubmittingRef.current) return;
 
     setError("");
     setFieldErrors({});
@@ -51,9 +51,8 @@ export function useRegisterForm() {
     }
 
     isSubmittingRef.current = true;
-    setLoading(true);
     try {
-      const { data } = await api.post("/auth/register", {
+      const data = await registerMutation.mutateAsync({
         name: form.name,
         email: form.email,
         password: form.password,
@@ -68,10 +67,16 @@ export function useRegisterForm() {
     } catch (err) {
       handleFormError(err, setFieldErrors, setError);
     } finally {
-      setLoading(false);
       isSubmittingRef.current = false;
     }
   };
 
-  return { form, fieldErrors, error, loading, updateField, handleRegister };
+  return {
+    form,
+    fieldErrors,
+    error,
+    loading: registerMutation.isPending,
+    updateField,
+    handleRegister,
+  };
 }

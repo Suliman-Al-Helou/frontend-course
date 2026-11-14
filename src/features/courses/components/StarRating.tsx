@@ -14,17 +14,12 @@ export default function StarRating({ rating }: { rating: number }) {
           <Star
             key={s}
             className={`w-3.5 h-3.5 ${
-              s <= Math.round(rating)
-                ? "fill-amber-400 text-amber-400"
-                : "text-muted-foreground/30"
+              s <= Math.round(rating) ? "fill-amber-400 text-amber-400" : "text-muted-foreground/30"
             }`}
           />
         ))}
       </div>
-      <span
-        className="text-xs font-medium text-muted-foreground ms-0.5"
-        aria-hidden="true"
-      >
+      <span className="text-xs font-medium text-muted-foreground ms-0.5" aria-hidden="true">
         {formattedRating}
       </span>
     </div>

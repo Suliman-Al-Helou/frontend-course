@@ -1,4 +1,5 @@
 # 🚀 الدليل الشامل لمعمارية Clerk مع Next.js 16 و Laravel API
+
 # 📘 Complete Guide: Clerk Architecture with Next.js 16 & Laravel API
 
 > **وثيقة معمارية وتطبيق عملي (Architectural Blueprint & Implementation Guide)**  
@@ -7,6 +8,7 @@
 ---
 
 ## 📑 فهرس المحتويات | Table of Contents
+
 1. [المعمارية العامة والتدفق | Architecture Overview & Data Flow](#1-المعمارية-العامة-والتدفق--architecture-overview)
 2. [المرحلة 1: إعداد Clerk في Next.js 16 | Phase 1: Next.js 16 Setup](#2-المرحلة-1-إعداد-clerk-في-nextjs-16--phase-1-nextjs-16-setup)
 3. [المرحلة 2: تفعيل تسجيل الدخول بجوجل بنقرة واحدة (Google One Tap) | Phase 2: Google One Tap](#3-المرحلة-2-تفعيل-تسجيل-الدخول-بجوجل-بنقرة-واحدة-google-one-tap)
@@ -32,7 +34,7 @@ sequenceDiagram
     Clerk-->>User: ظهور نافذة Google المنبثقة
     User->>Clerk: نقرة واحدة للحساب (1-Click Google Auth)
     Clerk-->>NextJS: إصدار جلسة آمنة (Session Token / JWT)
-    
+
     rect rgb(240, 248, 255)
     Note over NextJS,Laravel: استدعاء البيانات المحمية (Protected API Calls)
     NextJS->>Laravel: طلب البيانات + Authorization: Bearer <Clerk_JWT>
@@ -43,6 +45,7 @@ sequenceDiagram
 ```
 
 ### المميزات الرئيسية لهذا النهج (Key Benefits):
+
 1. **سرعة التحويل العالية (High Conversion):** تسجيل دخول مباشر في ثوانٍ عبر Google One Tap دون كتابة بيانات.
 2. **الأمان العالمي المدار (Managed Security):** إدارة كلمات المرور، استعادة الحسابات، 2FA، ومكافحة البوتات تتم سحابياً بواسطة Clerk.
 3. **تكامل متوافق مع خادمك (Seamless Backend Handshake):** Laravel يتحقق من التوكنات محلياً وفورياً دون استدعاء شبكة في كل طلب (باستخدام التشفير اللامتناظر RS256).
@@ -52,6 +55,7 @@ sequenceDiagram
 ## 2. المرحلة 1: إعداد Clerk في Next.js 16 | Phase 1: Next.js 16 Setup
 
 ### أ) التثبيت والتهيئة عبر الـ CLI (Recommended CLI Init)
+
 يتم تشغيل أداة Clerk الرسمية التي تقوم بالتعرف التلقائي على بيئة العمل وإعداد المتغيرات:
 
 ```bash
@@ -59,7 +63,8 @@ sequenceDiagram
 npx -y clerk@latest init
 ```
 
-*تقوم الأداة تلقائياً بإنشاء مفاتيح التطوير في ملف `.env.local`:*
+_تقوم الأداة تلقائياً بإنشاء مفاتيح التطوير في ملف `.env.local`:_
+
 ```env
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
 CLERK_SECRET_KEY=sk_test_...
@@ -68,6 +73,7 @@ CLERK_SECRET_KEY=sk_test_...
 ---
 
 ### ب) ملف الـ Middleware / Proxy في Next.js 16
+
 > [!IMPORTANT]
 > في **Next.js 16+** تمت إعادة تسمية ملف الـ Middleware إلى **`src/proxy.ts`** (أو `proxy.ts` في الجذر)، بينما في Next.js 15 وما قبله يُسمى `middleware.ts`.
 
@@ -105,6 +111,7 @@ export const config = {
 ---
 
 ### ج) تغليف التطبيق بـ `<ClerkProvider>` في Root Layout
+
 > [!NOTE]
 > يجب وضع `<ClerkProvider>` **داخل** وسم `<body>` وليس خارجه لتجنب مشاكل الهيدرة (Hydration mismatches).
 
@@ -115,17 +122,11 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Suspense } from "react";
 import "./globals.css";
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ar" dir="rtl">
       <body>
-        <ClerkProvider>
-          {children}
-        </ClerkProvider>
+        <ClerkProvider>{children}</ClerkProvider>
       </body>
     </html>
   );
@@ -137,11 +138,13 @@ export default function RootLayout({
 ## 3. المرحلة 2: تفعيل تسجيل الدخول بجوجل بنقرة واحدة (Google One Tap)
 
 ### أ) إعداد Google OAuth داخل لوحة تحكم Clerk
+
 1. ادخل إلى **Clerk Dashboard** -> **User & Authentication** -> **Social Connections**.
 2. فعّل خيار **Google**.
 3. (للإنتاج) أضف Google Client ID و Client Secret من Google Cloud Console لضمان ظهور اسم ودومين موقعك الخاص في النافذة المنبثقة.
 
 ### ب) إضافة مكون `<GoogleOneTap />`
+
 يوضع المكون مباشرة داخل الـ Layout الرئيسي أو داخل صفحات تسجيل الدخول:
 
 ```tsx
@@ -174,13 +177,13 @@ export function HeaderAuthControls() {
 
         {/* حالة المستخدم المسجل */}
         <Show when="signed-in">
-          <UserButton 
+          <UserButton
             afterSignOutUrl="/"
             userProfileMode="modal"
             appearance={{
               elements: {
-                avatarBox: "w-9 h-9 border border-border"
-              }
+                avatarBox: "w-9 h-9 border border-border",
+              },
             }}
           />
         </Show>
@@ -197,6 +200,7 @@ export function HeaderAuthControls() {
 هذه هي الخطوة الأكثر أهمية: **كيف نجعل Laravel يثق بالطلبات القادمة من Next.js المحمية بـ Clerk؟**
 
 ### أ) آلية إرسال التوكن من Next.js (Token Forwarding)
+
 في Next.js Server Components أو داخل البروكسي الداخلي [`src/app/api/[...path]/route.ts`](file:///home/suliman/Documents/courses/frontend-course/src/app/api/[...path]/route.ts)، نقوم بقراءة التوكن من Clerk وتمريره في ترويسة الطلب:
 
 ```typescript
@@ -209,7 +213,7 @@ export async function forwardToLaravel(req: NextRequest, endpoint: string) {
   const token = await getToken();
 
   const headers: HeadersInit = {
-    "Accept": "application/json",
+    Accept: "application/json",
     "Content-Type": "application/json",
   };
 
@@ -239,15 +243,18 @@ export async function forwardToLaravel(req: NextRequest, endpoint: string) {
 في خادم Laravel، لا نحتاج لاستدعاء سيرفر Clerk في كل طلب (Network Call)، بل نتحقق رياضياً من التوقيع الرقمي (RS256) باستخدام **مفتاح Clerk العام (PEM Key)**.
 
 #### 1. استخراج المفتاح العام من Clerk
-* في لوحة تحكم Clerk: اذهب إلى **API Keys** -> **JWT verification key**.
-* انسخ المفتاح العام بصيغة PEM وضعه داخل: `storage/app/clerk-public.pem`.
+
+- في لوحة تحكم Clerk: اذهب إلى **API Keys** -> **JWT verification key**.
+- انسخ المفتاح العام بصيغة PEM وضعه داخل: `storage/app/clerk-public.pem`.
 
 #### 2. تثبيت مكتبة JWT في Laravel
+
 ```bash
 composer require firebase/php-jwt
 ```
 
 #### 3. إنشاء Middleware في Laravel (`VerifyClerkJwt.php`)
+
 ```php
 <?php
 
@@ -316,7 +323,9 @@ class VerifyClerkJwt
 يوفر Clerk ميزة **`publicMetadata`** لتخزين بيانات مخصصة عن المستخدم، مثل نوع الحساب (`student` أو `admin`).
 
 ### أ) ضبط الدور في Clerk
+
 عند إنشاء المستخدم أو ترقيته من لوحة التحكم أو الـ API:
+
 ```json
 {
   "publicMetadata": {
@@ -326,9 +335,12 @@ class VerifyClerkJwt
 ```
 
 ### ب) تضمين الدور داخل الـ JWT تلقائياً
+
 في Clerk Dashboard:
+
 1. اذهب إلى **JWT Templates**.
 2. أنشئ قالباً أو عدل الـ Default Session Token بإضافة المطالبة (Claim):
+
 ```json
 {
   "role": "{{user.public_metadata.role}}"
@@ -336,7 +348,8 @@ class VerifyClerkJwt
 ```
 
 ### ج) فحص الدور في كود Next.js (RSC Guard)
-في صفحات الإدارة مثل [`src/app/(admin)/layout.tsx`](file:///home/suliman/Documents/courses/frontend-course/src/app/(admin)/layout.tsx):
+
+في صفحات الإدارة مثل [`src/app/(admin)/layout.tsx`](<file:///home/suliman/Documents/courses/frontend-course/src/app/(admin)/layout.tsx>):
 
 ```tsx
 import { auth, currentUser } from "@clerk/nextjs/server";
@@ -344,7 +357,7 @@ import { redirect } from "next/navigation";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const { sessionClaims } = await auth();
-  
+
   // قراءة الدور مباشرة من الـ Claims المشفرة في التوكن
   const role = (sessionClaims as any)?.role;
 
@@ -375,11 +388,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
 ## 🏁 الخلاصة وتوصية التطبيق | Final Recommendation
 
-| الميزة | ما تحصل عليه بعد التطبيق |
-| :--- | :--- |
-| **Google One Tap** | بطاقة دخول فورية بنقرة واحدة بمجرد زيارة الموقع |
+| الميزة             | ما تحصل عليه بعد التطبيق                                   |
+| :----------------- | :--------------------------------------------------------- |
+| **Google One Tap** | بطاقة دخول فورية بنقرة واحدة بمجرد زيارة الموقع            |
 | **تجربة المستخدم** | واجهات دخول وملف شخصي عالمية المستوى وبدون كود واجهات مخصص |
-| **صيانة الأمان** | حماية كاملة من استعادة الحسابات وتأمين كلمات المرور و2FA |
-| **سرعة التطوير** | توفير مئات ساعات العمل على صيانة أنظمة الدخول والـ OAuth |
+| **صيانة الأمان**    | حماية كاملة من استعادة الحسابات وتأمين كلمات المرور و2FA   |
+| **سرعة التطوير**   | توفير مئات ساعات العمل على صيانة أنظمة الدخول والـ OAuth   |
 
-*هذا الملف يمثل المرجع المعماري الكامل لك عند البدء بالتطبيق العملي خطوة بخطوة.*
+_هذا الملف يمثل المرجع المعماري الكامل لك عند البدء بالتطبيق العملي خطوة بخطوة._

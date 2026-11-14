@@ -38,4 +38,4 @@ Student dashboard home: stats cards, exam results, Zoom attendance calendar.
 3. No UI for attendance code confirmation (POST /zoom-meetings/{id}/confirm-attendance).
 4. Attendance % is computed client-side while /zoom-meetings/attendance-summary exists (two sources of truth).
 5. mapApiError maps every 403 to ROLE_FORBIDDEN → wrong message for "meeting not started". Add ZOOM_* error codes.
-6. DashboardHeader (components/dashboard) still violates design rules; out of scope for this slice.
+6. [RESOLVED] DashboardHeader refactored into HomeHeader adhering to DESIGN.md tokens & Card/Avatar primitives; legacy dashboard files removed.

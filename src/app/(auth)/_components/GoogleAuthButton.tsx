@@ -31,7 +31,7 @@ declare global {
               logo_alignment?: "left" | "center";
               width?: string | number;
               locale?: string;
-            }
+            },
           ) => void;
           cancel: () => void;
         };
@@ -119,7 +119,7 @@ export function GoogleAuthButton({ mode = "signin" }: GoogleAuthButtonProps) {
         setIsLoading(false);
       }
     },
-    [router, searchParams, setAuth]
+    [router, searchParams, setAuth],
   );
 
   const initGoogleIdentity = useCallback(() => {
@@ -149,7 +149,10 @@ export function GoogleAuthButton({ mode = "signin" }: GoogleAuthButtonProps) {
       // تفعيل Google One Tap التلقائي مع معالجة هادئة لعدم إيقاف الواجهة
       window.google.accounts.id.prompt((notification: unknown) => {
         // التقاط حالات التخطي أو الانتظار دون إثارة أخطاء مزعجة في شاشة التطوير
-        const notif = notification as { isNotDisplayed?: () => boolean; getNotDisplayedReason?: () => string };
+        const notif = notification as {
+          isNotDisplayed?: () => boolean;
+          getNotDisplayedReason?: () => string;
+        };
         if (notif?.isNotDisplayed?.()) {
           console.warn("Google One Tap postponed:", notif.getNotDisplayedReason?.());
         }
@@ -165,8 +168,7 @@ export function GoogleAuthButton({ mode = "signin" }: GoogleAuthButtonProps) {
     }
   }, [initGoogleIdentity]);
 
-  const buttonText =
-    mode === "signup" ? "إنشاء حساب بواسطة Google" : "تسجيل الدخول بواسطة Google";
+  const buttonText = mode === "signup" ? "إنشاء حساب بواسطة Google" : "تسجيل الدخول بواسطة Google";
 
   if (!clientId) {
     return null;

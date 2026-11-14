@@ -1,9 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
-import {
-  getMyCourses,
-  getLessonProgress,
-  getLessonTask,
-} from "../api";
+import { getMyCourses, getLessonProgress, getLessonTask } from "../api";
 
 export const studentCourseQueries = {
   all: () => ["student-courses"] as const,

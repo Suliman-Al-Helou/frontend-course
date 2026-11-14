@@ -18,18 +18,27 @@ async function forward(request: NextRequest, path: string[]) {
 
   const targetUrl = `${LARAVEL_API_URL}/${path.join("/")}${request.nextUrl.search}`;
 
+  const incomingContentType = request.headers.get("content-type") ?? "";
+  const isMultipart = incomingContentType.toLowerCase().includes("multipart/form-data");
+
   const headers: Record<string, string> = { Accept: "application/json" };
   if (session.token) {
     headers.Authorization = `Bearer ${session.token}`;
   }
 
   const hasBody = !["GET", "HEAD"].includes(request.method);
-  let body: string | undefined;
+  let body: BodyInit | undefined;
   if (hasBody) {
-    const raw = await request.text();
-    if (raw) {
-      body = raw;
-      headers["Content-Type"] = "application/json";
+    if (isMultipart) {
+      // تمرير البيانات الثنائية كـ ArrayBuffer مع الحفاظ على الـ Content-Type بما فيه الـ Boundary
+      body = await request.arrayBuffer();
+      headers["Content-Type"] = incomingContentType;
+    } else {
+      const raw = await request.text();
+      if (raw) {
+        body = raw;
+        headers["Content-Type"] = incomingContentType || "application/json";
+      }
     }
   }
 

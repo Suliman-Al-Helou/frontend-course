@@ -8,11 +8,7 @@ export interface CourseBottomCtaProps {
   isAuthenticated: boolean;
 }
 
-export function CourseBottomCta({
-  isFree,
-  enrolled,
-  isAuthenticated,
-}: CourseBottomCtaProps) {
+export function CourseBottomCta({ isFree, enrolled, isAuthenticated }: CourseBottomCtaProps) {
   // يختفي تماماً إذا كان الكورس مجانياً أو إذا كان المستخدم مسجلاً ومقبولاً
   if (isFree || enrolled) return null;
 
@@ -50,4 +46,3 @@ export function CourseBottomCta({
     </section>
   );
 }
-

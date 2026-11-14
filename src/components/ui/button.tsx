@@ -6,13 +6,15 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 motion-reduce:transition-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary-hover",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline: "border border-primary bg-background text-foreground hover:bg-muted",
+        default: "bg-primary text-primary-foreground hover:bg-primary-hover shadow-xs",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-xs",
+        outline:
+          "border border-border bg-background text-foreground hover:bg-muted hover:text-foreground",
+        outlinePrimary: "border border-primary text-primary bg-background hover:bg-primary/10",
         outlineDestructive:
           "border border-destructive/40 bg-background text-destructive hover:bg-destructive/10",
         outlineWarning: "border border-warning/40 bg-background text-warning hover:bg-warning/10",
@@ -22,13 +24,14 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
-        sm: "h-8 px-3 text-xs [&_svg]:size-4",
-        default: "h-10 px-4 text-sm [&_svg]:size-4",
-        lg: "h-12 px-6 text-base [&_svg]:size-5",
-        icon: "h-10 w-10 [&_svg]:size-5",
+        sm: "h-9 min-h-[36px] px-3.5 text-xs rounded-lg [&_svg]:size-4",
+        default: "h-11 min-h-[44px] px-5 text-sm rounded-xl [&_svg]:size-4",
+        lg: "h-12 min-h-[48px] px-6 text-base rounded-xl [&_svg]:size-5",
+        icon: "h-11 w-11 min-h-[44px] min-w-[44px] p-0 rounded-xl [&_svg]:size-5",
+        iconSm: "h-9 w-9 min-h-[36px] min-w-[36px] p-0 rounded-lg [&_svg]:size-4",
       },
     },
-    compoundVariants: [{ variant: "link", className: "h-auto px-0" }],
+    compoundVariants: [{ variant: "link", className: "h-auto px-0 min-h-0" }],
     defaultVariants: { variant: "default", size: "default" },
   },
 );
@@ -98,7 +101,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
         aria-busy={loading || undefined}
         {...rest}
       >
-        {loading && <Loader2 className="animate-spin" aria-hidden />}
+        {loading && <Loader2 className="animate-spin motion-reduce:animate-none" aria-hidden />}
         {children}
       </button>
     );

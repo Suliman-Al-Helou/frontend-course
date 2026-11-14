@@ -9,10 +9,7 @@ export interface CourseLevelFiltersProps {
   onChange: (level: string) => void;
 }
 
-export function CourseLevelFilters({
-  level,
-  onChange,
-}: CourseLevelFiltersProps) {
+export function CourseLevelFilters({ level, onChange }: CourseLevelFiltersProps) {
   return (
     <nav
       role="group"
@@ -45,4 +42,3 @@ export function CourseLevelFilters({
     </nav>
   );
 }
-

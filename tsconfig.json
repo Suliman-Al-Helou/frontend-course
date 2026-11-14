@@ -31,5 +31,5 @@
     "**/*.mts",
     "src/app/Loading.tsx"
   ],
- "exclude": ["node_modules", ".next", "deep-twelve"]
+  "exclude": ["node_modules", ".next", "deep-twelve"]
 }
