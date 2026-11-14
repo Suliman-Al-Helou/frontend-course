@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useMemo, useRef } from "react";
-import { Search, Clock, CheckCircle, XCircle, Check, X, User } from "lucide-react";
+import { Clock, CheckCircle, XCircle, Check, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { SearchInput } from "@/components/ui/search-input";
+import { Avatar } from "@/components/ui/avatar";
 import { notify } from "@/components/ui/sonner";
 import { adminEnrollmentQueries } from "../../queries/adminCourses.queries";
 import { useEnrollmentMutations } from "../../queries/adminCourses.mutations";
@@ -106,15 +107,13 @@ export default function EnrollmentRequests() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3">
-          <div className="relative flex-1">
-            <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-            <Input
-              placeholder="ابحث باسم الطالب، البريد الإلكتروني، أو عنوان الكورس..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pr-10 h-11 rounded-xl text-sm"
-            />
-          </div>
+          <SearchInput
+            placeholder="ابحث باسم الطالب، البريد الإلكتروني، أو عنوان الكورس..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            onClear={() => setSearch("")}
+            className="flex-1 text-sm"
+          />
 
           <div className="flex gap-1.5 p-1 bg-muted/50 rounded-xl shrink-0 self-start sm:self-auto min-h-[44px] items-center">
             {(["all", "pending", "approved", "rejected"] as const).map((f) => (
@@ -161,9 +160,11 @@ export default function EnrollmentRequests() {
               >
                 {/* User info */}
                 <div className="flex items-start gap-3.5 min-w-0">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold text-sm shrink-0">
-                    <User className="w-5 h-5" />
-                  </div>
+                  <Avatar
+                    name={studentName}
+                    size="md"
+                    shape="square"
+                  />
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className="font-semibold text-foreground text-sm truncate">
