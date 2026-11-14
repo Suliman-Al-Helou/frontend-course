@@ -3,6 +3,7 @@
 import { useState, useRef, useMemo } from "react";
 import { X, Calendar, DollarSign, Gift, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Avatar } from "@/components/ui/avatar";
 import { useQuery } from "@tanstack/react-query";
 import { notify } from "@/components/ui/sonner";
 import {
@@ -124,9 +125,10 @@ export default function StudentDetailsModal({ student, isOpen, onClose }: Props)
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-border shrink-0 bg-muted/20">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-full bg-primary/10 text-primary font-bold text-base flex items-center justify-center shrink-0">
-              {(student.name || student.email || "?")[0].toUpperCase()}
-            </div>
+            <Avatar
+              name={student.name || student.email}
+              size="lg"
+            />
             <div>
               <h3 id="student-details-title" className="font-bold text-foreground text-base">
                 {student.name || "طالب بدون اسم"}
@@ -137,7 +139,7 @@ export default function StudentDetailsModal({ student, isOpen, onClose }: Props)
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+            className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
             aria-label="إغلاق النافذة"
           >
             <X className="w-5 h-5" />
@@ -232,7 +234,7 @@ export default function StudentDetailsModal({ student, isOpen, onClose }: Props)
                           size="sm"
                           disabled={isRevoking || revokingId !== null}
                           onClick={() => void handleRevoke(enr.id, enr.courseTitle)}
-                          className="h-8 rounded-lg text-xs border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive shrink-0 font-medium"
+                          className="h-9 min-h-[38px] px-3.5 rounded-xl text-xs border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive shrink-0 font-medium"
                         >
                           {isRevoking ? "جارٍ السحب..." : "سحب الكورس"}
                         </Button>
