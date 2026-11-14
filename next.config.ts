@@ -8,7 +8,8 @@ const withPWA = withPWAInit({
   cacheOnFrontEndNav: true,
   aggressiveFrontEndNavCaching: true,
   reloadOnOnline: true,
-  disable: process.env.NODE_ENV === "development", // معطل في بيئة التطوير لمنع التجميع التلقائي وتكرار الطلبات
+  disable: process.env.NODE_ENV === "development", // معطل في بيئة التطوير لتسريع العمل
+  // disable: false, // معطل في بيئة التطوير لتسريع العمل
 });
 
 // For Security
@@ -63,4 +64,3 @@ const nextConfig: NextConfig = {
 const withNextIntl = createNextIntlPlugin();
 
 export default withPWA(withNextIntl(nextConfig));
-

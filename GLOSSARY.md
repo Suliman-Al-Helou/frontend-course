@@ -62,4 +62,38 @@ _Avoid_: Toast container, Alert box, Toast wrapper
 A typed error or success code emitted by the backend or business logic that maps deterministically to a localized Arabic message in the application's translation dictionary.
 _Avoid_: Hardcoded string, Raw API error, Backend message
 
+## Authentication & Identity Domain
 
+**Authenticated Session**:
+A server-minted, cryptographically sealed state housed within an HttpOnly cookie and synchronized in the client via TanStack Query (`authQueries.user()`).
+_Avoid_: LocalStorage token, User store, Client session, Zustand auth
+
+**Session Hydration**:
+The zero-latency transfer of authenticated user identity from Server Components (Root Layout) into the client TanStack Query cache without triggering client-side network round-trips or layout shifts.
+_Avoid_: Auth bootstrap, User fetching, Page load check
+
+**Encrypted Session Cookie**:
+An AES-GCM encrypted HTTP-only cookie payload containing the backend bearer token and minimal user claims, impenetrable to client-side JavaScript execution to mitigate XSS attacks.
+_Avoid_: JWT in localStorage, Raw token cookie, Frontend auth header
+
+**Post-Login Redirection Target**:
+A strictly sanitized relative URL resolving the post-authentication destination based on user role and query parameters, guarded against open-redirect vulnerabilities.
+_Avoid_: Callback URL, Absolute redirect, Return url
+
+## Admin Users & Students Domain
+
+**Student Profile Dossier**:
+A unified administrative modal presenting a student's personal details, registration metadata, and a comprehensive breakdown of all associated course enrollments with real-time revocation controls.
+_Avoid_: Student popup, User edit form, Details view
+
+**Enrollment Revocation**:
+The administrative action of revoking a student's access to a course by toggling enrollment status to `rejected` and disabling payment confirmation, preserving the audit trail without hard-deleting database records.
+_Avoid_: Course delete, Remove student, Unenroll
+
+**Dynamic Verification Challenge**:
+A strict confirmation requirement (such as explicitly typing the student's email/name or an on-screen code) that an administrator must satisfy before executing high-risk destructive mutations, modeled after GitHub repository deletion safety.
+_Avoid_: Admin PIN, Password prompt, Native confirm dialog
+
+**Self-Action Guard**:
+A programmatic barrier preventing the actively authenticated administrator from deleting their own account or modifying their own administrative privileges.
+_Avoid_: Self-delete check, Admin lock
