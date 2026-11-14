@@ -160,10 +160,7 @@ export default function ManageFaqTab() {
           <form onSubmit={handleAdd} className="space-y-4">
             <div className="space-y-3">
               <div className="space-y-1">
-                <Label
-                  htmlFor="new-faq-q"
-                  className="text-xs font-semibold text-foreground"
-                >
+                <Label htmlFor="new-faq-q" className="text-xs font-semibold text-foreground">
                   نص السؤال *
                 </Label>
                 <Input
@@ -176,10 +173,7 @@ export default function ManageFaqTab() {
                 />
               </div>
               <div className="space-y-1">
-                <Label
-                  htmlFor="new-faq-a"
-                  className="text-xs font-semibold text-foreground"
-                >
+                <Label htmlFor="new-faq-a" className="text-xs font-semibold text-foreground">
                   الإجابة النموذجية *
                 </Label>
                 <textarea

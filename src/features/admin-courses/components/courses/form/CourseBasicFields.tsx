@@ -56,9 +56,7 @@ export default function CourseBasicFields({
     <div className="space-y-4">
       {/* عنوان الكورس */}
       <div className="space-y-1.5">
-        <Label htmlFor="course-title-field">
-          عنوان الكورس *
-        </Label>
+        <Label htmlFor="course-title-field">عنوان الكورس *</Label>
         <Input
           id="course-title-field"
           placeholder="مثال: هندسة الواجهات الأمامية المتقدمة مع Next.js"
@@ -76,9 +74,7 @@ export default function CourseBasicFields({
 
       {/* اختيار المدرب */}
       <div className="space-y-1.5">
-        <Label htmlFor="course-instructor-field">
-          اسم المدرب المسؤول *
-        </Label>
+        <Label htmlFor="course-instructor-field">اسم المدرب المسؤول *</Label>
         <Select dir="rtl" value={instructorId} onValueChange={onInstructorChange}>
           <SelectTrigger id="course-instructor-field" className="w-full h-11 rounded-xl">
             <SelectValue
@@ -111,9 +107,7 @@ export default function CourseBasicFields({
       {/* المستوى والحالة بتنسيق موحد باستخدام Radix Select */}
       <div className="grid sm:grid-cols-2 gap-3">
         <div className="space-y-1.5">
-          <Label htmlFor="course-level-select">
-            المستوى التعليمي *
-          </Label>
+          <Label htmlFor="course-level-select">المستوى التعليمي *</Label>
           <Select
             dir="rtl"
             value={level}
@@ -133,9 +127,7 @@ export default function CourseBasicFields({
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="course-status-select">
-            حالة النشر *
-          </Label>
+          <Label htmlFor="course-status-select">حالة النشر *</Label>
           <Select
             dir="rtl"
             value={status}

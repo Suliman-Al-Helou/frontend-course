@@ -272,11 +272,7 @@ export default function VideoAssetsView({
       )}
 
       {/* Video Preview Modal */}
-      <Modal
-        isOpen={Boolean(previewVideo)}
-        onClose={() => setPreviewVideo(null)}
-        size="2xl"
-      >
+      <Modal isOpen={Boolean(previewVideo)} onClose={() => setPreviewVideo(null)} size="2xl">
         <ModalHeader title={previewVideo?.title} />
         <div className="aspect-video w-full bg-black">
           {previewVideo && (

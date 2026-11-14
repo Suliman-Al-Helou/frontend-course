@@ -41,9 +41,7 @@ export default function CoursePricingMediaFields({
       {/* التقييم + السعر */}
       <div className="grid sm:grid-cols-2 gap-3">
         <div className="space-y-1.5">
-          <Label htmlFor="course-rating-input">
-            التقييم الافتراضي (1.0 - 5.0)
-          </Label>
+          <Label htmlFor="course-rating-input">التقييم الافتراضي (1.0 - 5.0)</Label>
           <Input
             id="course-rating-input"
             type="number"
@@ -58,9 +56,7 @@ export default function CoursePricingMediaFields({
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="course-price-input">
-            السعر بالدولار ($)
-          </Label>
+          <Label htmlFor="course-price-input">السعر بالدولار ($)</Label>
           <div className="relative">
             <Input
               id="course-price-input"
@@ -88,9 +84,7 @@ export default function CoursePricingMediaFields({
       {/* مدة الكورس */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
-          <Label htmlFor="course-duration-input">
-            المدة الإجمالية للكورس (بالدقائق)
-          </Label>
+          <Label htmlFor="course-duration-input">المدة الإجمالية للكورس (بالدقائق)</Label>
           {totalDuration > 0 && (
             <span className="text-xs text-primary font-bold">
               ~ {Math.round(totalDuration / 60)} ساعة
@@ -112,9 +106,7 @@ export default function CoursePricingMediaFields({
 
       {/* رابط صورة الغلاف مع BiDi وعزل المعاينة */}
       <div className="space-y-2">
-        <Label htmlFor="course-cover-input">
-          رابط صورة الغلاف (URL)
-        </Label>
+        <Label htmlFor="course-cover-input">رابط صورة الغلاف (URL)</Label>
         <div className="relative">
           <Input
             id="course-cover-input"

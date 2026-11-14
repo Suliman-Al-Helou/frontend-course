@@ -5,11 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Layers, Sparkles, DollarSign } from "lucide-react";
 import { notify } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
-import {
-  Modal,
-  ModalHeader,
-  ModalBody,
-} from "@/components/ui/modal";
+import { Modal, ModalHeader, ModalBody } from "@/components/ui/modal";
 import { instructorQueries } from "@/features/instructors";
 import {
   useCreateCourseMutation,
@@ -324,11 +320,7 @@ export default function CourseFormModal({ course, isOpen, onClose }: Props) {
             >
               إلغاء
             </Button>
-            <Button
-              type="submit"
-              loading={isSaving}
-              className="flex-1"
-            >
+            <Button type="submit" loading={isSaving} className="flex-1">
               {isEdit ? "حفظ التعديلات" : "إضافة الكورس"}
             </Button>
           </div>

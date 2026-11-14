@@ -152,11 +152,7 @@ export default function CourseCard({
 
         {isEnrolled ? (
           <div className="flex gap-2 w-full mt-auto pt-1">
-            <Button
-              className="flex-1"
-              href={learnHref ?? href}
-              variant="outlineSuccess"
-            >
+            <Button className="flex-1" href={learnHref ?? href} variant="outlineSuccess">
               {ctaLabel}
             </Button>
             <Button href={href} variant="default">

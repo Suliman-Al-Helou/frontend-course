@@ -15,7 +15,10 @@ export function ContactInfo() {
         rel="noopener noreferrer"
         className="block group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-2xl"
       >
-        <Card interactive className="flex items-center gap-4 bg-emerald-500/5 hover:bg-emerald-500/10 border-emerald-500/20 p-5">
+        <Card
+          interactive
+          className="flex items-center gap-4 bg-emerald-500/5 hover:bg-emerald-500/10 border-emerald-500/20 p-5"
+        >
           <div className="w-12 h-12 bg-emerald-600 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform motion-reduce:transform-none">
             <MessageCircle className="w-6 h-6 text-white" />
           </div>
@@ -33,13 +36,18 @@ export function ContactInfo() {
         href={`mailto:${SUPPORT_EMAIL}`}
         className="block group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-2xl"
       >
-        <Card interactive className="flex items-center gap-4 bg-primary/5 hover:bg-primary/10 border-primary/20 p-5">
+        <Card
+          interactive
+          className="flex items-center gap-4 bg-primary/5 hover:bg-primary/10 border-primary/20 p-5"
+        >
           <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform motion-reduce:transform-none">
             <Mail className="w-6 h-6 text-primary-foreground" />
           </div>
           <div>
             <p className="font-bold text-foreground">البريد الإلكتروني</p>
-            <p className="text-muted-foreground text-sm font-mono text-right" dir="ltr">{SUPPORT_EMAIL}</p>
+            <p className="text-muted-foreground text-sm font-mono text-right" dir="ltr">
+              {SUPPORT_EMAIL}
+            </p>
           </div>
         </Card>
       </a>

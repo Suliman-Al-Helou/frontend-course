@@ -5,12 +5,7 @@ import { Calendar, DollarSign, Gift, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import {
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "@/components/ui/modal";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "@/components/ui/modal";
 import { useQuery } from "@tanstack/react-query";
 import { notify } from "@/components/ui/sonner";
 import {
@@ -150,9 +145,7 @@ export default function StudentDetailsModal({ student, isOpen, onClose }: Props)
               الانضمام
             </span>
             <p className="text-xs font-semibold text-foreground mt-1 truncate">
-              {student.created_at
-                ? new Date(student.created_at).toLocaleDateString("ar-EG")
-                : "—"}
+              {student.created_at ? new Date(student.created_at).toLocaleDateString("ar-EG") : "—"}
             </p>
           </div>
 
@@ -251,12 +244,7 @@ export default function StudentDetailsModal({ student, isOpen, onClose }: Props)
       </ModalBody>
 
       <ModalFooter>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onClose}
-          className="w-full"
-        >
+        <Button type="button" variant="outline" onClick={onClose} className="w-full">
           إغلاق
         </Button>
       </ModalFooter>

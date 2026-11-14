@@ -5,12 +5,7 @@ import { Plus, BookOpen } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "@/components/ui/modal";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "@/components/ui/modal";
 import { adminCourseQueries, adminVideoAssetQueries } from "../../queries/adminCourses.queries";
 import { useSectionMutations } from "../../queries/adminCourses.mutations";
 import SectionAccordion from "./SectionAccordion";
@@ -64,10 +59,7 @@ export default function CourseSectionsModal({ course, isOpen, onClose }: Props) 
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="2xl">
-      <ModalHeader
-        title="إدارة محتوى ومنهج الكورس"
-        description={course.title}
-      />
+      <ModalHeader title="إدارة محتوى ومنهج الكورس" description={course.title} />
 
       <ModalBody className="p-5 space-y-4 max-h-[70vh] overflow-y-auto">
         {isLoading ? (
@@ -131,12 +123,7 @@ export default function CourseSectionsModal({ course, isOpen, onClose }: Props) 
       </ModalBody>
 
       <ModalFooter>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onClose}
-          className="px-6"
-        >
+        <Button type="button" variant="outline" onClick={onClose} className="px-6">
           إغلاق
         </Button>
       </ModalFooter>

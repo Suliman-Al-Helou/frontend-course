@@ -137,12 +137,7 @@ export function TaskSection({ task, lessonId, onPassed }: TaskSectionProps) {
           </span>
 
           {!isPassed && canRetry && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleRetry}
-              className="gap-2"
-            >
+            <Button type="button" variant="outline" onClick={handleRetry} className="gap-2">
               <RefreshCw className="w-4 h-4" aria-hidden="true" />
               <span>إعادة المحاولة</span>
             </Button>

@@ -86,7 +86,9 @@ export default function ManageCoursesTab() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h2 className="text-xl font-bold text-foreground">إدارة الكورسات</h2>
-          <p className="text-xs text-muted-foreground mt-1">{formatCoursesCount(courses.length)} متاح في المنصة</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            {formatCoursesCount(courses.length)} متاح في المنصة
+          </p>
         </div>
         <Button
           onClick={() => {

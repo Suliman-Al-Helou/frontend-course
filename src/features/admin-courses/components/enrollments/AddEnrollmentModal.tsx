@@ -6,11 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Modal,
-  ModalHeader,
-  ModalBody,
-} from "@/components/ui/modal";
+import { Modal, ModalHeader, ModalBody } from "@/components/ui/modal";
 import { adminCourseQueries } from "../../queries/adminCourses.queries";
 import { useEnrollmentMutations } from "../../queries/adminCourses.mutations";
 import type { AdminCourse } from "../../types";
@@ -138,11 +134,7 @@ export default function AddEnrollmentModal({ isOpen, onClose }: Props) {
             >
               إلغاء
             </Button>
-            <Button
-              type="submit"
-              loading={createEnrollment.isPending}
-              className="flex-1"
-            >
+            <Button type="submit" loading={createEnrollment.isPending} className="flex-1">
               تأكيد التسجيل
             </Button>
           </div>

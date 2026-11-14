@@ -52,10 +52,7 @@ export default function AdminStatsCards({ stats }: Props) {
       {cards.map((card, i) => {
         const Icon = card.icon;
         return (
-          <Card
-            key={i}
-            className="p-5 shadow-xs transition-all hover:shadow-sm"
-          >
+          <Card key={i} className="p-5 shadow-xs transition-all hover:shadow-sm">
             <div
               className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 border ${card.color}`}
             >

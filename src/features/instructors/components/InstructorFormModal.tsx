@@ -336,11 +336,7 @@ export default function InstructorFormModal({ instructor, onClose, onSave }: Pro
             {achievements.length > 0 && (
               <div className="flex flex-wrap gap-1.5 pt-1">
                 {achievements.map((ach, idx) => (
-                  <Badge
-                    key={idx}
-                    variant="primary"
-                    className="gap-1.5"
-                  >
+                  <Badge key={idx} variant="primary" className="gap-1.5">
                     <span>{ach}</span>
                     <button
                       type="button"

@@ -51,10 +51,7 @@ export function EnrolledCoursesGrid({ initialEnrollments }: EnrolledCoursesGridP
 
   if (isError) {
     return (
-      <Card
-        role="alert"
-        className="text-center py-16 border-destructive/20 p-6"
-      >
+      <Card role="alert" className="text-center py-16 border-destructive/20 p-6">
         <p className="text-destructive font-semibold mb-2">تعذر تحميل الكورسات</p>
         <p className="text-muted-foreground text-sm">يرجى المحاولة مرة أخرى لاحقاً</p>
       </Card>

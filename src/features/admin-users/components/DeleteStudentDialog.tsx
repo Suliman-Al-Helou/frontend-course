@@ -4,12 +4,7 @@ import { useState, useRef } from "react";
 import { AlertTriangle, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "@/components/ui/modal";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "@/components/ui/modal";
 import type { AdminUser } from "../types";
 
 interface Props {

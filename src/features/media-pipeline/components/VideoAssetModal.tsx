@@ -719,7 +719,6 @@ export default function VideoAssetModal({
               className="w-full rounded-xl border border-input bg-background p-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary resize-none"
             />
           </div>
-
         </ModalBody>
 
         <ModalFooter>

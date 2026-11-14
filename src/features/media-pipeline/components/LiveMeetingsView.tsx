@@ -129,16 +129,11 @@ export default function LiveMeetingsView({
           const isDrawerOpen = openMeetingId === m.id;
 
           return (
-            <Card
-              key={m.id}
-              className="p-5 space-y-4 transition-colors hover:border-primary/30"
-            >
+            <Card key={m.id} className="p-5 space-y-4 transition-colors hover:border-primary/30">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="space-y-1.5">
                   <div className="flex flex-wrap items-center gap-2">
-                    <Badge variant="primary">
-                      {courseTitle}
-                    </Badge>
+                    <Badge variant="primary">{courseTitle}</Badge>
                     <h3 className="text-sm font-bold text-foreground">{m.title}</h3>
                   </div>
 

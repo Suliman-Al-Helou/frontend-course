@@ -21,20 +21,13 @@ export function ContactForm({ initial, title = "أرسل رسالة", className 
 
   if (sent) {
     return (
-      <Card
-        className={cn("p-8 text-center py-10", className)}
-      >
+      <Card className={cn("p-8 text-center py-10", className)}>
         <div className="w-16 h-16 bg-success/15 rounded-full flex items-center justify-center mx-auto mb-4">
           <CheckCircle2 className="w-8 h-8 text-success" />
         </div>
         <h3 className="font-bold text-foreground text-xl mb-2">تم الإرسال بنجاح!</h3>
         <p className="text-muted-foreground mb-6">سنرد عليك في أقرب وقت ممكن</p>
-        <Button
-          type="button"
-          variant="link"
-          size="sm"
-          onClick={resetForm}
-        >
+        <Button type="button" variant="link" size="sm" onClick={resetForm}>
           إرسال رسالة أخرى
         </Button>
       </Card>
@@ -47,9 +40,7 @@ export function ContactForm({ initial, title = "أرسل رسالة", className 
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="space-y-2">
-          <Label htmlFor="contact-name">
-            الاسم
-          </Label>
+          <Label htmlFor="contact-name">الاسم</Label>
           <Input
             id="contact-name"
             type="text"
@@ -61,9 +52,7 @@ export function ContactForm({ initial, title = "أرسل رسالة", className 
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="contact-email">
-            البريد الإلكتروني
-          </Label>
+          <Label htmlFor="contact-email">البريد الإلكتروني</Label>
           <Input
             id="contact-email"
             type="email"
@@ -75,9 +64,7 @@ export function ContactForm({ initial, title = "أرسل رسالة", className 
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="contact-message">
-            رسالتك
-          </Label>
+          <Label htmlFor="contact-message">رسالتك</Label>
           <textarea
             id="contact-message"
             placeholder="كيف يمكننا مساعدتك؟"
@@ -91,11 +78,7 @@ export function ContactForm({ initial, title = "أرسل رسالة", className 
 
         {error && <p className="text-sm text-destructive font-medium">{error}</p>}
 
-        <Button
-          type="submit"
-          loading={loading}
-          className="w-full"
-        >
+        <Button type="submit" loading={loading} className="w-full">
           <Send className="w-4 h-4 rtl:rotate-180" />
           إرسال الرسالة
         </Button>

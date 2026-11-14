@@ -127,11 +127,7 @@ export function EnrollCard({
               <span className="text-sm text-success font-medium">كورس مجاني — متاح للمشاهدة</span>
             </div>
             {hasLessons ? (
-              <Button
-                href={learnHref!}
-                onClick={handleFreeStartLearning}
-                className="w-full mb-3"
-              >
+              <Button href={learnHref!} onClick={handleFreeStartLearning} className="w-full mb-3">
                 <Play className="w-4 h-4 fill-current" />
                 {isEnrolled ? "تابع التعلم" : "ابدأ المشاهدة"}
               </Button>
@@ -187,11 +183,7 @@ export function EnrollCard({
                     تم رفض طلبك السابق، يمكنك إعادة إرسال الطلب.
                   </div>
                 )}
-                <Button
-                  onClick={handleEnroll}
-                  loading={loading}
-                  className="w-full mb-3"
-                >
+                <Button onClick={handleEnroll} loading={loading} className="w-full mb-3">
                   {enrollmentStatus === "rejected"
                     ? "إعادة إرسال طلب التسجيل"
                     : "طلب التسجيل في الكورس"}

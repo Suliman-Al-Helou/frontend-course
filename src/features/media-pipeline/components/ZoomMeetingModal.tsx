@@ -160,17 +160,11 @@ export default function ZoomMeetingModal({
 
           {/* الكورس المرتبط */}
           <div className="space-y-1.5">
-            <Label
-              htmlFor="zoom-modal-course"
-              className="text-xs font-semibold text-foreground"
-            >
+            <Label htmlFor="zoom-modal-course" className="text-xs font-semibold text-foreground">
               الكورس المرتبط *
             </Label>
             <Select dir="rtl" value={courseId} onValueChange={setCourseId} disabled={isSubmitting}>
-              <SelectTrigger
-                id="zoom-modal-course"
-                className="h-10 w-full rounded-xl"
-              >
+              <SelectTrigger id="zoom-modal-course" className="h-10 w-full rounded-xl">
                 <SelectValue placeholder="اختر الكورس..." />
               </SelectTrigger>
               <SelectContent>

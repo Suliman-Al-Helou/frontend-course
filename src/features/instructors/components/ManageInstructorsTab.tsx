@@ -165,11 +165,7 @@ export default function ManageInstructorsTab() {
                   {specs.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-3">
                       {specs.map((s) => (
-                        <Badge
-                          key={s}
-                          variant="secondary"
-                          size="sm"
-                        >
+                        <Badge key={s} variant="secondary" size="sm">
                           {s}
                         </Badge>
                       ))}

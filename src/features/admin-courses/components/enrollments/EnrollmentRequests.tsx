@@ -182,7 +182,10 @@ export default function EnrollmentRequests() {
                         {cfg.label}
                       </Badge>
                     </div>
-                    <p className="text-xs text-muted-foreground truncate mt-0.5 font-mono text-left" dir="ltr">
+                    <p
+                      className="text-xs text-muted-foreground truncate mt-0.5 font-mono text-left"
+                      dir="ltr"
+                    >
                       {studentEmail}
                     </p>
                     <p className="text-xs text-foreground font-medium mt-1 truncate">
