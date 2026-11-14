@@ -1,5 +1,47 @@
 import api from "@/lib/api";
-import type { StudentEnrollment, LessonProgress, Task, TaskResult } from "../types";
+import type {
+  StudentEnrollment,
+  LessonProgress,
+  Task,
+  TaskResult,
+  LessonDetail,
+  InProgressLesson,
+  CourseProgressSummary,
+} from "../types";
+
+/**
+ * جلب تفاصيل درس معين والفيديو المحمي
+ */
+export async function getLesson(lessonId: number | string): Promise<LessonDetail> {
+  const { data } = await api.get<LessonDetail>(`/lessons/${lessonId}`);
+  return data;
+}
+
+/**
+ * جلب الدروس قيد المتابعة للطالب بطلب مفرد ومجمّع
+ */
+export async function getInProgressLessons(): Promise<InProgressLesson[]> {
+  const { data } = await api.get<InProgressLesson[]>("/lessons/in-progress");
+  return Array.isArray(data) ? data : [];
+}
+
+/**
+ * جلب ملخص تقدم الكورس والدروس المكتملة دفعة واحدة
+ */
+export async function getCourseProgressSummary(
+  courseId: number | string,
+): Promise<CourseProgressSummary> {
+  const { data } = await api.get<CourseProgressSummary>(`/courses/${courseId}/progress-summary`);
+  return data;
+}
+
+/**
+ * تسجيل اشتراك الطالب في كورس
+ */
+export async function enrollInCourse(courseId: number | string): Promise<{ message: string }> {
+  const { data } = await api.post<{ message: string }>(`/courses/${courseId}/enroll`);
+  return data;
+}
 
 /**
  * جلب جميع الكورسات المسجل بها الطالب الحالي
