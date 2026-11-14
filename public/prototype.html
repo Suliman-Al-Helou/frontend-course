@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="ar" dir="rtl" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Future House — هندسة البرمجيات التطبيقية</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"IBM Plex Sans Arabic"', "system-ui", "sans-serif"],
+              mono: ['"JetBrains Mono"', "monospace"],
+            },
+            colors: {
+              // ألوان منصتنا الأصلية المعتمدة في DESIGN.md
+              bgCanvas: "#0c0f18", // خلفية التطبيق الكلية
+              sectionBg: "#161b27", // تباين القسم الأوسط
+              cardBg: "#10141e", // أسطح الكروت
+              borderNormal: "#222939", // حدود 1px دقيقة
+              borderHover: "#323b50", // حدود التحويم
+              textWhite: "#eff2f5", // نصوص عالية التباين
+              textMuted: "#98a3b3", // رمادي تقني هادئ وشفاف
+              primaryIndigo: "#6d5ef0", // لون هويتنا الأساسي
+              primaryHover: "#5d4fe0", // حالة التحويم
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        background-color: #0c0f18;
+        color: #eff2f5;
+        font-family: "IBM Plex Sans Arabic", sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .code-font {
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .syn-kw {
+        color: #bb9af7;
+      }
+      .syn-fn {
+        color: #7aa2f7;
+      }
+      .syn-str {
+        color: #9ece6a;
+      }
+      .syn-type {
+        color: #2ac3de;
+      }
+      .syn-var {
+        color: #eff2f5;
+      }
+      .syn-comment {
+        color: #565f89;
+      }
+
+      .real-card {
+        background-color: #10141e;
+        border: 1px solid #222939;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .real-card:hover {
+        border-color: #323b50;
+        transform: translateY(-2px);
+      }
+    </style>
+  </head>
+  <body
+    class="min-h-screen bg-bgCanvas text-textWhite selection:bg-primaryIndigo/30 selection:text-white"
+  >
+    <!-- ======================== NAVBAR ======================== -->
+    <header class="border-b border-borderNormal bg-bgCanvas/95 backdrop-blur-md sticky top-0 z-50">
+      <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div
+            class="w-6 h-6 rounded bg-primaryIndigo text-white flex items-center justify-center font-bold text-xs code-font"
+          >
+            &lt;/&gt;
+          </div>
+          <span class="font-semibold text-sm tracking-tight text-white">Future House</span>
+        </div>
+
+        <nav class="hidden md:flex items-center gap-8 text-xs text-textMuted font-medium">
+          <a href="#hero-ide" class="hover:text-white transition-colors">محرر الأكواد</a>
+          <a href="#methodology" class="hover:text-white transition-colors">المنهجية</a>
+          <a href="#tracks" class="hover:text-white transition-colors">المسارات</a>
+        </nav>
+
+        <div class="flex items-center gap-4">
+          <a href="/login" class="text-xs text-textMuted hover:text-white transition-colors"
+            >دخول</a
+          >
+          <a
+            href="/register"
+            class="text-xs font-semibold px-4 py-1.5 rounded-md bg-primaryIndigo hover:bg-primaryHover text-white transition-colors shadow-sm shadow-primaryIndigo/20"
+          >
+            انضمام للمنصة
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- ======================== SECTION 1: HERO (بدون أي بادج كبسولة عائم) ======================== -->
+    <section class="pt-16 pb-20 md:pt-24 md:pb-28 max-w-5xl mx-auto px-6 text-center">
+      <!-- العنوان الرئيسي الصريح والمباشر -->
+      <h1
+        class="text-3xl sm:text-5xl lg:text-[3.25rem] font-bold text-textWhite tracking-tight leading-[1.2] max-w-3xl mx-auto mb-6"
+      >
+        تعلّم هندسة البرمجيات <br />
+        بمشاريع معمارية حقيقية.
+      </h1>
+
+      <!-- النص الشفاف تحته مباشرة دون أي حشو -->
+      <p class="text-sm sm:text-base text-textMuted max-w-xl mx-auto leading-relaxed mb-8">
+        منهج تطبيقي مكثف يركز على الكود النظيف، تصميم الأنظمة السحابية الموزعة، ومراجعة الأكواد
+        سطرًا بسطر وفق المعايير العالمية.
+      </p>
+
+      <!-- الأزرار بالمنتصف -->
+      <div class="flex items-center justify-center gap-3.5 mb-14">
+        <a
+          href="#tracks"
+          class="h-10 px-5 rounded-md bg-primaryIndigo hover:bg-primaryHover text-white font-semibold text-xs transition-colors flex items-center gap-2 shadow-sm shadow-primaryIndigo/20"
+        >
+          <span>استعرض المسارات</span>
+          <span class="code-font text-xs">&larr;</span>
+        </a>
+        <a
+          href="#hero-ide"
+          class="h-10 px-4 rounded-md border border-borderNormal bg-cardBg text-textMuted hover:text-white hover:border-borderHover font-medium text-xs transition-colors flex items-center justify-center"
+        >
+          معاينة الكود الحي
+        </a>
+      </div>
+
+      <!-- نافذة المحرر في الأسفل بالمنتصف -->
+      <div
+        id="hero-ide"
+        class="w-full max-w-4xl mx-auto rounded-lg border border-borderNormal bg-[#0e111a] shadow-2xl overflow-hidden text-right"
+      >
+        <div
+          class="bg-[#131722] px-4 py-2.5 border-b border-borderNormal flex items-center justify-between select-none"
+        >
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-rose-500/70 inline-block"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-500/70 inline-block"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/70 inline-block"></span>
+            <span class="ms-2 code-font text-xs text-slate-300 font-medium"
+              >courses.queries.ts</span
+            >
+          </div>
+
+          <div class="flex items-center gap-1 text-xs code-font">
+            <button
+              onclick="setTab('editor')"
+              id="btn-editor"
+              class="px-2.5 py-1 rounded bg-[#1c2232] text-white"
+            >
+              Editor
+            </button>
+            <button
+              onclick="setTab('diff')"
+              id="btn-diff"
+              class="px-2.5 py-1 rounded text-textMuted hover:text-white"
+            >
+              Review Diff
+            </button>
+          </div>
+        </div>
+
+        <div
+          id="tab-editor"
+          class="p-6 code-font text-xs leading-relaxed overflow-x-auto text-left bg-[#0a0d16]"
+          dir="ltr"
+        >
+          <pre
+            class="font-mono"
+          ><code><span class="syn-comment">// Architectural Query Factory (TanStack Query v5 & Vertical Slices)</span>
+<span class="syn-kw">import</span> { <span class="syn-fn">queryOptions</span> } <span class="syn-kw">from</span> <span class="syn-str">'@tanstack/react-query'</span>;
+<span class="syn-kw">import</span> { <span class="syn-var">api</span> } <span class="syn-kw">from</span> <span class="syn-str">'@/lib/api'</span>;
+
+<span class="syn-kw">export const</span> <span class="syn-var">courseQueries</span> = {
+  <span class="syn-fn">all</span>: () =&gt; [<span class="syn-str">'courses'</span>] <span class="syn-kw">as const</span>,
+
+  <span class="syn-fn">detail</span>: (<span class="syn-var">id</span>: <span class="syn-type">string</span>) =&gt;
+    <span class="syn-fn">queryOptions</span>({
+      <span class="syn-var">queryKey</span>: [...courseQueries.<span class="syn-fn">all</span>(), <span class="syn-str">'detail'</span>, <span class="syn-var">id</span>],
+      <span class="syn-fn">queryFn</span>: <span class="syn-kw">async</span> () =&gt; {
+        <span class="syn-kw">const</span> { <span class="syn-var">data</span> } = <span class="syn-kw">await</span> <span class="syn-var">api</span>.<span class="syn-fn">get</span>&lt;<span class="syn-type">Course</span>&gt;(<span class="syn-str">`/courses/${<span class="syn-var">id</span>}`</span>);
+        <span class="syn-kw">return</span> <span class="syn-var">data</span>;
+      },
+      <span class="syn-var">staleTime</span>: <span class="syn-type">1000 * 60 * 5</span>,
+    }),
+};</code></pre>
+        </div>
+
+        <div
+          id="tab-diff"
+          class="p-6 code-font text-xs leading-relaxed overflow-x-auto text-left hidden bg-[#0a0d16]"
+          dir="ltr"
+        >
+          <div class="text-slate-500 mb-2">// Code Review Checkpoint:</div>
+          <div
+            class="bg-rose-500/10 text-rose-300 px-3 py-2 rounded mb-2 border border-rose-500/20"
+          >
+            - useEffect(() => { fetch('/api/courses') }, []) // Anti-pattern: Cascading re-renders
+          </div>
+          <div
+            class="bg-emerald-500/10 text-emerald-300 px-3 py-2 rounded border border-emerald-500/20"
+          >
+            + const { data } = useQuery(courseQueries.detail(id)) // Clean Architecture Enforced
+          </div>
+          <div
+            class="mt-4 pt-3 border-t border-borderNormal text-[11px] text-textMuted flex items-center justify-between"
+          >
+            <span>Reviewed by Lead Architect</span>
+            <span class="text-emerald-400">PASSED</span>
+          </div>
+        </div>
+
+        <div
+          class="bg-[#131722] px-4 py-2 border-t border-borderNormal flex items-center justify-between text-[11px] code-font text-textMuted"
+        >
+          <span>TypeScript 5.9</span>
+          <span>Clean Architecture</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== SECTION 2: SHOWCASE (#161b27) ======================== -->
+    <section id="methodology" class="py-24 bg-sectionBg border-y border-borderNormal">
+      <div class="max-w-6xl mx-auto px-6">
+        <!-- القاعدة: عنوان عريض + نص شفاف في الأسفل فقط -->
+        <div class="text-center max-w-xl mx-auto mb-16 space-y-2">
+          <h2 class="text-2xl sm:text-3xl font-bold text-textWhite tracking-tight">
+            المنهجية الهندسية في التدريب
+          </h2>
+          <p class="text-sm text-textMuted leading-relaxed">
+            ثلاث ركائز تبني عقليتك كمهندس برمجيات قادر على قيادة المشاريع في بيئات العمل المعقدة.
+          </p>
+        </div>
+
+        <!-- الكروت مع صور واقعية -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- CARD 1 -->
+          <div class="real-card flex flex-col justify-between">
+            <div class="h-48 overflow-hidden relative border-b border-borderNormal bg-black">
+              <img
+                src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop"
+                alt="Architecture Pipeline"
+                class="w-full h-full object-cover opacity-85 hover:opacity-100 transition-opacity duration-300"
+              />
+            </div>
+            <div class="p-5 space-y-2 text-right">
+              <h3 class="text-sm font-bold text-textWhite">مسار تعليمي متدرج هرمياً</h3>
+              <p class="text-xs text-textMuted leading-relaxed">
+                الانتقال من الأساسيات إلى تصميم الأنظمة الموزعة وفق شجرة مهارات هندسية واضحة
+                ومترابطة.
+              </p>
+            </div>
+          </div>
+
+          <!-- CARD 2 -->
+          <div class="real-card flex flex-col justify-between">
+            <div class="h-48 overflow-hidden relative border-b border-borderNormal bg-black">
+              <img
+                src="https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?q=80&w=800&auto=format&fit=crop"
+                alt="Code Review Workflow"
+                class="w-full h-full object-cover opacity-85 hover:opacity-100 transition-opacity duration-300"
+              />
+            </div>
+            <div class="p-5 space-y-2 text-right">
+              <h3 class="text-sm font-bold text-textWhite">مراجعة كود بشرية دقيقة (PR)</h3>
+              <p class="text-xs text-textMuted leading-relaxed">
+                كل ميزة تسلّمها تمر بفحص هندسي سطرًا بسطر يوضح لك أخطاء الأداء وثغرات الأمان وكيفية
+                معالجتها.
+              </p>
+            </div>
+          </div>
+
+          <!-- CARD 3 -->
+          <div class="real-card flex flex-col justify-between">
+            <div class="h-48 overflow-hidden relative border-b border-borderNormal bg-black">
+              <img
+                src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=800&auto=format&fit=crop"
+                alt="Production Infrastructure"
+                class="w-full h-full object-cover opacity-85 hover:opacity-100 transition-opacity duration-300"
+              />
+            </div>
+            <div class="p-5 space-y-2 text-right">
+              <h3 class="text-sm font-bold text-textWhite">مشاريع تليق بمهندس Fullstack</h3>
+              <p class="text-xs text-textMuted leading-relaxed">
+                بناء منصات سحابية متعددة المشتركين وبوابات دفع وأنظمة فيديو مشفرة بدلاً من مشاريع
+                الهواة البسيطة.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== SECTION 3: TRACKS & COURSES (#0c0f18) ======================== -->
+    <section id="tracks" class="py-20 max-w-6xl mx-auto px-6">
+      <div class="text-right max-w-xl mb-12 space-y-2">
+        <h2 class="text-2xl sm:text-3xl font-bold text-textWhite tracking-tight">
+          المسارات الهندسية المتاحة
+        </h2>
+        <p class="text-sm text-textMuted leading-relaxed">
+          مناهج متكاملة تنتهي بنشر مستودع كود حقيقي معتمد في مجالك.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Track 1 -->
+        <div class="real-card flex flex-col justify-between">
+          <div>
+            <div class="h-40 overflow-hidden relative border-b border-borderNormal bg-black">
+              <img
+                src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=800&auto=format&fit=crop"
+                alt="React & Next.js"
+                class="w-full h-full object-cover opacity-80 hover:opacity-95 transition-opacity"
+              />
+            </div>
+            <div class="p-5 space-y-3 text-right">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-textWhite">Fullstack React & Next.js 16</span>
+                <span
+                  class="text-[10px] code-font px-2 py-0.5 rounded bg-sectionBg text-slate-300 border border-borderNormal"
+                  dir="ltr"
+                  >48 Hours</span
+                >
+              </div>
+              <p class="text-xs text-textMuted leading-relaxed">
+                معمارية الواجهات المتقدمة بأسلوب Vertical Slices، إدارة الكاش بـ TanStack Query v5،
+                وجلسات الخادم المشفرة.
+              </p>
+            </div>
+          </div>
+
+          <div class="p-5 pt-0">
+            <div class="pt-4 border-t border-borderNormal flex items-center justify-between">
+              <span class="text-xs font-bold text-textWhite code-font">$89</span>
+              <a href="/courses" class="text-xs font-medium text-primaryIndigo hover:underline"
+                >تفاصيل المسار &larr;</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Track 2 -->
+        <div class="real-card flex flex-col justify-between">
+          <div>
+            <div class="h-40 overflow-hidden relative border-b border-borderNormal bg-black">
+              <img
+                src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=800&auto=format&fit=crop"
+                alt="Design Systems"
+                class="w-full h-full object-cover opacity-80 hover:opacity-95 transition-opacity"
+              />
+            </div>
+            <div class="p-5 space-y-3 text-right">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-textWhite">Design Systems & a11y UI</span>
+                <span
+                  class="text-[10px] code-font px-2 py-0.5 rounded bg-sectionBg text-slate-300 border border-borderNormal"
+                  dir="ltr"
+                  >36 Hours</span
+                >
+              </div>
+              <p class="text-xs text-textMuted leading-relaxed">
+                بناء مكتبات مكونات قابلة لإعادة الاستخدام، معايير الوصول العالمية (WCAG AA)، وضبط
+                حقول الـ BiDi / RTL.
+              </p>
+            </div>
+          </div>
+
+          <div class="p-5 pt-0">
+            <div class="pt-4 border-t border-borderNormal flex items-center justify-between">
+              <span class="text-xs font-bold text-emerald-400 code-font">مجاني بالكامل</span>
+              <a href="/courses" class="text-xs font-medium text-primaryIndigo hover:underline"
+                >ابدأ الآن &larr;</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Track 3 -->
+        <div class="real-card flex flex-col justify-between">
+          <div>
+            <div class="h-40 overflow-hidden relative border-b border-borderNormal bg-black">
+              <img
+                src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=800&auto=format&fit=crop"
+                alt="Backend Architecture"
+                class="w-full h-full object-cover opacity-80 hover:opacity-95 transition-opacity"
+              />
+            </div>
+            <div class="p-5 space-y-3 text-right">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-textWhite">Backend Architecture & Cloud</span>
+                <span
+                  class="text-[10px] code-font px-2 py-0.5 rounded bg-sectionBg text-slate-300 border border-borderNormal"
+                  dir="ltr"
+                  >54 Hours</span
+                >
+              </div>
+              <p class="text-xs text-textMuted leading-relaxed">
+                تصميم قواعد البيانات العلاقية، استراتيجيات كاش الـ Redis، تأمين واجهات الـ APIs،
+                ونشر البيئات عبر Docker.
+              </p>
+            </div>
+          </div>
+
+          <div class="p-5 pt-0">
+            <div class="pt-4 border-t border-borderNormal flex items-center justify-between">
+              <span class="text-xs font-bold text-textWhite code-font">$99</span>
+              <a href="/courses" class="text-xs font-medium text-primaryIndigo hover:underline"
+                >تفاصيل المسار &larr;</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== FOOTER ======================== -->
+    <footer class="border-t border-borderNormal py-8 text-xs text-textMuted code-font">
+      <div
+        class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4"
+      >
+        <div>Future House &bull; Architectural Engineering Platform</div>
+        <div class="flex items-center gap-4 text-slate-500">
+          <span>Clean Typography</span>
+          <span>&bull;</span>
+          <span>Our Brand Tokens</span>
+          <span>&bull;</span>
+          <span>Real Visuals</span>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      function setTab(tab) {
+        const editor = document.getElementById("tab-editor");
+        const diff = document.getElementById("tab-diff");
+        const btnEditor = document.getElementById("btn-editor");
+        const btnDiff = document.getElementById("btn-diff");
+
+        if (tab === "editor") {
+          editor.classList.remove("hidden");
+          diff.classList.add("hidden");
+          btnEditor.className = "px-2.5 py-1 rounded bg-[#1c2232] text-white";
+          btnDiff.className = "px-2.5 py-1 rounded text-textMuted hover:text-white";
+        } else {
+          editor.classList.add("hidden");
+          diff.classList.remove("hidden");
+          btnDiff.className = "px-2.5 py-1 rounded bg-[#1c2232] text-white";
+          btnEditor.className = "px-2.5 py-1 rounded text-textMuted hover:text-white";
+        }
+      }
+    </script>
+  </body>
+</html>

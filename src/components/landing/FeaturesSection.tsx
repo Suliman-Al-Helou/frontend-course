@@ -7,7 +7,6 @@ interface MethodologyItem {
   title: string;
   description: string;
   image: string;
-  indicator: string;
 }
 
 const METHODOLOGY_PILLARS: MethodologyItem[] = [
@@ -17,7 +16,6 @@ const METHODOLOGY_PILLARS: MethodologyItem[] = [
       "دروس برمجية متسلسلة خطوة بخطوة مع مشغل مخصص، وحفظ تلقائي لنقاط التوقف ونسبة الإنجاز الفعلية لكل درس.",
     image:
       "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=800&auto=format&fit=crop",
-    indicator: "مشغل ذكي • تتبع إنجاز تلقائي",
   },
   {
     title: "مهام واختبارات اجتياز بعد كل درس",
@@ -25,7 +23,6 @@ const METHODOLOGY_PILLARS: MethodologyItem[] = [
       "تطبيقات واختبارات تفاعلية بعد كل مفهوم لضمان ترسيخ المعلومة واجتياز التحدي قبل الانتقال للمرحلة التالية.",
     image:
       "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800&auto=format&fit=crop",
-    indicator: "مهام برمجية • قياس استيعاب فوري",
   },
   {
     title: "لقاءات حية وتوجيه هندسي مباشر",
@@ -33,27 +30,57 @@ const METHODOLOGY_PILLARS: MethodologyItem[] = [
       "جلسات تفاعلية دورية عبر Zoom لمناقشة المعماريات البرمجية، الإجابة عن التساؤلات، وتفكيك التحديات مع مدربين خبراء.",
     image:
       "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=800&auto=format&fit=crop",
-    indicator: "جلسات Zoom • مراجعة وتوجيه حي",
   },
 ];
+
+function BackgroundDecorations() {
+  return (
+    <>
+      {/* توهج ناعم في أعلى اليسار - متوافق مع الفاتح والداكن */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-24 -left-24 size-96 rounded-full bg-primary/10 blur-3xl dark:bg-primary/15"
+      />
+
+      {/* توهج ناعم في أعلى اليمين - متوافق مع الفاتح والداكن */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-24 -right-24 size-96 rounded-full bg-primary/10 blur-3xl dark:bg-primary/15"
+      />
+
+      {/* شبكة النقاط المتجاوبة هندسياً: تظهر في الفاتح والداكن باستخدام currentColor */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 text-foreground opacity-[0.04] dark:opacity-[0.07]"
+        style={{
+          backgroundImage: "radial-gradient(circle, currentColor 1px, transparent 1px)",
+          backgroundSize: "32px 32px",
+        }}
+      />
+    </>
+  );
+}
 
 export default function FeaturesSection() {
   return (
     <section
       id="methodology"
       aria-labelledby="methodology-title"
-      className="scroll-mt-20 border-y border-[#222939] bg-[#161b27] py-20 md:py-24"
+      className="relative scroll-mt-20 overflow-hidden border-y border-border bg-background py-20 md:py-24"
     >
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      {/* خلفية التوهجات ونقاط الشبكة للوضعين الداكن والفاتح */}
+      <BackgroundDecorations />
+
+      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* رأس السكشن الثنائي الصارم: عنوان عريض + سطر شفاف في الأسفل فقط */}
         <div className="mx-auto mb-14 max-w-xl text-center space-y-2">
           <h2
             id="methodology-title"
-            className="text-2xl font-bold tracking-tight text-[#eff2f5] sm:text-3xl"
+            className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl"
           >
             المنهجية الهندسية في التدريب
           </h2>
-          <p className="text-sm leading-relaxed text-[#98a3b3]">
+          <p className="text-sm leading-relaxed text-muted-foreground">
             ثلاث ركائز عملية تبني مهاراتك من الأساس النظري حتى قيادة المشاريع في بيئات العمل الواقعية.
           </p>
         </div>
@@ -67,30 +94,25 @@ export default function FeaturesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.35, delay: i * 0.08 }}
-              className="group flex flex-col justify-between overflow-hidden rounded-lg border border-[#222939] bg-[#10141e] transition-all duration-200 hover:-translate-y-1 hover:border-[#323b50]"
+              className="group flex flex-col justify-start overflow-hidden rounded-lg border border-border bg-card transition-all duration-200 hover:-translate-y-1 hover:border-border/80 hover:shadow-md"
             >
-              <div>
-                {/* الحاوية البصرية: صورة واقعية واضحة بنسبة أبعاد 16:10 */}
-                <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-[#222939] bg-black">
-                  <Image
-                    src={pillar.image}
-                    alt={pillar.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover opacity-85 transition-opacity duration-300 group-hover:opacity-100"
-                  />
-                </div>
-
-                {/* المحتوى النصي: عنوان واضح وشرح واقعي لما تقدمه المنصة */}
-                <div className="p-5 text-right space-y-2">
-                  <h3 className="text-sm font-bold text-[#eff2f5]">{pillar.title}</h3>
-                  <p className="text-xs leading-relaxed text-[#98a3b3]">{pillar.description}</p>
-                </div>
+              {/* الحاوية البصرية: صورة واقعية واضحة بنسبة أبعاد 16:10 */}
+              <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-border bg-muted">
+                <Image
+                  src={pillar.image}
+                  alt={pillar.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover opacity-90 transition-opacity duration-300 group-hover:opacity-100"
+                />
               </div>
 
-              {/* المؤشر التقني الصامت في الأسفل */}
-              <div className="border-t border-[#222939] px-5 py-3 text-[11px] font-mono text-[#98a3b3]">
-                {pillar.indicator}
+              {/* المحتوى النصي: عنوان واضح وشرح واقعي بدون أي زوائد بعد الكرت */}
+              <div className="p-5 text-right space-y-2">
+                <h3 className="text-sm font-bold text-foreground">{pillar.title}</h3>
+                <p className="text-xs leading-relaxed text-muted-foreground">
+                  {pillar.description}
+                </p>
               </div>
             </motion.div>
           ))}
