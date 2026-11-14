@@ -7,7 +7,6 @@ import TestimonialsSection from "@/components/landing/TestimonialsSection";
 import FAQSection from "@/components/landing/FAQSection";
 import CTASection from "@/components/landing/CTASection";
 import Footer from "@/components/landing/Footer";
-import ContactSection from "@/components/landing/ContactSection";
 
 export const metadata = {
   title: "Future House — منصة التعلم التقني الأولى بالعربية",
@@ -25,7 +24,6 @@ export default function HomePage() {
         <TestimonialsSection />
         <FAQSection />
         <CTASection />
-        <ContactSection />
       </main>
       <Footer />
     </div>
