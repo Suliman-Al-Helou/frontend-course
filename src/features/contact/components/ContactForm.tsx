@@ -3,6 +3,11 @@
 import { Send, CheckCircle2 } from "lucide-react";
 import { useContactForm } from "../hooks/useContactForm";
 import type { ContactFormState } from "../types";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
 interface ContactFormProps {
   initial?: Partial<ContactFormState>;
@@ -16,64 +21,63 @@ export function ContactForm({ initial, title = "أرسل رسالة", className 
 
   if (sent) {
     return (
-      <div
-        className={`bg-card rounded-2xl border border-border shadow-sm p-8 text-center py-10 ${className}`}
+      <Card
+        className={cn("p-8 text-center py-10", className)}
       >
-        <div className="w-16 h-16 bg-green-100 dark:bg-green-950/50 rounded-full flex items-center justify-center mx-auto mb-4">
-          <CheckCircle2 className="w-8 h-8 text-green-500" />
+        <div className="w-16 h-16 bg-success/15 rounded-full flex items-center justify-center mx-auto mb-4">
+          <CheckCircle2 className="w-8 h-8 text-success" />
         </div>
         <h3 className="font-bold text-foreground text-xl mb-2">تم الإرسال بنجاح!</h3>
         <p className="text-muted-foreground mb-6">سنرد عليك في أقرب وقت ممكن</p>
-        <button
+        <Button
           type="button"
+          variant="link"
+          size="sm"
           onClick={resetForm}
-          className="text-sm font-semibold text-primary hover:underline"
         >
           إرسال رسالة أخرى
-        </button>
-      </div>
+        </Button>
+      </Card>
     );
   }
 
   return (
-    <div className={`bg-card rounded-2xl border border-border shadow-sm p-8 ${className}`}>
+    <Card className={cn("p-8", className)}>
       <h2 className="text-xl font-bold text-foreground mb-6">{title}</h2>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="space-y-2">
-          <label htmlFor="contact-name" className="text-sm font-medium text-foreground">
+          <Label htmlFor="contact-name">
             الاسم
-          </label>
-          <input
+          </Label>
+          <Input
             id="contact-name"
             type="text"
             placeholder="اسمك الكامل"
             value={form.name}
             onChange={updateField("name")}
             required
-            className="w-full h-11 rounded-xl border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
           />
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="contact-email" className="text-sm font-medium text-foreground">
+          <Label htmlFor="contact-email">
             البريد الإلكتروني
-          </label>
-          <input
+          </Label>
+          <Input
             id="contact-email"
             type="email"
             placeholder="example@email.com"
             value={form.email}
             onChange={updateField("email")}
             required
-            className="w-full h-11 rounded-xl border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
           />
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="contact-message" className="text-sm font-medium text-foreground">
+          <Label htmlFor="contact-message">
             رسالتك
-          </label>
+          </Label>
           <textarea
             id="contact-message"
             placeholder="كيف يمكننا مساعدتك؟"
@@ -81,27 +85,21 @@ export function ContactForm({ initial, title = "أرسل رسالة", className 
             onChange={updateField("message")}
             rows={5}
             required
-            className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+            className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 resize-none transition-colors motion-reduce:transition-none"
           />
         </div>
 
         {error && <p className="text-sm text-destructive font-medium">{error}</p>}
 
-        <button
+        <Button
           type="submit"
-          disabled={loading}
-          className="w-full h-11 inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 disabled:opacity-60 text-primary-foreground rounded-xl font-semibold transition-colors"
+          loading={loading}
+          className="w-full"
         >
-          {loading ? (
-            "جارٍ الإرسال..."
-          ) : (
-            <>
-              <Send className="w-4 h-4 rtl:rotate-180" />
-              إرسال الرسالة
-            </>
-          )}
-        </button>
+          <Send className="w-4 h-4 rtl:rotate-180" />
+          إرسال الرسالة
+        </Button>
       </form>
-    </div>
+    </Card>
   );
 }
