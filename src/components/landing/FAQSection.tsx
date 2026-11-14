@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ChevronDown, Mail, Send, Check } from "lucide-react";
 import api from "@/lib/api";
 import { Input } from "@/components/ui/input";
@@ -62,6 +62,19 @@ export default function FAQSection({ initial, isDashboard = false }: FAQSectionP
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [dynamicFaqs, setDynamicFaqs] = useState<FAQItem[]>([]);
   const { form, sent, loading, error, updateField, handleSubmit } = useContactForm(initial);
+  const isSubmittingRef = useRef(false);
+  const shouldReduceMotion = useReducedMotion();
+
+  const handleSafeSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isSubmittingRef.current || loading) return;
+    isSubmittingRef.current = true;
+    try {
+      await handleSubmit(e);
+    } finally {
+      isSubmittingRef.current = false;
+    }
+  };
 
   useEffect(() => {
     api
@@ -119,16 +132,18 @@ export default function FAQSection({ initial, isDashboard = false }: FAQSectionP
                   >
                     <button
                       type="button"
+                      id={`faq-question-${i}`}
+                      aria-controls={`faq-answer-${i}`}
                       onClick={() => handleToggle(i)}
-                      className="flex w-full items-center justify-between p-4 text-right transition-colors hover:bg-muted/40 sm:p-4.5"
+                      className="flex w-full items-center justify-between p-4 text-right transition-colors hover:bg-muted/40 sm:p-4.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
                       aria-expanded={isOpen}
                     >
                       <span className="text-sm font-semibold text-foreground sm:text-base">
                         {faq.q}
                       </span>
                       <motion.div
-                        animate={{ rotate: isOpen ? 180 : 0 }}
-                        transition={{ duration: 0.2 }}
+                        animate={{ rotate: shouldReduceMotion ? 0 : isOpen ? 180 : 0 }}
+                        transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
                         className="mr-3 shrink-0"
                       >
                         <ChevronDown
@@ -142,10 +157,13 @@ export default function FAQSection({ initial, isDashboard = false }: FAQSectionP
                     <AnimatePresence initial={false}>
                       {isOpen && (
                         <motion.div
-                          initial={{ height: 0, opacity: 0 }}
+                          id={`faq-answer-${i}`}
+                          role="region"
+                          aria-labelledby={`faq-question-${i}`}
+                          initial={shouldReduceMotion ? false : { height: 0, opacity: 0 }}
                           animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.2 }}
+                          exit={shouldReduceMotion ? { opacity: 0 } : { height: 0, opacity: 0 }}
+                          transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
                         >
                           <div className="border-t border-border px-4.5 pb-4.5 pt-3.5 text-xs leading-relaxed text-muted-foreground sm:text-sm">
                             {faq.a}
@@ -171,7 +189,11 @@ export default function FAQSection({ initial, isDashboard = false }: FAQSectionP
             </div>
 
             {sent ? (
-              <div className="flex flex-col items-center justify-center rounded-2xl border border-border bg-card p-10 text-center shadow-xs">
+              <div
+                role="status"
+                aria-live="polite"
+                className="flex flex-col items-center justify-center rounded-2xl border border-border bg-card p-10 text-center shadow-xs"
+              >
                 <div className="mb-4 flex size-14 items-center justify-center rounded-full bg-success/15 text-success">
                   <Check className="size-7" />
                 </div>
@@ -182,7 +204,7 @@ export default function FAQSection({ initial, isDashboard = false }: FAQSectionP
               </div>
             ) : (
               <form
-                onSubmit={handleSubmit}
+                onSubmit={handleSafeSubmit}
                 className="space-y-4.5 rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-xs"
               >
                 <div className="space-y-1.5">
@@ -267,11 +289,11 @@ export default function FAQSection({ initial, isDashboard = false }: FAQSectionP
                 {/* زر الإرسال الرئيسي */}
                 <Button
                   type="submit"
-                  disabled={loading}
+                  loading={loading}
                   className="w-full h-12 text-sm sm:text-base font-semibold"
                   size="default"
                 >
-                  <Send className="size-4.5 rtl:-scale-x-100" />
+                  {!loading && <Send className="size-4.5 rtl:-scale-x-100" />}
                   {loading ? "جارٍ الإرسال..." : "إرسال الرسالة"}
                 </Button>
               </form>
