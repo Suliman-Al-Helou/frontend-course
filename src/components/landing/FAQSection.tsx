@@ -53,10 +53,15 @@ function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
-export default function FAQSection() {
+interface FAQSectionProps {
+  initial?: { name?: string; email?: string };
+  isDashboard?: boolean;
+}
+
+export default function FAQSection({ initial, isDashboard = false }: FAQSectionProps = {}) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [dynamicFaqs, setDynamicFaqs] = useState<FAQItem[]>([]);
-  const { form, sent, loading, error, updateField, handleSubmit } = useContactForm();
+  const { form, sent, loading, error, updateField, handleSubmit } = useContactForm(initial);
 
   useEffect(() => {
     api
@@ -80,9 +85,17 @@ export default function FAQSection() {
   return (
     <section
       id="faq"
-      className="relative flex min-h-screen flex-col justify-center scroll-mt-20 border-t border-border bg-background py-16 md:py-24"
+      className={
+        isDashboard
+          ? "relative w-full py-4 sm:py-6"
+          : "relative flex min-h-screen flex-col justify-center scroll-mt-20 border-t border-border bg-background py-16 md:py-24"
+      }
     >
-      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div
+        className={`relative z-10 mx-auto w-full ${
+          isDashboard ? "max-w-5xl px-0" : "max-w-6xl px-4 sm:px-6 lg:px-8"
+        }`}
+      >
         {/* شبكة متوازنة بمسافة واسعة: الشق الأيمن (الأسئلة الشائعة) والشق الأيسر (تواصل معنا) */}
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16 lg:items-start">
           {/* الشق الأيمن: الأسئلة الشائعة */}
