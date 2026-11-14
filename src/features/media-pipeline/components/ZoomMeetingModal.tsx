@@ -14,7 +14,7 @@ import flatpickr from "flatpickr";
 import type { Instance } from "flatpickr/dist/types/instance";
 import { Arabic } from "flatpickr/dist/l10n/ar.js";
 import "flatpickr/dist/flatpickr.min.css";
-import type { AdminZoomMeeting, ZoomMeetingFormData } from "@/features/admin-courses/types";
+import type { AdminZoomMeeting, ZoomMeetingFormData } from "../types";
 
 interface Props {
   open: boolean;
@@ -248,54 +248,56 @@ export default function ZoomMeetingModal({
               className="text-xs font-semibold text-foreground flex items-center gap-1.5"
             >
               <LinkIcon className="w-3.5 h-3.5 text-muted-foreground" />
-              <span>رابط لقاء Zoom *</span>
+              <span>رابط اللقاء (Zoom Link) *</span>
             </label>
             <input
               id="zoom-modal-link-input"
+              type="url"
+              dir="ltr"
               value={zoomLink}
               onChange={(e) => setZoomLink(e.target.value)}
-              placeholder="https://zoom.us/j/123456789"
-              dir="ltr"
+              placeholder="https://zoom.us/j/..."
               disabled={isSubmitting}
-              className="w-full h-10 rounded-xl border border-input bg-background px-3 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary text-left"
             />
           </div>
 
           {/* الموعد والمدة */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <label
-                htmlFor="zoom-modal-starts-at"
+                htmlFor="zoom-modal-date-picker"
                 className="text-xs font-semibold text-foreground flex items-center gap-1.5"
               >
                 <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
-                <span>التاريخ والوقت *</span>
+                <span>موعد البداية *</span>
               </label>
               <input
-                id="zoom-modal-starts-at"
+                id="zoom-modal-date-picker"
                 ref={dateInputRef}
-                type="text"
                 value={startsAt}
-                readOnly
-                placeholder="اضغط لاختيار الموعد..."
+                onChange={(e) => setStartsAt(e.target.value)}
+                placeholder="اختر التاريخ والوقت..."
                 disabled={isSubmitting}
                 className="w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
+                readOnly
               />
             </div>
 
             <div className="space-y-1.5">
               <label
-                htmlFor="zoom-modal-duration"
+                htmlFor="zoom-modal-duration-input"
                 className="text-xs font-semibold text-foreground flex items-center gap-1.5"
               >
                 <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-                <span>المدة المتوقعة (بالدقائق)</span>
+                <span>المدة التقريبية (بالدقائق)</span>
               </label>
               <input
-                id="zoom-modal-duration"
+                id="zoom-modal-duration-input"
                 type="number"
                 min={15}
-                max={480}
+                max={360}
+                step={15}
                 value={durationMinutes}
                 onChange={(e) => setDurationMinutes(Number.parseInt(e.target.value, 10) || 60)}
                 disabled={isSubmitting}
@@ -304,50 +306,44 @@ export default function ZoomMeetingModal({
             </div>
           </div>
 
-          {/* وصف اللقاء */}
+          {/* الوصف (اختياري) */}
           <div className="space-y-1.5">
             <label
-              htmlFor="zoom-modal-desc"
+              htmlFor="zoom-modal-desc-input"
               className="text-xs font-semibold text-foreground flex items-center gap-1.5"
             >
               <FileText className="w-3.5 h-3.5 text-muted-foreground" />
-              <span>وصف أو ملاحظات (اختياري)</span>
+              <span>ملاحظات أو أجندة الجلسة (اختياري)</span>
             </label>
             <textarea
-              id="zoom-modal-desc"
-              rows={2}
+              id="zoom-modal-desc-input"
+              rows={3}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="اكتب تفاصيل المحاور أو المتطلبات السابقة للجلسة..."
+              placeholder="اكتب نقاط النقاش أو شروط الحضور..."
               disabled={isSubmitting}
-              className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary resize-none"
+              className="w-full rounded-xl border border-input bg-background p-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary resize-none"
             />
           </div>
 
-          {/* Footer Buttons */}
+          {/* Footer actions */}
           <div className="pt-3 border-t border-border flex items-center justify-end gap-2.5">
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
               disabled={isSubmitting}
-              className="rounded-xl h-10 px-4 min-w-[80px]"
+              className="rounded-xl h-10 px-4 text-xs font-medium"
             >
               إلغاء
             </Button>
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="rounded-xl h-10 px-5 gap-2 min-w-[120px] bg-primary text-primary-foreground hover:bg-primary/90"
+              className="rounded-xl h-10 px-5 text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5"
             >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>جارٍ الحفظ...</span>
-                </>
-              ) : (
-                <span>{editingMeeting ? "حفظ التعديلات" : "إضافة اللقاء"}</span>
-              )}
+              {isSubmitting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+              <span>{editingMeeting ? "حفظ التعديلات" : "إنشاء اللقاء"}</span>
             </Button>
           </div>
         </form>

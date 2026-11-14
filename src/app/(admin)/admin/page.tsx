@@ -29,9 +29,9 @@ import {
   adminEnrollmentQueries,
 } from "@/features/admin-courses";
 import { StudentsManagementTab, adminUserQueries } from "@/features/admin-users";
+import { MediaPipelineTab } from "@/features/media-pipeline";
 import ManageInstructorsTab from "@/components/admin/ManageInstructorsTab";
 import ManageFaqTab from "@/components/admin/ManageFaqTab";
-import ManageZoomTab from "@/components/admin/ManageZoomTab";
 import type { Enrollment, AdminUser, AdminStats } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useInstructorsStore } from "@/store/instructorsStore";
@@ -312,7 +312,7 @@ function AdminContent() {
                 )}
                 {tab === "zoom" && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                    <ManageZoomTab />
+                    <MediaPipelineTab />
                   </motion.div>
                 )}
               </>

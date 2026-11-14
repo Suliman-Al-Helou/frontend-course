@@ -26,17 +26,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { extractYouTubeVideoId } from "@/lib/youtube";
-import { notify } from "@/lib/toast";
-import { uploadVideoChunk, getYouTubeAuthUrl } from "@/features/admin-courses/api";
+import { notify } from "@/components/ui/sonner";
+import { uploadVideoChunk, getYouTubeAuthUrl } from "../api";
 import {
-  adminVideoAssetQueries,
-  adminYouTubeQueries,
-} from "@/features/admin-courses/queries/adminCourses.queries";
+  mediaPipelineQueries,
+  mediaPipelineKeys,
+} from "../queries/mediaPipeline.queries";
 import type {
   AdminVideoAsset,
   VideoAssetFormData,
   AdminZoomMeeting,
-} from "@/features/admin-courses/types";
+} from "../types";
 
 interface Props {
   open: boolean;
@@ -56,7 +56,7 @@ export default function VideoAssetModal({
   onSave,
 }: Props) {
   const queryClient = useQueryClient();
-  const { data: ytStatus } = useQuery(adminYouTubeQueries.status());
+  const { data: ytStatus } = useQuery(mediaPipelineQueries.youtubeStatus());
 
   // Mode: "upload" (file dropzone) or "manual" (YouTube link/ID)
   const [mode, setMode] = useState<"upload" | "manual">("upload");
@@ -153,7 +153,6 @@ export default function VideoAssetModal({
   };
 
   const handleFileSelected = (file: File) => {
-    // Client-side file size and format sanity checks
     if (!file.type.startsWith("video/") && !/\.(mp4|webm|mov|mkv)$/i.test(file.name)) {
       setError("صيغة الملف غير مدعومة. يرجى اختيار ملف فيديو صالح (.mp4, .webm, .mov).");
       return;
@@ -263,7 +262,7 @@ export default function VideoAssetModal({
           setUploadProgress(result.progress);
         }
 
-        void queryClient.invalidateQueries({ queryKey: adminVideoAssetQueries.all() });
+        void queryClient.invalidateQueries({ queryKey: mediaPipelineKeys.videoAssets() });
         notify.success(
           "تم استلام الفيديو بنجاح، وجاري الآن رفعه ومعالجته على قناتك في YouTube بالخلفية.",
         );
@@ -364,21 +363,21 @@ export default function VideoAssetModal({
             type="button"
             onClick={onClose}
             disabled={isSubmitting}
-            className="h-11 w-11 rounded-xl flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-colors disabled:opacity-50"
+            className="h-10 w-10 rounded-xl flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-colors disabled:opacity-50"
             aria-label="إغلاق النافذة"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Mode Selector Tabs (فقط في حالة الإضافة الجديدة) */}
+        {/* Mode Selector Tabs */}
         {!editingAsset && (
           <div className="px-6 pt-3 shrink-0 flex items-center gap-2 border-b border-border bg-muted/20 pb-3">
             <button
               type="button"
               onClick={() => setMode("upload")}
               disabled={isSubmitting}
-              className={`h-11 text-xs font-semibold px-4 rounded-xl flex items-center gap-2 transition-all ${
+              className={`h-10 text-xs font-semibold px-4 rounded-xl flex items-center gap-2 transition-all ${
                 mode === "upload"
                   ? "bg-primary text-primary-foreground shadow-xs"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"
@@ -392,7 +391,7 @@ export default function VideoAssetModal({
               type="button"
               onClick={() => setMode("manual")}
               disabled={isSubmitting}
-              className={`h-11 text-xs font-semibold px-4 rounded-xl flex items-center gap-2 transition-all ${
+              className={`h-10 text-xs font-semibold px-4 rounded-xl flex items-center gap-2 transition-all ${
                 mode === "manual"
                   ? "bg-primary text-primary-foreground shadow-xs"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"
@@ -417,7 +416,6 @@ export default function VideoAssetModal({
             </div>
           )}
 
-          {/* تنبيه تفاعلي عند عدم ربط قناة YouTube مع زر اتصال مباشر */}
           {mode === "upload" && !ytStatus?.connected && (
             <div
               role="alert"
@@ -442,7 +440,7 @@ export default function VideoAssetModal({
                   size="sm"
                   onClick={handleConnectYouTube}
                   disabled={isConnectingYouTube || isSubmitting}
-                  className="h-11 px-4 rounded-xl text-xs font-semibold bg-red-600 hover:bg-red-700 text-white gap-2 shadow-xs"
+                  className="h-10 px-4 rounded-xl text-xs font-semibold bg-red-600 hover:bg-red-700 text-white gap-2 shadow-xs"
                 >
                   {isConnectingYouTube ? (
                     <>
@@ -458,7 +456,7 @@ export default function VideoAssetModal({
                   variant="outline"
                   size="sm"
                   onClick={() => setMode("manual")}
-                  className="h-11 px-4 rounded-xl text-xs"
+                  className="h-10 px-4 rounded-xl text-xs"
                 >
                   إدخال رابط يوتيوب يدوياً
                 </Button>
@@ -483,7 +481,7 @@ export default function VideoAssetModal({
               >
                 <SelectTrigger
                   id="video-modal-course"
-                  className="h-11 w-full rounded-xl border border-input bg-background"
+                  className="h-10 w-full rounded-xl border border-input bg-background"
                 >
                   <SelectValue placeholder="اختر الكورس..." />
                 </SelectTrigger>
@@ -509,7 +507,7 @@ export default function VideoAssetModal({
               >
                 <SelectTrigger
                   id="video-modal-type"
-                  className="h-11 w-full rounded-xl border border-input bg-background"
+                  className="h-10 w-full rounded-xl border border-input bg-background"
                 >
                   <SelectValue />
                 </SelectTrigger>
@@ -539,7 +537,7 @@ export default function VideoAssetModal({
               >
                 <SelectTrigger
                   id="video-modal-meeting"
-                  className="h-11 w-full rounded-xl border border-input bg-background text-xs"
+                  className="h-10 w-full rounded-xl border border-input bg-background text-xs"
                 >
                   <SelectValue placeholder="بدون ربط بلقاء زووم محدد" />
                 </SelectTrigger>
@@ -555,7 +553,7 @@ export default function VideoAssetModal({
             </div>
           )}
 
-          {/* MODE 1: FILE DRAG & DROP DROPZONE (Keyboard Accessible) */}
+          {/* MODE 1: FILE DRAG & DROP DROPZONE */}
           {mode === "upload" && !editingAsset ? (
             <div className="space-y-2">
               <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
@@ -628,7 +626,7 @@ export default function VideoAssetModal({
                 )}
               </div>
 
-              {/* Progress Bar & Abort Control during Chunked Upload */}
+              {/* Progress Bar & Abort Control */}
               {isSubmitting && (
                 <div className="space-y-2 p-3.5 rounded-xl bg-muted/40 border border-border">
                   <div className="flex items-center justify-between text-xs font-semibold">
@@ -649,165 +647,131 @@ export default function VideoAssetModal({
                   <div className="flex justify-end pt-1">
                     <Button
                       type="button"
-                      variant="ghost"
+                      variant="outline"
                       size="sm"
                       onClick={handleCancelUpload}
-                      className="h-8 px-2.5 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive gap-1 rounded-lg"
+                      className="h-8 text-xs text-destructive hover:bg-destructive/10 border-destructive/30 gap-1.5"
                     >
                       <Ban className="w-3.5 h-3.5" />
-                      <span>إلغاء الرفع</span>
+                      <span>إلغاء عملية الرفع</span>
                     </Button>
                   </div>
                 </div>
               )}
             </div>
           ) : (
-            /* MODE 2: MANUAL YOUTUBE LINK / ID */
+            /* MODE 2: DIRECT YOUTUBE LINK / ID */
             <div className="space-y-1.5">
               <label
-                htmlFor="video-modal-id-input"
+                htmlFor="video-modal-yt-input"
                 className="text-xs font-semibold text-foreground flex items-center justify-between"
               >
                 <span className="flex items-center gap-1.5">
                   <LinkIcon className="w-3.5 h-3.5 text-muted-foreground" />
-                  <span>رابط الفيديو على YouTube أو المعرف (ID) *</span>
+                  <span>رابط الفيديو أو معرف YouTube (11 خانة) *</span>
                 </span>
-                {extractedId ? (
-                  <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3" /> تم التعرف على المعرف ({extractedId})
+                {extractedId && (
+                  <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono font-bold flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3" /> تم استخراج المعرّف: {extractedId}
                   </span>
-                ) : rawVideoInput.trim() ? (
-                  <span className="text-[11px] text-amber-500 flex items-center gap-1">
-                    <AlertCircle className="w-3 h-3" /> تأكد من صحة الرابط أو الـ ID
-                  </span>
-                ) : null}
+                )}
               </label>
               <input
-                id="video-modal-id-input"
+                id="video-modal-yt-input"
+                dir="ltr"
                 value={rawVideoInput}
                 onChange={(e) => setRawVideoInput(e.target.value)}
-                placeholder="https://www.youtube.com/watch?v=... أو dQw4w9WgXcQ"
-                dir="ltr"
+                placeholder="https://www.youtube.com/watch?v=... أو معرّف مباشر"
                 disabled={isSubmitting}
-                className="w-full h-11 rounded-xl border border-input bg-background px-3 text-sm font-mono text-left placeholder:text-right focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className="w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary text-left font-mono"
               />
-
-              {extractedId && (
-                <div className="flex items-center gap-3 p-2.5 rounded-xl bg-card border border-border mt-2">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`https://img.youtube.com/vi/${extractedId}/mqdefault.jpg`}
-                    alt="معاينة الفيديو"
-                    className="w-24 h-14 object-cover rounded-lg shrink-0 border border-border"
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).style.display = "none";
-                    }}
-                  />
-                  <div className="text-xs min-w-0">
-                    <p className="font-semibold text-foreground truncate">
-                      معاينة غلاف الفيديو الجاهز
-                    </p>
-                    <p className="text-[11px] text-muted-foreground font-mono mt-0.5">
-                      ID: {extractedId}
-                    </p>
-                  </div>
-                </div>
-              )}
             </div>
           )}
 
           {/* عنوان الفيديو */}
           <div className="space-y-1.5">
             <label
-              htmlFor="video-modal-title-input"
+              htmlFor="video-modal-title-field"
               className="text-xs font-semibold text-foreground"
             >
-              عنوان الفيديو أو المحاضرة *
+              عنوان الفيديو *
             </label>
             <input
-              id="video-modal-title-input"
+              id="video-modal-title-field"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="مثال: تسجيل الجلسة الأولى - أساسيات React"
+              placeholder="مثال: تسجيل الجلسة الأولى - مقدمة في هندسة البيانات"
               disabled={isSubmitting}
-              className="w-full h-11 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              className="w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
 
-          {/* المدة والوصف (في الوضع اليدوي فقط) */}
-          {mode === "manual" && (
-            <div className="space-y-1.5">
-              <label
-                htmlFor="video-modal-duration"
-                className="text-xs font-semibold text-foreground flex items-center gap-1.5"
-              >
-                <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-                <span>مدة الفيديو التقريبية (بالدقائق)</span>
-              </label>
-              <input
-                id="video-modal-duration"
-                type="number"
-                min={0}
-                max={1440}
-                value={durationMinutes}
-                onChange={(e) => setDurationMinutes(e.target.value)}
-                disabled={isSubmitting}
-                className="w-full h-11 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              />
-            </div>
-          )}
-
+          {/* المدة المقدرة */}
           <div className="space-y-1.5">
             <label
-              htmlFor="video-modal-desc"
+              htmlFor="video-modal-duration-field"
+              className="text-xs font-semibold text-foreground flex items-center gap-1.5"
+            >
+              <Clock className="w-3.5 h-3.5 text-muted-foreground" />
+              <span>المدة التقريبية (بالدقائق)</span>
+            </label>
+            <input
+              id="video-modal-duration-field"
+              type="number"
+              min={1}
+              value={durationMinutes}
+              onChange={(e) => setDurationMinutes(e.target.value)}
+              disabled={isSubmitting}
+              className="w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+            />
+          </div>
+
+          {/* الوصف */}
+          <div className="space-y-1.5">
+            <label
+              htmlFor="video-modal-desc-field"
               className="text-xs font-semibold text-foreground flex items-center gap-1.5"
             >
               <FileText className="w-3.5 h-3.5 text-muted-foreground" />
-              <span>وصف محتوى التسجيل (اختياري)</span>
+              <span>وصف أو محاور الفيديو (اختياري)</span>
             </label>
             <textarea
-              id="video-modal-desc"
-              rows={2}
+              id="video-modal-desc-field"
+              rows={3}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="اكتب النقاط الرئيسية التي تم شرحها في هذا التسجيل..."
+              placeholder="اكتب نبذة عن محتوى هذا الفيديو والروابط المرفقة..."
               disabled={isSubmitting}
-              className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
+              className="w-full rounded-xl border border-input bg-background p-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary resize-none"
             />
           </div>
 
-          {/* Footer Buttons */}
+          {/* Footer Actions */}
           <div className="pt-3 border-t border-border flex items-center justify-end gap-2.5">
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
               disabled={isSubmitting}
-              className="rounded-xl h-11 px-5 min-w-[80px]"
+              className="rounded-xl h-10 px-4 text-xs font-medium"
             >
               إلغاء
             </Button>
             <Button
               type="submit"
-              disabled={isSubmitting || (mode === "upload" && !ytStatus?.connected)}
-              className="rounded-xl h-11 px-6 gap-2 min-w-[140px] bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50"
+              disabled={isSubmitting}
+              className="rounded-xl h-10 px-5 text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5"
             >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>
-                    {mode === "upload" ? `جارٍ الرفع (${uploadProgress}%)` : "جارٍ الحفظ..."}
-                  </span>
-                </>
-              ) : (
-                <span>
-                  {editingAsset
+              {isSubmitting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+              <span>
+                {isSubmitting
+                  ? "جارٍ الرفع والحفظ..."
+                  : editingAsset
                     ? "حفظ التعديلات"
                     : mode === "upload"
-                      ? "بدء الرفع على مراحل"
+                      ? "بدء الرفع الآمن"
                       : "إدراج الفيديو"}
-                </span>
-              )}
+              </span>
             </Button>
           </div>
         </form>

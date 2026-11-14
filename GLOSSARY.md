@@ -24,6 +24,18 @@ _Avoid_: Logo, Brand stamp, Static watermark
 An abstraction layer within the player architecture that normalizes events, progress tracking, and security controls across heterogeneous video streaming providers without coupling the curriculum domain.
 _Avoid_: Player wrapper, Embed component, Iframe hook
 
+**Segmented Pipeline View**:
+A clean, dual-view navigation control dividing administrative media workflows between live interactive conferences (Zoom) and asynchronous media assets (Video Bank), adhering to the minimalist surface rule.
+_Avoid_: Tab soup, Double page, Mega view
+
+**YouTube Integration Status Indicator**:
+A compact, non-intrusive status pill embedded directly within the video bank header conveying live OAuth connection state, channel identity, and re-authentication triggers.
+_Avoid_: Big banner, OAuth card, Promo box
+
+**Attendance Roster Drawer**:
+An on-demand expandable panel revealing verified participant attendance timestamps and student identities for an active or concluded live meeting.
+_Avoid_: Attendance table, Zoom popup, Log viewer
+
 ## Meetings & Live Interaction Domain
 
 **Live Meeting**:
