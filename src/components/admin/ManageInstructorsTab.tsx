@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Plus, Pencil, Trash2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Avatar } from "@/components/ui/avatar";
 import { notify } from "@/components/ui/sonner";
 import ConfirmModal from "@/components/shared/ConfirmModal";
 import api from "@/lib/api";
@@ -95,18 +96,12 @@ export default function ManageInstructorsTab() {
             >
               <div>
                 <div className="flex items-start gap-3 mb-3">
-                  {ins.avatar_url ? (
-                    <img
-                      src={ins.avatar_url}
-                      alt={ins.name}
-                      className="w-12 h-12 rounded-xl object-cover flex-shrink-0 border border-border"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <Users className="w-6 h-6 text-primary" />
-                    </div>
-                  )}
+                  <Avatar
+                    src={ins.avatar_url}
+                    name={ins.name}
+                    size="lg"
+                    shape="square"
+                  />
                   <div className="flex-1 min-w-0">
                     <h3 className="font-bold text-foreground text-sm">{ins.name}</h3>
                     <p className="text-xs text-muted-foreground mt-0.5 truncate">{ins.title}</p>
