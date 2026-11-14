@@ -14,6 +14,14 @@ import { useEnrollmentMutations } from "@/features/admin-courses/queries/adminCo
 import type { AdminCourse } from "@/features/admin-courses/types";
 import type { AdminUser } from "../types";
 
+function formatCoursesCount(count: number, type?: "مدفوع" | "مجاني"): string {
+  if (count === 0) return type ? `لا يوجد كورسات ${type}ة` : "لا يوجد كورسات";
+  if (count === 1) return type ? `كورس ${type} واحد` : "كورس واحد";
+  if (count === 2) return type ? `كورسان ${type}ان` : "كورسان";
+  if (count >= 3 && count <= 10) return type ? `${count} كورسات ${type}ة` : `${count} كورسات`;
+  return type ? `${count} كورساً ${type}اً` : `${count} كورساً`;
+}
+
 interface Props {
   student: AdminUser;
   isOpen: boolean;
@@ -130,7 +138,7 @@ export default function StudentDetailsModal({ student, isOpen, onClose }: Props)
               <h3 id="student-details-title" className="font-bold text-foreground text-base">
                 {student.name || "طالب بدون اسم"}
               </h3>
-              <p className="text-xs text-muted-foreground mt-0.5">{student.email}</p>
+              <p className="text-xs text-muted-foreground mt-0.5 text-left font-mono" dir="ltr">{student.email}</p>
             </div>
           </div>
           <button
@@ -161,20 +169,22 @@ export default function StudentDetailsModal({ student, isOpen, onClose }: Props)
             </div>
 
             {/* 2. كورسات مدفوعة (مع إظهار أيقونة $ فقط) */}
-            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3 flex flex-col justify-between">
-              <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1">
+            <div className="bg-success/10 border border-success/20 rounded-xl p-3 flex flex-col justify-between">
+              <span className="text-[11px] text-success font-bold flex items-center gap-1">
                 <DollarSign className="w-3.5 h-3.5" />
                 كورسات مدفوعة
               </span>
-              <p className="text-xs font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">
-                {paidActiveCount} كورس
+              <p className="text-xs font-extrabold text-success mt-1">
+                {formatCoursesCount(paidActiveCount, "مدفوع")}
               </p>
             </div>
 
             {/* 3. كورسات مجانية (بدون أيقونة) */}
             <div className="bg-muted/40 border border-border/80 rounded-xl p-3 flex flex-col justify-between">
               <span className="text-[11px] text-muted-foreground font-medium">كورسات مجانية</span>
-              <p className="text-xs font-bold text-foreground mt-1">{freeActiveCount} كورس</p>
+              <p className="text-xs font-bold text-foreground mt-1">
+                {formatCoursesCount(freeActiveCount, "مجاني")}
+              </p>
             </div>
           </div>
 
@@ -208,14 +218,14 @@ export default function StudentDetailsModal({ student, isOpen, onClose }: Props)
 
                           {/* تمييز الكورس المدفوع بشارة $، أو أيقونة فقط للكورس المجاني بدون كلمة */}
                           {!enr.isFree ? (
-                            <span className="inline-flex items-center gap-0.5 text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25">
+                            <span className="inline-flex items-center gap-0.5 text-[11px] font-bold px-2 py-0.5 rounded-md bg-success/10 text-success border border-success/25">
                               <DollarSign className="w-3 h-3" />
                               {enr.price}$
                             </span>
                           ) : (
                             <span
                               title="كورس مجاني"
-                              className="inline-flex items-center justify-center p-1 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20"
+                              className="inline-flex items-center justify-center p-1 rounded-md bg-primary/10 text-primary border border-primary/20"
                             >
                               <Gift className="w-3.5 h-3.5" />
                             </span>

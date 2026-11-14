@@ -37,7 +37,9 @@ function formatStudentsCount(count: number): string {
 }
 
 function MeetingAttendancesDrawer({ meetingId }: { meetingId: number }) {
-  const { data: attendances = [], isLoading } = useQuery(mediaPipelineQueries.attendances(meetingId));
+  const { data: attendances = [], isLoading } = useQuery(
+    mediaPipelineQueries.attendances(meetingId),
+  );
 
   return (
     <div className="border-t border-border pt-4 mt-2 space-y-3 animate-in fade-in-50 motion-reduce:animate-none duration-200">
@@ -63,9 +65,7 @@ function MeetingAttendancesDrawer({ meetingId }: { meetingId: number }) {
               className="flex items-center justify-between p-2.5 rounded-xl bg-muted/30 border border-border/50 text-xs"
             >
               <div className="truncate">
-                <p className="font-semibold text-foreground truncate">
-                  {att.user?.name}
-                </p>
+                <p className="font-semibold text-foreground truncate">{att.user?.name}</p>
                 <p className="text-[11px] text-muted-foreground truncate font-mono" dir="ltr">
                   {att.user?.email}
                 </p>
@@ -175,7 +175,10 @@ export default function LiveMeetingsView({
                     className="h-9 px-3 rounded-xl text-xs gap-1.5"
                   >
                     <Users className="w-3.5 h-3.5 text-primary" />
-                    <span>الحضور ({m.attendances_count ? formatStudentsCount(m.attendances_count) : "0"})</span>
+                    <span>
+                      الحضور ({m.attendances_count ? formatStudentsCount(m.attendances_count) : "0"}
+                      )
+                    </span>
                     {isDrawerOpen ? (
                       <ChevronUp className="w-3 h-3" />
                     ) : (

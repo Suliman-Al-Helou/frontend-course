@@ -1,0 +1,56 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  continuous-integration:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. جلب الكود من مستودع Git
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. تهيئة بيئة Node.js مع تفعيل الكاش الافتراضي لـ npm
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      # 3. تثبيت حزم الاعتمادات للمشروع
+      - name: Install Dependencies
+        run: npm ci
+
+      # 4. تثبيت أداة vite-plus عالمياً داخل السيرفر لتمكين أوامر الـ vp
+      - name: Install Vite+ Global CLI
+        run: npm install -g vite-plus
+
+      # 5. تشغيل الفحص الموحد الشامل (Lint + Format + Typecheck)
+      # لن يمر الـ Pipeline إذا وجد محرك Rust أي مخالفة معايير أو خطأ بأنواع TypeScript
+      - name: Run Toolchain Check
+        run: vp check
+
+      # 6. تشغيل الاختبارات تلقائياً (في حال وجود ملفات اختبار)
+      - name: Run Tests
+        run: vp test --run
+
+      # 7. بناء المشروع البرمجي النهائي للإنتاج
+      - name: Build Application
+        run: vp build
+
+  # مرحلة الـ CD (التوصيل المستمر) - يتم تشغيلها فقط إذا نجحت مرحلة الفحص والبناء السابقة
+  continuous-deployment:
+    needs: continuous-integration
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Server
+        run: |
+          echo "تم فحص وبناء المشروع بنجاح بواسطة Vite+ الشاملة!"
+          echo "ضع هنا أوامر الرفع الخاصة بسيرفرك (مثل Vercel، Netlify، أو AWS)..."

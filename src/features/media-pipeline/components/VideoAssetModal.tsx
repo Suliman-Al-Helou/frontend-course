@@ -422,9 +422,7 @@ export default function VideoAssetModal({
               <div className="flex items-start gap-2.5">
                 <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5 text-warning" />
                 <div className="space-y-1">
-                  <p className="font-bold text-foreground">
-                    قناة YouTube غير مربوطة بالمنصة بعد
-                  </p>
+                  <p className="font-bold text-foreground">قناة YouTube غير مربوطة بالمنصة بعد</p>
                   <p className="text-muted-foreground leading-relaxed">
                     يتطلب رفع ملفات الفيديو من جهازك اتصالاً بقناة YouTube معتمدة لإنشاء قوائم التشغيل
                     التلقائية وحفظ الفيديوهات غير المدرجة (Unlisted).
