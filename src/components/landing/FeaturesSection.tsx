@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 interface MethodologyItem {
   title: string;
@@ -62,6 +62,8 @@ function BackgroundDecorations() {
 }
 
 export default function FeaturesSection() {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <section
       id="methodology"
@@ -90,11 +92,14 @@ export default function FeaturesSection() {
           {METHODOLOGY_PILLARS.map((pillar, i) => (
             <motion.div
               key={pillar.title}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }}
+              whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.35, delay: i * 0.08 }}
-              className="group flex flex-col justify-start overflow-hidden rounded-lg border border-border bg-card transition-all duration-200 hover:-translate-y-1 hover:border-border/80 hover:shadow-md"
+              transition={{
+                duration: shouldReduceMotion ? 0 : 0.35,
+                delay: shouldReduceMotion ? 0 : i * 0.08,
+              }}
+              className="group flex flex-col justify-start overflow-hidden rounded-lg border border-border bg-card transition-all duration-200 hover:-translate-y-1 hover:border-border/80 hover:shadow-md motion-reduce:transition-none motion-reduce:transform-none"
             >
               {/* الحاوية البصرية: صورة واقعية واضحة بنسبة أبعاد 16:10 */}
               <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-border bg-muted">
