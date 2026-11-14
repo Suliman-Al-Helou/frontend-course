@@ -14,3 +14,4 @@ export async function sendContactMessage(payload: ContactMessagePayload): Promis
 
   return true;
 }
+

@@ -55,3 +55,4 @@ describe("Contact Feature", () => {
     ).rejects.toThrow("Failed to send contact message");
   });
 });
+

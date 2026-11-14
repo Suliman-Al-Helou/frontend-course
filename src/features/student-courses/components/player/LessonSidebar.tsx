@@ -71,7 +71,15 @@ export function LessonSidebar({
         </h2>
         <div className="flex items-center justify-between text-xs text-muted-foreground mt-2 mb-1.5">
           <span>
-            {completedCount} من {totalLessons} درس مكتمل
+            {completedCount} من {totalLessons}{" "}
+            {totalLessons === 1
+              ? "درس"
+              : totalLessons === 2
+                ? "درسين"
+                : totalLessons <= 10
+                  ? "دروس"
+                  : "درساً"}{" "}
+            مكتملة
           </span>
           <span className="font-semibold text-foreground">{progressPercent}%</span>
         </div>
@@ -92,7 +100,12 @@ export function LessonSidebar({
 
       {/* Syllabus Sections Accordion */}
       <div className="overflow-y-auto max-h-[calc(100vh-280px)] divide-y divide-border">
-        {sections.map((section) => {
+        {totalLessons === 0 ? (
+          <div className="p-8 text-center text-xs text-muted-foreground">
+            لم تتم إضافة أي دروس لهذا الكورس بعد.
+          </div>
+        ) : (
+          sections.map((section) => {
           const isOpen = openSections.includes(section.id);
           const headerId = `section-header-${section.id}`;
           const contentId = `section-content-${section.id}`;
@@ -188,7 +201,8 @@ export function LessonSidebar({
               )}
             </div>
           );
-        })}
+        })
+      )}
       </div>
     </aside>
   );

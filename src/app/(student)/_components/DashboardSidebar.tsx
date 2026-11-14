@@ -125,3 +125,4 @@ export default function DashboardSidebar({ open, onClose }: Props) {
     </>
   );
 }
+

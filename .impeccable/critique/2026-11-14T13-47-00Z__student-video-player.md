@@ -53,3 +53,4 @@
 - [ ] **Step 2**: Polish (`/impeccable polish`): Resolve P0 & P1 issues, align tokens with `DESIGN.md`
 - [ ] **Step 3**: Harden (`/impeccable harden`): Concurrency guards, toast notifications on task error, dynamic watermark drift, reduced-motion compliance
 - [ ] **Step 4**: Hygiene & Audit: Dead code cleanup, final audit score card
+

@@ -3,7 +3,7 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight, ArrowLeft, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
+import { ArrowRight, ArrowLeft, Loader2, AlertCircle, CheckCircle2, Lock } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
 import { courseQueries } from "@/features/courses";
@@ -192,15 +192,27 @@ export default function LessonPage() {
               </Link>
             )}
 
-            {nextLesson && isVideoDone && isTaskDone && (
-              <Link
-                href={`/courses/${courseId}/lessons/${nextLesson.id}`}
-                className="min-h-[44px] inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-              >
-                <span>التالي</span>
-                <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
-              </Link>
-            )}
+            {nextLesson &&
+              (isVideoDone && isTaskDone ? (
+                <Link
+                  href={`/courses/${courseId}/lessons/${nextLesson.id}`}
+                  className="min-h-[44px] inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                >
+                  <span>التالي</span>
+                  <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  title="أكمل مشاهدة الدرس واجتز مهمته لفتح الدرس التالي"
+                  className="min-h-[44px] inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl bg-muted/60 text-muted-foreground/60 cursor-not-allowed border border-border/40"
+                  aria-label="الدرس التالي مغلق حتى إكمال الدرس الحالي"
+                >
+                  <span>التالي</span>
+                  <Lock className="w-3.5 h-3.5" aria-hidden="true" />
+                </button>
+              ))}
           </nav>
         </div>
       </header>

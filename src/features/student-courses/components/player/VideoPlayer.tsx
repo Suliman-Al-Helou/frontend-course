@@ -1,9 +1,16 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import type { YouTubeProps } from "react-youtube";
 import { useCurrentUser } from "@/features/auth";
+
+const WATERMARK_POSITIONS = [
+  "top-4 start-4",
+  "bottom-16 start-4",
+  "top-4 end-4",
+  "bottom-16 end-4",
+];
 
 const YouTube = dynamic(() => import("react-youtube").then((mod) => mod.default) as any, {
   ssr: false,
@@ -36,6 +43,15 @@ export function VideoPlayer({
   const intervalRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
   const watchedMaxRef = useRef<number>(0);
   const completedRef = useRef<boolean>(false);
+  const [watermarkPos, setWatermarkPos] = useState<number>(0);
+
+  // تحديث موقع العلامة المائية دورياً بين أركان الإطار لحماية المحتوى
+  useEffect(() => {
+    const wmInterval = setInterval(() => {
+      setWatermarkPos((prev) => (prev + 1) % WATERMARK_POSITIONS.length);
+    }, 25000);
+    return () => clearInterval(wmInterval);
+  }, []);
 
   // تنظيف الـ interval عند إلغاء تركيب المكون لمنع تسريب الذاكرة
   useEffect(() => {
@@ -109,9 +125,13 @@ export function VideoPlayer({
         }}
       />
 
-      {/* العلامة المائية لحماية الملكية الفكرية */}
+      {/* العلامة المائية الجنائية لحماية الملكية الفكرية */}
       {user && (
-        <div className="absolute top-4 start-4 pointer-events-none select-none z-10 bg-black/50 text-white/80 backdrop-blur-xs px-2.5 py-1 rounded-md border border-white/10 shadow-xs">
+        <div
+          role="presentation"
+          aria-hidden="true"
+          className={`absolute ${WATERMARK_POSITIONS[watermarkPos]} pointer-events-none select-none z-10 bg-black/40 text-white/70 backdrop-blur-xs px-2.5 py-1 rounded-md border border-white/10 shadow-xs transition-all duration-700 motion-reduce:transition-none`}
+        >
           <p className="text-xs font-mono font-medium tracking-tight">
             {user.name} • {user.email}
           </p>

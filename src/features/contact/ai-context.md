@@ -23,3 +23,4 @@ src/features/contact/
 - **No Double Submits**: `useContactForm` enforces an atomic submit lock via `isSubmittingRef = useRef(false)`.
 - **Pure Tokens**: All components utilize semantic design tokens (`bg-card`, `text-foreground`, `border-border`, etc.).
 - **Zero Duplication**: Consumed by both the public `/contact` route and the student dashboard `/dashboard/contact` (via FAQSection).
+

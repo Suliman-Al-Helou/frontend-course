@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { CheckCircle2, XCircle, RefreshCw, Send, HelpCircle, Loader2 } from "lucide-react";
+import { notify } from "@/components/ui/sonner";
 import { submitLessonTask } from "../../api";
 import type { Task, TaskResult } from "../../types";
 
@@ -35,8 +36,10 @@ export function TaskSection({ task, lessonId, onPassed }: TaskSectionProps) {
       if (res.passed) {
         onPassed?.();
       }
-    } catch {
-      // إشعار خطأ بسيط دون كسر الشاشة
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.message || "تعذر إرسال إجابات المهمة، يرجى المحاولة مرة أخرى.";
+      notify.error(message);
     } finally {
       isSubmittingRef.current = false;
       setLoading(false);
@@ -178,7 +181,7 @@ export function TaskSection({ task, lessonId, onPassed }: TaskSectionProps) {
                 return (
                   <label
                     key={optIdx}
-                    className={`min-h-[44px] flex items-center gap-3 px-4 py-3 rounded-xl border text-sm cursor-pointer transition duration-150 ${
+                    className={`min-h-[44px] flex items-center gap-3 px-4 py-3 rounded-xl border text-sm cursor-pointer transition-colors motion-reduce:transition-none focus-within:ring-2 focus-within:ring-primary/40 ${
                       isSelected
                         ? "border-primary bg-primary/10 text-primary font-semibold"
                         : "border-border bg-background hover:bg-muted/40 text-foreground"

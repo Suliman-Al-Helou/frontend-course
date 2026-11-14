@@ -33,3 +33,4 @@ Prior to this architectural migration:
   - Double submit prevention across all contact forms.
   - Zero duplicate network queries for enrolled courses when students filter lessons and tasks.
   - 100% test coverage maintained (61/61 Vitest tests passing).
+
