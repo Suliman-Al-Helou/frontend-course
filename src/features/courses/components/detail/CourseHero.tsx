@@ -4,12 +4,7 @@ import Link from "next/link";
 import { Clock, Users, Star, BookOpen, ArrowRight } from "lucide-react";
 import type { CourseDetail } from "../../index";
 import { EnrollCard } from "./EnrollCard";
-
-const LEVEL_LABEL: Record<string, string> = {
-  beginner: "مبتدئ",
-  intermediate: "متوسط",
-  advanced: "متقدم",
-};
+import CourseLevelBadge from "../CourseLevelBadge";
 
 export interface CourseHeroProps {
   course: CourseDetail;
@@ -67,9 +62,7 @@ export function CourseHero({
         <div className="grid lg:grid-cols-3 gap-8 items-start">
           {/* Main Info */}
           <div className="lg:col-span-2">
-            <div className="inline-flex items-center gap-2 bg-white/10 text-white rounded-full px-3 py-1 text-xs font-medium mb-4">
-              {LEVEL_LABEL[course.level] ?? course.level}
-            </div>
+            <CourseLevelBadge level={course.level} className="mb-4" />
 
             <h1 className="text-2xl sm:text-3xl font-bold text-white mb-4 leading-tight">
               {course.title}
