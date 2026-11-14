@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Lock, Play, ChevronDown, ChevronUp } from "lucide-react";
 import Link from "next/link";
 import type { CourseSectionUI } from "../../index";
+import { Badge } from "@/components/ui/badge";
 
 export function useCurriculumAccordion() {
   const [openSections, setOpenSections] = useState<Record<number, boolean>>({
@@ -85,9 +86,9 @@ export function CourseCurriculum({ sections, courseId, enrolled }: CourseCurricu
                             {lesson.title}
                           </span>
                           {lesson.is_preview && (
-                            <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">
+                            <Badge variant="primary" size="sm" shape="rounded">
                               معاينة مجانية
-                            </span>
+                            </Badge>
                           )}
                         </div>
                         <span className="text-xs text-muted-foreground shrink-0 ms-2">
