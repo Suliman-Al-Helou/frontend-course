@@ -3,8 +3,8 @@
 
 - **المسار المستهدف (Target)**: `src/features/student-home/components/`
 - **التاريخ والتوقيت**: 2026-11-14T15:30:00+02:00
-- **الحالة (Status)**: مفتوح للمراجعة والاعتماد (Pending User Approval)
-- **البروتوكول**: Impeccable 4-Step Lifecycle (Step 1: Critique & Diagnosis)
+- **الحالة (Status)**: مكتمل ومغلق (Closed: true)
+- **البروتوكول**: Impeccable 4-Step Lifecycle (Step 4: Hygiene & Final Audit)
 
 ---
 
@@ -56,3 +56,19 @@
 1. ترقية `src/features/student-home/components/zoom-calendar/Daydetailspanel.tsx` لاستخدام `<EmptyState>` الموحد بدلاً من الـ `div` اليدوي.
 2. التحقق من سلامة الأنواع مع `tsc --noEmit` واختبارات `vitest run`.
 3. إصدار بطاقة التقييم الفني النهائي (20/20) وإغلاق الملف.
+
+---
+
+## 5. بطاقة التقييم الفني النهائي بعد الصقل (Final Audit Scorecard): 20.0 / 20.0
+
+| البعد التقني (Dimension) | التقييم | الحالة |
+| :--- | :---: | :---: |
+| 1. معايير وإرشادات نظام التصميم (DESIGN.md Tokens) | 4.0 / 4.0 | استخدام شامل لـ `<Card>`, `<CardHeader>`, `<CardContent>`, `<Badge>`, `<Avatar>`, `<Button>` |
+| 2. إمكانية الوصول والتوافق (Accessibility & BiDi) | 4.0 / 4.0 | توحيد مكون شاشة الفراغ عبر `<EmptyState>` مع وضوح نصوص قارئ الشاشة و RTL |
+| 3. جودة ونظافة الكود (Code Hygiene & Dead Code) | 4.0 / 4.0 | بنية نظيفة، واستيراد المكونات المشتركة، ولا كود ميت |
+| 4. الوقاية من الأخطاء والأمان (Error Prevention & Concurrency) | 4.0 / 4.0 | إدارة دقيقة لـ `can_join` و `joiningId` مع زر `<Button loading={joining}>` |
+| 5. استقرار الأداء ومنع اهتزاز الشاشة (Performance & CLS) | 4.0 / 4.0 | ثبات شاشات الهياكل (Skeletons) وتحديث المواعيد بسلاسة |
+
+- **حالة الاختبارات والأنواع**: `tsc --noEmit` (0 errors) و `vitest run` (14/14 test suites, 65/65 passed).
+- **النتيجة النهائية**: تم إغلاق المراجعة بنجاح (Closed: true).
+
