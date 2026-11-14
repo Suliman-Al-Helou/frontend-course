@@ -153,21 +153,18 @@ export default function CourseCard({
         {isEnrolled ? (
           <div className="flex gap-2 w-full mt-auto pt-1">
             <Button
-              className="flex-1 min-h-[44px]"
+              className="flex-1"
               href={learnHref ?? href}
               variant="outlineSuccess"
             >
               {ctaLabel}
             </Button>
-            <Button href={href} variant="default" className="min-h-[44px]">
+            <Button href={href} variant="default">
               عرض الكورس
             </Button>
           </div>
         ) : (
-          <Button
-            href={href}
-            className="w-full mt-auto rounded-lg py-2.5 min-h-[44px] text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors flex items-center justify-center"
-          >
+          <Button href={href} className="w-full mt-auto">
             {ctaLabel}
           </Button>
         )}
