@@ -8,6 +8,7 @@ import CourseLevelBadge from "./CourseLevelBadge";
 import StarRating from "./StarRating";
 import type { Course } from "@/types";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 export interface CourseCardProps {
   course: Course;
@@ -99,10 +100,10 @@ export default function CourseCard({
           </Link>
           <div className="flex flex-col gap-1.5 items-end shrink-0">
             {course.hot && (
-              <span className="flex items-center gap-1 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 px-2 py-0.5 text-xs font-semibold">
+              <Badge variant="hot" shape="rounded" size="sm">
                 <Zap className="size-3" />
                 الأكثر طلباً
-              </span>
+              </Badge>
             )}
             <CourseLevelBadge level={course.level} className="w-fit" />
           </div>

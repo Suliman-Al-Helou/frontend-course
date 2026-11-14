@@ -1,4 +1,11 @@
-import { LEVEL_LABELS, LEVEL_STYLES } from "../utils/courseLevel";
+import { Badge, type BadgeProps } from "@/components/ui/badge";
+import { LEVEL_LABELS } from "../utils/courseLevel";
+
+const LEVEL_VARIANTS: Record<string, BadgeProps["variant"]> = {
+  beginner: "success",
+  intermediate: "primary",
+  advanced: "warning",
+};
 
 export default function CourseLevelBadge({
   level,
@@ -9,12 +16,13 @@ export default function CourseLevelBadge({
 }) {
   if (!level) return null;
   return (
-    <span
-      className={`rounded-sm px-2 py-0.5 text-xs font-semibold ${
-        LEVEL_STYLES[level] ?? "bg-muted text-muted-foreground"
-      } ${className}`}
+    <Badge
+      variant={LEVEL_VARIANTS[level] ?? "secondary"}
+      shape="rounded"
+      size="sm"
+      className={className}
     >
       {LEVEL_LABELS[level] ?? level}
-    </span>
+    </Badge>
   );
 }
