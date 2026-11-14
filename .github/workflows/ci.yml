@@ -29,11 +29,11 @@ jobs:
       # 4. تشغيل الفحص الموحد الشامل (Lint + Format + Typecheck)
       # لن يمر الـ Pipeline إذا وجد محرك Rust أي مخالفة معايير أو خطأ بأنواع TypeScript
       - name: Run Toolchain Check
-        run: npx vp check
+        run: npm run check
 
       # 5. تشغيل الاختبارات تلقائياً (في حال وجود ملفات اختبار)
       - name: Run Tests
-        run: npx vp test --run
+        run: npm test
 
       # 6. بناء المشروع البرمجي النهائي للإنتاج (Next.js App)
       - name: Build Application
