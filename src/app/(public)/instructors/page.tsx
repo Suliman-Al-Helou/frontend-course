@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { Star, Users, BookOpen, Award, MessageSquare } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
+import { Avatar } from "@/components/ui/avatar";
 import api from "@/lib/api";
 
 interface Instructor {
@@ -68,17 +69,13 @@ function InstructorCard({ ins, index }: { ins: Instructor; index: number }) {
         <div className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-primary/10 transition-all h-full flex flex-col">
           {/* Header */}
           <div className="bg-gradient-to-br from-primary/10 to-primary/5 p-6 pb-4 text-center">
-            {ins.avatar_url ? (
-              <img
-                src={ins.avatar_url}
-                alt={ins.name}
-                className="w-20 h-20 rounded-2xl object-cover mx-auto mb-3 border-4 border-background shadow-md group-hover:scale-105 transition-transform"
-              />
-            ) : (
-              <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3 border-4 border-background">
-                <Users className="w-10 h-10 text-primary" strokeWidth={1.5} />
-              </div>
-            )}
+            <Avatar
+              src={ins.avatar_url}
+              name={ins.name}
+              size="2xl"
+              shape="card"
+              className="mx-auto mb-3 border-4 border-background shadow-md group-hover:scale-105 transition-transform motion-reduce:transition-none motion-reduce:transform-none"
+            />
             <h3 className="font-bold text-foreground text-base">{ins.name}</h3>
             {ins.title && <p className="text-muted-foreground text-xs mt-1">{ins.title}</p>}
 
