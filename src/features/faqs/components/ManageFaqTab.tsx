@@ -241,10 +241,10 @@ export default function ManageFaqTab() {
               >
                 {/* Collapsed Header */}
                 <div className="flex items-center justify-between p-4 gap-3 bg-card">
-                  <button
-                    type="button"
+                  <Button
+                    variant="ghost"
                     onClick={() => setExpanded(isExpanded ? null : faq.id)}
-                    className="flex-1 flex items-center justify-between text-right text-sm font-bold text-foreground gap-3 hover:text-primary transition-colors focus-visible:outline-none focus-visible:underline"
+                    className="flex-1 h-auto p-0 flex items-center justify-between text-right text-sm font-bold text-foreground gap-3 hover:text-primary transition-colors focus-visible:outline-none focus-visible:underline hover:bg-transparent"
                     aria-expanded={isExpanded}
                   >
                     <span className="truncate">{faq.question || "سؤال بدون عنوان"}</span>
@@ -253,7 +253,7 @@ export default function ManageFaqTab() {
                     ) : (
                       <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
                     )}
-                  </button>
+                  </Button>
 
                   <div className="flex items-center gap-1 shrink-0">
                     <Button

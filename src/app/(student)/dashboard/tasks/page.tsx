@@ -128,27 +128,29 @@ function TaskAccordionItem({
 
   return (
     <Card className="rounded-2xl overflow-hidden">
-      <button
-        type="button"
+      <Button
+        variant="ghost"
         onClick={onToggle}
-        className="w-full flex items-center gap-4 p-4 hover:bg-muted/30 transition-colors text-right"
+        className="w-full h-auto p-4 flex items-center justify-between gap-4 text-right rounded-none hover:bg-muted/30 font-normal"
         aria-expanded={isOpen}
       >
-        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-          <ClipboardList className="w-5 h-5 text-primary" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="font-medium text-foreground truncate">{lesson.title}</p>
-          <p className="text-xs text-muted-foreground">
-            {lesson.course.title} • {lesson.section.title}
-          </p>
+        <div className="flex items-center gap-4 min-w-0 flex-1">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+            <ClipboardList className="w-5 h-5 text-primary" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-medium text-foreground truncate">{lesson.title}</p>
+            <p className="text-xs text-muted-foreground">
+              {lesson.course.title} • {lesson.section.title}
+            </p>
+          </div>
         </div>
         {isOpen ? (
           <ChevronUp className="w-4 h-4 text-muted-foreground flex-shrink-0" />
         ) : (
           <ChevronDown className="w-4 h-4 text-muted-foreground flex-shrink-0" />
         )}
-      </button>
+      </Button>
 
       {isOpen && (
         <div className="border-t border-border p-4">
@@ -268,12 +270,7 @@ function InlineTask({ task, lessonId }: { task: Task; lessonId: number }) {
         </div>
 
         {!result.passed && hasAttemptsRemaining && (
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleRetry}
-            className="w-full gap-2"
-          >
+          <Button type="button" variant="outline" onClick={handleRetry} className="w-full gap-2">
             <RefreshCw className="w-4 h-4" />
             <span>حاول مرة أخرى ({result.attempts_remaining} محاولة متبقية)</span>
           </Button>

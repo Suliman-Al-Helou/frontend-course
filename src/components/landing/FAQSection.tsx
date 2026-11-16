@@ -6,6 +6,7 @@ import { ChevronDown, Mail, Send, Check } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { useContactForm, SUPPORT_EMAIL, WHATSAPP_URL } from "@/features/contact";
 import { faqQueries } from "@/features/faqs";
 
@@ -113,59 +114,24 @@ export default function FAQSection({ initial, isDashboard = false }: FAQSectionP
               </p>
             </div>
 
-            <div className="space-y-3">
-              {faqs.map((faq, i) => {
-                const isOpen = openIndex === i;
-                return (
-                  <div
-                    key={i}
-                    className="overflow-hidden rounded-xl border border-border bg-card transition-colors hover:border-border/80"
-                  >
-                    <button
-                      type="button"
-                      id={`faq-question-${i}`}
-                      aria-controls={`faq-answer-${i}`}
-                      onClick={() => handleToggle(i)}
-                      className="flex w-full items-center justify-between p-4 text-right transition-colors hover:bg-muted/40 sm:p-4.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
-                      aria-expanded={isOpen}
-                    >
-                      <span className="text-sm font-semibold text-foreground sm:text-base">
-                        {faq.q}
-                      </span>
-                      <motion.div
-                        animate={{ rotate: shouldReduceMotion ? 0 : isOpen ? 180 : 0 }}
-                        transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
-                        className="mr-3 shrink-0"
-                      >
-                        <ChevronDown
-                          className={`size-4 transition-colors ${
-                            isOpen ? "text-primary" : "text-muted-foreground"
-                          }`}
-                        />
-                      </motion.div>
-                    </button>
-
-                    <AnimatePresence initial={false}>
-                      {isOpen && (
-                        <motion.div
-                          id={`faq-answer-${i}`}
-                          role="region"
-                          aria-labelledby={`faq-question-${i}`}
-                          initial={shouldReduceMotion ? false : { height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={shouldReduceMotion ? { opacity: 0 } : { height: 0, opacity: 0 }}
-                          transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
-                        >
-                          <div className="border-t border-border px-4.5 pb-4.5 pt-3.5 text-xs leading-relaxed text-muted-foreground sm:text-sm">
-                            {faq.a}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                );
-              })}
-            </div>
+            <Accordion
+              type="single"
+              value={openIndex !== null ? String(openIndex) : ""}
+              onValueChange={(val) => setOpenIndex(val ? Number(val) : null)}
+            >
+              {faqs.map((faq, i) => (
+                <AccordionItem key={i} value={String(i)}>
+                  <AccordionTrigger className="p-4 sm:p-4.5">
+                    <span className="text-sm font-semibold text-foreground sm:text-base">
+                      {faq.q}
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-4.5 pb-4.5 pt-3.5 text-xs leading-relaxed text-muted-foreground sm:text-sm">
+                    {faq.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
           </div>
 
           {/* الشق الأيسر: نموذج تواصل معنا الموسع والمريح */}

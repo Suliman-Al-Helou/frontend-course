@@ -1,18 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { Lock, Play, ChevronDown, ChevronUp } from "lucide-react";
+import { Lock, Play } from "lucide-react";
 import Link from "next/link";
 import type { CourseSectionUI } from "../../index";
 import { Badge } from "@/components/ui/badge";
-
-export function useCurriculumAccordion() {
-  const [openSections, setOpenSections] = useState<Record<number, boolean>>({
-    0: true,
-  });
-  const toggle = (i: number) => setOpenSections((prev) => ({ ...prev, [i]: !prev[i] }));
-  return { openSections, toggle };
-}
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
 
 export interface CourseCurriculumProps {
   sections: CourseSectionUI[];
@@ -21,12 +18,12 @@ export interface CourseCurriculumProps {
 }
 
 export function CourseCurriculum({ sections, courseId, enrolled }: CourseCurriculumProps) {
-  const { openSections, toggle } = useCurriculumAccordion();
+  const defaultVal = sections[0]?.id !== undefined ? String(sections[0].id) : "0";
 
   return (
     <section>
       <h2 className="text-xl font-bold text-foreground mb-5">منهج الكورس</h2>
-      <div className="space-y-3">
+      <Accordion type="multiple" defaultValue={[defaultVal]}>
         {sections.map((section, i) => {
           const lessonCount = section.lessons?.length || 0;
           const lessonCountLabel =
@@ -38,88 +35,77 @@ export function CourseCurriculum({ sections, courseId, enrolled }: CourseCurricu
                   ? `${lessonCount} دروس`
                   : `${lessonCount} درساً`;
 
+          const itemKey = section.id !== undefined ? String(section.id) : String(i);
+
           return (
-            <div key={section.id ?? i} className="border border-border rounded-xl overflow-hidden">
-              <button
-                id={`section-btn-${section.id ?? i}`}
-                onClick={() => toggle(i)}
-                aria-expanded={Boolean(openSections[i])}
-                aria-controls={`section-panel-${section.id ?? i}`}
-                className="w-full flex items-center justify-between p-4 bg-muted/50 hover:bg-muted transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none text-start"
-              >
+            <AccordionItem key={itemKey} value={itemKey}>
+              <AccordionTrigger className="p-4 bg-muted/50 hover:bg-muted">
                 <div className="flex items-center gap-3">
                   <span className="font-semibold text-foreground">{section.title}</span>
                   <span className="text-xs text-muted-foreground">{lessonCountLabel}</span>
                 </div>
-                {openSections[i] ? (
-                  <ChevronUp className="w-4 h-4 text-muted-foreground" />
-                ) : (
-                  <ChevronDown className="w-4 h-4 text-muted-foreground" />
-                )}
-              </button>
+              </AccordionTrigger>
 
-              {openSections[i] && (
-                <div
-                  id={`section-panel-${section.id ?? i}`}
-                  role="region"
-                  aria-labelledby={`section-btn-${section.id ?? i}`}
-                  className="divide-y divide-border"
-                >
-                  {section.lessons.map((lesson) => {
-                    const canAccess = enrolled || lesson.is_preview;
+              <AccordionContent className="divide-y divide-border">
+                {section.lessons.map((lesson) => {
+                  const canAccess = enrolled || lesson.is_preview;
 
-                    const content = (
-                      <div className="flex items-center justify-between px-4 py-3 min-h-[44px] w-full">
-                        <div className="flex items-center gap-3">
-                          <div className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                            {canAccess ? (
-                              <Play className="w-3.5 h-3.5 text-primary" />
-                            ) : (
-                              <Lock className="w-3.5 h-3.5 text-muted-foreground" />
-                            )}
-                          </div>
-                          <span
-                            className={`text-sm ${
-                              canAccess ? "text-foreground font-medium" : "text-muted-foreground"
-                            }`}
-                          >
-                            {lesson.title}
-                          </span>
-                          {lesson.is_preview && (
-                            <Badge variant="primary" size="sm" shape="rounded">
-                              معاينة مجانية
-                            </Badge>
+                  const content = (
+                    <div className="flex items-center justify-between px-4 py-3 min-h-[44px] w-full">
+                      <div className="flex items-center gap-3">
+                        <div className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                          {canAccess ? (
+                            <Play className="w-3.5 h-3.5 text-primary" />
+                          ) : (
+                            <Lock className="w-3.5 h-3.5 text-muted-foreground" />
                           )}
                         </div>
-                        <span className="text-xs text-muted-foreground shrink-0 ms-2">
-                          {lesson.duration}
+                        <span
+                          className={`text-sm ${
+                            canAccess ? "text-foreground font-medium" : "text-muted-foreground"
+                          }`}
+                        >
+                          {lesson.title}
                         </span>
                       </div>
-                    );
+                      <div className="flex items-center gap-2">
+                        {lesson.is_preview && !enrolled && (
+                          <Badge variant="success" size="sm">
+                            معاينة مجانية
+                          </Badge>
+                        )}
+                        {lesson.duration ? (
+                          <span className="text-xs text-muted-foreground">
+                            {lesson.duration} د
+                          </span>
+                        ) : null}
+                      </div>
+                    </div>
+                  );
 
-                    return canAccess ? (
+                  if (canAccess) {
+                    return (
                       <Link
                         key={lesson.id}
                         href={`/courses/${courseId}/lessons/${lesson.id}`}
-                        className="flex items-center hover:bg-muted/40 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                        className="block hover:bg-muted/40 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                       >
                         {content}
                       </Link>
-                    ) : (
-                      <div
-                        key={lesson.id}
-                        className="flex items-center opacity-60 cursor-not-allowed"
-                      >
-                        {content}
-                      </div>
                     );
-                  })}
-                </div>
-              )}
-            </div>
+                  }
+
+                  return (
+                    <div key={lesson.id} className="opacity-60 cursor-not-allowed">
+                      {content}
+                    </div>
+                  );
+                })}
+              </AccordionContent>
+            </AccordionItem>
           );
         })}
-      </div>
+      </Accordion>
     </section>
   );
 }
