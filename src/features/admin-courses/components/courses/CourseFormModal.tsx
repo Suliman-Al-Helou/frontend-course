@@ -173,43 +173,32 @@ export default function CourseFormModal({ course, isOpen, onClose }: Props) {
 
       <ModalBody className="p-0 flex flex-col max-h-[75vh] overflow-hidden">
         {/* Tab Controls */}
-        <div className="flex border-b border-border bg-muted/20 px-5 pt-2 gap-2 shrink-0">
-          <button
-            type="button"
-            onClick={() => setActiveTab("basic")}
-            className={`min-h-[44px] px-3.5 pb-2 text-xs font-semibold border-b-2 transition-all flex items-center gap-1.5 ${
-              activeTab === "basic"
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <Layers className="w-3.5 h-3.5" />
-            المعلومات الأساسية
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("pricing")}
-            className={`min-h-[44px] px-3.5 pb-2 text-xs font-semibold border-b-2 transition-all flex items-center gap-1.5 ${
-              activeTab === "pricing"
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <DollarSign className="w-3.5 h-3.5" />
-            التسعير والوسائط
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("content")}
-            className={`min-h-[44px] px-3.5 pb-2 text-xs font-semibold border-b-2 transition-all flex items-center gap-1.5 ${
-              activeTab === "content"
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            المخرجات والجمهور
-          </button>
+        <div
+          role="tablist"
+          aria-label="أقسام بيانات الكورس"
+          className="flex border-b border-border bg-muted/20 px-5 pt-2 gap-2 shrink-0"
+        >
+          {[
+            { id: "basic", label: "المعلومات الأساسية", icon: Layers },
+            { id: "pricing", label: "التسعير والوسائط", icon: DollarSign },
+            { id: "content", label: "المخرجات والجمهور", icon: Sparkles },
+          ].map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              type="button"
+              role="tab"
+              aria-selected={activeTab === id}
+              onClick={() => setActiveTab(id as typeof activeTab)}
+              className={`min-h-[44px] px-3.5 pb-2 text-xs font-semibold border-b-2 transition-all flex items-center gap-1.5 ${
+                activeTab === id
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Icon className="w-3.5 h-3.5" />
+              {label}
+            </button>
+          ))}
         </div>
 
         {/* Form Body */}
