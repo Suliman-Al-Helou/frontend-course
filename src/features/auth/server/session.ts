@@ -20,7 +20,8 @@ export const sessionOptions: SessionOptions = {
 };
 
 /** دومين الـ API الحقيقي (Laravel). سيرفر-فقط — بدون NEXT_PUBLIC_ عمدًا. */
-export const LARAVEL_API_URL = process.env.LARAVEL_API_URL || "http://localhost:8000";
+const baseApiUrl = (process.env.LARAVEL_API_URL || "http://localhost:8000/api").replace(/\/+$/, "");
+export const LARAVEL_API_URL = baseApiUrl.endsWith("/api") ? baseApiUrl : `${baseApiUrl}/api`;
 
 export async function saveAuthSession(token: string, user: SessionData["user"]) {
   if (!process.env.SESSION_SECRET && process.env.NODE_ENV === "production") {
