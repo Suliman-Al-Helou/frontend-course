@@ -14,7 +14,7 @@ export default function GlobalError({
 }) {
   return (
     <html lang="ar" dir="rtl">
-      <body>
+      <body className="bg-background text-foreground font-arabic">
         <ErrorState fullPage onRetry={reset} />
       </body>
     </html>
