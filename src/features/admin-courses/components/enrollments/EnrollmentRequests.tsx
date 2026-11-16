@@ -133,20 +133,18 @@ export default function EnrollmentRequests() {
             className="flex gap-1.5 p-1 bg-muted/50 rounded-xl shrink-0 self-start sm:self-auto min-h-[44px] items-center"
           >
             {(["all", "pending", "approved", "rejected"] as const).map((f) => (
-              <button
+              <Button
                 key={f}
                 type="button"
                 role="tab"
+                variant={filter === f ? "default" : "ghost"}
+                size="sm"
                 aria-selected={filter === f}
                 onClick={() => setFilter(f)}
-                className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-all min-h-[38px] ${
-                  filter === f
-                    ? "bg-card text-foreground shadow-xs"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
+                className="min-h-[36px] px-3.5 text-xs font-semibold"
               >
                 {FILTER_LABELS[f]}
-              </button>
+              </Button>
             ))}
           </div>
         </div>

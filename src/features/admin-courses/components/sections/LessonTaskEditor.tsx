@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Plus, Trash2, Check, X, Award, HelpCircle } from "lucide-react";
+import { Plus, Trash2, Check, X, Award, HelpCircle, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -134,7 +134,7 @@ export default function LessonTaskEditor({ lessonId, lessonTitle, onClose }: Pro
 
       {isLoading ? (
         <div className="flex items-center justify-center py-8">
-          <div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+          <Loader2 className="w-6 h-6 text-primary animate-spin" />
         </div>
       ) : (
         <>

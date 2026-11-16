@@ -370,37 +370,33 @@ export default function VideoAssetModal({
             aria-label="طريقة إضافة الفيديو"
             className="px-6 pt-3 shrink-0 flex items-center gap-2 border-b border-border bg-muted/20 pb-3"
           >
-            <button
+            <Button
               type="button"
               role="tab"
+              variant={mode === "upload" ? "default" : "ghost"}
+              size="sm"
               aria-selected={mode === "upload"}
               onClick={() => setMode("upload")}
               disabled={isSubmitting}
-              className={`h-10 text-xs font-semibold px-4 rounded-xl flex items-center gap-2 transition-all ${
-                mode === "upload"
-                  ? "bg-primary text-primary-foreground shadow-xs"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
-              }`}
+              className="text-xs font-semibold gap-2"
             >
               <UploadCloud className="w-4 h-4" />
               <span>رفع ملف فيديو من الجهاز</span>
-            </button>
+            </Button>
 
-            <button
+            <Button
               type="button"
               role="tab"
+              variant={mode === "manual" ? "default" : "ghost"}
+              size="sm"
               aria-selected={mode === "manual"}
               onClick={() => setMode("manual")}
               disabled={isSubmitting}
-              className={`h-10 text-xs font-semibold px-4 rounded-xl flex items-center gap-2 transition-all ${
-                mode === "manual"
-                  ? "bg-primary text-primary-foreground shadow-xs"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
-              }`}
+              className="text-xs font-semibold gap-2"
             >
               <LinkIcon className="w-4 h-4" />
               <span>إدخال رابط / معرّف YouTube</span>
-            </button>
+            </Button>
           </div>
         )}
 

@@ -183,21 +183,23 @@ export default function CourseFormModal({ course, isOpen, onClose }: Props) {
             { id: "pricing", label: "التسعير والوسائط", icon: DollarSign },
             { id: "content", label: "المخرجات والجمهور", icon: Sparkles },
           ].map(({ id, label, icon: Icon }) => (
-            <button
+            <Button
               key={id}
               type="button"
+              variant="ghost"
+              size="sm"
               role="tab"
               aria-selected={activeTab === id}
               onClick={() => setActiveTab(id as typeof activeTab)}
-              className={`min-h-[44px] px-3.5 pb-2 text-xs font-semibold border-b-2 transition-all flex items-center gap-1.5 ${
+              className={`min-h-[40px] px-3.5 pb-2 text-xs font-semibold rounded-b-none border-b-2 transition-all flex items-center gap-1.5 ${
                 activeTab === id
-                  ? "border-primary text-primary"
+                  ? "border-primary text-primary hover:text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
               <Icon className="w-3.5 h-3.5" />
-              {label}
-            </button>
+              <span>{label}</span>
+            </Button>
           ))}
         </div>
 

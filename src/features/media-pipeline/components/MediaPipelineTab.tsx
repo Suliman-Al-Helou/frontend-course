@@ -226,34 +226,30 @@ export default function MediaPipelineTab() {
             aria-label="أقسام خط إنتاج الوسائط"
             className="flex items-center p-1 rounded-xl bg-muted/60 border border-border"
           >
-            <button
+            <Button
               type="button"
               role="tab"
+              variant={activeSubTab === "meetings" ? "default" : "ghost"}
+              size="sm"
               aria-selected={activeSubTab === "meetings"}
               onClick={() => setActiveSubTab("meetings")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                activeSubTab === "meetings"
-                  ? "bg-card text-foreground shadow-xs"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
+              className="text-xs font-semibold h-8 px-3 gap-1.5"
             >
               <Video className="w-3.5 h-3.5" />
               <span>اللقاءات ({meetings.length})</span>
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               role="tab"
+              variant={activeSubTab === "videos" ? "default" : "ghost"}
+              size="sm"
               aria-selected={activeSubTab === "videos"}
               onClick={() => setActiveSubTab("videos")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                activeSubTab === "videos"
-                  ? "bg-card text-foreground shadow-xs"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
+              className="text-xs font-semibold h-8 px-3 gap-1.5"
             >
               <Film className="w-3.5 h-3.5" />
               <span>بنك الفيديوهات ({videos.length})</span>
-            </button>
+            </Button>
           </div>
 
           {/* Primary Action Button */}

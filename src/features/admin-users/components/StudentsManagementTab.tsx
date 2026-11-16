@@ -194,59 +194,51 @@ export default function StudentsManagementTab() {
             aria-label="تصفية قائمة الطلاب"
             className="flex items-center gap-1.5 bg-muted/40 p-1 rounded-xl border border-border flex-wrap"
           >
-            <button
+            <Button
               type="button"
               role="tab"
+              variant={filter === "all" ? "default" : "ghost"}
+              size="sm"
               aria-selected={filter === "all"}
               onClick={() => setFilter("all")}
-              className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
-                filter === "all"
-                  ? "bg-primary text-primary-foreground shadow-2xs"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
+              className="text-xs font-semibold h-8 px-3"
             >
               الكل ({students.length})
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               role="tab"
+              variant={filter === "active" ? "default" : "ghost"}
+              size="sm"
               aria-selected={filter === "active"}
               onClick={() => setFilter("active")}
-              className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
-                filter === "active"
-                  ? "bg-primary text-primary-foreground shadow-2xs"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
+              className="text-xs font-semibold h-8 px-3"
             >
               لديه كورسات نشطة
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               role="tab"
+              variant={filter === "paid" ? "outlineSuccess" : "ghost"}
+              size="sm"
               aria-selected={filter === "paid"}
               onClick={() => setFilter("paid")}
-              className={`px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all ${
-                filter === "paid"
-                  ? "bg-success text-white shadow-2xs"
-                  : "text-success hover:bg-success/10"
-              }`}
+              className="text-xs font-semibold h-8 px-3 gap-1"
             >
               <DollarSign className="w-3.5 h-3.5" />
-              كورسات مدفوعة
-            </button>
-            <button
+              <span>كورسات مدفوعة</span>
+            </Button>
+            <Button
               type="button"
               role="tab"
+              variant={filter === "no-courses" ? "default" : "ghost"}
+              size="sm"
               aria-selected={filter === "no-courses"}
               onClick={() => setFilter("no-courses")}
-              className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
-                filter === "no-courses"
-                  ? "bg-primary text-primary-foreground shadow-2xs"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
+              className="text-xs font-semibold h-8 px-3"
             >
               بدون كورسات
-            </button>
+            </Button>
           </div>
         </div>
       </div>
