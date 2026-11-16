@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
-import InstallButton from "@/components/InstallButton";
 import ThemeToggle from "@/components/shared/Themetoggle";
 import { Button } from "@/components/ui/button";
 import { useCurrentUser } from "@/features/auth";
@@ -135,7 +134,6 @@ export default function NavbarClient() {
             </Link>
           );
         })}
-        <InstallButton />
       </nav>
 
       <div className="ms-auto flex items-center gap-2">
@@ -166,7 +164,7 @@ export default function NavbarClient() {
           />
           <div
             id="mobile-menu"
-            className="absolute inset-x-0 top-full z-50 border-b border-border/80 bg-background/95 backdrop-blur-md lg:hidden shadow-lg animate-in fade-in-0 slide-in-from-top-2 duration-200 motion-reduce:animate-none"
+            className="absolute inset-x-0 top-full z-50 border-b border-border bg-card lg:hidden shadow-2xl animate-in fade-in-0 slide-in-from-top-2 duration-200 motion-reduce:animate-none"
           >
             <div className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-4 sm:px-6">
               {NAV_LINKS.map((link) => {

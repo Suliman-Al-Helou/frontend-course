@@ -3,7 +3,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #ffffff;
+  --background: #f4f7fb47;
   --foreground: #11192c;
   --card: #ffffff;
   --card-foreground: #11192c;
@@ -79,6 +79,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground font-arabic;
   }
@@ -89,10 +90,12 @@
     mask-image: linear-gradient(to left, black 40%, transparent 90%);
     -webkit-mask-image: linear-gradient(to left, black 40%, transparent 90%);
   }
+
   .mask-fade-right {
     mask-image: linear-gradient(to right, black 40%, transparent 90%);
     -webkit-mask-image: linear-gradient(to right, black 40%, transparent 90%);
   }
+
   .mask-fade-center {
     mask-image: radial-gradient(ellipse at center, black 50%, transparent 80%);
     -webkit-mask-image: radial-gradient(ellipse at center, black 50%, transparent 80%);

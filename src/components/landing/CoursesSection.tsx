@@ -14,8 +14,7 @@ export default function CoursesSection() {
   const { data: enrolledIds = new Set<number>() } = useQuery({
     ...studentCourseQueries.enrolled(),
     enabled: isAuthenticated,
-    select: (list) =>
-      new Set(list.filter((e) => e.status === "approved").map((e) => e.course?.id)),
+    select: (list) => new Set(list.filter((e) => e.status === "approved").map((e) => e.course?.id)),
   });
 
   return (
@@ -56,7 +55,8 @@ export default function CoursesSection() {
           ) : (
             <div className="col-span-full rounded-2xl border border-dashed border-border p-12 text-center">
               <p className="text-sm text-muted-foreground">
-                لا توجد دورات تدريبية متاحة حالياً على هذه الواجهة. تفضل بزيارة الكتالوج للاطلاع على كامل المسارات.
+                لا توجد دورات تدريبية متاحة حالياً على هذه الواجهة. تفضل بزيارة الكتالوج للاطلاع على
+                كامل المسارات.
               </p>
             </div>
           )}
