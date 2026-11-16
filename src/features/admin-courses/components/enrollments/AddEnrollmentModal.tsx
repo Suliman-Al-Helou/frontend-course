@@ -7,6 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Modal, ModalHeader, ModalBody } from "@/components/ui/modal";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { adminCourseQueries } from "../../queries/adminCourses.queries";
 import { useEnrollmentMutations } from "../../queries/adminCourses.mutations";
 import type { AdminCourse } from "../../types";
@@ -100,22 +107,30 @@ export default function AddEnrollmentModal({ isOpen, onClose }: Props) {
 
           <div className="space-y-1.5">
             <Label htmlFor="enr-course-select">الكورس *</Label>
-            <select
-              id="enr-course-select"
-              value={courseId}
-              onChange={(e) => setCourseId(e.target.value)}
-              className="w-full h-11 min-h-[44px] rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-              required
-            >
-              <option value="">
-                {isLoadingCourses ? "جاري تحميل الكورسات..." : "اختر الكورس..."}
-              </option>
-              {courses.map((c: AdminCourse) => (
-                <option key={c.id} value={c.id}>
-                  {c.title}
-                </option>
-              ))}
-            </select>
+            <Select dir="rtl" value={courseId} onValueChange={(val) => setCourseId(val)}>
+              <SelectTrigger id="enr-course-select" className="w-full h-11 min-h-[44px] rounded-xl">
+                <SelectValue
+                  placeholder={isLoadingCourses ? "جاري تحميل الكورسات..." : "اختر الكورس..."}
+                />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl">
+                {isLoadingCourses ? (
+                  <SelectItem value="__loading__" disabled>
+                    جاري تحميل الكورسات...
+                  </SelectItem>
+                ) : courses.length === 0 ? (
+                  <SelectItem value="__empty__" disabled>
+                    لا توجد كورسات متاحة
+                  </SelectItem>
+                ) : (
+                  courses.map((c: AdminCourse) => (
+                    <SelectItem key={c.id} value={String(c.id)}>
+                      {c.title}
+                    </SelectItem>
+                  ))
+                )}
+              </SelectContent>
+            </Select>
           </div>
 
           {error && (
