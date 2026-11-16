@@ -3,6 +3,7 @@
 import { useCurrentUser } from "@/features/auth";
 import { User, Mail, GraduationCap } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
+import { Card } from "@/components/ui/card";
 
 export default function ProfilePage() {
   const { user } = useCurrentUser();
@@ -12,7 +13,7 @@ export default function ProfilePage() {
       <div className="max-w-2xl mx-auto px-4 py-10">
         <h1 className="text-2xl font-bold text-foreground mb-8">ملفي الشخصي</h1>
 
-        <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
+        <Card className="rounded-2xl overflow-hidden shadow-sm">
           {/* Cover */}
           <div className="h-32 bg-gradient-to-br from-primary to-primary/60" />
 
@@ -64,7 +65,7 @@ export default function ProfilePage() {
               </div>
             </div>
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );
