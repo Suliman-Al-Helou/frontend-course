@@ -359,13 +359,15 @@ export default function InstructorFormModal({ instructor, onClose, onSave }: Pro
                 <BookOpen className="w-3.5 h-3.5 text-primary" />
                 <span>الكورسات المسندة ({selectedCourseIds.length})</span>
               </Label>
-              <button
+              <Button
                 type="button"
+                variant="link"
+                size="sm"
                 onClick={() => setCoursesOpen(!coursesOpen)}
-                className="text-xs text-primary hover:underline font-medium"
+                className="h-auto p-0 text-xs font-medium text-primary hover:underline"
               >
                 {coursesOpen ? "طي القائمة" : "تعديل الكورسات المسندة"}
-              </button>
+              </Button>
             </div>
 
             {coursesOpen && (
