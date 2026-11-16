@@ -22,6 +22,8 @@ import Footer from "@/components/landing/Footer";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/shared/states/EmptyState";
 import { instructorQueries, type InstructorDetail } from "@/features/instructors";
 
 const LEVEL_LABEL: Record<string, string> = {
@@ -283,10 +285,13 @@ export default function InstructorProfile() {
               </h2>
 
               {!instructor.courses?.length ? (
-                <div className="text-center py-16 bg-card border border-border rounded-2xl text-muted-foreground">
-                  <BookOpen className="w-10 h-10 mx-auto mb-3 opacity-30" />
-                  <p>لا يوجد كورسات بعد</p>
-                </div>
+                <Card className="rounded-2xl border-border">
+                  <EmptyState
+                    icon={BookOpen}
+                    title="لا توجد كورسات بعد"
+                    description="لم يتم إسناد أي كورسات لهذا المدرب حالياً."
+                  />
+                </Card>
               ) : (
                 <div className="space-y-5">
                   {instructor.courses.map((course: any, i: number) => (
