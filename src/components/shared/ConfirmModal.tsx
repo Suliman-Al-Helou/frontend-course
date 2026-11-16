@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, type ReactNode } from "react";
-import { AlertTriangle, Trash2, Info, Loader2 } from "lucide-react";
+import { AlertTriangle, Trash2, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export interface ConfirmModalProps {
@@ -63,17 +63,18 @@ export default function ConfirmModal({
     }
   };
 
-  const getIcon = () => {
+  const renderIcon = (size: "sm" | "lg" = "lg") => {
+    const iconClass = size === "sm" ? "w-4 h-4" : "w-6 h-6";
     const chosenIcon =
       icon || (variant === "destructive" ? "trash" : variant === "warning" ? "warning" : "info");
     switch (chosenIcon) {
       case "trash":
-        return <Trash2 className="w-6 h-6" />;
+        return <Trash2 className={iconClass} aria-hidden="true" />;
       case "warning":
-        return <AlertTriangle className="w-6 h-6" />;
+        return <AlertTriangle className={iconClass} aria-hidden="true" />;
       case "info":
       default:
-        return <Info className="w-6 h-6" />;
+        return <Info className={iconClass} aria-hidden="true" />;
     }
   };
 
@@ -82,7 +83,7 @@ export default function ConfirmModal({
       case "destructive":
         return "bg-destructive/10 text-destructive";
       case "warning":
-        return "bg-amber-500/10 text-amber-600 dark:text-amber-400";
+        return "bg-warning/10 text-warning";
       case "primary":
       default:
         return "bg-primary/10 text-primary";
@@ -94,10 +95,10 @@ export default function ConfirmModal({
       case "destructive":
         return "bg-destructive hover:bg-destructive/90 text-destructive-foreground";
       case "warning":
-        return "bg-amber-600 hover:bg-amber-700 text-white";
+        return "bg-warning hover:bg-warning/90 text-white";
       case "primary":
       default:
-        return "bg-primary hover:bg-primary/90 text-primary-foreground";
+        return "bg-primary hover:bg-primary-hover text-primary-foreground";
     }
   };
 
@@ -121,7 +122,7 @@ export default function ConfirmModal({
         <div
           className={`w-12 h-12 rounded-2xl flex items-center justify-center mx-auto ${getIconStyles()}`}
         >
-          {getIcon()}
+          {renderIcon("lg")}
         </div>
 
         <div className="text-center space-y-2">
@@ -148,11 +149,12 @@ export default function ConfirmModal({
           </Button>
           <Button
             type="button"
+            loading={isLoading}
             className={`flex-1 rounded-xl h-11 min-h-[44px] font-semibold flex items-center justify-center gap-2 ${getConfirmButtonStyles()}`}
             disabled={isLoading}
             onClick={() => void handleConfirm()}
           >
-            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : getIcon()}
+            {!isLoading && renderIcon("sm")}
             <span>{isLoading ? "جارٍ التنفيذ..." : confirmText}</span>
           </Button>
         </div>
