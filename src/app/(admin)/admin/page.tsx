@@ -10,14 +10,12 @@ import {
   BookOpen,
   ClipboardList,
   GraduationCap,
-  Moon,
-  Sun,
   ChevronDown,
   MessageCircleQuestion,
   Video,
 } from "lucide-react";
 import { useCurrentUser } from "@/features/auth";
-import { useThemeStore } from "@/store/themeStore";
+import ThemeToggle from "@/components/shared/Themetoggle";
 import { useQuery } from "@tanstack/react-query";
 import {
   AdminStatsCards,
@@ -56,18 +54,6 @@ const TAB_LABELS: Record<TabId, string> = {
   zoom: "لقاءات Zoom",
 };
 
-function ThemeToggle() {
-  const { theme, toggleTheme } = useThemeStore();
-  return (
-    <button
-      onClick={toggleTheme}
-      className="p-2 rounded-xl text-foreground/70 hover:bg-accent/10 hover:text-primary transition-colors"
-      aria-label="تبديل الوضع الليلي"
-    >
-      {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-    </button>
-  );
-}
 
 function AdminContent() {
   const { user, logout } = useCurrentUser();
