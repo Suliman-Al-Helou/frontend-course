@@ -130,17 +130,14 @@ function AdminContent() {
 
           <nav className="flex-1 p-4 space-y-1">
             {TABS.map((t) => (
-              <button
+              <Button
                 key={t.id}
+                variant={tab === t.id ? "default" : "ghost"}
                 onClick={() => setTab(t.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                  tab === t.id
-                    ? "bg-primary text-white shadow-md"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
+                className="w-full justify-start gap-3 h-11 px-4 text-sm font-medium"
               >
-                <t.icon className="w-4 h-4" />
-                {t.label}
+                <t.icon className="w-4 h-4 shrink-0" />
+                <span>{t.label}</span>
                 {t.id === "enrollments" && pendingEnrollmentsCount > 0 && (
                   <span
                     className={`mr-auto text-xs px-2 py-0.5 rounded-full font-bold ${
@@ -152,7 +149,7 @@ function AdminContent() {
                     {pendingEnrollmentsCount}
                   </span>
                 )}
-              </button>
+              </Button>
             ))}
           </nav>
 
@@ -212,22 +209,24 @@ function AdminContent() {
             {mobileMenuOpen && (
               <div className="absolute top-full right-4 left-4 mt-1 bg-card border border-border rounded-2xl shadow-xl z-50 overflow-hidden">
                 {TABS.map((t) => (
-                  <button
+                  <Button
                     key={t.id}
-                    onClick={() => setTab(t.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors border-b border-border/50 last:border-0 ${
-                    tab === t.id ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted"
-                    }`}
+                    variant={tab === t.id ? "secondary" : "ghost"}
+                    onClick={() => {
+                      setTab(t.id);
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full justify-start gap-3 h-12 px-4 text-sm font-medium rounded-none border-b border-border/50 last:border-0"
                   >
-                    <t.icon className="w-4 h-4" />
-                    {t.label}
+                    <t.icon className="w-4 h-4 shrink-0" />
+                    <span>{t.label}</span>
                     {t.id === "enrollments" && pendingEnrollmentsCount > 0 && (
                       <span className="mr-auto bg-orange-100 dark:bg-orange-900/30 text-orange-600 text-xs px-2 py-0.5 rounded-full font-bold">
                         {pendingEnrollmentsCount}
                       </span>
                     )}
                     {tab === t.id && <span className="mr-auto text-primary text-xs">✓</span>}
-                  </button>
+                  </Button>
                 ))}
                 <Button
                   variant="ghost"
