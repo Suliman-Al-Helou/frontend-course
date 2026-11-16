@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { CheckCircle2, Lock, PlayCircle, ChevronDown } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { notify } from "@/components/ui/sonner";
 
 export interface SidebarLesson {
@@ -191,9 +192,9 @@ export function LessonSidebar({
                             aria-hidden="true"
                           />
                           <span className="truncate flex-1">{lesson.title}</span>
-                          <span className="text-xs bg-muted px-2 py-0.5 rounded text-muted-foreground flex-shrink-0">
+                          <Badge variant="outline" size="sm" className="flex-shrink-0 text-[11px] font-normal">
                             مغلق
-                          </span>
+                          </Badge>
                         </button>
                       );
                     })}
