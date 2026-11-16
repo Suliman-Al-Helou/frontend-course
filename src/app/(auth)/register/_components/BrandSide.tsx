@@ -21,7 +21,6 @@ export function BrandSide() {
             Future <span className="text-primary">House</span>
           </span>
         </Link>
-  
       </div>
 
       {/* Interactive Code Terminal */}

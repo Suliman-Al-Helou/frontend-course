@@ -57,7 +57,10 @@ export function PasswordStrength({ password }: { password: string }) {
             {c.ok ? (
               <Check className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
             ) : (
-              <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40 shrink-0 mx-1" aria-hidden="true" />
+              <span
+                className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40 shrink-0 mx-1"
+                aria-hidden="true"
+              />
             )}
             <span>{c.label}</span>
           </div>
