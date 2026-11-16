@@ -81,10 +81,8 @@ function ModalRoot({
         className="fixed inset-0 z-50 flex items-center justify-center p-4"
         dir="rtl"
       >
-        <button
-          type="button"
-          tabIndex={-1}
-          aria-label="إغلاق النافذة"
+        <div
+          aria-hidden="true"
           className="fixed inset-0 bg-black/60 backdrop-blur-sm cursor-default"
           onClick={preventClose ? undefined : onClose}
         />

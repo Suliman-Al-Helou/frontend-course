@@ -43,10 +43,9 @@ export default function DashboardSidebar({ open, onClose }: Props) {
   return (
     <>
       {open && (
-        <button
-          type="button"
-          aria-label="إغلاق القائمة الجانبية"
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden cursor-default border-0 p-0"
+        <div
+          aria-hidden="true"
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden cursor-default"
           onClick={onClose}
         />
       )}
