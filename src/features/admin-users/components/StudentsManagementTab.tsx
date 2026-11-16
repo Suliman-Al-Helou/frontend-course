@@ -1,15 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import {
-  Trash2,
-  Eye,
-  BookOpen,
-  AlertCircle,
-  ShieldAlert,
-  DollarSign,
-  Loader2,
-} from "lucide-react";
+import { Trash2, Eye, BookOpen, AlertCircle, ShieldAlert, DollarSign, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { SearchInput } from "@/components/ui/search-input";
@@ -269,7 +261,9 @@ export default function StudentsManagementTab() {
                 <tr>
                   <td colSpan={5} className="py-16 text-center">
                     <Loader2 className="w-7 h-7 text-primary animate-spin mx-auto mb-2 motion-reduce:animate-none" />
-                    <p className="text-xs text-muted-foreground font-medium">جارٍ تحميل قائمة الطلاب...</p>
+                    <p className="text-xs text-muted-foreground font-medium">
+                      جارٍ تحميل قائمة الطلاب...
+                    </p>
                   </td>
                 </tr>
               ) : filteredStudents.length === 0 ? (

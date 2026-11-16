@@ -78,9 +78,7 @@ export function Accordion({
   );
 
   return (
-    <AccordionContext.Provider
-      value={{ expandedItems: currentExpanded, toggleItem, type }}
-    >
+    <AccordionContext.Provider value={{ expandedItems: currentExpanded, toggleItem, type }}>
       <div className={cn("space-y-3", className)} {...props}>
         {children}
       </div>
@@ -136,74 +134,69 @@ export const AccordionItem = React.forwardRef<HTMLDivElement, AccordionItemProps
 );
 AccordionItem.displayName = "AccordionItem";
 
-export interface AccordionTriggerProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface AccordionTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   chevron?: boolean;
 }
 
-export const AccordionTrigger = React.forwardRef<
-  HTMLButtonElement,
-  AccordionTriggerProps
->(({ className, children, chevron = true, ...props }, ref) => {
-  const { toggleItem } = useAccordion();
-  const { value, isOpen, triggerId, contentId } = useAccordionItem();
+export const AccordionTrigger = React.forwardRef<HTMLButtonElement, AccordionTriggerProps>(
+  ({ className, children, chevron = true, ...props }, ref) => {
+    const { toggleItem } = useAccordion();
+    const { value, isOpen, triggerId, contentId } = useAccordionItem();
 
-  return (
-    <button
-      ref={ref}
-      type="button"
-      id={triggerId}
-      aria-expanded={isOpen}
-      aria-controls={contentId}
-      data-state={isOpen ? "open" : "closed"}
-      onClick={() => toggleItem(value)}
-      className={cn(
-        "flex w-full min-h-[48px] items-center justify-between p-4 text-start font-semibold text-foreground transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
-        className,
-      )}
-      {...props}
-    >
-      <div className="flex-1 min-w-0 flex items-center justify-between gap-3 text-start">
-        {children}
-      </div>
-      {chevron && (
-        <ChevronDown
-          className={cn(
-            "w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-200",
-            isOpen && "rotate-180",
-          )}
-          aria-hidden="true"
-        />
-      )}
-    </button>
-  );
-});
+    return (
+      <button
+        ref={ref}
+        type="button"
+        id={triggerId}
+        aria-expanded={isOpen}
+        aria-controls={contentId}
+        data-state={isOpen ? "open" : "closed"}
+        onClick={() => toggleItem(value)}
+        className={cn(
+          "flex w-full min-h-[48px] items-center justify-between p-4 text-start font-semibold text-foreground transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
+          className,
+        )}
+        {...props}
+      >
+        <div className="flex-1 min-w-0 flex items-center justify-between gap-3 text-start">
+          {children}
+        </div>
+        {chevron && (
+          <ChevronDown
+            className={cn(
+              "w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-200",
+              isOpen && "rotate-180",
+            )}
+            aria-hidden="true"
+          />
+        )}
+      </button>
+    );
+  },
+);
 AccordionTrigger.displayName = "AccordionTrigger";
 
-export interface AccordionContentProps
-  extends React.HTMLAttributes<HTMLDivElement> {}
+export interface AccordionContentProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export const AccordionContent = React.forwardRef<
-  HTMLDivElement,
-  AccordionContentProps
->(({ className, children, ...props }, ref) => {
-  const { isOpen, triggerId, contentId } = useAccordionItem();
+export const AccordionContent = React.forwardRef<HTMLDivElement, AccordionContentProps>(
+  ({ className, children, ...props }, ref) => {
+    const { isOpen, triggerId, contentId } = useAccordionItem();
 
-  if (!isOpen) return null;
+    if (!isOpen) return null;
 
-  return (
-    <div
-      ref={ref}
-      id={contentId}
-      role="region"
-      aria-labelledby={triggerId}
-      data-state={isOpen ? "open" : "closed"}
-      className={cn("border-t border-border animate-in fade-in-0 duration-200", className)}
-      {...props}
-    >
-      {children}
-    </div>
-  );
-});
+    return (
+      <div
+        ref={ref}
+        id={contentId}
+        role="region"
+        aria-labelledby={triggerId}
+        data-state={isOpen ? "open" : "closed"}
+        className={cn("border-t border-border animate-in fade-in-0 duration-200", className)}
+        {...props}
+      >
+        {children}
+      </div>
+    );
+  },
+);
 AccordionContent.displayName = "AccordionContent";
-

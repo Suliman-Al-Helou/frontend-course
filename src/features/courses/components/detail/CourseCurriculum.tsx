@@ -75,9 +75,7 @@ export function CourseCurriculum({ sections, courseId, enrolled }: CourseCurricu
                           </Badge>
                         )}
                         {lesson.duration ? (
-                          <span className="text-xs text-muted-foreground">
-                            {lesson.duration} د
-                          </span>
+                          <span className="text-xs text-muted-foreground">{lesson.duration} د</span>
                         ) : null}
                       </div>
                     </div>

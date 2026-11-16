@@ -99,10 +99,7 @@ export default function InstallButton() {
     <>
       {/* زر التثبيت العائم أسفل الشاشة */}
       <div className="fixed bottom-5 end-5 z-50 flex items-center gap-1.5 rounded-2xl border border-border bg-card p-1.5 shadow-2xl transition-all animate-in fade-in-0 slide-in-from-bottom-3 duration-200">
-        <Button
-          onClick={handleInstallClick}
-          aria-label="تثبيت تطبيق Future House على جهازك"
-        >
+        <Button onClick={handleInstallClick} aria-label="تثبيت تطبيق Future House على جهازك">
           <Download className="size-4 shrink-0" aria-hidden="true" />
           <span>تثبيت التطبيق</span>
         </Button>
@@ -153,7 +150,9 @@ export default function InstallButton() {
                     1
                   </span>
                   <span>
-                    اضغط على زر المشاركة <Share className="mx-1 inline size-4 text-primary align-text-bottom" /> أسفل شاشة Safari.
+                    اضغط على زر المشاركة{" "}
+                    <Share className="mx-1 inline size-4 text-primary align-text-bottom" /> أسفل
+                    شاشة Safari.
                   </span>
                 </li>
                 <li className="flex items-center gap-2.5">
@@ -178,16 +177,16 @@ export default function InstallButton() {
                 <div className="flex items-start gap-2.5">
                   <HelpCircle className="mt-0.5 size-5 shrink-0 text-primary" />
                   <p>
-                    لتثبيت التطبيق من متصفحك الحالي، اضغط على <strong>قائمة الخيارات (⋮ أو ⋯)</strong> في شريط المتصفح، ثم اختر <strong>&ldquo;تثبيت التطبيق&rdquo;</strong> (Install App) أو <strong>&ldquo;إضافة إلى الشاشة الرئيسية&rdquo;</strong>.
+                    لتثبيت التطبيق من متصفحك الحالي، اضغط على{" "}
+                    <strong>قائمة الخيارات (⋮ أو ⋯)</strong> في شريط المتصفح، ثم اختر{" "}
+                    <strong>&ldquo;تثبيت التطبيق&rdquo;</strong> (Install App) أو{" "}
+                    <strong>&ldquo;إضافة إلى الشاشة الرئيسية&rdquo;</strong>.
                   </p>
                 </div>
               </div>
             )}
 
-            <Button
-              onClick={() => setShowGuide(false)}
-              className="mt-5 w-full"
-            >
+            <Button onClick={() => setShowGuide(false)} className="mt-5 w-full">
               فهمت ذلك
             </Button>
           </div>

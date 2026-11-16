@@ -111,9 +111,17 @@ export function LessonSidebar({
             لم تتم إضافة أي دروس لهذا الكورس بعد.
           </div>
         ) : (
-          <Accordion type="multiple" defaultValue={allSectionKeys} className="space-y-0 divide-y divide-border">
+          <Accordion
+            type="multiple"
+            defaultValue={allSectionKeys}
+            className="space-y-0 divide-y divide-border"
+          >
             {sections.map((section) => (
-              <AccordionItem key={section.id} value={String(section.id)} className="rounded-none border-0 bg-transparent">
+              <AccordionItem
+                key={section.id}
+                value={String(section.id)}
+                className="rounded-none border-0 bg-transparent"
+              >
                 <AccordionTrigger className="px-4 py-3 min-h-[44px]">
                   <span className="text-sm font-semibold text-foreground text-start">
                     {section.title}
@@ -175,7 +183,11 @@ export function LessonSidebar({
                           aria-hidden="true"
                         />
                         <span className="truncate flex-1 text-start">{lesson.title}</span>
-                        <Badge variant="outline" size="sm" className="flex-shrink-0 text-[11px] font-normal">
+                        <Badge
+                          variant="outline"
+                          size="sm"
+                          className="flex-shrink-0 text-[11px] font-normal"
+                        >
                           مغلق
                         </Badge>
                       </Button>

@@ -25,9 +25,11 @@ test.describe("Flow 2: Student Core Value (Enroll -> Open Lesson -> Video Player
     await expect(page.locator("h1")).toContainText("كورس مجاني تجريبي E2E");
 
     // Click enroll / start learning button ("ابدأ التعلم الآن" or "الانتقال إلى محتوى الكورس")
-    const actionBtn = page.locator(
-      'a:has-text("ابدأ التعلم"), a:has-text("الانتقال إلى محتوى الكورس"), button:has-text("ابدأ التعلم"), a:has-text("مشاهدة")'
-    ).first();
+    const actionBtn = page
+      .locator(
+        'a:has-text("ابدأ التعلم"), a:has-text("الانتقال إلى محتوى الكورس"), button:has-text("ابدأ التعلم"), a:has-text("مشاهدة")',
+      )
+      .first();
 
     await expect(actionBtn).toBeVisible({ timeout: 10000 });
     await actionBtn.click();

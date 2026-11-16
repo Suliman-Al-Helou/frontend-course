@@ -14,9 +14,7 @@ test.describe("Flow 5: Security Negative Flow (Unenrolled Access Blocked -> 403 
     expect(coursesRes.ok()).toBeTruthy();
     const coursesData = await coursesRes.json();
     const coursesList = Array.isArray(coursesData) ? coursesData : coursesData.data || [];
-    const paidCourse = coursesList.find((c: any) =>
-      c.title?.includes("كورس مدفوع محمي E2E")
-    );
+    const paidCourse = coursesList.find((c: any) => c.title?.includes("كورس مدفوع محمي E2E"));
     expect(paidCourse).toBeDefined();
 
     // Fetch full course details to get the protected lesson ID
@@ -37,9 +35,8 @@ test.describe("Flow 5: Security Negative Flow (Unenrolled Access Blocked -> 403 
     // Intercept lesson API to verify the browser receives 403
     const lessonApiResponsePromise = page.waitForResponse(
       (response) =>
-        response.url().includes(`/api/lessons/${protectedLesson.id}`) &&
-        response.status() === 403,
-      { timeout: 15000 }
+        response.url().includes(`/api/lessons/${protectedLesson.id}`) && response.status() === 403,
+      { timeout: 15000 },
     );
 
     await page.goto(`/courses/${paidCourse.id}/lessons/${protectedLesson.id}`);
