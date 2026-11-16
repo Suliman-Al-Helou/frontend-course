@@ -19,7 +19,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Modal, ModalHeader, ModalBody } from "@/components/ui/modal";
+import { EmptyState } from "@/components/shared/states/EmptyState";
+import { Modal, ModalHeader } from "@/components/ui/modal";
 import {
   Select,
   SelectContent,
@@ -139,14 +140,12 @@ export default function VideoAssetsView({
           <p className="text-xs text-muted-foreground">جارٍ تحميل بنك الفيديوهات...</p>
         </Card>
       ) : filteredVideos.length === 0 ? (
-        <Card className="p-12 text-center space-y-3">
-          <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
-            <Film className="w-6 h-6" />
-          </div>
-          <h3 className="text-sm font-bold text-foreground">لا توجد فيديوهات في بنك الوسائط</h3>
-          <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-            ابدأ برفع ملف فيديو من جهازك أو أدرج رابط YouTube لربطه بدروس الكورسات.
-          </p>
+        <Card className="rounded-2xl border-border">
+          <EmptyState
+            icon={Film}
+            title="لا توجد فيديوهات في بنك الوسائط"
+            description="ابدأ برفع ملف فيديو من جهازك أو أدرج رابط YouTube لربطه بدروس الكورسات."
+          />
         </Card>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

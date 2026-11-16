@@ -221,9 +221,15 @@ export default function MediaPipelineTab() {
         {/* Action Button & Segmented Controls */}
         <div className="flex flex-wrap items-center gap-3">
           {/* Segmented Control */}
-          <div className="flex items-center p-1 rounded-xl bg-muted/60 border border-border">
+          <div
+            role="tablist"
+            aria-label="أقسام خط إنتاج الوسائط"
+            className="flex items-center p-1 rounded-xl bg-muted/60 border border-border"
+          >
             <button
               type="button"
+              role="tab"
+              aria-selected={activeSubTab === "meetings"}
               onClick={() => setActiveSubTab("meetings")}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 activeSubTab === "meetings"
@@ -236,6 +242,8 @@ export default function MediaPipelineTab() {
             </button>
             <button
               type="button"
+              role="tab"
+              aria-selected={activeSubTab === "videos"}
               onClick={() => setActiveSubTab("videos")}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 activeSubTab === "videos"
