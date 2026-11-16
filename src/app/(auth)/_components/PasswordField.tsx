@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface Props {
   id: string;
@@ -32,13 +33,14 @@ export function PasswordField({
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
-        <label htmlFor={id} className="text-sm font-semibold text-foreground">
+        <Label htmlFor={id} className="text-sm font-semibold text-foreground">
           {label}
-        </label>
+        </Label>
         {action}
       </div>
-      <div className="relative">
-        <input
+      {/* Explicitly dir="ltr" so the eye toggle sits on the right end and text starts on the left without collision */}
+      <div className="relative" dir="ltr">
+        <Input
           id={id}
           type={show ? "text" : "password"}
           placeholder="••••••••"
@@ -49,15 +51,7 @@ export function PasswordField({
           aria-invalid={!!error}
           aria-describedby={error ? `${id}-error` : undefined}
           dir="ltr"
-          className={cn(
-            "w-full h-11 min-h-[44px] rounded-xl border bg-background px-4 pe-12 text-base text-foreground transition-colors sm:text-sm text-left placeholder:text-right",
-            "placeholder:text-muted-foreground",
-            "focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-60",
-            "motion-reduce:transition-none",
-            error
-              ? "border-destructive focus:border-destructive focus:ring-destructive/20"
-              : "border-border hover:border-foreground/30 focus:border-primary focus:ring-primary/20",
-          )}
+          className="pe-12 text-left"
         />
         <button
           type="button"
