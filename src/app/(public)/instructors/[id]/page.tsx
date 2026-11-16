@@ -20,6 +20,8 @@ import {
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { Avatar } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { instructorQueries, type InstructorDetail } from "@/features/instructors";
 
 const LEVEL_LABEL: Record<string, string> = {
@@ -120,9 +122,9 @@ export default function InstructorProfile() {
                     <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
                       {instructor.name}
                     </h1>
-                    <span className="bg-primary/10 text-primary text-xs font-semibold px-3 py-1 rounded-full">
+                    <Badge variant="primary" size="sm" className="font-semibold">
                       مدرب معتمد
-                    </span>
+                    </Badge>
                   </div>
                   {instructor.title && (
                     <p className="text-muted-foreground text-sm sm:text-base">{instructor.title}</p>
@@ -219,12 +221,9 @@ export default function InstructorProfile() {
                 <h2 className="text-base font-bold text-foreground mb-3">التخصصات</h2>
                 <div className="flex flex-wrap gap-2">
                   {specs.map((s) => (
-                    <span
-                      key={s}
-                      className="bg-primary/10 text-primary text-xs font-medium px-3 py-1.5 rounded-xl"
-                    >
+                    <Badge key={s} variant="primary" size="default">
                       {s}
-                    </span>
+                    </Badge>
                   ))}
                 </div>
               </motion.div>
@@ -337,9 +336,12 @@ export default function InstructorProfile() {
                                 </span>
                               </div>
                               <div className="mt-4">
-                                <span className="bg-primary hover:bg-primary/90 text-white rounded-xl text-xs px-5 h-8 inline-flex items-center transition-colors">
+                                <Button
+                                  size="sm"
+                                  className="h-8 px-5 rounded-xl text-xs font-semibold shadow-xs"
+                                >
                                   عرض الكورس
-                                </span>
+                                </Button>
                               </div>
                             </div>
                           </div>
