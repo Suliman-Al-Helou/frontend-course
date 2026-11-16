@@ -1,21 +1,14 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import {
-  Trash2,
-  Eye,
-  BookOpen,
-  AlertCircle,
-  ShieldAlert,
-  DollarSign,
-  GraduationCap,
-} from "lucide-react";
+import { Trash2, Eye, BookOpen, AlertCircle, ShieldAlert, DollarSign, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { SearchInput } from "@/components/ui/search-input";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/shared/states/EmptyState";
 import { notify } from "@/components/ui/sonner";
 import { adminUserQueries } from "../queries/adminUsers.queries";
 import { useDeleteUserMutation } from "../queries/adminUsers.mutations";
@@ -188,52 +181,56 @@ export default function StudentsManagementTab() {
             className=" text-sm border-input"
           />
 
-          <div className="flex items-center gap-1.5 bg-muted/40 p-1 rounded-xl border border-border flex-wrap">
-            <button
+          <div
+            role="tablist"
+            aria-label="تصفية قائمة الطلاب"
+            className="flex items-center gap-1.5 bg-muted/40 p-1 rounded-xl border border-border flex-wrap"
+          >
+            <Button
               type="button"
+              role="tab"
+              variant={filter === "all" ? "default" : "ghost"}
+              size="sm"
+              aria-selected={filter === "all"}
               onClick={() => setFilter("all")}
-              className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
-                filter === "all"
-                  ? "bg-primary text-primary-foreground shadow-2xs"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
+              className="text-xs font-semibold h-8 px-3"
             >
               الكل ({students.length})
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              role="tab"
+              variant={filter === "active" ? "default" : "ghost"}
+              size="sm"
+              aria-selected={filter === "active"}
               onClick={() => setFilter("active")}
-              className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
-                filter === "active"
-                  ? "bg-primary text-primary-foreground shadow-2xs"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
+              className="text-xs font-semibold h-8 px-3"
             >
               لديه كورسات نشطة
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              role="tab"
+              variant={filter === "paid" ? "outlineSuccess" : "ghost"}
+              size="sm"
+              aria-selected={filter === "paid"}
               onClick={() => setFilter("paid")}
-              className={`px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all ${
-                filter === "paid"
-                  ? "bg-success text-white shadow-2xs"
-                  : "text-success hover:bg-success/10"
-              }`}
+              className="text-xs font-semibold h-8 px-3 gap-1"
             >
               <DollarSign className="w-3.5 h-3.5" />
-              كورسات مدفوعة
-            </button>
-            <button
+              <span>كورسات مدفوعة</span>
+            </Button>
+            <Button
               type="button"
+              role="tab"
+              variant={filter === "no-courses" ? "default" : "ghost"}
+              size="sm"
+              aria-selected={filter === "no-courses"}
               onClick={() => setFilter("no-courses")}
-              className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
-                filter === "no-courses"
-                  ? "bg-primary text-primary-foreground shadow-2xs"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
+              className="text-xs font-semibold h-8 px-3"
             >
               بدون كورسات
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -263,15 +260,20 @@ export default function StudentsManagementTab() {
               {isLoadingUsers ? (
                 <tr>
                   <td colSpan={5} className="py-16 text-center">
-                    <div className="w-7 h-7 border-2 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-2" />
-                    <p className="text-xs text-muted-foreground">جارٍ تحميل قائمة الطلاب...</p>
+                    <Loader2 className="w-7 h-7 text-primary animate-spin mx-auto mb-2 motion-reduce:animate-none" />
+                    <p className="text-xs text-muted-foreground font-medium">
+                      جارٍ تحميل قائمة الطلاب...
+                    </p>
                   </td>
                 </tr>
               ) : filteredStudents.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-16 text-center text-muted-foreground text-sm">
-                    <AlertCircle className="w-8 h-8 text-muted-foreground/40 mx-auto mb-2" />
-                    لا يوجد طلاب مطابقون لمعايير البحث الحالية
+                  <td colSpan={5} className="p-8">
+                    <EmptyState
+                      icon={AlertCircle}
+                      title="لا يوجد طلاب مطابقون"
+                      description="جرّب تعديل كلمات البحث أو تغيير حالة التصفية المحددة."
+                    />
                   </td>
                 </tr>
               ) : (

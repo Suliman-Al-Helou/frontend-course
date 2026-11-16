@@ -118,7 +118,19 @@ _Avoid_: Toast container, Alert box, Toast wrapper
 A typed error or success code emitted by the backend or business logic that maps deterministically to a localized Arabic message in the application's translation dictionary.
 _Avoid_: Hardcoded string, Raw API error, Backend message
 
-## Authentication & Identity Domain
+## Curriculum & Course Administration Domain
+
+**Curriculum Video Picker**:
+An interactive, search-enabled modal dialog within the lesson creation workflow allowing administrators to preview, filter, and select videos directly from the course's synchronized YouTube playlist, automatically populating the lesson's title, video ID, and duration.
+_Avoid_: Video dropdown, YouTube selector, Lesson modal iframe
+
+**Assigned Video Marker**:
+A contextual status badge and muted visual style applied to videos within the Curriculum Video Picker that are already assigned to existing lessons in the course, preventing duplicate lesson creation while preserving a complete overview of the playlist.
+_Avoid_: Used badge, Disabled row, Grey card
+
+**Playlist Batch Hydration**:
+A backend aggregation pattern that fetches playlist items and executes a single batched `videos:list` call for up to 50 video IDs, minimizing YouTube Data API v3 quota consumption to exactly 2 units while resolving full content details and ISO 8601 durations.
+_Avoid_: Loop fetch, Single video API call, Direct frontend API call
 
 **Authenticated Session**:
 A server-minted, cryptographically sealed state housed within an HttpOnly cookie and synchronized in the client via TanStack Query (`authQueries.user()`).

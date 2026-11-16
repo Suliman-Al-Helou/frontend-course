@@ -58,6 +58,26 @@ export interface AdminLesson {
   is_preview: boolean;
 }
 
+export interface CourseYouTubeVideo {
+  id: string;
+  title: string;
+  description: string;
+  thumbnail_url: string;
+  duration_seconds: number;
+  duration_formatted: string;
+  duration_minutes: number;
+  published_at: string | null;
+  is_already_added: boolean;
+}
+
+export interface CourseYouTubeVideosResponse {
+  playlist_id: string | null;
+  connected: boolean;
+  videos: CourseYouTubeVideo[];
+  message?: string;
+  error?: string;
+}
+
 export interface AdminSection {
   id: number;
   course_id?: number;

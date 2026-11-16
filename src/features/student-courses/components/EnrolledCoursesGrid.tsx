@@ -5,6 +5,8 @@ import { BookOpen, GraduationCap } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/shared/states/EmptyState";
+import { ErrorState } from "@/components/shared/states/ErrorState";
 import { studentCourseQueries } from "../queries/studentCourses.queries";
 import { EnrolledCourseCard } from "./EnrolledCourseCard";
 import type { StudentEnrollment } from "../types";
@@ -18,6 +20,7 @@ export function EnrolledCoursesGrid({ initialEnrollments }: EnrolledCoursesGridP
     data: enrollments,
     isLoading,
     isError,
+    refetch,
   } = useQuery({
     ...studentCourseQueries.enrolled(),
     select: (list) => list.filter((e) => e.status === "approved"),
@@ -51,29 +54,30 @@ export function EnrolledCoursesGrid({ initialEnrollments }: EnrolledCoursesGridP
 
   if (isError) {
     return (
-      <Card role="alert" className="text-center py-16 border-destructive/20 p-6">
-        <p className="text-destructive font-semibold mb-2">تعذر تحميل الكورسات</p>
-        <p className="text-muted-foreground text-sm">يرجى المحاولة مرة أخرى لاحقاً</p>
+      <Card className="max-w-xl mx-auto border-destructive/20">
+        <ErrorState
+          message="تعذر تحميل الكورسات، يرجى المحاولة مرة أخرى لاحقاً."
+          onRetry={() => refetch()}
+        />
       </Card>
     );
   }
 
   if (!enrollments || enrollments.length === 0) {
     return (
-      <Card className="text-center py-16 p-8 max-w-xl mx-auto">
-        <div className="w-16 h-16 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4">
-          <GraduationCap className="w-8 h-8" aria-hidden="true" />
-        </div>
-        <h2 className="text-lg font-bold text-foreground mb-2">لم تسجل في أي كورس بعد</h2>
-        <p className="text-sm text-muted-foreground mb-6">
-          استكشف المسارات التعليمية المتاحة وابدأ رحلتك البرمجية الاحترافية اليوم.
-        </p>
-        <Button asChild className="px-6">
-          <Link href="/courses">
-            <BookOpen className="w-4 h-4 ml-2" aria-hidden="true" />
-            <span>تصفح الكورسات المتاحة</span>
-          </Link>
-        </Button>
+      <Card className="max-w-xl mx-auto border-border">
+        <EmptyState
+          icon={GraduationCap}
+          title="لم تسجل في أي كورس بعد"
+          description="استكشف المسارات التعليمية المتاحة وابدأ رحلتك البرمجية الاحترافية اليوم."
+        >
+          <Button asChild className="px-6">
+            <Link href="/courses">
+              <BookOpen className="w-4 h-4 ml-2" aria-hidden="true" />
+              <span>تصفح الكورسات المتاحة</span>
+            </Link>
+          </Button>
+        </EmptyState>
       </Card>
     );
   }

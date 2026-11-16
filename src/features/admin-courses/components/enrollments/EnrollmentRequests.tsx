@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useMemo, useRef } from "react";
-import { Clock, CheckCircle, XCircle, Check, X } from "lucide-react";
+import { Clock, CheckCircle, XCircle, Check, X, ClipboardList, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { SearchInput } from "@/components/ui/search-input";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/shared/states/EmptyState";
 import { notify } from "@/components/ui/sonner";
 import { adminEnrollmentQueries } from "../../queries/adminCourses.queries";
 import { useEnrollmentMutations } from "../../queries/adminCourses.mutations";
@@ -126,20 +127,24 @@ export default function EnrollmentRequests() {
             className="flex-1 text-sm"
           />
 
-          <div className="flex gap-1.5 p-1 bg-muted/50 rounded-xl shrink-0 self-start sm:self-auto min-h-[44px] items-center">
+          <div
+            role="tablist"
+            aria-label="تصفية طلبات التسجيل حسب الحالة"
+            className="flex gap-1.5 p-1 bg-muted/50 rounded-xl shrink-0 self-start sm:self-auto min-h-[44px] items-center"
+          >
             {(["all", "pending", "approved", "rejected"] as const).map((f) => (
-              <button
+              <Button
                 key={f}
                 type="button"
+                role="tab"
+                variant={filter === f ? "default" : "ghost"}
+                size="sm"
+                aria-selected={filter === f}
                 onClick={() => setFilter(f)}
-                className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-all min-h-[38px] ${
-                  filter === f
-                    ? "bg-card text-foreground shadow-xs"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
+                className="min-h-[36px] px-3.5 text-xs font-semibold"
               >
                 {FILTER_LABELS[f]}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
@@ -148,13 +153,20 @@ export default function EnrollmentRequests() {
       {/* List */}
       <div className="divide-y divide-border">
         {isLoading ? (
-          <div className="py-16 flex items-center justify-center">
-            <div className="w-7 h-7 border-3 border-primary/30 border-t-primary rounded-full animate-spin motion-reduce:animate-none" />
+          <div className="py-16 flex flex-col items-center justify-center gap-3">
+            <Loader2 className="w-7 h-7 text-primary animate-spin motion-reduce:animate-none" />
+            <p className="text-xs text-muted-foreground font-medium">جارٍ تحميل طلبات التسجيل...</p>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="py-16 text-center text-muted-foreground text-sm">
-            لا توجد أي طلبات مطابقة للبحث أو التصفية الحالية.
-          </div>
+          <EmptyState
+            icon={ClipboardList}
+            title={search || filter !== "all" ? "لا توجد طلبات مطابقة" : "لا توجد طلبات تسجيل"}
+            description={
+              search || filter !== "all"
+                ? "جرّب تغيير كلمات البحث أو إعادة ضبط خيارات التصفية."
+                : "لم يتم تقديم أي طلبات تسجيل جديدة حتى الآن."
+            }
+          />
         ) : (
           filtered.map((enrollment: AdminEnrollment) => {
             const cfg = statusConfig[enrollment.status] ?? statusConfig.pending;
@@ -199,7 +211,7 @@ export default function EnrollmentRequests() {
                   {enrollment.status === "pending" && (
                     <>
                       <Button
-                        size="sm"
+                        size={"sm"}
                         disabled={isUpdating}
                         onClick={() =>
                           void handleUpdateStatus(
@@ -241,7 +253,7 @@ export default function EnrollmentRequests() {
                   {enrollment.status === "approved" && (
                     <Button
                       variant="outline"
-                      size="sm"
+                      size={"sm"}
                       disabled={isUpdating}
                       onClick={() =>
                         void handleUpdateStatus(

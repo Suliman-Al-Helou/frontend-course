@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { EmptyState } from "@/components/shared/states/EmptyState";
 import { useQuery } from "@tanstack/react-query";
 import { mediaPipelineQueries } from "../queries/mediaPipeline.queries";
 import type { AdminZoomMeeting, AttendanceRecord } from "../types";
@@ -109,14 +110,12 @@ export default function LiveMeetingsView({
 
   if (meetings.length === 0) {
     return (
-      <Card className="p-12 text-center space-y-3">
-        <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
-          <Video className="w-6 h-6" />
-        </div>
-        <h3 className="text-sm font-bold text-foreground">لا توجد لقاءات Zoom مجدولة حالياً</h3>
-        <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-          يمكنك جدولة لقاء مباشر جديد وربطه بأحد الكورسات ليظهر في جدول الطلاب.
-        </p>
+      <Card className="rounded-2xl border-border">
+        <EmptyState
+          icon={Video}
+          title="لا توجد لقاءات Zoom مجدولة حالياً"
+          description="يمكنك جدولة لقاء مباشر جديد وربطه بأحد الكورسات ليظهر في جدول الطلاب."
+        />
       </Card>
     );
   }

@@ -16,7 +16,7 @@ interface Props {
 
 export function LoginForm({ form, fieldErrors, error, loading, updateField, onSubmit }: Props) {
   return (
-    <form onSubmit={onSubmit} className="space-y-5">
+    <form onSubmit={onSubmit} noValidate aria-label="نموذج تسجيل الدخول" className="space-y-5">
       <FormField
         id="email"
         label="البريد الإلكتروني"
@@ -37,7 +37,7 @@ export function LoginForm({ form, fieldErrors, error, loading, updateField, onSu
         action={
           <Link
             href="/forgot-password"
-            className="text-xs text-primary font-medium hover:underline inline-flex items-center min-h-[36px] py-1 px-1.5 focus:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded-sm transition-colors"
+            className="text-xs text-primary font-medium hover:underline inline-flex items-center min-h-[44px] py-1.5 px-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg transition-colors"
           >
             نسيت كلمة المرور؟
           </Link>
@@ -49,7 +49,7 @@ export function LoginForm({ form, fieldErrors, error, loading, updateField, onSu
 
       <FormError message={error} />
 
-      <SubmitButton loading={loading} loadingText="جارٍ الدخول...">
+      <SubmitButton loading={loading} loadingText="جارٍ تسجيل الدخول...">
         تسجيل الدخول
       </SubmitButton>
     </form>

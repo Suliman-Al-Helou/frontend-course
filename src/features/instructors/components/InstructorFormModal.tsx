@@ -338,14 +338,15 @@ export default function InstructorFormModal({ instructor, onClose, onSave }: Pro
                 {achievements.map((ach, idx) => (
                   <Badge key={idx} variant="primary" className="gap-1.5">
                     <span>{ach}</span>
-                    <button
-                      type="button"
+                    <Button
+                      variant="ghost"
+                      size="iconSm"
                       onClick={() => removeAchievement(idx)}
-                      className="hover:opacity-75 transition-opacity"
+                      className="h-4 w-4 p-0 hover:bg-transparent hover:opacity-75 transition-opacity"
                       aria-label="إزالة الإنجاز"
                     >
                       <X className="w-3 h-3" />
-                    </button>
+                    </Button>
                   </Badge>
                 ))}
               </div>
@@ -359,13 +360,15 @@ export default function InstructorFormModal({ instructor, onClose, onSave }: Pro
                 <BookOpen className="w-3.5 h-3.5 text-primary" />
                 <span>الكورسات المسندة ({selectedCourseIds.length})</span>
               </Label>
-              <button
+              <Button
                 type="button"
+                variant="link"
+                size="sm"
                 onClick={() => setCoursesOpen(!coursesOpen)}
-                className="text-xs text-primary hover:underline font-medium"
+                className="h-auto p-0 text-xs font-medium text-primary hover:underline"
               >
                 {coursesOpen ? "طي القائمة" : "تعديل الكورسات المسندة"}
-              </button>
+              </Button>
             </div>
 
             {coursesOpen && (

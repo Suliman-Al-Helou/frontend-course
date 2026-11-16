@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Code2, Sparkles, CheckCircle2 } from "lucide-react";
+import { Code2, CheckCircle2 } from "lucide-react";
 import { AuthTerminal } from "@/components/shared/ProfessionalTerminal";
 
 export function BrandSide() {
@@ -21,10 +21,6 @@ export function BrandSide() {
             Future <span className="text-primary">House</span>
           </span>
         </Link>
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-white/80 backdrop-blur-md">
-          <Sparkles className="w-3.5 h-3.5 text-primary" />
-          <span>انضم لأكثر من 5,000 مطوّر عربي</span>
-        </div>
       </div>
 
       {/* Interactive Code Terminal */}

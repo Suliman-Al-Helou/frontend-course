@@ -15,7 +15,10 @@ export default function ThemeToggle({ className }: { className?: string }) {
   }, []);
 
   // مكان محجوز بنفس الحجم قبل الـ mount لمنع layout shift
-  if (!mounted) return <div className={cn("h-10 w-10", className)} aria-hidden />;
+  if (!mounted)
+    return (
+      <div className={cn("h-11 w-11 min-h-[44px] min-w-[44px]", className)} aria-hidden="true" />
+    );
 
   return (
     <Button

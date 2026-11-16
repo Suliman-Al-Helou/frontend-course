@@ -111,7 +111,7 @@ export const AuthTerminal = memo(function AuthTerminal() {
         >
           <pre className="font-mono text-xs leading-6 whitespace-pre-wrap text-white">
             <code dangerouslySetInnerHTML={{ __html: colored }} />
-            <span className="inline-block w-2 h-4 bg-white/80 ml-1 animate-[blink_1s_step-end_infinite] translate-y-0.5" />
+            <span className="inline-block w-2 h-4 bg-white/80 ml-1 animate-[blink_1s_step-end_infinite] motion-reduce:animate-none translate-y-0.5" />
           </pre>
         </div>
       </div>

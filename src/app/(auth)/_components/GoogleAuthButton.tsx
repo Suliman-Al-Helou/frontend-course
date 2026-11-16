@@ -8,6 +8,7 @@ import { authQueries } from "@/features/auth";
 import { resolvePostLoginRedirect } from "@/lib/auth-helpers";
 import { notify } from "@/lib/toast";
 import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 declare global {
   interface Window {
@@ -194,21 +195,27 @@ export function GoogleAuthButton({ mode = "signin" }: GoogleAuthButtonProps) {
       />
 
       {/* زر مخصص مطابق 100% لنظام التصميم DESIGN.md مع Overlay آمن */}
-      <div className="relative w-full h-[44px] rounded-lg overflow-hidden group">
+      <div className="relative w-full h-[44px] rounded-xl overflow-hidden group">
         {/* الزر المرئي المتطابق مع توكنز DESIGN.md */}
-        <button
+        <Button
           type="button"
+          variant="outline"
           disabled={isLoading}
           aria-label={buttonText}
-          className="w-full h-[44px] flex items-center justify-center gap-3 px-4 rounded-lg border border-border bg-card hover:bg-muted/60 text-foreground text-sm font-medium font-arabic transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 group-hover:border-muted-foreground/30 shadow-xs active:scale-[0.99]"
+          onClick={() => {
+            if (window.google) {
+              window.google.accounts.id.prompt();
+            }
+          }}
+          className="w-full h-[44px] gap-3 px-4 font-medium"
         >
           {isLoading ? (
-            <Loader2 className="w-4 h-4 animate-spin text-primary" />
+            <Loader2 className="w-4 h-4 animate-spin text-primary motion-reduce:animate-none" />
           ) : (
             <GoogleIcon className="w-5 h-5 shrink-0" />
           )}
           <span className="truncate">{isLoading ? "جارٍ التحقق وتأكيد الدخول..." : buttonText}</span>
-        </button>
+        </Button>
 
         {/* حاوية غير مرئية تلتقط نقرة المستخدم لفتح نافذة Google الرسمية دون تأخير */}
         <div

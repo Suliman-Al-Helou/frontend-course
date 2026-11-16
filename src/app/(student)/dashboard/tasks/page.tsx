@@ -12,6 +12,9 @@ import {
   Loader2,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/shared/states/EmptyState";
 import { courseQueries } from "@/features/courses";
 import {
   studentCourseQueries,
@@ -80,12 +83,13 @@ function TasksContent() {
           ))}
         </div>
       ) : completedLessons.length === 0 ? (
-        <div className="text-center py-16 bg-card border border-border rounded-2xl">
-          <ClipboardList className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
-          <p className="text-muted-foreground">
-            لا توجد مهام متاحة بعد — شاهد وأكمل دروسك أولاً لتفعيل المهام المرتبطة بها
-          </p>
-        </div>
+        <Card className="rounded-2xl border-border">
+          <EmptyState
+            icon={ClipboardList}
+            title="لا توجد مهام متاحة بعد"
+            description="شاهد وأكمل دروسك أولاً لتفعيل المهام والواجبات المرتبطة بها."
+          />
+        </Card>
       ) : (
         <div className="space-y-3">
           {completedLessons.map((lesson) => (
@@ -123,27 +127,30 @@ function TaskAccordionItem({
   });
 
   return (
-    <div className="bg-card border border-border rounded-2xl overflow-hidden">
-      <button
-        type="button"
+    <Card className="rounded-2xl overflow-hidden">
+      <Button
+        variant="ghost"
         onClick={onToggle}
-        className="w-full flex items-center gap-4 p-4 hover:bg-muted/30 transition-colors text-right"
+        className="w-full h-auto p-4 flex items-center justify-between gap-4 text-right rounded-none hover:bg-muted/30 font-normal"
+        aria-expanded={isOpen}
       >
-        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-          <ClipboardList className="w-5 h-5 text-primary" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="font-medium text-foreground truncate">{lesson.title}</p>
-          <p className="text-xs text-muted-foreground">
-            {lesson.course.title} • {lesson.section.title}
-          </p>
+        <div className="flex items-center gap-4 min-w-0 flex-1">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+            <ClipboardList className="w-5 h-5 text-primary" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-medium text-foreground truncate">{lesson.title}</p>
+            <p className="text-xs text-muted-foreground">
+              {lesson.course.title} • {lesson.section.title}
+            </p>
+          </div>
         </div>
         {isOpen ? (
           <ChevronUp className="w-4 h-4 text-muted-foreground flex-shrink-0" />
         ) : (
           <ChevronDown className="w-4 h-4 text-muted-foreground flex-shrink-0" />
         )}
-      </button>
+      </Button>
 
       {isOpen && (
         <div className="border-t border-border p-4">
@@ -161,7 +168,7 @@ function TaskAccordionItem({
           )}
         </div>
       )}
-    </div>
+    </Card>
   );
 }
 
@@ -263,14 +270,10 @@ function InlineTask({ task, lessonId }: { task: Task; lessonId: number }) {
         </div>
 
         {!result.passed && hasAttemptsRemaining && (
-          <button
-            type="button"
-            onClick={handleRetry}
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-primary text-primary text-sm font-medium hover:bg-primary/5 transition-colors"
-          >
+          <Button type="button" variant="outline" onClick={handleRetry} className="w-full gap-2">
             <RefreshCw className="w-4 h-4" />
-            حاول مرة أخرى ({result.attempts_remaining} محاولة متبقية)
-          </button>
+            <span>حاول مرة أخرى ({result.attempts_remaining} محاولة متبقية)</span>
+          </Button>
         )}
       </div>
     );
@@ -345,15 +348,16 @@ function InlineTask({ task, lessonId }: { task: Task; lessonId: number }) {
           )}
         </div>
       ))}
-      <button
+      <Button
         type="button"
         onClick={handleSubmit}
         disabled={!allAnswered || loading}
-        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        loading={loading}
+        className="w-full gap-2 font-medium"
       >
-        {loading ? "جاري التصحيح..." : "تسليم المهمة"}
+        <span>{loading ? "جاري التصحيح..." : "تسليم المهمة"}</span>
         {!loading && <ChevronLeft className="w-4 h-4" />}
-      </button>
+      </Button>
     </div>
   );
 }

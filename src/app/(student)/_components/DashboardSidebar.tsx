@@ -11,12 +11,11 @@ import {
   User,
   X,
   LogOut,
-  Moon,
-  Sun,
   LifeBuoy,
 } from "lucide-react";
 import { useCurrentUser } from "@/features/auth";
-import { useThemeStore } from "@/store/themeStore";
+import ThemeToggle from "@/components/shared/Themetoggle";
+import { Button } from "@/components/ui/button";
 
 const MENU = [
   { label: "الرئيسية", href: "/dashboard", icon: LayoutDashboard },
@@ -33,19 +32,6 @@ interface Props {
   onClose: () => void;
 }
 
-function ThemeToggle() {
-  const { theme, toggleTheme } = useThemeStore();
-  return (
-    <button
-      onClick={toggleTheme}
-      className="p-2 rounded-xl text-foreground/70 hover:bg-accent/10 hover:text-primary transition-colors"
-      aria-label="تبديل الوضع الليلي"
-    >
-      {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-    </button>
-  );
-}
-
 export default function DashboardSidebar({ open, onClose }: Props) {
   const pathname = usePathname();
   const { logout, isLoading } = useCurrentUser();
@@ -57,10 +43,9 @@ export default function DashboardSidebar({ open, onClose }: Props) {
   return (
     <>
       {open && (
-        <button
-          type="button"
-          aria-label="إغلاق القائمة الجانبية"
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden cursor-default border-0 p-0"
+        <div
+          aria-hidden="true"
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden cursor-default"
           onClick={onClose}
         />
       )}
@@ -78,9 +63,15 @@ export default function DashboardSidebar({ open, onClose }: Props) {
             لوحة
             <span className="text-primary dark:text-white mr-1">الطالب</span>
           </div>
-          <button onClick={onClose} className="lg:hidden p-1 rounded-lg hover:bg-muted">
+          <Button
+            variant="ghost"
+            size="iconSm"
+            onClick={onClose}
+            className="lg:hidden"
+            aria-label="إغلاق القائمة الجانبية"
+          >
             <X className="w-5 h-5" />
-          </button>
+          </Button>
         </div>
 
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
@@ -113,13 +104,14 @@ export default function DashboardSidebar({ open, onClose }: Props) {
             <span className="text-xs text-muted-foreground">الوضع الليلي</span>
             <ThemeToggle />
           </div>
-          <button
+          <Button
+            variant="ghost"
             onClick={() => logout()}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors"
+            className="w-full justify-start text-destructive hover:bg-destructive/10 hover:text-destructive gap-3"
           >
             <LogOut className="w-4 h-4" />
-            تسجيل الخروج
-          </button>
+            <span>تسجيل الخروج</span>
+          </Button>
         </div>
       </aside>
     </>

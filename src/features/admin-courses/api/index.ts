@@ -13,6 +13,7 @@ import type {
   VideoAssetFormData,
   AdminZoomMeeting,
   ZoomMeetingFormData,
+  CourseYouTubeVideosResponse,
 } from "../types";
 
 /* ─── 1. Courses CRUD API ──────────────────────────────────── */
@@ -305,5 +306,29 @@ export async function uploadVideoChunk(params: {
       "Content-Type": undefined,
     },
   });
+  return data;
+}
+
+/* ─── 10. Course YouTube Playlist Videos ────────────────────── */
+
+export async function getCourseYouTubeVideos(
+  courseId: number | string,
+  refresh = false,
+): Promise<CourseYouTubeVideosResponse> {
+  const { data } = await api.get<CourseYouTubeVideosResponse>(
+    `/admin/courses/${courseId}/youtube-videos`,
+    {
+      params: refresh ? { refresh: 1 } : undefined,
+    },
+  );
+  return data;
+}
+
+export async function createCourseYouTubePlaylist(
+  courseId: number | string,
+): Promise<{ message: string; playlist_id: string }> {
+  const { data } = await api.post<{ message: string; playlist_id: string }>(
+    `/admin/courses/${courseId}/youtube-playlist`,
+  );
   return data;
 }

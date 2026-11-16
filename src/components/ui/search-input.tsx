@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Search, X, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "./button";
 
 export interface SearchInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   /** Shows a spinning indicator when active searching is in flight */
@@ -130,14 +131,16 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
           )}
 
           {!loading && isClearVisible && (
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="iconSm"
               onClick={handleClear}
               aria-label={clearLabel}
-              className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors rounded-xl focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none motion-reduce:transition-none"
+              className="text-muted-foreground hover:text-foreground"
             >
               <X className="w-4 h-4" />
-            </button>
+            </Button>
           )}
         </div>
       </div>

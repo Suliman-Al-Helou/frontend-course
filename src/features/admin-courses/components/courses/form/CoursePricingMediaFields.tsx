@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Image as ImageIcon, AlertCircle, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -121,17 +122,20 @@ export default function CoursePricingMediaFields({
             className="font-mono text-left"
           />
           {coverImage && (
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="icon"
               onClick={() => {
                 onCoverImageChange("");
                 setImageLoadError(false);
               }}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-destructive p-1 rounded-lg"
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 size-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+              aria-label="مسح رابط الصورة"
               title="مسح رابط الصورة"
             >
               <Trash2 className="w-4 h-4" />
-            </button>
+            </Button>
           )}
         </div>
 

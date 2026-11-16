@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { Avatar } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { instructorQueries, type Instructor } from "@/features/instructors";
 
 function SkeletonCard() {
@@ -83,12 +84,9 @@ function InstructorCard({ ins, index }: { ins: Instructor; index: number }) {
             {specs.length > 0 && (
               <div className="flex flex-wrap gap-1.5 mb-4">
                 {specs.map((s) => (
-                  <span
-                    key={s}
-                    className="bg-primary/10 text-primary text-xs px-2.5 py-1 rounded-lg font-medium"
-                  >
+                  <Badge key={s} variant="primary" size="sm">
                     {s}
-                  </span>
+                  </Badge>
                 ))}
               </div>
             )}

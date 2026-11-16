@@ -1,13 +1,12 @@
 "use client";
 
-import Link from "next/link";
-import { motion } from "framer-motion";
-import { BookOpen, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { useCoursesSection } from "@/components/landing/_hooks/Usecoursessection";
-import { studentCourseQueries } from "@/features/student-courses";
+import { useCoursesSection } from "@/components/landing/_hooks/useCoursesSection";
+import { Button } from "@/components/ui/button";
 import { useCurrentUser } from "@/features/auth";
-import { CourseCard, SkeletonCard, getCourseLinks } from "@/features/courses";
+import { CourseCard, CourseCardSkeleton, getCourseLinks } from "@/features/courses";
+import { studentCourseQueries } from "@/features/student-courses";
 
 export default function CoursesSection() {
   const { courses, loading } = useCoursesSection();
@@ -19,41 +18,60 @@ export default function CoursesSection() {
   });
 
   return (
-    <section id="courses" className="scroll-mt-20 bg-background py-24">
+    <section
+      id="courses"
+      aria-labelledby="courses-section-title"
+      className="scroll-mt-20 bg-background py-20 md:py-24"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Header: نفس الكود الحالي بدون تغيير */}
-        <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-2 text-center">
-          كورسات برمجة مجانية بالعربية {/* TODO: translate */}
-        </h2>
-        <p className="text-muted-foreground text-md max-w-2xl mx-auto text-center mb-5">
-          ابدأ من الصفر وتعلّم مهارات تطبيقية مع مدربين ذوي خبرة. {/* TODO: translate */}
-        </p>
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {loading
-            ? [1, 2, 3].map((i) => <SkeletonCard key={i} />)
-            : courses.map((course, index) => {
-                const isEnrolled = enrolledIds.has(course.id);
-                return (
-                  <CourseCard
-                    key={course.id}
-                    course={course}
-                    index={index}
-                    isEnrolled={isEnrolled}
-                    {...getCourseLinks(course, isEnrolled, isAuthenticated)}
-                  />
-                );
-              })}
+        <div className="mx-auto mb-12 max-w-2xl text-center space-y-2">
+          <h2
+            id="courses-section-title"
+            className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl"
+          >
+            دورات برمجية تطبيقية بالعربية
+          </h2>
+          <p className="text-sm sm:text-base leading-relaxed text-muted-foreground">
+            ابدأ من الصفر وتعلّم مهارات هندسية حقيقية مع مدربين ذوي خبرة ميدانية.
+          </p>
         </div>
 
-        {/* زر الانتقال لكتالوج الكورسات الكامل لعرض وتصفح باقي الكورسات */}
-        <div className="text-center mt-12">
-          <Link
+        <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {loading ? (
+            [1, 2, 3].map((i) => <CourseCardSkeleton key={i} />)
+          ) : courses.length > 0 ? (
+            courses.map((course, index) => {
+              const isEnrolled = enrolledIds.has(course.id);
+              return (
+                <CourseCard
+                  key={course.id}
+                  course={course}
+                  index={index}
+                  isEnrolled={isEnrolled}
+                  {...getCourseLinks(course, isEnrolled, isAuthenticated)}
+                />
+              );
+            })
+          ) : (
+            <div className="col-span-full rounded-2xl border border-dashed border-border p-12 text-center">
+              <p className="text-sm text-muted-foreground">
+                لا توجد دورات تدريبية متاحة حالياً على هذه الواجهة. تفضل بزيارة الكتالوج للاطلاع على
+                كامل المسارات.
+              </p>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-12 text-center">
+          <Button
             href="/courses"
-            className="inline-flex items-center gap-2 rounded-xl border border-primary/30 hover:border-primary text-primary hover:bg-primary/5 px-8 py-3 text-base font-medium transition-colors"
+            variant="outlinePrimary"
+            size="lg"
+            className="gap-2 font-semibold"
           >
             عرض جميع الكورسات
-            <ArrowLeft className="w-5 h-5 ms-2" />
-          </Link>
+            <ArrowLeft className="size-4 rtl:rotate-0" aria-hidden="true" />
+          </Button>
         </div>
       </div>
     </section>

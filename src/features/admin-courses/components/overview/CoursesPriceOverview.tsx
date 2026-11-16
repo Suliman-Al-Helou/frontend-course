@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { Users, DollarSign, BookOpen } from "lucide-react";
+import { Users, DollarSign, BookOpen, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -38,7 +38,7 @@ export default function CoursesPriceOverview() {
       <div className="divide-y divide-border">
         {isLoading ? (
           <div className="py-12 flex items-center justify-center">
-            <div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+            <Loader2 className="w-6 h-6 text-primary animate-spin" />
           </div>
         ) : courses.length === 0 ? (
           <div className="py-12 text-center text-muted-foreground text-xs">

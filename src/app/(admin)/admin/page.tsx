@@ -10,14 +10,14 @@ import {
   BookOpen,
   ClipboardList,
   GraduationCap,
-  Moon,
-  Sun,
   ChevronDown,
   MessageCircleQuestion,
   Video,
+  Loader2,
 } from "lucide-react";
 import { useCurrentUser } from "@/features/auth";
-import { useThemeStore } from "@/store/themeStore";
+import ThemeToggle from "@/components/shared/Themetoggle";
+import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import {
   AdminStatsCards,
@@ -55,19 +55,6 @@ const TAB_LABELS: Record<TabId, string> = {
   faqs: "الأسئلة الشائعة",
   zoom: "لقاءات Zoom",
 };
-
-function ThemeToggle() {
-  const { theme, toggleTheme } = useThemeStore();
-  return (
-    <button
-      onClick={toggleTheme}
-      className="p-2 rounded-xl text-foreground/70 hover:bg-accent/10 hover:text-primary transition-colors"
-      aria-label="تبديل الوضع الليلي"
-    >
-      {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-    </button>
-  );
-}
 
 function AdminContent() {
   const { user, logout } = useCurrentUser();
@@ -143,17 +130,14 @@ function AdminContent() {
 
           <nav className="flex-1 p-4 space-y-1">
             {TABS.map((t) => (
-              <button
+              <Button
                 key={t.id}
+                variant={tab === t.id ? "default" : "ghost"}
                 onClick={() => setTab(t.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                  tab === t.id
-                    ? "bg-primary text-white shadow-md"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
+                className="w-full justify-start gap-3 h-11 px-4 text-sm font-medium"
               >
-                <t.icon className="w-4 h-4" />
-                {t.label}
+                <t.icon className="w-4 h-4 shrink-0" />
+                <span>{t.label}</span>
                 {t.id === "enrollments" && pendingEnrollmentsCount > 0 && (
                   <span
                     className={`mr-auto text-xs px-2 py-0.5 rounded-full font-bold ${
@@ -165,7 +149,7 @@ function AdminContent() {
                     {pendingEnrollmentsCount}
                   </span>
                 )}
-              </button>
+              </Button>
             ))}
           </nav>
 
@@ -174,13 +158,14 @@ function AdminContent() {
               <span className="text-xs text-muted-foreground">الوضع الليلي</span>
               <ThemeToggle />
             </div>
-            <button
+            <Button
+              variant="ghost"
               onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors"
+              className="w-full justify-start text-destructive hover:bg-destructive/10 hover:text-destructive gap-3"
             >
               <LogOut className="w-4 h-4" />
-              تسجيل الخروج
-            </button>
+              <span>تسجيل الخروج</span>
+            </Button>
           </div>
         </aside>
 
@@ -201,9 +186,11 @@ function AdminContent() {
 
           {/* Mobile Nav — Dropdown */}
           <div className="lg:hidden px-4 py-3 border-b border-border bg-card relative">
-            <button
+            <Button
+              type="button"
+              variant="secondary"
               onClick={() => setMobileMenuOpen((o) => !o)}
-              className="w-full flex items-center justify-between bg-muted px-4 py-2.5 rounded-xl text-sm font-medium text-foreground"
+              className="w-full justify-between"
             >
               <span className="flex items-center gap-2">
                 {currentTab && <currentTab.icon className="w-4 h-4 text-primary" />}
@@ -217,35 +204,38 @@ function AdminContent() {
               <ChevronDown
                 className={`w-4 h-4 text-muted-foreground transition-transform ${mobileMenuOpen ? "rotate-180" : ""}`}
               />
-            </button>
+            </Button>
 
             {mobileMenuOpen && (
               <div className="absolute top-full right-4 left-4 mt-1 bg-card border border-border rounded-2xl shadow-xl z-50 overflow-hidden">
                 {TABS.map((t) => (
-                  <button
+                  <Button
                     key={t.id}
-                    onClick={() => setTab(t.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors border-b border-border/50 last:border-0 ${
-                      tab === t.id ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted"
-                    }`}
+                    variant={tab === t.id ? "secondary" : "ghost"}
+                    onClick={() => {
+                      setTab(t.id);
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full justify-start gap-3 h-12 px-4 text-sm font-medium rounded-none border-b border-border/50 last:border-0"
                   >
-                    <t.icon className="w-4 h-4" />
-                    {t.label}
+                    <t.icon className="w-4 h-4 shrink-0" />
+                    <span>{t.label}</span>
                     {t.id === "enrollments" && pendingEnrollmentsCount > 0 && (
                       <span className="mr-auto bg-orange-100 dark:bg-orange-900/30 text-orange-600 text-xs px-2 py-0.5 rounded-full font-bold">
                         {pendingEnrollmentsCount}
                       </span>
                     )}
                     {tab === t.id && <span className="mr-auto text-primary text-xs">✓</span>}
-                  </button>
+                  </Button>
                 ))}
-                <button
+                <Button
+                  variant="ghost"
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors border-t border-border mt-1"
+                  className="w-full justify-start text-destructive hover:bg-destructive/10 hover:text-destructive gap-3 border-t border-border rounded-none mt-1"
                 >
                   <LogOut className="w-4 h-4" />
-                  تسجيل الخروج
-                </button>
+                  <span>تسجيل الخروج</span>
+                </Button>
               </div>
             )}
           </div>
@@ -254,7 +244,7 @@ function AdminContent() {
           <div className="p-4 sm:p-6 lg:p-8">
             {loading ? (
               <div className="flex items-center justify-center py-20">
-                <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+                <Loader2 className="w-8 h-8 text-primary animate-spin" />
               </div>
             ) : (
               <>
@@ -311,7 +301,7 @@ export default function AdminPage() {
     <Suspense
       fallback={
         <div className="min-h-screen flex items-center justify-center bg-background">
-          <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+          <Loader2 className="w-8 h-8 text-primary animate-spin" />
         </div>
       }
     >

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "@/components/ui/modal";
+import { EmptyState } from "@/components/shared/states/EmptyState";
 import { useQuery } from "@tanstack/react-query";
 import { notify } from "@/components/ui/sonner";
 import {
@@ -176,10 +177,11 @@ export default function StudentDetailsModal({ student, isOpen, onClose }: Props)
           </h4>
 
           {enrichedEnrollments.length === 0 ? (
-            <div className="text-center py-8 bg-muted/20 border border-dashed border-border rounded-xl p-4">
-              <AlertCircle className="w-6 h-6 text-muted-foreground/40 mx-auto mb-1.5" />
-              <p className="text-xs text-muted-foreground">الطالب غير مسجل في أي كورس بعد.</p>
-            </div>
+            <EmptyState
+              icon={AlertCircle}
+              title="لا توجد كورسات مسجلة"
+              description="الطالب غير مسجل في أي كورس بعد."
+            />
           ) : (
             <div className="space-y-2.5">
               {enrichedEnrollments.map((enr) => {

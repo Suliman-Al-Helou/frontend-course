@@ -1,6 +1,10 @@
 "use client";
+
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   id: string;
@@ -26,16 +30,18 @@ export function PasswordField({
   action,
 }: Props) {
   const [show, setShow] = useState(false);
+
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
-        <label htmlFor={id} className="text-sm font-medium text-foreground">
+        <Label htmlFor={id} className="text-sm font-semibold text-foreground">
           {label}
-        </label>
+        </Label>
         {action}
       </div>
-      <div className="relative">
-        <input
+      {/* Explicitly dir="ltr" so the eye toggle sits on the right end and text starts on the left without collision */}
+      <div className="relative" dir="ltr">
+        <Input
           id={id}
           type={show ? "text" : "password"}
           placeholder="••••••••"
@@ -45,21 +51,20 @@ export function PasswordField({
           autoComplete={autoComplete}
           aria-invalid={!!error}
           aria-describedby={error ? `${id}-error` : undefined}
-          className={`w-full h-11 rounded-xl border bg-background px-4 pe-10 text-sm transition-colors focus:outline-none focus:ring-2 disabled:opacity-60 ${
-            error
-              ? "border-destructive focus:border-destructive focus:ring-destructive/20 text-foreground"
-              : "border-input hover:border-foreground/30 focus:border-primary focus:ring-primary/20"
-          }`}
+          dir="ltr"
+          className="pe-12 text-left"
         />
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="iconSm"
           onClick={() => setShow((p) => !p)}
           disabled={disabled}
           aria-label={show ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
-          className="absolute end-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-muted-foreground hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 disabled:opacity-60 transition-colors"
+          className="absolute end-1 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
         >
-          {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-        </button>
+          {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+        </Button>
       </div>
       {extra}
       {error && (

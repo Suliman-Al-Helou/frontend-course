@@ -3,8 +3,10 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight, ArrowLeft, Loader2, AlertCircle, CheckCircle2, Lock } from "lucide-react";
+import { ArrowRight, ArrowLeft, Loader2, CheckCircle2, Lock } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { ErrorState } from "@/components/shared/states/ErrorState";
 import { courseQueries } from "@/features/courses";
 import {
   studentCourseQueries,
@@ -165,24 +167,21 @@ export default function LessonPage() {
     const isForbidden =
       (lessonErrorObj as { response?: { status?: number } })?.response?.status === 403;
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-background px-4 text-center">
-        <div className="w-16 h-16 rounded-2xl bg-destructive/10 text-destructive flex items-center justify-center mb-2">
-          <AlertCircle className="w-8 h-8" aria-hidden="true" />
-        </div>
-        <h1 className="text-xl font-bold text-foreground">
-          {isForbidden ? "الدرس مقفل أو يتطلب الاشتراك" : "الدرس غير متاح حالياً"}
-        </h1>
-        <p className="text-sm text-muted-foreground max-w-md">
-          {isForbidden
-            ? "لا تملك صلاحية مشاهدة هذا الدرس. يرجى الاشتراك في الكورس أو التأكد من إكمال الدروس السابقة أولاً."
-            : "تعذر العثور على بيانات هذا الدرس. تأكد من صحة الرابط أو عُد لصفحة الكورس."}
-        </p>
-        <Link
-          href={`/courses/${courseId}`}
-          className="min-h-[44px] inline-flex items-center justify-center px-6 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition"
+      <div className="min-h-screen flex items-center justify-center bg-background px-4">
+        <ErrorState
+          fullPage
+          message={
+            isForbidden
+              ? "لا تملك صلاحية مشاهدة هذا الدرس. يرجى الاشتراك في الكورس أو التأكد من إكمال الدروس السابقة أولاً."
+              : "تعذر العثور على بيانات هذا الدرس. تأكد من صحة الرابط أو عُد لصفحة الكورس."
+          }
         >
-          {isForbidden ? "العودة لصفحة الكورس للاشتراك" : "العودة للكورس"}
-        </Link>
+          <Button asChild>
+            <Link href={`/courses/${courseId}`}>
+              {isForbidden ? "العودة لصفحة الكورس للاشتراك" : "العودة للكورس"}
+            </Link>
+          </Button>
+        </ErrorState>
       </div>
     );
   }
@@ -202,35 +201,35 @@ export default function LessonPage() {
 
           <nav aria-label="التنقل بين الدروس" className="flex items-center gap-2">
             {prevLesson && (
-              <Link
-                href={`/courses/${courseId}/lessons/${prevLesson.id}`}
-                className="min-h-[44px] inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl bg-muted text-foreground hover:bg-muted/80 transition-colors"
-              >
-                <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
-                <span>السابق</span>
-              </Link>
+              <Button variant="outline" size="sm" asChild className="gap-1.5">
+                <Link href={`/courses/${courseId}/lessons/${prevLesson.id}`}>
+                  <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+                  <span>السابق</span>
+                </Link>
+              </Button>
             )}
 
             {nextLesson &&
               (isVideoDone && isTaskDone ? (
-                <Link
-                  href={`/courses/${courseId}/lessons/${nextLesson.id}`}
-                  className="min-h-[44px] inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-                >
-                  <span>التالي</span>
-                  <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
-                </Link>
+                <Button size="sm" asChild className="gap-1.5">
+                  <Link href={`/courses/${courseId}/lessons/${nextLesson.id}`}>
+                    <span>التالي</span>
+                    <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
+                  </Link>
+                </Button>
               ) : (
-                <button
+                <Button
                   type="button"
+                  variant="outline"
+                  size="sm"
                   disabled
                   title="أكمل مشاهدة الدرس واجتز مهمته لفتح الدرس التالي"
-                  className="min-h-[44px] inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl bg-muted/60 text-muted-foreground/60 cursor-not-allowed border border-border/40"
+                  className="gap-1.5 text-xs sm:text-sm font-semibold cursor-not-allowed opacity-60"
                   aria-label="الدرس التالي مغلق حتى إكمال الدرس الحالي"
                 >
                   <span>التالي</span>
                   <Lock className="w-3.5 h-3.5" aria-hidden="true" />
-                </button>
+                </Button>
               ))}
           </nav>
         </div>

@@ -44,7 +44,7 @@ export function StateMessage({
     >
       <div
         className={cn(
-          "flex size-12 items-center justify-center rounded-md",
+          "flex size-12 items-center justify-center rounded-xl",
           tone === "destructive"
             ? "bg-destructive/10 text-destructive"
             : "bg-muted text-muted-foreground",

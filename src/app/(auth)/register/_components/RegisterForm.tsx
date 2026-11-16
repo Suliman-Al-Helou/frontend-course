@@ -16,7 +16,7 @@ interface Props {
 
 export function RegisterForm({ form, fieldErrors, error, loading, updateField, onSubmit }: Props) {
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
+    <form onSubmit={onSubmit} noValidate aria-label="نموذج إنشاء حساب جديد" className="space-y-4">
       <FormField
         id="name"
         label="الاسم الكامل"

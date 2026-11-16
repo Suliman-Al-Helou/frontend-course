@@ -1,4 +1,4 @@
-import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   loading: boolean;
@@ -8,26 +8,14 @@ interface Props {
 
 export function SubmitButton({ loading, loadingText, children }: Props) {
   return (
-    <button
+    <Button
       type="submit"
+      loading={loading}
       disabled={loading}
-      aria-busy={loading}
-      onClick={(e) => {
-        if (loading) {
-          e.preventDefault();
-          e.stopPropagation();
-        }
-      }}
-      className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-semibold transition-all duration-200 disabled:opacity-60 flex items-center justify-center gap-2 shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 active:scale-[0.99]"
+      size="default"
+      className="w-full h-11 min-h-[44px] font-semibold text-base shadow-xs"
     >
-      {loading ? (
-        <>
-          <Loader2 className="w-4 h-4 animate-spin" />
-          <span>{loadingText}</span>
-        </>
-      ) : (
-        children
-      )}
-    </button>
+      {loading ? loadingText : children}
+    </Button>
   );
 }

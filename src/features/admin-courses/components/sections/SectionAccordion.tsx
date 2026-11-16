@@ -1,12 +1,11 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { ChevronDown, Plus, Trash2, FolderOpen, Folder } from "lucide-react";
+import { ChevronDown, Trash2, FolderOpen, Folder, Youtube } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { extractYouTubeVideoId } from "@/lib/youtube";
 import LessonRow from "./LessonRow";
-import type { AdminSection, AdminLesson, AdminVideoAsset } from "../../types";
+import CurriculumVideoPickerModal from "./CurriculumVideoPickerModal";
+import type { AdminSection, AdminLesson, AdminVideoAsset, AdminCourse } from "../../types";
 
 interface Props {
   section: AdminSection;
@@ -23,6 +22,7 @@ interface Props {
   onUpdateLesson: (lessonId: number | string, data: Partial<AdminLesson>) => Promise<unknown>;
   onDeleteLesson: (lessonId: number | string) => Promise<unknown>;
   courseVideos?: AdminVideoAsset[];
+  course?: AdminCourse;
 }
 
 export default function SectionAccordion({
@@ -33,46 +33,12 @@ export default function SectionAccordion({
   onCreateLesson,
   onUpdateLesson,
   onDeleteLesson,
-  courseVideos = [],
+  course,
 }: Props) {
-  const [showAddLesson, setShowAddLesson] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showVideoPicker, setShowVideoPicker] = useState(false);
 
-  // New Lesson form state
-  const [lessonTitle, setLessonTitle] = useState("");
-  const [lessonVideoId, setLessonVideoId] = useState("");
-  const [lessonDuration, setLessonDuration] = useState("");
-  const [lessonPreview, setLessonPreview] = useState(false);
-
-  const isSubmittingLessonRef = useRef(false);
   const isDeletingSectionRef = useRef(false);
-
-  const handleAddLessonSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isSubmittingLessonRef.current || !lessonTitle.trim()) return;
-
-    isSubmittingLessonRef.current = true;
-    try {
-      const cleanVideoId = extractYouTubeVideoId(lessonVideoId);
-      await onCreateLesson({
-        title: lessonTitle.trim(),
-        video_id: cleanVideoId,
-        duration: Number.parseInt(lessonDuration, 10) || 0,
-        order: section.lessons.length,
-        is_preview: lessonPreview,
-      });
-
-      setLessonTitle("");
-      setLessonVideoId("");
-      setLessonDuration("");
-      setLessonPreview(false);
-      setShowAddLesson(false);
-    } catch (err) {
-      console.error("فشل إضافة الدرس:", err);
-    } finally {
-      isSubmittingLessonRef.current = false;
-    }
-  };
 
   const handleDeleteSectionConfirm = async () => {
     if (isDeletingSectionRef.current) return;
@@ -91,10 +57,10 @@ export default function SectionAccordion({
     <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-xs transition-all">
       {/* Section Header */}
       <div className="p-4 flex items-center justify-between gap-3 bg-muted/20">
-        <button
-          type="button"
+        <Button
+          variant="ghost"
           onClick={onToggle}
-          className="flex items-center gap-3 flex-1 text-right focus:outline-none"
+          className="flex items-center gap-3 flex-1 h-auto p-0 text-right hover:bg-transparent focus:outline-none"
           aria-expanded={isOpen}
           aria-controls={`section-content-${section.id}`}
         >
@@ -110,7 +76,7 @@ export default function SectionAccordion({
               isOpen ? "rotate-180" : ""
             }`}
           />
-        </button>
+        </Button>
 
         {/* Section Actions */}
         <div className="flex items-center gap-1.5 shrink-0">
@@ -120,11 +86,11 @@ export default function SectionAccordion({
             size="sm"
             onClick={() => {
               if (!isOpen) onToggle();
-              setShowAddLesson((prev) => !prev);
+              setShowVideoPicker(true);
             }}
-            className="rounded-xl h-8 px-2.5 text-xs font-medium"
+            className="rounded-xl h-8 px-2.5 text-xs font-medium gap-1.5 border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-500/10 hover:border-red-500/50"
           >
-            <Plus className="w-3.5 h-3.5 ml-1" /> إضافة درس
+            <Youtube className="w-3.5 h-3.5 fill-current" /> إضافة درس
           </Button>
 
           <Button
@@ -174,107 +140,21 @@ export default function SectionAccordion({
           id={`section-content-${section.id}`}
           className="p-4 space-y-3 border-t border-border bg-background/50"
         >
-          {/* Add Lesson Form */}
-          {showAddLesson && (
-            <form
-              onSubmit={handleAddLessonSubmit}
-              className="bg-card border border-primary/20 rounded-xl p-4 space-y-3 animate-in fade-in-0 duration-150"
-            >
-              <div className="flex items-center justify-between">
-                <p className="text-xs font-bold text-foreground">إضافة درس جديد لهذا القسم</p>
-                <button
-                  type="button"
-                  onClick={() => setShowAddLesson(false)}
-                  className="text-muted-foreground hover:text-foreground text-xs"
-                >
-                  إلغاء
-                </button>
-              </div>
-
-              {courseVideos.length > 0 && (
-                <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-xs space-y-1">
-                  <span className="font-semibold text-emerald-700 dark:text-emerald-400 block">
-                    💡 اختيار فيديو مدرج للكورس ({courseVideos.length} فيديو متوفر):
-                  </span>
-                  <select
-                    aria-label="اختر من فيديوهات الكورس المرفوعة"
-                    className="w-full h-8 rounded-md border border-input bg-background px-2 text-xs"
-                    onChange={(e) => {
-                      const found = courseVideos.find((v) => String(v.id) === e.target.value);
-                      if (found) {
-                        setLessonTitle(found.title);
-                        setLessonVideoId(found.provider_video_id);
-                        setLessonDuration(String(Math.round(found.duration_seconds / 60) || ""));
-                      }
-                    }}
-                    defaultValue=""
-                  >
-                    <option value="" disabled>
-                      -- اضغط لاختيار فيديو تلقائياً وتعبئة البيانات --
-                    </option>
-                    {courseVideos.map((v) => (
-                      <option key={v.id} value={String(v.id)}>
-                        {v.title} ({Math.round(v.duration_seconds / 60)} دقيقة)
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              <div className="grid sm:grid-cols-2 gap-3">
-                <Input
-                  placeholder="عنوان الدرس *"
-                  value={lessonTitle}
-                  onChange={(e) => setLessonTitle(e.target.value)}
-                  className="h-9 min-h-0 text-xs col-span-2 sm:col-span-1"
-                  required
-                />
-                <Input
-                  placeholder="رابط YouTube أو المعرف (ID)"
-                  value={lessonVideoId}
-                  onChange={(e) => setLessonVideoId(e.target.value)}
-                  onBlur={() => setLessonVideoId(extractYouTubeVideoId(lessonVideoId))}
-                  className="h-9 min-h-0 text-xs col-span-2 sm:col-span-1"
-                />
-              </div>
-
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-                <div className="flex items-center gap-3">
-                  <Input
-                    type="number"
-                    min="0"
-                    placeholder="المدة بالدقائق"
-                    value={lessonDuration}
-                    onChange={(e) => setLessonDuration(e.target.value)}
-                    className="w-28 h-9 min-h-0 text-xs"
-                  />
-                  <label className="flex items-center gap-1.5 text-xs text-foreground cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      checked={lessonPreview}
-                      onChange={(e) => setLessonPreview(e.target.checked)}
-                      className="rounded text-primary focus:ring-primary w-4 h-4"
-                    />
-                    <span>متاح كمعاينة مجانية</span>
-                  </label>
-                </div>
-
-                <Button
-                  type="submit"
-                  size="sm"
-                  className="rounded-lg h-9 px-4 bg-primary text-primary-foreground font-medium text-xs mr-auto"
-                >
-                  حفظ الدرس
-                </Button>
-              </div>
-            </form>
-          )}
-
           {/* Lessons List */}
           {section.lessons.length === 0 ? (
-            <p className="text-center text-muted-foreground text-xs py-6 bg-muted/10 rounded-xl border border-dashed border-border">
-              لا توجد دروس في هذا القسم بعد. انقر على &quot;إضافة درس&quot; بالأعلى.
-            </p>
+            <div className="text-center py-8 bg-muted/10 rounded-xl border border-dashed border-border p-4 space-y-2">
+              <p className="text-xs text-muted-foreground">لا توجد دروس في هذا القسم بعد.</p>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setShowVideoPicker(true)}
+                className="h-8 text-xs px-3 gap-1.5 border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-500/10 rounded-lg mx-auto"
+              >
+                <Youtube className="w-3.5 h-3.5 fill-current" />
+                <span>إضافة درس من فيديوهات يوتيوب</span>
+              </Button>
+            </div>
           ) : (
             <div className="space-y-2">
               {section.lessons.map((lesson) => (
@@ -288,6 +168,24 @@ export default function SectionAccordion({
             </div>
           )}
         </div>
+      )}
+
+      {course && (
+        <CurriculumVideoPickerModal
+          course={course}
+          sectionTitle={section.title}
+          isOpen={showVideoPicker}
+          onClose={() => setShowVideoPicker(false)}
+          onAddLesson={async (video) => {
+            await onCreateLesson({
+              title: video.title,
+              video_id: video.id,
+              duration: video.duration_minutes,
+              order: section.lessons.length,
+              is_preview: false,
+            });
+          }}
+        />
       )}
     </div>
   );

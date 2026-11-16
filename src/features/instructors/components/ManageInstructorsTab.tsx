@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
+import { EmptyState } from "@/components/shared/states/EmptyState";
 import { notify } from "@/components/ui/sonner";
 import ConfirmModal from "@/components/shared/ConfirmModal";
 import InstructorFormModal from "./InstructorFormModal";
@@ -108,14 +109,12 @@ export default function ManageInstructorsTab() {
           <p className="text-xs text-muted-foreground">جارٍ تحميل قائمة المدربين...</p>
         </Card>
       ) : instructors.length === 0 ? (
-        <Card className="p-12 text-center space-y-3">
-          <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
-            <Users className="w-6 h-6" />
-          </div>
-          <h3 className="text-sm font-bold text-foreground">لا يوجد مدربون مسجلون بعد</h3>
-          <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-            ابدأ بإضافة أول مدرب بالمنصة لإسناد الكورسات وشهادات الإنجاز إليه.
-          </p>
+        <Card className="rounded-2xl border-border">
+          <EmptyState
+            icon={Users}
+            title="لا يوجد مدربون مسجلون بعد"
+            description="ابدأ بإضافة أول مدرب بالمنصة لإسناد الكورسات وشهادات الإنجاز إليه."
+          />
         </Card>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">

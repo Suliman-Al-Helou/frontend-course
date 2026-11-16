@@ -5,25 +5,10 @@
 import { useState, useRef } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { Code2, ArrowRight, Mail } from "lucide-react";
+import { ArrowRight, Mail } from "lucide-react";
 import { SubmitButton } from "../_components/SubmitButton";
 import { FormField } from "../_components/FormField";
-
-function Logo() {
-  return (
-    <Link
-      href="/"
-      className="inline-flex items-center gap-2.5 mb-4 group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl"
-    >
-      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-mid to-blue-light flex items-center justify-center shadow-md shadow-primary/10 group-hover:scale-105 transition-transform">
-        <Code2 className="w-5 h-5 text-white" />
-      </div>
-      <span className="text-xl font-bold tracking-tight text-foreground">
-        Future <span className="text-primary">House</span>
-      </span>
-    </Link>
-  );
-}
+import { AuthLogo } from "../_components/AuthLogo";
 
 function SuccessState({ email }: { email: string }) {
   return (
@@ -87,7 +72,7 @@ export default function ForgotPasswordPage() {
       >
         {/* Header */}
         <div className="text-center mb-6">
-          <Logo />
+          <AuthLogo />
           <h1 className="text-2xl font-bold text-foreground">إعادة تعيين كلمة المرور</h1>
           <p className="text-sm text-muted-foreground mt-1">
             أدخل بريدك الإلكتروني وسنرسل لك رابط استعادة الحساب

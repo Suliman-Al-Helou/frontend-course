@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Plus, BookOpen } from "lucide-react";
+import { Plus, BookOpen, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "@/components/ui/modal";
+import { EmptyState } from "@/components/shared/states/EmptyState";
 import { adminCourseQueries, adminVideoAssetQueries } from "../../queries/adminCourses.queries";
 import { useSectionMutations } from "../../queries/adminCourses.mutations";
 import SectionAccordion from "./SectionAccordion";
@@ -64,18 +65,14 @@ export default function CourseSectionsModal({ course, isOpen, onClose }: Props) 
       <ModalBody className="p-5 space-y-4 max-h-[70vh] overflow-y-auto">
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" />
+            <Loader2 className="w-8 h-8 text-primary animate-spin" />
           </div>
         ) : sections.length === 0 ? (
-          <div className="text-center py-16 bg-muted/10 border border-dashed border-border rounded-2xl p-6">
-            <BookOpen className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
-            <h3 className="font-semibold text-foreground text-sm mb-1">
-              لا توجد أي أقسام في هذا الكورس بعد
-            </h3>
-            <p className="text-xs text-muted-foreground max-w-xs mx-auto mb-4">
-              أدخل عنوان القسم الأول في الحقل أدناه لبدء تنظيم الدروس والمحتوى.
-            </p>
-          </div>
+          <EmptyState
+            icon={BookOpen}
+            title="لا توجد أي أقسام في هذا الكورس بعد"
+            description="أدخل عنوان القسم الأول في الحقل أدناه لبدء تنظيم الدروس والمحتوى."
+          />
         ) : (
           <div className="space-y-3">
             {sections.map((section, idx) => (
@@ -94,6 +91,7 @@ export default function CourseSectionsModal({ course, isOpen, onClose }: Props) 
                 onUpdateLesson={handleUpdateLesson}
                 onDeleteLesson={(lessonId) => deleteLesson.mutateAsync(lessonId)}
                 courseVideos={courseVideos}
+                course={course}
               />
             ))}
           </div>

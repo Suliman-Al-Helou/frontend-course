@@ -3,6 +3,7 @@
 import * as React from "react";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "./button";
 
 interface ModalContextValue {
   onClose: () => void;
@@ -80,10 +81,8 @@ function ModalRoot({
         className="fixed inset-0 z-50 flex items-center justify-center p-4"
         dir="rtl"
       >
-        <button
-          type="button"
-          tabIndex={-1}
-          aria-label="إغلاق النافذة"
+        <div
+          aria-hidden="true"
           className="fixed inset-0 bg-black/60 backdrop-blur-sm cursor-default"
           onClick={preventClose ? undefined : onClose}
         />
@@ -146,15 +145,16 @@ function ModalHeader({
       </div>
 
       {showCloseButton && (
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="icon"
           onClick={onClose}
           disabled={preventClose}
-          className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
           aria-label="إغلاق النافذة"
         >
           <X className="w-5 h-5" />
-        </button>
+        </Button>
       )}
     </div>
   );

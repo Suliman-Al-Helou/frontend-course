@@ -12,13 +12,28 @@ export function PasswordStrength({ password }: { password: string }) {
   const passedCount = criteria.filter((c) => c.ok).length;
   const allPassed = passedCount === 3;
 
+  const strengthStatusText = allPassed
+    ? "كلمة مرور قوية ومستوفية للشروط"
+    : passedCount === 2
+      ? "كلمة مرور متوسطة القوة"
+      : "كلمة مرور ضعيفة";
+
   return (
-    <div className="mt-2 space-y-2 animate-in fade-in-50 motion-reduce:animate-none duration-200">
-      <div className="flex gap-1.5">
+    <div
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+      className="mt-2 space-y-2 animate-in fade-in-50 motion-reduce:animate-none duration-200"
+    >
+      <span className="sr-only">
+        {`قوة كلمة المرور: تم استيفاء ${passedCount} من ${criteria.length} معايير. ${strengthStatusText}.`}
+      </span>
+
+      <div className="flex gap-1.5" aria-hidden="true">
         {[0, 1, 2].map((i) => (
           <div
             key={i}
-            className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+            className={`h-1 flex-1 rounded-full transition-all duration-300 motion-reduce:transition-none ${
               i < passedCount
                 ? allPassed
                   ? "bg-success"
@@ -35,14 +50,17 @@ export function PasswordStrength({ password }: { password: string }) {
         {criteria.map((c, i) => (
           <div
             key={i}
-            className={`inline-flex items-center gap-1 transition-colors ${
+            className={`inline-flex items-center gap-1 transition-colors motion-reduce:transition-none ${
               c.ok ? "text-success font-medium" : "text-muted-foreground/80"
             }`}
           >
             {c.ok ? (
-              <Check className="w-3.5 h-3.5 shrink-0" />
+              <Check className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
             ) : (
-              <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40 shrink-0 mx-1" />
+              <span
+                className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40 shrink-0 mx-1"
+                aria-hidden="true"
+              />
             )}
             <span>{c.label}</span>
           </div>

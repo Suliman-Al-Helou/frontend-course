@@ -8,6 +8,7 @@ import {
   getAdminZoomMeetings,
   getAdminVideoAssets,
   getYouTubeStatus,
+  getCourseYouTubeVideos,
 } from "../api";
 
 export const adminCourseQueries = {
@@ -43,6 +44,14 @@ export const adminCourseQueries = {
       queryKey: [...adminCourseQueries.all(), "task", String(lessonId)] as const,
       queryFn: () => getAdminLessonTask(lessonId),
       staleTime: 1000 * 60 * 5,
+    }),
+
+  // فيديوهات قائمة تشغيل الكورس على YouTube مع مددها وحالة إضافتها
+  youtubeVideos: (courseId: number | string) =>
+    queryOptions({
+      queryKey: [...adminCourseQueries.all(), "youtube-videos", String(courseId)] as const,
+      queryFn: () => getCourseYouTubeVideos(courseId),
+      staleTime: 1000 * 60 * 5, // 5 minutes
     }),
 };
 

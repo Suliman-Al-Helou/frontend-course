@@ -4,31 +4,16 @@ import { useState, useRef, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
-import { Code2, CheckCircle2, ArrowRight } from "lucide-react";
+import { CheckCircle2, ArrowRight } from "lucide-react";
 import { PasswordField } from "../_components/PasswordField";
 import { SubmitButton } from "../_components/SubmitButton";
 import { FormError } from "../_components/FormError";
+import { AuthLogo } from "../_components/AuthLogo";
 import { PasswordStrength } from "../register/_components/PasswordStrength";
 
 interface ResetForm {
   password: string;
   confirm: string;
-}
-
-function Logo() {
-  return (
-    <Link
-      href="/"
-      className="inline-flex items-center gap-2.5 mb-4 group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl"
-    >
-      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-mid to-blue-light flex items-center justify-center shadow-md shadow-primary/10 group-hover:scale-105 transition-transform">
-        <Code2 className="w-5 h-5 text-white" />
-      </div>
-      <span className="text-xl font-bold tracking-tight text-foreground">
-        Future <span className="text-primary">House</span>
-      </span>
-    </Link>
-  );
 }
 
 function SuccessState() {
@@ -150,7 +135,7 @@ export default function ResetPasswordPage() {
         className="w-full max-w-md"
       >
         <div className="text-center mb-6">
-          <Logo />
+          <AuthLogo />
           <h1 className="text-2xl font-bold text-foreground">كلمة مرور جديدة</h1>
           <p className="text-sm text-muted-foreground mt-1">
             اختر كلمة مرور قوية لحماية حسابك التعليمي

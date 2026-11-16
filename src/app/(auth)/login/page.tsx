@@ -3,10 +3,11 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { Code2, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { LoginForm } from "./_components/LoginForm";
 import { useLoginForm } from "./_hooks/useLoginForm";
 import { GoogleAuthButton } from "../_components/GoogleAuthButton";
+import { AuthLogo } from "../_components/AuthLogo";
 
 function LoginContent() {
   const loginForm = useLoginForm();
@@ -54,17 +55,7 @@ export default function LoginPage() {
         className="w-full max-w-md"
       >
         <div className="text-center mb-6">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2.5 mb-4 group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl"
-          >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-mid to-blue-light flex items-center justify-center shadow-md shadow-primary/10 group-hover:scale-105 transition-transform">
-              <Code2 className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-xl font-bold tracking-tight text-foreground">
-              Future <span className="text-primary">House</span>
-            </span>
-          </Link>
+          <AuthLogo />
           <h1 className="text-2xl font-bold text-foreground">أهلاً بعودتك!</h1>
           <p className="text-sm text-muted-foreground mt-1">سجّل دخولك لمتابعة رحلتك التعليمية</p>
         </div>

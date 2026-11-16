@@ -1,6 +1,5 @@
 "use client";
 
-// 1. Imports
 import Link from "next/link";
 import { Instagram, LucideIcon, MessageCircle } from "lucide-react";
 import LogoIcon from "@/components/Logo";
@@ -9,7 +8,6 @@ import { useQuery } from "@tanstack/react-query";
 import { courseQueries } from "@/features/courses";
 import { WHATSAPP_URL } from "@/features/contact";
 
-// 2. Types & Data
 interface SocialLink {
   icon: LucideIcon;
   href: string;
@@ -22,33 +20,41 @@ interface LinkItem {
 }
 
 const SOCIALS: SocialLink[] = [
-  { icon: MessageCircle, href: WHATSAPP_URL, label: "واتساب" },
+  { icon: MessageCircle, href: WHATSAPP_URL, label: "تواصل عبر واتساب" },
   {
     icon: Instagram,
     href: "https://www.instagram.com/future.house2?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw==",
-    label: "إنستغرام",
+    label: "متابعتنا على إنستغرام",
   },
 ];
 
 const PLATFORM_LINKS: LinkItem[] = [
-  { label: "المدربون", href: "/instructors" },
-  { label: "الكورسات", href: "/courses" },
+  { label: "الكورسات والمسارات", href: "/courses" },
+  { label: "المدربون المعتمدون", href: "/instructors" },
+  { label: "لوحة تحكم الطالب", href: "/dashboard" },
 ];
 
-const SUPPORT_LINKS: LinkItem[] = [{ label: "تواصل معنا", href: "/#contact" }];
+const SUPPORT_LINKS: LinkItem[] = [
+  { label: "تواصل معنا", href: "/contact" },
+  { label: "الأسئلة الشائعة", href: "/#faq" },
+  { label: "الدعم المباشر (واتساب)", href: WHATSAPP_URL },
+];
 
-// 3. Sub Components
 function Brand() {
   return (
     <div className="space-y-4">
-      <Link href="/" className="inline-flex items-center gap-2" aria-label="Future House">
-        <LogoIcon size={34} />
-        <span className="text-xl font-bold text-foreground">
-          Future<span className="text-primary ps-1">House</span>
+      <Link
+        href="/"
+        className="inline-flex items-center gap-2.5 transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
+        aria-label="Future House - الصفحة الرئيسية"
+      >
+        <LogoIcon size={36} />
+        <span className="text-xl font-bold tracking-tight text-foreground">
+          Future<span className="text-primary ps-0.5">House</span>
         </span>
       </Link>
       <p className="text-muted-foreground text-sm leading-relaxed max-w-sm">
-        منصة تعليمية عربية متكاملة لتعلم البرمجة والتقنية الحديثة بأسلوب هندسي رصين.
+        منصة تعليمية عربية متخصصة في هندسة البرمجيات والتقنيات الحديثة بأسلوب تطبيقي رصين.
       </p>
       <div className="flex items-center gap-2.5 pt-1">
         {SOCIALS.map(({ icon: Icon, href, label }) => (
@@ -58,11 +64,11 @@ function Brand() {
             aria-label={label}
             target="_blank"
             rel="noopener noreferrer"
-            size="sm"
+            size="icon"
             variant="outline"
-            className="size-9 p-0 rounded-lg hover:border-primary/50 hover:text-primary transition-colors"
+            className="rounded-xl border-border/80 hover:border-primary/50 hover:text-primary transition-colors"
           >
-            <Icon className="size-4" />
+            <Icon className="size-5" aria-hidden="true" />
           </Button>
         ))}
       </div>
@@ -82,11 +88,14 @@ function CoursesColumn() {
 
   return (
     <div>
-      <h3 className="font-semibold text-foreground text-sm mb-4">الكورسات</h3>
+      <h3 className="font-semibold text-foreground text-sm mb-4">أبرز الكورسات</h3>
       {isPending ? (
         <div className="space-y-3" aria-hidden="true">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-4 w-28 bg-muted rounded animate-pulse" />
+            <div
+              key={i}
+              className="h-4 w-32 bg-muted/60 rounded-md animate-pulse motion-reduce:animate-none"
+            />
           ))}
         </div>
       ) : topCourses.length > 0 ? (
@@ -95,7 +104,7 @@ function CoursesColumn() {
             <li key={course.id}>
               <Link
                 href={`/courses/${course.id}`}
-                className="text-muted-foreground hover:text-foreground transition-colors block truncate"
+                className="text-muted-foreground hover:text-foreground transition-colors block truncate py-1"
                 title={course.title}
               >
                 {course.title}
@@ -104,7 +113,7 @@ function CoursesColumn() {
           ))}
         </ul>
       ) : (
-        <p className="text-muted-foreground/70 text-sm">لا توجد كورسات حالياً</p>
+        <p className="text-muted-foreground text-sm">لا توجد كورسات متاحة حالياً</p>
       )}
     </div>
   );
@@ -124,7 +133,7 @@ function LinkColumn({ title, items }: LinkColumnProps) {
           <li key={item.href + item.label}>
             <Link
               href={item.href}
-              className="text-muted-foreground hover:text-foreground transition-colors block"
+              className="text-muted-foreground hover:text-foreground transition-colors block py-1"
             >
               {item.label}
             </Link>
@@ -135,7 +144,6 @@ function LinkColumn({ title, items }: LinkColumnProps) {
   );
 }
 
-// 4. Main Component
 export default function Footer() {
   return (
     <footer className="border-t border-border bg-card text-foreground py-14">
@@ -144,11 +152,12 @@ export default function Footer() {
           <Brand />
           <CoursesColumn />
           <LinkColumn title="المنصة" items={PLATFORM_LINKS} />
-          <LinkColumn title="الدعم" items={SUPPORT_LINKS} />
+          <LinkColumn title="الدعم والمساعدة" items={SUPPORT_LINKS} />
         </div>
 
-        <div className="border-t border-border pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
+        <div className="border-t border-border/80 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
           <p>© 2026 Future House Academy. جميع الحقوق محفوظة.</p>
+          <p>منصة تعليمية عربية معتمدة لهندسة البرمجيات والتقنية الحديثة.</p>
         </div>
       </div>
     </footer>

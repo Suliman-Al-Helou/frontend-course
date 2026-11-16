@@ -17,6 +17,7 @@ import {
   createAdminVideoAsset,
   updateAdminVideoAsset,
   deleteAdminVideoAsset,
+  createCourseYouTubePlaylist,
 } from "../api";
 import {
   adminCourseQueries,
@@ -83,6 +84,9 @@ export function useSectionMutations(courseId: number | string) {
   const invalidateSections = () => {
     void queryClient.invalidateQueries({
       queryKey: adminCourseQueries.sections(courseId).queryKey,
+    });
+    void queryClient.invalidateQueries({
+      queryKey: adminCourseQueries.youtubeVideos(courseId).queryKey,
     });
     void queryClient.invalidateQueries({
       queryKey: ["courses", "detail", String(courseId)],
@@ -254,4 +258,25 @@ export function useVideoAssetMutations() {
   });
 
   return { createAsset, updateAsset, deleteAsset };
+}
+
+/**
+ * هوك إنشاء قائمة تشغيل للكورس على YouTube
+ */
+export function useCreateCoursePlaylistMutation(courseId: number | string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => createCourseYouTubePlaylist(courseId),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: adminCourseQueries.all(),
+      });
+      void queryClient.invalidateQueries({
+        queryKey: adminCourseQueries.detail(courseId).queryKey,
+      });
+      void queryClient.invalidateQueries({
+        queryKey: adminCourseQueries.youtubeVideos(courseId).queryKey,
+      });
+    },
+  });
 }
