@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { EmptyState } from "@/components/shared/states/EmptyState";
 import { notify } from "@/components/ui/sonner";
 import ConfirmModal from "@/components/shared/ConfirmModal";
 import { faqQueries } from "../queries/faq.queries";
@@ -218,14 +219,12 @@ export default function ManageFaqTab() {
           <p className="text-xs text-muted-foreground">جارٍ تحميل الأسئلة الشائعة...</p>
         </Card>
       ) : faqs.length === 0 ? (
-        <Card className="p-12 text-center space-y-3">
-          <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
-            <HelpCircle className="w-6 h-6" />
-          </div>
-          <h3 className="text-sm font-bold text-foreground">لا توجد أسئلة شائعة بعد</h3>
-          <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-            أضف أول سؤال وجواب ليظهر مباشرة في قسم الأسئلة الشائعة بالصفحة الرئيسية.
-          </p>
+        <Card className="rounded-2xl border-border">
+          <EmptyState
+            icon={HelpCircle}
+            title="لا توجد أسئلة شائعة بعد"
+            description="أضف أول سؤال وجواب ليظهر مباشرة في قسم الأسئلة الشائعة بالصفحة الرئيسية."
+          />
         </Card>
       ) : (
         <div className="space-y-3">
