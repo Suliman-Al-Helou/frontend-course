@@ -1,67 +1,79 @@
 "use client";
 
-// 1. Imports
-import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
-import { Button } from "../ui/button";
+import { ArrowLeft, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-// 2. Sub Components
-function BackgroundEffects() {
+function BackgroundDecorations() {
   return (
-    <>
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-deep via-blue-mid to-blue-light" />
-      <div className="absolute top-0 start-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-      <div className="absolute bottom-0 end-0 w-80 h-80 bg-white/5 rounded-full blur-3xl translate-x-1/3 translate-y-1/3" />
-      <div
-        className="absolute inset-0 opacity-5"
-        style={{
-          backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
-        }}
-      />
-    </>
+    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+      {/* توهج إنديجو ناعم يبرز البطاقة المؤطرة */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] h-[280px] bg-primary/10 rounded-full blur-3xl" />
+      <div className="absolute top-0 end-8 w-64 h-64 bg-primary/5 rounded-full blur-2xl" />
+    </div>
   );
 }
 
-// 3. Main Component
 export default function CTASection() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section className="py-24 relative overflow-hidden bg-primary dark:bg-background">
-      <BackgroundEffects />
-
-      <div className="relative max-w-4xl mx-auto px-4 sm:px-6 text-center">
+    <section
+      id="join"
+      aria-labelledby="cta-section-title"
+      className="relative scroll-mt-20 overflow-hidden bg-background py-20 md:py-24"
+    >
+      <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <motion.div
-          initial={shouldReduceMotion ? false : { opacity: 0, y: 30 }}
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 20 }}
           whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: shouldReduceMotion ? 0 : 0.7 }}
+          transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
+          className="relative overflow-hidden rounded-3xl border border-primary/20 bg-card p-8 sm:p-12 md:p-16 text-center shadow-xl shadow-primary/5"
         >
-          {/* Badge */}
+          <BackgroundDecorations />
 
-          {/* Heading */}
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6 leading-tight">
-            لا تنتظر الوقت المثالي
-            <br />
-            <span className="text-blue-light">الوقت المثالي هو الآن</span>
-          </h2>
+          <div className="relative z-10 max-w-3xl mx-auto space-y-6">
+            {/* شارة توجيهية خفيفة */}
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-semibold text-primary">
+              <Sparkles className="size-3.5" aria-hidden="true" />
+              <span>انضم إلى نخبة مهندسي المستقبل</span>
+            </div>
 
-          {/* Body */}
-          <p className="text-white/80 text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
-            انضم لأكثر من +500 طالب بدأوا رحلتهم معنا. أول ٧ أيام مع ضمان استرداد كامل — لا شيء تخسره.
-          </p>
+            {/* العنوان الرئيسي */}
+            <h2
+              id="cta-section-title"
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground leading-tight"
+            >
+              لا تنتظر الوقت المثالي
+              <br />
+              <span className="text-primary">الوقت المثالي هو الآن</span>
+            </h2>
 
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button href="/register" size="lg" className="min-h-[44px]">
-              <span>ابدأ رحلتك مجاناً</span>
-              <ArrowLeft className="w-5 h-5 ms-2 rtl:rotate-0" aria-hidden="true" />
-            </Button>
-            <Button href="/courses" size="lg" variant="outline" className="min-h-[44px]">
-              تصفح الكورسات
-            </Button>
+            {/* النص التوضيحي */}
+            <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-2xl mx-auto">
+              انضم لأكثر من 500 طالب بدأوا رحلتهم البرمجية معنا. تعلّم مهارات هندسية تطبيقية بدون مخاطرة، مع توجيه مباشر وضمان استرداد كامل خلال أول 7 أيام.
+            </p>
+
+            {/* أزرار الحث على اتخاذ إجراء */}
+            <div className="pt-2 flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button
+                href="/register"
+                size="lg"
+                className="w-full sm:w-auto gap-2 font-semibold shadow-md px-8"
+              >
+                <span>ابدأ رحلتك مجاناً</span>
+                <ArrowLeft className="size-4 rtl:rotate-0" aria-hidden="true" />
+              </Button>
+              <Button
+                href="/courses"
+                size="lg"
+                variant="outline"
+                className="w-full sm:w-auto font-semibold px-8"
+              >
+                تصفح الكورسات
+              </Button>
+            </div>
           </div>
         </motion.div>
       </div>
