@@ -13,6 +13,8 @@ interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
 }
 
+const DISMISS_COOLDOWN_MS = 5 * 60 * 1000; // 5 دقائق
+
 export default function InstallButton() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstallable, setIsInstallable] = useState(false);
@@ -30,10 +32,17 @@ export default function InstallButton() {
       return;
     }
 
-    // 2. التحقق مما إذا كان المستخدم قد أغلق الإشعار خلال الجلسة الحالية
+    // 2. التحقق مما إذا كان المستخدم قد أغلق الإشعار ومضى أقل من 5 دقائق
     try {
-      if (sessionStorage.getItem("pwa_prompt_dismissed") === "true") {
-        return;
+      const dismissedUntil = localStorage.getItem("pwa_prompt_dismissed_until");
+      if (dismissedUntil && Date.now() < Number(dismissedUntil)) {
+        setIsInstallable(false);
+        // جدولة إعادة ظهور الزر بعد انقضاء المدة المتبقية من الـ 5 دقائق
+        const remainingTime = Number(dismissedUntil) - Date.now();
+        const timer = setTimeout(() => {
+          setIsInstallable(true);
+        }, remainingTime);
+        return () => clearTimeout(timer);
       }
     } catch {}
 
@@ -89,7 +98,12 @@ export default function InstallButton() {
     setIsInstallable(false);
     setShowGuide(false);
     try {
-      sessionStorage.setItem("pwa_prompt_dismissed", "true");
+      const reappearAt = Date.now() + DISMISS_COOLDOWN_MS;
+      localStorage.setItem("pwa_prompt_dismissed_until", String(reappearAt));
+      // إعادة إظهار الزر بعد 5 دقائق تلقائياً إذا بقي المستخدم في الصفحة
+      setTimeout(() => {
+        setIsInstallable(true);
+      }, DISMISS_COOLDOWN_MS);
     } catch {}
   };
 
