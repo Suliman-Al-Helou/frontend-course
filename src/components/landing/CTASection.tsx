@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 function BackgroundDecorations() {
@@ -34,12 +34,6 @@ export default function CTASection() {
           <BackgroundDecorations />
 
           <div className="relative z-10 max-w-3xl mx-auto space-y-6">
-            {/* شارة توجيهية خفيفة */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-semibold text-primary">
-              <Sparkles className="size-3.5" aria-hidden="true" />
-              <span>انضم إلى نخبة مهندسي المستقبل</span>
-            </div>
-
             {/* العنوان الرئيسي */}
             <h2
               id="cta-section-title"
