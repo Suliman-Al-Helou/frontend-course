@@ -1,3 +1,5 @@
+import { Loader2 } from "lucide-react";
+
 export default function Loading() {
   return (
     <div
@@ -11,7 +13,7 @@ export default function Loading() {
         {/* Logo / Brand Spinner */}
         <div className="relative" aria-hidden="true">
           <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
-            <div className="w-8 h-8 rounded-full border-4 border-primary/30 border-t-primary animate-spin motion-reduce:animate-none" />
+            <Loader2 className="w-8 h-8 text-primary animate-spin motion-reduce:animate-none" />
           </div>
         </div>
 
