@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from "react";
 import { Plus, Trash2, Check, X, Award, HelpCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { adminCourseQueries } from "../../queries/adminCourses.queries";
 import { useSaveTaskMutation } from "../../queries/adminCourses.mutations";
 import type { AdminQuestion, AdminTaskPayload } from "../../types";
@@ -118,13 +120,16 @@ export default function LessonTaskEditor({ lessonId, lessonTitle, onClose }: Pro
           </div>
           <p className="text-xs text-muted-foreground mt-0.5">{lessonTitle}</p>
         </div>
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="icon"
           onClick={onClose}
-          className="p-1.5 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+          aria-label="إغلاق"
+          className="size-8 text-muted-foreground hover:text-foreground"
         >
           <X className="w-4 h-4" />
-        </button>
+        </Button>
       </div>
 
       {isLoading ? (
@@ -136,35 +141,35 @@ export default function LessonTaskEditor({ lessonId, lessonTitle, onClose }: Pro
           {/* Settings */}
           <div className="grid sm:grid-cols-2 gap-4 bg-card p-4 rounded-xl border border-border">
             <div className="space-y-1.5">
-              <label
+              <Label
                 htmlFor="task-pass-percentage"
                 className="text-xs font-semibold text-foreground"
               >
                 نسبة النجاح المطلوبة (%)
-              </label>
-              <input
+              </Label>
+              <Input
                 id="task-pass-percentage"
                 type="number"
                 min="10"
                 max="100"
                 value={passPercentage}
                 onChange={(e) => setPassPercentage(Number.parseInt(e.target.value, 10) || 70)}
-                className="w-full h-9 rounded-lg border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                className="h-9"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label htmlFor="task-max-attempts" className="text-xs font-semibold text-foreground">
+              <Label htmlFor="task-max-attempts" className="text-xs font-semibold text-foreground">
                 الحد الأقصى للمحاولات
-              </label>
-              <input
+              </Label>
+              <Input
                 id="task-max-attempts"
                 type="number"
                 min="1"
                 max="10"
                 value={maxAttempts}
                 onChange={(e) => setMaxAttempts(Number.parseInt(e.target.value, 10) || 3)}
-                className="w-full h-9 rounded-lg border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                className="h-9"
               />
             </div>
           </div>
@@ -227,22 +232,24 @@ export default function LessonTaskEditor({ lessonId, lessonTitle, onClose }: Pro
                           : "سؤال مقالي"}
                       )
                     </span>
-                    <button
+                    <Button
                       type="button"
+                      variant="ghost"
+                      size="icon"
                       onClick={() => removeQuestion(q.id)}
-                      className="text-destructive hover:bg-destructive/10 p-1 rounded-lg transition-colors"
+                      className="size-7 text-destructive hover:bg-destructive/10 hover:text-destructive"
                       aria-label="حذف السؤال"
                     >
                       <Trash2 className="w-4 h-4" />
-                    </button>
+                    </Button>
                   </div>
 
                   {/* Question Text */}
-                  <input
+                  <Input
                     placeholder="اكتب نص السؤال هنا..."
                     value={q.text}
                     onChange={(e) => updateQuestion(q.id, "text", e.target.value)}
-                    className="w-full h-9 rounded-lg border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                    className="h-9"
                   />
 
                   {/* MCQ Options */}
@@ -268,11 +275,11 @@ export default function LessonTaskEditor({ lessonId, lessonTitle, onClose }: Pro
                                 <Check className="w-3 h-3 stroke-[3]" />
                               )}
                             </button>
-                            <input
+                            <Input
                               placeholder={`الخيار ${optIdx + 1}`}
                               value={opt}
                               onChange={(e) => updateOption(q.id, optIdx, e.target.value)}
-                              className="flex-1 h-8 rounded-lg border border-input bg-background px-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-primary"
+                              className="flex-1 h-8 text-xs"
                             />
                           </div>
                         ))}
@@ -304,11 +311,11 @@ export default function LessonTaskEditor({ lessonId, lessonTitle, onClose }: Pro
 
                   {/* Explanation */}
                   <div className="pt-1">
-                    <input
+                    <Input
                       placeholder="تفسير أو شرح الإجابة الصحيحة (يظهر للطالب بعد التسليم)..."
                       value={q.explanation ?? ""}
                       onChange={(e) => updateQuestion(q.id, "explanation", e.target.value)}
-                      className="w-full h-8 rounded-lg border border-input bg-muted/40 px-3 text-xs focus:outline-none focus:ring-1 focus:ring-primary"
+                      className="h-8 text-xs bg-muted/40"
                     />
                   </div>
                 </div>
