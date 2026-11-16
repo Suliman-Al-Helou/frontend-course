@@ -42,6 +42,12 @@ describe("adminCourseQueries factory", () => {
     expect(query.queryKey).toEqual(["admin-courses", "task", "101"]);
     expect(query.staleTime).toBe(1000 * 60 * 5);
   });
+
+  it("generates correct queryKey for course YouTube playlist videos", () => {
+    const query = adminCourseQueries.youtubeVideos(7);
+    expect(query.queryKey).toEqual(["admin-courses", "youtube-videos", "7"]);
+    expect(query.staleTime).toBe(1000 * 60 * 5);
+  });
 });
 
 describe("adminEnrollmentQueries factory", () => {
