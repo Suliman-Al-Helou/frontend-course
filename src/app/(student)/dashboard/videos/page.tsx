@@ -4,6 +4,9 @@ import { useMemo, Suspense } from "react";
 import Link from "next/link";
 import { Video, CheckCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/shared/states/EmptyState";
 import { courseQueries } from "@/features/courses";
 import {
   studentCourseQueries,
@@ -64,19 +67,22 @@ function VideosContent() {
           ))}
         </div>
       ) : lessons.length === 0 ? (
-        <div className="text-center py-16 text-muted-foreground bg-card rounded-2xl border border-border">
-          <Video className="w-10 h-10 mx-auto mb-2 opacity-30" />
-          <p className="text-sm font-medium">لا توجد دروس متاحة حالياً</p>
-        </div>
+        <Card className="rounded-2xl border-border">
+          <EmptyState
+            icon={Video}
+            title="لا توجد دروس متاحة حالياً"
+            description="لم يتم العثور على أي دروس منشورة لهذا الكورس حتى الآن."
+          />
+        </Card>
       ) : (
         <div className="space-y-3">
           {lessons.map((lesson) => {
             const isCompleted = lesson.isCompleted;
 
             return (
-              <div
+              <Card
                 key={lesson.id}
-                className="bg-card border border-border rounded-2xl p-4 flex items-center justify-between gap-4 hover:border-primary/50 transition"
+                className="rounded-2xl p-4 flex items-center justify-between gap-4 hover:border-primary/50 transition-colors"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div
@@ -101,14 +107,18 @@ function VideosContent() {
                 </div>
 
                 <div className="flex items-center gap-4 shrink-0">
-                  <Link
-                    href={`/courses/${lesson.course?.id}/lessons/${lesson.id}`}
-                    className="text-xs font-semibold px-4 py-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition"
+                  <Button
+                    asChild
+                    size="sm"
+                    variant={isCompleted ? "outline" : "default"}
+                    className="font-semibold shadow-xs"
                   >
-                    {isCompleted ? "مراجعة" : "مشاهدة"}
-                  </Link>
+                    <Link href={`/courses/${lesson.course?.id}/lessons/${lesson.id}`}>
+                      {isCompleted ? "مراجعة" : "مشاهدة"}
+                    </Link>
+                  </Button>
                 </div>
-              </div>
+              </Card>
             );
           })}
         </div>
