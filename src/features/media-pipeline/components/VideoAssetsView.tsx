@@ -103,15 +103,16 @@ export default function VideoAssetsView({
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>YouTube: {youtubeStatus.channel_title}</span>
               </span>
-              <button
-                type="button"
+              <Button
+                variant="ghost"
+                size="iconSm"
                 onClick={onDisconnectYouTube}
-                className="text-muted-foreground hover:text-destructive p-0.5 rounded transition-colors"
+                className="h-5 w-5 p-0 text-muted-foreground hover:text-destructive hover:bg-transparent transition-colors"
                 title="فصل قناة YouTube"
                 aria-label="فصل قناة YouTube"
               >
                 <Unlink className="w-3.5 h-3.5" />
-              </button>
+              </Button>
             </Badge>
           ) : (
             <Button
