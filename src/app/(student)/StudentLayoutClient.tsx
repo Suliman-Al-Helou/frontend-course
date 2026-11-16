@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { Menu } from "lucide-react";
-import DashboardSidebar from "./_components/DashboardSidebar";
 import Link from "next/link";
 import Image from "next/image";
+import DashboardSidebar from "./_components/DashboardSidebar";
+import { Button } from "@/components/ui/button";
 import type { User } from "@/types";
 
 interface StudentLayoutClientProps {
@@ -39,13 +40,15 @@ export default function StudentLayoutClient({ user, children }: StudentLayoutCli
               <p className="text-xs text-muted-foreground hidden sm:block">مرحباً {user.name}</p>
             </div>
             <div className="flex items-center gap-3">
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => setSidebarOpen(true)}
-                className="lg:hidden p-2 rounded-xl hover:bg-muted"
+                className="lg:hidden"
                 aria-label="فتح القائمة"
               >
                 <Menu className="w-5 h-5" />
-              </button>
+              </Button>
               <Link href="/dashboard/profile">
                 <div className="w-8 h-8 rounded-full bg-white overflow-hidden border border-border">
                   <Image

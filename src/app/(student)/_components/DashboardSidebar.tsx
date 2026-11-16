@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useCurrentUser } from "@/features/auth";
 import ThemeToggle from "@/components/shared/Themetoggle";
+import { Button } from "@/components/ui/button";
 
 const MENU = [
   { label: "الرئيسية", href: "/dashboard", icon: LayoutDashboard },
@@ -63,9 +64,15 @@ export default function DashboardSidebar({ open, onClose }: Props) {
             لوحة
             <span className="text-primary dark:text-white mr-1">الطالب</span>
           </div>
-          <button onClick={onClose} className="lg:hidden p-1 rounded-lg hover:bg-muted">
+          <Button
+            variant="ghost"
+            size="iconSm"
+            onClick={onClose}
+            className="lg:hidden"
+            aria-label="إغلاق القائمة الجانبية"
+          >
             <X className="w-5 h-5" />
-          </button>
+          </Button>
         </div>
 
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
@@ -98,13 +105,14 @@ export default function DashboardSidebar({ open, onClose }: Props) {
             <span className="text-xs text-muted-foreground">الوضع الليلي</span>
             <ThemeToggle />
           </div>
-          <button
+          <Button
+            variant="ghost"
             onClick={() => logout()}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors"
+            className="w-full justify-start text-destructive hover:bg-destructive/10 hover:text-destructive gap-3"
           >
             <LogOut className="w-4 h-4" />
-            تسجيل الخروج
-          </button>
+            <span>تسجيل الخروج</span>
+          </Button>
         </div>
       </aside>
     </>
