@@ -25,6 +25,7 @@ Deliver an isolated, production-hardened full-stack Instructor Portal (`backendC
 - [ADR 0016](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0016-instructor-course-policy-and-idor-prevention.md): Instructor CoursePolicy, IDOR prevention boundary, and centralized parent traversal.
 - [ADR 0017](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0017-video-provider-driver-and-curriculum-publication-contract.md): Pluggable video delivery driver, lesson publication state (`is_published`), and canonical `TaskQuestion` JSON contract.
 - [ADR 0018](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0018-soft-delete-dissociation-and-curriculum-schema-readiness.md): Soft-delete dissociation guard, bidirectional role synchronization, and curriculum schema readiness.
+- [ADR 0019](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0019-educational-metadata-updates-and-immutable-activity-audit.md): Educational metadata updates, silent commercial stripping, and immutable activity audit logging.
 
 ## Active Frontier & Ordered Tickets
 
