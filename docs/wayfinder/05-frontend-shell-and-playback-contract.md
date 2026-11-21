@@ -12,8 +12,8 @@ How do we establish the `(instructor)` Next.js route shell, extend the frontend 
 
 ## Acceptance Criteria
 
-1. **Discriminated Playback Contract (`frontend-course/src/types/index.ts`):**
-   - Document and export discriminated union:
+1. **Discriminated Playback Contract & Lesson Schema (`frontend-course/src/types/index.ts`):**
+   - Document and export discriminated union and lesson attributes (per ADR 0016):
      ```typescript
      export type VideoPlaybackPayload =
        | {
@@ -32,17 +32,24 @@ How do we establish the `(instructor)` Next.js route shell, extend the frontend 
        title: string;
        description: string | null;
        playback: VideoPlaybackPayload | null;
+       video_provider: "youtube" | "hls";
        duration: number | null;
        order: number;
        is_preview: boolean;
+       is_published: boolean;
        task?: Task;
      }
      ```
-2. **Backend API Playback Serialization:**
-   - In `app/Http/Controllers/Api/LessonController.php` & `LessonResource.php`:
-     - Replace raw `video_id` with `playback`:
-       ```php
-       'playback' => $lesson->video_id ? [
+2. **Backend API Playback Serialization & Pluggable Driver (`LessonResource.php`):**
+   - Use `VideoDeliveryManager` resolving the driver based on `lesson.video_provider` (defaulting to `VIDEO_DEFAULT_PROVIDER`):
+     ```php
+     'playback' => $lesson->video_id ? [
+         'provider' => $lesson->video_provider ?? 'youtube',
+         'source' => $lesson->video_id,
+         'expires_at' => null,
+     ] : null,
+     'is_published' => (bool) ($lesson->is_published ?? true),
+     ```
            'provider' => 'youtube',
            'source' => $lesson->video_id,
            'expires_at' => null,

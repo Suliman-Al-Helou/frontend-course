@@ -12,11 +12,13 @@ How do we enforce server-side progression where watching $\ge 80\%$ unlocks the 
 
 ## Acceptance Criteria
 
-1. **Validation of Complete Submissions (`app/Http/Requests/SubmitTaskRequest.php`):**
-   - The task submission request must validate that an answer is provided for **every question** defined on `$lesson->task->questions`.
+1. **Validation of Complete Submissions & Schema Conformance (`app/Http/Requests/SubmitTaskRequest.php`):**
+   - The task submission request must validate that an answer is provided for **every question** defined on `$lesson->task->questions` according to the canonical `TaskQuestion` contract (ADR 0016).
    - If any question is missing an answer or blank, reject with `422 Unprocessable Content`:
      `{"message": "يجب الإجابة على جميع الأسئلة لتسليم المهمة", "errors": {"answers": [...]}}`.
-2. **Dual-Requirement Progress Logic in `app/Http/Controllers/Api/ProgressController.php`:**
+2. **Deterministic Grading in `app/Services/TaskService.php`:**
+   - Score calculation verifies student `answer_index` directly against `$question['correct_answer']`.
+3. **Dual-Requirement Progress Logic in `app/Http/Controllers/Api/ProgressController.php`:**
    - In `update()`:
      - If `$lesson->task()->exists()`: saving watch progress saves `watched_percent` and `last_position`, but sets `completed = false` (or preserves existing boolean if already completed).
      - If `$lesson->task()->doesntExist()`: sets `completed = ($best >= 80)`.

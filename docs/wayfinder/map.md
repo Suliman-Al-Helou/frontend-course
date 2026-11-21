@@ -21,12 +21,15 @@ Deliver an isolated, production-hardened full-stack Instructor Portal (`backendC
 
 ## Decisions so far
 
-<!-- Index of closed decisions and tickets. Empty at initialization. -->
+- [ADR 0015](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0015-decoupled-instructor-identity-and-display-profiles.md): Decoupled instructor identity, non-unique `user_id`, ghost/display profiles, and admin fallback custody.
+- [ADR 0016](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0016-instructor-course-policy-and-idor-prevention.md): Instructor CoursePolicy, IDOR prevention boundary, and centralized parent traversal.
+- [ADR 0017](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0017-video-provider-driver-and-curriculum-publication-contract.md): Pluggable video delivery driver, lesson publication state (`is_published`), and canonical `TaskQuestion` JSON contract.
+- [ADR 0018](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0018-soft-delete-dissociation-and-curriculum-schema-readiness.md): Soft-delete dissociation guard, bidirectional role synchronization, and curriculum schema readiness.
 
 ## Active Frontier & Ordered Tickets
 
 1. [Phase 1: User ID Migration & Admin Instructor Linking](file:///home/suliman/Documents/courses/docs/wayfinder/01-user-id-admin-linking.md) (`wayfinder:task`, unblocked)
-2. [Phase 2: CoursePolicy & IDOR Prevention Tests](file:///home/suliman/Documents/courses/docs/wayfinder/02-course-policy-authorization.md) (`wayfinder:task`, blocked by Phase 1)
+2. [Phase 2: CoursePolicy & IDOR Prevention Tests](file:///home/suliman/Documents/courses/frontend-course/docs/wayfinder/02-course-policy-authorization.md) ([Spec](file:///home/suliman/Documents/courses/frontend-course/docs/spec/02-instructor-course-policy-and-idor-prevention.md)) (`wayfinder:task`, ready-for-agent)
 3. [Phase 3: Educational Metadata Updates & Activity Audit Logging](file:///home/suliman/Documents/courses/docs/wayfinder/03-metadata-updates-activity-audit.md) (`wayfinder:task`, blocked by Phase 2)
 4. [Phase 4: Server-Side Exam Gating & Atomic Progress Completion](file:///home/suliman/Documents/courses/docs/wayfinder/04-exam-gating-and-atomic-completion.md) (`wayfinder:task`, blocked by Phase 3)
 5. [Phase 5: Frontend Shell, Role Guards & VideoDelivery Playback Contract](file:///home/suliman/Documents/courses/docs/wayfinder/05-frontend-shell-and-playback-contract.md) (`wayfinder:task`, blocked by Phase 4)

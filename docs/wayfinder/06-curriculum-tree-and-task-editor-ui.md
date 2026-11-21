@@ -20,13 +20,14 @@ How do we build the isolated `src/features/instructor-portal/` vertical slice wi
    - `InstructorCourseCard.tsx`: Displays assigned course title, cover, enrolled student count, lesson count, and direct link to workspace.
    - `InstructorCourseContentEditor.tsx`: Modal to update educational metadata (`title`, `description`, `cover_image`, `level`, `what_you_learn`, `requirements`). **Strictly omits** price, status, public toggle, and course deletion buttons.
 3. **Curriculum & Video Attachment Builder:**
-   - `InstructorCurriculumView.tsx`: Section accordions with collapsible drag/inline lesson items.
+   - `InstructorCurriculumView.tsx`: Section accordions with collapsible drag/inline lesson items, including an `is_published` visibility toggle (defaulting to published).
    - `InstructorCurriculumVideoPickerModal.tsx`:
      - Allows entering an unlisted YouTube URL (auto-extracting video ID into `playback.source`).
      - Allows selecting from videos in the course's linked YouTube playlist (via `/api/instructor/courses/{id}/youtube-videos`).
 4. **Auto-Graded Lesson Task Editor (`InstructorLessonTaskEditor.tsx`):**
+   - Complies strictly with the canonical `TaskQuestion` contract (ADR 0016).
    - Supports **Multiple Choice (MCQ)** and **True/False (صح / خطأ)** questions.
-   - Input fields for question text, options, selection of correct answer, and explanation text.
+   - Input fields for question text, options, selection of correct answer index, and explanation text.
    - Configurable `pass_percentage` (default 70%) and `max_attempts` (default 3).
 5. **Technical Hardening & Concurrency Locks:**
    - All modal submission handlers enforce `useRef(false)` double-submission locks (`isSubmittingRef`).

@@ -66,13 +66,69 @@ _Avoid_: Link pasting, Lesson attachment, Manual entry
 A dedicated academic faculty entity representing an instructor's public biography, teaching credentials, student ratings, and catalog of assigned courses.
 _Avoid_: Teacher card, Coach info, Tutor account
 
+**Display-Only Instructor Profile**:
+A public faculty entity created for catalog presentation, guest lecturers, or marketing purposes without an authenticated system login account (`user_id = NULL`), whose courses are directly stewarded by platform administrators.
+_Avoid_: Fake instructor, Dummy profile, Ghost account, Unlinked teacher
+
+**Managed Instructor Profile**:
+An active faculty profile linked deterministically in a strict 1-to-1 relationship to an authenticated user account (`user_id != NULL` and unique), granting that user exclusive access to the instructor workspace to manage assigned curriculum and teaching media.
+_Avoid_: Real instructor, Linked user, Active teacher, Multi-profile user
+
+**Admin Fallback Custody**:
+The default administrative ownership state assumed over a course when its assigned instructor profile is unlinked or deleted, ensuring uninterrupted operational continuity without orphan course state.
+_Avoid_: Orphan course, Unassigned lock, Dead course
+
 **Course Instructor Assignment**:
 The relational association binding one or more courses to an instructor, synchronized dynamically in the administrative course builder via TanStack Query cache.
 _Avoid_: Course owner, Author tagging, Store instructor
 
+**Self-Service Instructor Profile Workspace**:
+The dedicated frontend settings tab within the instructor portal allowing authenticated faculty to independently author, customize, and maintain their public academic dossier (bio, specializations, avatar, social handles, achievements) without requiring administrative intervention or micromanagement.
+_Avoid_: Admin teacher edit, Profile popup, User form
+
+**Skeleton Profile Bootstrap**:
+The automated backend process that instantiates a minimal instructor record (`name = user.name`, `user_id = user.id`) upon role promotion, ensuring foreign-key integrity for immediate course assignments and eliminating unlinked instructor states.
+_Avoid_: Ghost init, Empty user create, Dummy profile seed
+
 **Instructor Dossier Form**:
 An administrative modal dialog capturing comprehensive faculty metadata (bio, experience years, social links, achievements, and courses) with concurrency-safe mutation handling.
 _Avoid_: Add teacher modal, Profile edit popup
+
+**Assigned Course**:
+A course entity explicitly associated with an instructor, granting permissions to view and update course content, syllabus structure, and lesson tasks, while strictly withholding course deletion, pricing changes, and platform YouTube channel integration.
+_Avoid_: My course, Instructor course, Owned course
+
+**Course Content Editor**:
+The instructor-facing dedicated workspace permitting updates to course informational metadata (title, description, cover image, learning outcomes, requirements) and syllabus curriculum (sections, lessons, tasks) without administrative pricing, publishing approval, or deletion controls.
+_Avoid_: Admin modal, Course form, Course settings
+
+**Lesson Mission (Task)**:
+An interactive questionnaire or evaluation task attached directly to a specific lesson to verify student comprehension before advancing.
+_Avoid_: Homework, Test, Quiz card
+
+**Course Media Workspace**:
+The instructor workspace tab dedicated to ingesting and managing raw video assets into an assigned course's playlist prior to curriculum assignment.
+_Avoid_: Upload page, Media center, File manager
+
+**Two-Way Video Ingestion**:
+The dual-path video workflow enabling instructors to either stage raw video files into the course playlist for later use or attach an existing playlist video directly to an active lesson.
+_Avoid_: Double upload, Mixed upload, Split video
+
+**Prohibited Attribute Guard**:
+A defensive validation constraint (`'attribute' => ['prohibited']`) implemented in instructor mutation requests that strictly forbids tampering with administrative fields (e.g., pricing, publishing status, YouTube playlist keys, instructor reassignment), terminating malicious payloads with an immediate `422 Unprocessable Entity`.
+_Avoid_: Backend strip, Unset attribute, Ignored key
+
+**Curriculum Deletion Integrity Guard**:
+A backend domain barrier that blocks deletion requests (`DELETE /api/instructor/sections/{id}` or `lessons/{id}`) with HTTP `422 Unprocessable Entity` whenever students have existing completed progress records (`completed = true`), preventing accidental data loss, curriculum corruption, and skewed completion percentages.
+_Avoid_: Force delete, Cascade lesson wipe, Direct delete
+
+**Parent Traversal Authorization**:
+The architectural pattern of evaluating permissions on child curriculum components (sections, lessons) by resolving and authorizing their parent course entity directly through `CoursePolicy::manageAsInstructor`, guaranteeing unified authorization rules and preventing IDOR vulnerabilities without fragmenting policy logic across multiple classes.
+_Avoid_: Section policy, Lesson policy, Sub-item authorization
+
+**Instructor Dashboard Metrics**:
+The high-level aggregated performance indicators displayed on the instructor dashboard (total assigned courses, total enrolled students taught, and average course completion rate).
+_Avoid_: Teacher stats, Profile counts, Quick numbers
 
 ## Student Learning Dashboard Domain
 
@@ -123,6 +179,26 @@ _Avoid_: Hardcoded string, Raw API error, Backend message
 **Curriculum Video Picker**:
 An interactive, search-enabled modal dialog within the lesson creation workflow allowing administrators to preview, filter, and select videos directly from the course's synchronized YouTube playlist, automatically populating the lesson's title, video ID, and duration.
 _Avoid_: Video dropdown, YouTube selector, Lesson modal iframe
+
+**Task Question Contract**:
+The canonical, strictly typed JSON data structure governing auto-graded Multiple Choice (MCQ) and True/False questions within `tasks.questions`, defining `id`, `type`, `question`, `options`, zero-based `correct_answer` index, and optional `explanation`.
+_Avoid_: Freeform questions, Custom quiz JSON, Untyped task blob
+
+**Lesson Publication State**:
+The binary lifecycle status of a curriculum lesson (`is_published`, defaulting to true upon creation) determining student catalog visibility and playback access, permitting instructors to draft lessons prior to finalizing media.
+_Avoid_: Hidden lesson, Course status, Lesson flag
+
+**Video Delivery Driver**:
+A pluggable backend abstraction implementing the Strategy/Manager pattern that resolves playback payloads and signed streaming URLs according to the environment default provider (YouTube during MVP, switching to Bunny.net HLS at the Launch Gate without code changes).
+_Avoid_: Player component, Hardcoded embed, YouTube switch
+
+**Ghost Reference Guard**:
+An automated lifecycle protection mechanism executed during user soft-deletion or role demotion that disassociates `user_id` on linked instructor profiles to `NULL`, preventing orphan references to defunct user accounts.
+_Avoid_: Orphan cleanup, Manual unlink, Broken relation
+
+**Bidirectional Role Invariant**:
+The architectural guarantee that a user holds the `instructor` role if and only if they are actively linked to an instructor profile, enforced automatically by both profile mutations and direct user role modifications.
+_Avoid_: Loose role, Dangling permission, Unsynchronized role
 
 **Assigned Video Marker**:
 A contextual status badge and muted visual style applied to videos within the Curriculum Video Picker that are already assigned to existing lessons in the course, preventing duplicate lesson creation while preserving a complete overview of the playlist.
