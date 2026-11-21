@@ -1,8 +1,12 @@
 import api from "@/lib/api";
 import type { AdminUser, UserRole } from "../types";
 
-export async function getAdminUsers(): Promise<AdminUser[]> {
-  const { data } = await api.get<AdminUser[] | { data: AdminUser[] }>("/admin/users");
+export async function getAdminUsers(params?: {
+  search?: string;
+  limit?: number;
+  unlinked_only?: boolean;
+}): Promise<AdminUser[]> {
+  const { data } = await api.get<AdminUser[] | { data: AdminUser[] }>("/admin/users", { params });
   if (Array.isArray(data)) return data;
   if (data && typeof data === "object" && Array.isArray((data as { data: AdminUser[] }).data)) {
     return (data as { data: AdminUser[] }).data;

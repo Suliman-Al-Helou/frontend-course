@@ -65,7 +65,7 @@ export default function InstructorFormModal({ instructor, onClose, onSave }: Pro
   }, [userSearch]);
 
   const { data: searchResults = [], isLoading: isSearchingUsers } = useQuery(
-    adminUserQueries.search(debouncedSearch, 5),
+    adminUserQueries.search(debouncedSearch, 5, true),
   );
 
   // Courses from TanStack Query unified cache
@@ -142,8 +142,18 @@ export default function InstructorFormModal({ instructor, onClose, onSave }: Pro
       await onSave(data);
       onClose();
     } catch (err: unknown) {
-      const e = err as { response?: { data?: { message?: string; error?: string } } };
-      const serverMsg = e.response?.data?.message ?? e.response?.data?.error;
+      const e = err as {
+        response?: {
+          data?: {
+            message?: string;
+            error?: string;
+            errors?: Record<string, string[]>;
+          };
+        };
+      };
+      const errBag = e.response?.data?.errors;
+      const firstValidationErr = errBag ? Object.values(errBag)[0]?.[0] : null;
+      const serverMsg = firstValidationErr ?? e.response?.data?.message ?? e.response?.data?.error;
       setError(serverMsg ? `خطأ: ${serverMsg}` : "حدث خطأ أثناء حفظ بيانات المدرب.");
     } finally {
       setLoading(false);
