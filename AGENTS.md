@@ -1,4 +1,8 @@
 <!--VITE PLUS START-->
+## Full-Stack Repository Navigation
+- Frontend Workspace: `/home/suliman/Documents/courses/frontend-course`
+- Backend Workspace: `/home/suliman/Documents/courses/backendCourse`
+- Shared Wayfinder Docs: `docs/wayfinder/`
 
 # Using Vite+, the Unified Toolchain for the Web
 
