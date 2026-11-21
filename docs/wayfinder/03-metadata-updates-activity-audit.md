@@ -6,6 +6,7 @@
 **Assignee**: Antigravity  
 **Unblocked by**: [Ticket 02: Phase 2 — CoursePolicy & IDOR Prevention Tests](file:///home/suliman/Documents/courses/frontend-course/docs/wayfinder/02-course-policy-authorization.md)  
 **Governing ADR**: [ADR 0019](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0019-educational-metadata-updates-and-immutable-activity-audit.md)  
+**Associated Spec**: [Spec 03](file:///home/suliman/Documents/courses/frontend-course/docs/spec/03-educational-metadata-updates-and-activity-audit.md)  
 
 ## Question
 
