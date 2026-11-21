@@ -4,10 +4,10 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] When a user receives the Spatie `instructor` role, a skeleton `Instructor` record (`name = user.name`, `user_id = user.id`) is automatically instantiated if not already present.
-- [ ] `GET /api/instructor/profile` resolves `Auth::user()->instructor` and returns biographical fields along with read-only reputation metrics (`rating`, `total_reviews`, `students_count`).
-- [ ] `PUT /api/instructor/profile` validates `InstructorProfileRequest`, updating biographical information and atomically updating `users.name` when `name` is modified.
-- [ ] In `InstructorProfileRequest`, the attributes `rating`, `total_reviews`, `students_count`, and `user_id` are strictly `prohibited`, returning `422 Unprocessable Entity` if present.
-- [ ] Feature test `tests/Feature/Instructor/InstructorProfileTest.php` proves zero-IDOR profile resolution, metric tampering prevention, and atomic user name synchronization.
+- [x] When a user receives the Spatie `instructor` role, a skeleton `Instructor` record (`name = user.name`, `user_id = user.id`) is automatically instantiated if not already present.
+- [x] `GET /api/instructor/profile` resolves `Auth::user()->instructor` and returns biographical fields along with read-only reputation metrics (`rating`, `total_reviews`, `students_count`).
+- [x] `PUT /api/instructor/profile` validates `InstructorProfileRequest`, updating biographical information and atomically updating `users.name` when `name` is modified.
+- [x] In `InstructorProfileRequest`, the attributes `rating`, `total_reviews`, `students_count`, and `user_id` are strictly `prohibited`, returning `422 Unprocessable Entity` if present.
+- [x] Feature test `tests/Feature/Instructor/InstructorProfileTest.php` proves zero-IDOR profile resolution, metric tampering prevention, and atomic user name synchronization.

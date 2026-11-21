@@ -4,11 +4,11 @@
 
 **Blocked by:** 01: Self-Service Profile & Skeleton Bootstrap Slice
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] Implement `CoursePolicy::manageAsInstructor(User $user, Course $course): bool` checking administrative privileges or matching `courses.instructor_id` with `$user->instructor?->id`.
-- [ ] Register instructor route group in `routes/api.php` with `auth:sanctum` and `role:instructor|admin`.
-- [ ] Implement `InstructorCourseController@index` returning only courses where `instructor_id` matches the authenticated instructor profile, or all courses for administrators.
-- [ ] Implement `InstructorCourseController@show` authorizing `manageAsInstructor` and returning `CourseInstructorResource`.
-- [ ] Any attempt by an instructor to view a course assigned to another instructor returns `403 Forbidden`.
-- [ ] Feature test proves course list scoping, empty state safe return, admin supervisory access, and cross-tenant `403 Forbidden` protection.
+- [x] Implement `CoursePolicy::manageAsInstructor(User $user, Course $course): bool` checking administrative privileges or matching `courses.instructor_id` with `$user->instructor?->id`.
+- [x] Register instructor route group in `routes/api.php` with `auth:sanctum` and `role:instructor|admin`.
+- [x] Implement `InstructorCourseController@index` returning only courses where `instructor_id` matches the authenticated instructor profile, or all courses for administrators.
+- [x] Implement `InstructorCourseController@show` authorizing `manageAsInstructor` and returning `CourseInstructorResource`.
+- [x] Any attempt by an instructor to view a course assigned to another instructor returns `403 Forbidden`.
+- [x] Feature test proves course list scoping, empty state safe return, admin supervisory access, and cross-tenant `403 Forbidden` protection.
