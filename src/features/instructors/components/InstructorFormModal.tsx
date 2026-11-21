@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { X, Plus, Upload, BookOpen } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { X, Plus, Upload, BookOpen, Search, UserCheck, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { adminCourseQueries } from "@/features/admin-courses";
+import { adminUserQueries, type AdminUser } from "@/features/admin-users";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,6 +42,31 @@ export default function InstructorFormModal({ instructor, onClose, onSave }: Pro
 
   const [achievements, setAchievements] = useState<string[]>(instructor?.achievements ?? []);
   const [newAchievement, setNewAchievement] = useState("");
+
+  // Linked user account state with server-side search
+  const [selectedUser, setSelectedUser] = useState<{
+    id: number;
+    name: string;
+    email: string;
+  } | null>(
+    instructor?.user
+      ? { id: instructor.user.id, name: instructor.user.name, email: instructor.user.email }
+      : null,
+  );
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(instructor?.user_id ?? null);
+  const [userSearch, setUserSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(userSearch.trim());
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [userSearch]);
+
+  const { data: searchResults = [], isLoading: isSearchingUsers } = useQuery(
+    adminUserQueries.search(debouncedSearch, 5, true),
+  );
 
   // Courses from TanStack Query unified cache
   const { data: allCourses = [], isLoading: coursesLoading } = useQuery(adminCourseQueries.list());
@@ -95,6 +121,7 @@ export default function InstructorFormModal({ instructor, onClose, onSave }: Pro
     setLoading(true);
     try {
       const data: InstructorFormData = {
+        user_id: selectedUserId,
         name: form.name.trim(),
         title: form.title.trim() || undefined,
         bio: form.bio.trim() || undefined,
@@ -115,8 +142,18 @@ export default function InstructorFormModal({ instructor, onClose, onSave }: Pro
       await onSave(data);
       onClose();
     } catch (err: unknown) {
-      const e = err as { response?: { data?: { message?: string; error?: string } } };
-      const serverMsg = e.response?.data?.message ?? e.response?.data?.error;
+      const e = err as {
+        response?: {
+          data?: {
+            message?: string;
+            error?: string;
+            errors?: Record<string, string[]>;
+          };
+        };
+      };
+      const errBag = e.response?.data?.errors;
+      const firstValidationErr = errBag ? Object.values(errBag)[0]?.[0] : null;
+      const serverMsg = firstValidationErr ?? e.response?.data?.message ?? e.response?.data?.error;
       setError(serverMsg ? `خطأ: ${serverMsg}` : "حدث خطأ أثناء حفظ بيانات المدرب.");
     } finally {
       setLoading(false);
@@ -177,6 +214,92 @@ export default function InstructorFormModal({ instructor, onClose, onSave }: Pro
                 onChange={handleImageUpload}
               />
             </div>
+          </div>
+
+          {/* ربط حساب المستخدم للدخول مع تأكيد الصلاحية والبحث الخادم */}
+          <div className="space-y-2 rounded-2xl border border-border/60 bg-muted/20 p-4">
+            <Label className="text-xs font-semibold text-foreground">
+              حساب المستخدم المرتبط (تسجيل الدخول)
+            </Label>
+            {selectedUser ? (
+              <div className="flex items-center justify-between p-3 rounded-xl bg-card border border-border">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">
+                    <UserCheck className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">{selectedUser.name}</p>
+                    <p className="text-xs text-muted-foreground">{selectedUser.email}</p>
+                  </div>
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedUser(null);
+                    setSelectedUserId(null);
+                  }}
+                  className="text-xs text-destructive hover:bg-destructive/10"
+                >
+                  إلغاء الربط
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <div className="relative">
+                  <Search className="w-4 h-4 absolute start-3 top-3 text-muted-foreground" />
+                  <Input
+                    type="text"
+                    placeholder="ابحث بالاسم أو البريد الإلكتروني لاختيار مستخدم (حرفان على الأقل)..."
+                    value={userSearch}
+                    onChange={(e) => setUserSearch(e.target.value)}
+                    className="ps-9 rounded-xl"
+                  />
+                </div>
+                {isSearchingUsers && (
+                  <div className="flex items-center gap-2 p-2 text-xs text-muted-foreground">
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>جارٍ البحث في الخادم عن المستخدمين...</span>
+                  </div>
+                )}
+                {!isSearchingUsers && debouncedSearch.length >= 2 && (
+                  <div className="border border-border rounded-xl divide-y divide-border bg-card overflow-hidden max-h-48 overflow-y-auto">
+                    {searchResults.length === 0 ? (
+                      <p className="p-3 text-xs text-muted-foreground text-center">
+                        لا توجد حسابات مطابقة (حسابات المسؤولين مستثناة تلقائياً)
+                      </p>
+                    ) : (
+                      searchResults.map((u: AdminUser) => (
+                        <button
+                          key={u.id}
+                          type="button"
+                          onClick={() => {
+                            setSelectedUser({ id: u.id, name: u.name, email: u.email });
+                            setSelectedUserId(u.id);
+                            setUserSearch("");
+                          }}
+                          className="w-full text-start p-2.5 text-xs hover:bg-muted/50 flex justify-between items-center transition-colors"
+                        >
+                          <span className="font-medium text-foreground">
+                            {u.name} <span className="text-muted-foreground">({u.email})</span>
+                          </span>
+                          <Badge variant="outline" className="text-[10px]">
+                            {u.role}
+                          </Badge>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+            {selectedUserId && (
+              <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-2.5 text-xs text-amber-600 dark:text-amber-400">
+                ⚠️ تنبيه: سيتم منح هذا الحساب صلاحية دور المدرب (Instructor) فور الحفظ، ليتمكن من
+                الدخول إلى بوابة المدربين.
+              </div>
+            )}
           </div>
 
           {/* الاسم والمسمى الوظيفي */}

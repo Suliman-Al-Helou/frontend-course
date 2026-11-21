@@ -155,3 +155,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+# Engineering & Security Standards
+
+Before declaring any task complete, you MUST verify:
+
+1. **Impact Analysis**: Search (`grep`) for all references and subclasses of any Resource, Service, or Model you modify.
+2. **Data Exposure**: Never expose internal IDs (`user_id`), emails, or relations in API Resources without checking if the endpoint is public vs admin-only.
+3. **Input Bounds**: Always enforce strict upper limits (e.g., max 20 for dropdowns, max 50 for pagination) on query parameters.
+4. **Symmetric Testing**: Every validation rule must be tested on BOTH Create (`POST`) and Update (`PUT/PATCH`) endpoints.
+5. **Self-Review**: Run `git diff` and review your own changes for security flaws before reporting completion.

@@ -26,6 +26,9 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+let lastSessionExpiredToastTime = 0;
+const SESSION_EXPIRED_THROTTLE_MS = 3000;
+
 // Response Interceptor: التقاط ومعالجة استجابات العقد الموحد (401, 403, 429)
 api.interceptors.response.use(
   (response) => response,
@@ -43,9 +46,16 @@ api.interceptors.response.use(
       case 401: {
         // Unauthenticated: تنبيه بانتهاء الجلسة وإعادة التوجيه لصفحة تسجيل الدخول
         if (!isServer) {
-          notify.error(ERROR_CODES.AUTH_SESSION_EXPIRED);
+          const isLoginPage = window.location.pathname.startsWith("/login");
+          const now = Date.now();
 
-          if (!window.location.pathname.startsWith("/login")) {
+          // منع تكرار التنبيه (Throttling) عند فشل عدة طلبات متزامنة أو أثناء التواجد بصفحة تسجيل الدخول
+          if (!isLoginPage && now - lastSessionExpiredToastTime > SESSION_EXPIRED_THROTTLE_MS) {
+            lastSessionExpiredToastTime = now;
+            notify.error(ERROR_CODES.AUTH_SESSION_EXPIRED);
+          }
+
+          if (!isLoginPage) {
             const currentPath = window.location.pathname;
             window.location.href = `/login?redirect=${encodeURIComponent(currentPath)}`;
           }
