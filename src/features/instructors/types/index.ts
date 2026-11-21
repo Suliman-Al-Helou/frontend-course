@@ -4,6 +4,9 @@
 
 export interface Instructor {
   id: number;
+  user_id?: number | null;
+  is_display_only?: boolean;
+  user?: { id: number; name: string; email: string } | null;
   name: string;
   title?: string;
   bio?: string;
@@ -44,6 +47,7 @@ export interface InstructorDetail extends Omit<Instructor, "courses"> {
 }
 
 export interface InstructorFormData {
+  user_id?: number | null;
   name: string;
   title?: string;
   bio?: string;

@@ -152,6 +152,15 @@ export default function ManageInstructorsTab() {
                           <span>{ins.years_experience} سنوات خبرة</span>
                         </span>
                       ) : null}
+                      {ins.user_id ? (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-medium text-primary bg-primary/10 px-1.5 py-0.5 rounded-md mt-1 ms-1.5">
+                          حساب مرتبط: {ins.user?.name || `#${ins.user_id}`}
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-medium text-muted-foreground bg-muted/60 px-1.5 py-0.5 rounded-md mt-1 ms-1.5">
+                          بروفايل للعرض فقط
+                        </span>
+                      )}
                     </div>
                   </div>
 
