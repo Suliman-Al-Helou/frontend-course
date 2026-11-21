@@ -257,3 +257,21 @@ _Avoid_: Admin PIN, Password prompt, Native confirm dialog
 **Self-Action Guard**:
 A programmatic barrier preventing the actively authenticated administrator from deleting their own account or modifying their own administrative privileges.
 _Avoid_: Self-delete check, Admin lock
+
+## Progression & Assessment Domain
+
+**Dual-Requirement Progression**:
+An educational progression rule where lessons with attached tasks require satisfying both watch threshold ($\ge 80\%$) and full task submission before marking the lesson complete and unlocking subsequent syllabus items.
+_Avoid_: Simple watch completion, Quiz skip, Video-only progress
+
+**Formative Task Completion**:
+Advancing student progression upon full and valid submission of all task questions, leaving subsequent attempts to the student to improve diagnostic mastery without stalling course momentum.
+_Avoid_: Pass-or-blocked, Hard exam gate, Summative lockout
+
+**Task Unlock Gate**:
+The intermediate threshold ($\ge 80\%$ video watch) that permits an enrolled student to view and submit the lesson's task without prematurely unlocking subsequent lessons in the curriculum.
+_Avoid_: Lesson unlock, Video pass, Quiz reveal
+
+**Zero-Index Option Guard**:
+A strict numeric and type validation pattern preventing PHP falsy evaluations of option index `0` from misclassifying first-option answers as missing or blank submissions.
+_Avoid_: Empty check, Truthy check, Loose null check

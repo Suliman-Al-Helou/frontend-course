@@ -2,9 +2,12 @@
 
 **Tracker Label**: `wayfinder:task`  
 **Parent**: [Wayfinder Map](file:///home/suliman/Documents/courses/docs/wayfinder/map.md)  
-**Status**: Open (Blocked by Ticket 03)  
-**Assignee**: Unassigned  
-**Blocked by**: [Ticket 03: Phase 3 — Educational Metadata Updates & Activity Audit Logging](file:///home/suliman/Documents/courses/docs/wayfinder/03-metadata-updates-activity-audit.md)  
+**Status**: In Progress (TDD Red Phase)  
+**Spec**: [Spec: Phase 4](file:///home/suliman/Documents/courses/frontend-course/docs/spec/04-exam-gating-and-atomic-completion.md)  
+**Governing ADRs**:
+- [ADR 0017: Video Provider Driver and Curriculum Publication Contract](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0017-video-provider-driver-and-curriculum-publication-contract.md)
+- [ADR 0020: Dual-Requirement Lesson Progression and Atomic Task Gating](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0020-dual-requirement-lesson-progression-and-atomic-task-gating.md)  
+**Assignee**: Antigravity  
 
 ## Question
 
