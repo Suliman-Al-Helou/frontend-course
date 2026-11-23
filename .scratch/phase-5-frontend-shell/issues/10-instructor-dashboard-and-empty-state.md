@@ -4,9 +4,9 @@
 
 **Blocked by:** 09: Instructor Client Shell Navigation & RTL Mobile Drawer
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] Create `src/app/(instructor)/page.tsx` displaying faculty dashboard overview.
-- [ ] Add quick statistics summary cards (Assigned Courses, Enrolled Students).
-- [ ] Implement encouraging empty state with guidance to contact administration when `assigned_courses` is empty.
-- [ ] Comply with `DESIGN.md` typography and color tokens.
+- [x] Create `src/app/(instructor)/page.tsx` displaying faculty dashboard overview.
+- [x] Add quick statistics summary cards (Assigned Courses, Enrolled Students).
+- [x] Implement encouraging empty state with guidance to contact administration when `assigned_courses` is empty.
+- [x] Comply with `DESIGN.md` typography and color tokens.

@@ -4,9 +4,9 @@
 
 **Blocked by:** 08: Server-Side Instructor Route Guard & Cross-Role Redirection
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] Create `InstructorLayoutClient.tsx` with sidebar navigation.
-- [ ] Implement mobile drawer menu with RTL slide-in animation, backdrop, and body scroll-lock.
-- [ ] Implement header with instructor identity, theme switcher, and logout trigger.
-- [ ] Verify `DESIGN.md` token compliance and touch targets $\ge 44\times 44\text{px}$.
+- [x] Create `InstructorLayoutClient.tsx` with sidebar navigation.
+- [x] Implement mobile drawer menu with RTL slide-in animation, backdrop, and body scroll-lock.
+- [x] Implement header with instructor identity, theme switcher, and logout trigger.
+- [x] Verify `DESIGN.md` token compliance and touch targets $\ge 44\times 44\text{px}$.
