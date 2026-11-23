@@ -17,7 +17,13 @@ export function resolvePostLoginRedirect(
     return redirectParam;
   }
 
-  return user.role === "admin" ? "/admin" : "/dashboard";
+  if (user.role === "admin") {
+    return "/admin";
+  }
+  if (user.role === "instructor") {
+    return "/instructor";
+  }
+  return "/dashboard";
 }
 
 /**

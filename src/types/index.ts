@@ -2,7 +2,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
-  role: "admin" | "student";
+  role: "admin" | "student" | "instructor";
 }
 
 export interface LessonProgress {

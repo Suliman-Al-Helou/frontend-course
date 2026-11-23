@@ -4,8 +4,8 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] Extend `User.role` in `src/types/index.ts` to `"admin" | "student" | "instructor"`.
-- [ ] Update `resolvePostLoginRedirect()` in `src/lib/auth-helpers.ts` to return `"/instructor"` when `user.role === "instructor"` and redirect parameter is absent.
-- [ ] Add unit tests in `src/lib/__tests__/auth-helpers.test.ts` covering instructor redirection and open redirect sanitation.
+- [x] Extend `User.role` in `src/types/index.ts` to `"admin" | "student" | "instructor"`.
+- [x] Update `resolvePostLoginRedirect()` in `src/lib/auth-helpers.ts` to return `"/instructor"` when `user.role === "instructor"` and redirect parameter is absent.
+- [x] Add unit tests in `src/lib/__tests__/auth-helpers.test.ts` covering instructor redirection and open redirect sanitation.
