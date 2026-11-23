@@ -2,17 +2,21 @@
 
 **Tracker Label**: `wayfinder:task`  
 **Parent**: [Wayfinder Map](file:///home/suliman/Documents/courses/docs/wayfinder/map.md)  
-**Status**: In Progress (TDD Red Phase)  
+**Status**: Completed  
+**Completed at**: 2026-11-23  
 **Spec**: [Spec: Phase 4](file:///home/suliman/Documents/courses/frontend-course/docs/spec/04-exam-gating-and-atomic-completion.md)  
 **Governing ADRs**:
 - [ADR 0017: Video Provider Driver and Curriculum Publication Contract](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0017-video-provider-driver-and-curriculum-publication-contract.md)
 - [ADR 0020: Dual-Requirement Lesson Progression and Atomic Task Gating](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0020-dual-requirement-lesson-progression-and-atomic-task-gating.md)  
 **Assignee**: Antigravity  
 **Sub-Tickets (Tracer Bullets)**:
-1. [01: Decouple Task Access & Eliminate Deadlock](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-4-exam-gating/issues/01-decouple-task-access-and-fix-deadlock.md) (`ready-for-agent`, unblocked)
-2. [02: Dynamic Schema Validation & Zero-Index Guard](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-4-exam-gating/issues/02-dynamic-schema-validation-and-zero-guard.md) (`ready-for-agent`, blocked by 01)
-3. [03: Dual-Requirement Video Progress State Machine](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-4-exam-gating/issues/03-dual-requirement-video-progress-tracking.md) (`ready-for-agent`, blocked by 01)
-4. [04: Deterministic Grading & Atomic Formative Completion](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-4-exam-gating/issues/04-deterministic-grading-and-atomic-completion.md) (`ready-for-agent`, blocked by 02, 03)
+1. [01: Decouple Task Access & Eliminate Deadlock](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-4-exam-gating/issues/01-decouple-task-access-and-fix-deadlock.md) (`completed`)
+2. [02: Dynamic Questionnaire Schema Validation](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-4-exam-gating/issues/02-dynamic-schema-validation-and-zero-guard.md) (`completed`)
+3. [03: Zero-Index Option Guard & Type Defense](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-4-exam-gating/issues/03-zero-index-option-guard.md) (`completed`)
+4. [04: Dual-Requirement Video Progress State Machine](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-4-exam-gating/issues/04-dual-requirement-video-progress.md) (`completed`)
+5. [05: Re-Watch Idempotency & Progress Preservation](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-4-exam-gating/issues/05-rewatch-idempotency-preservation.md) (`completed`)
+6. [06: Deterministic Auto-Grading Engine](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-4-exam-gating/issues/06-deterministic-auto-grading.md) (`completed`)
+7. [07: Atomic Formative Completion & Rollback Integrity](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-4-exam-gating/issues/07-atomic-formative-completion.md) (`completed`)
 
 ## Question
 
