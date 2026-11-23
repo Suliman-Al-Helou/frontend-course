@@ -4,6 +4,8 @@ import { Lock, Play } from "lucide-react";
 import Link from "next/link";
 import type { CourseSectionUI } from "../../index";
 import { Badge } from "@/components/ui/badge";
+import { useCurrentUser } from "@/features/auth";
+import { evaluateCurriculumLessonAccess } from "./curriculum-access-helpers";
 import {
   Accordion,
   AccordionItem,
@@ -18,6 +20,7 @@ export interface CourseCurriculumProps {
 }
 
 export function CourseCurriculum({ sections, courseId, enrolled }: CourseCurriculumProps) {
+  const { user } = useCurrentUser();
   const defaultVal = sections[0]?.id !== undefined ? String(sections[0].id) : "0";
 
   return (
@@ -48,13 +51,16 @@ export function CourseCurriculum({ sections, courseId, enrolled }: CourseCurricu
 
               <AccordionContent className="divide-y divide-border">
                 {section.lessons.map((lesson) => {
-                  const canAccess = enrolled || lesson.is_preview || lesson.is_published === false;
+                  const access = evaluateCurriculumLessonAccess(lesson, {
+                    isEnrolled: enrolled,
+                    userRole: user?.role,
+                  });
 
                   const content = (
                     <div className="flex items-center justify-between px-4 py-3 min-h-[44px] w-full">
                       <div className="flex items-center gap-3">
                         <div className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                          {canAccess ? (
+                          {access.canAccess ? (
                             <Play className="w-3.5 h-3.5 text-primary" />
                           ) : (
                             <Lock className="w-3.5 h-3.5 text-muted-foreground" />
@@ -62,19 +68,21 @@ export function CourseCurriculum({ sections, courseId, enrolled }: CourseCurricu
                         </div>
                         <span
                           className={`text-sm ${
-                            canAccess ? "text-foreground font-normal" : "text-muted-foreground"
+                            access.canAccess
+                              ? "text-foreground font-normal"
+                              : "text-muted-foreground"
                           }`}
                         >
                           {lesson.title}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        {lesson.is_published === false && (
+                        {access.showDraftBadge && (
                           <Badge variant="warning" size="sm">
                             مسودة
                           </Badge>
                         )}
-                        {lesson.is_preview && !enrolled && (
+                        {access.showPreviewBadge && (
                           <Badge variant="success" size="sm">
                             معاينة مجانية
                           </Badge>
@@ -86,7 +94,7 @@ export function CourseCurriculum({ sections, courseId, enrolled }: CourseCurricu
                     </div>
                   );
 
-                  if (canAccess) {
+                  if (access.canAccess) {
                     return (
                       <Link
                         key={lesson.id}

@@ -24,11 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/shared/states/EmptyState";
-import {
-  instructorQueries,
-  type InstructorDetail,
-  parseSpecializations,
-} from "@/features/instructors";
+import { instructorQueries, parseSpecializations } from "@/features/instructors";
 
 const LEVEL_LABEL: Record<string, string> = {
   beginner: "مبتدئ",

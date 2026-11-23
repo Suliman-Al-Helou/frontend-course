@@ -1,13 +1,24 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { LayoutDashboard, BookOpen, LifeBuoy, LogOut, Menu, X, GraduationCap } from "lucide-react";
+import {
+  LayoutDashboard,
+  BookOpen,
+  LifeBuoy,
+  LogOut,
+  Menu,
+  X,
+  GraduationCap,
+  User as UserIcon,
+  ArrowLeft,
+} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "@/components/shared/Themetoggle";
 import { Button } from "@/components/ui/button";
 import { useCurrentUser } from "@/features/auth";
+import { isInstructorNavActive } from "@/features/instructor-portal";
 import type { User } from "@/types";
 
 const INSTRUCTOR_MENU = [
@@ -39,9 +50,8 @@ export default function InstructorLayoutClient({ user, children }: InstructorLay
   }, [mobileDrawerOpen]);
 
   const currentItem =
-    INSTRUCTOR_MENU.find((item) =>
-      item.href === "/instructor" ? pathname === "/instructor" : pathname.startsWith(item.href),
-    ) || INSTRUCTOR_MENU[0];
+    INSTRUCTOR_MENU.find((item) => isInstructorNavActive(item.href, pathname)) ||
+    INSTRUCTOR_MENU[0];
 
   const handleLogout = () => {
     setMobileDrawerOpen(false);
@@ -72,10 +82,7 @@ export default function InstructorLayoutClient({ user, children }: InstructorLay
               <nav aria-label="شريط تنقل المدرب" className="space-y-1">
                 {INSTRUCTOR_MENU.map((item) => {
                   const Icon = item.icon;
-                  const isActive =
-                    item.href === "/instructor"
-                      ? pathname === "/instructor"
-                      : pathname.startsWith(item.href);
+                  const isActive = isInstructorNavActive(item.href, pathname);
 
                   return (
                     <Link
@@ -97,6 +104,26 @@ export default function InstructorLayoutClient({ user, children }: InstructorLay
 
             {/* Bottom Section */}
             <div className="pt-4 border-t border-border space-y-3">
+              {/* Switch to Student Account */}
+              <div className="rounded-xl border border-border/80 bg-muted/20 p-2.5 space-y-2">
+                <div className="flex items-center justify-between text-[11px] text-muted-foreground px-1">
+                  <span>وضع التعلّم</span>
+                  <span className="text-[10px] font-semibold bg-primary/10 text-primary px-1.5 py-0.5 rounded">
+                    طالب
+                  </span>
+                </div>
+                <Link
+                  href="/dashboard"
+                  className="flex items-center justify-between w-full px-3 py-2 rounded-lg text-xs font-semibold text-foreground bg-card hover:bg-primary hover:text-primary-foreground border border-border transition-colors min-h-[44px]"
+                >
+                  <div className="flex items-center gap-2">
+                    <UserIcon className="w-4 h-4 text-primary" aria-hidden="true" />
+                    <span>حساب الطالب الخاص بي</span>
+                  </div>
+                  <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
+                </Link>
+              </div>
+
               <div className="flex items-center gap-3 px-2">
                 <div className="w-9 h-9 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-sm">
                   {user.name.charAt(0)}
@@ -217,10 +244,7 @@ export default function InstructorLayoutClient({ user, children }: InstructorLay
               <nav className="space-y-1.5" aria-label="تنقل الجوال">
                 {INSTRUCTOR_MENU.map((item) => {
                   const Icon = item.icon;
-                  const isActive =
-                    item.href === "/instructor"
-                      ? pathname === "/instructor"
-                      : pathname.startsWith(item.href);
+                  const isActive = isInstructorNavActive(item.href, pathname);
 
                   return (
                     <Link
@@ -241,7 +265,19 @@ export default function InstructorLayoutClient({ user, children }: InstructorLay
               </nav>
             </div>
 
-            <div className="pt-4 border-t border-border">
+            <div className="pt-4 border-t border-border space-y-3">
+              <Link
+                href="/dashboard"
+                onClick={() => setMobileDrawerOpen(false)}
+                className="flex items-center justify-between w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold text-foreground bg-muted/40 hover:bg-primary hover:text-primary-foreground border border-border transition-colors min-h-[44px]"
+              >
+                <div className="flex items-center gap-2.5">
+                  <UserIcon className="w-4 h-4 text-primary" aria-hidden="true" />
+                  <span>الانتقال لحساب الطالب الخاص بي</span>
+                </div>
+                <ArrowLeft className="w-4 h-4" aria-hidden="true" />
+              </Link>
+
               <Button
                 variant="ghost"
                 onClick={handleLogout}
