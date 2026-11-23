@@ -2,9 +2,20 @@
 
 **Tracker Label**: `wayfinder:task`  
 **Parent**: [Wayfinder Map](file:///home/suliman/Documents/courses/docs/wayfinder/map.md)  
-**Status**: Open (Blocked by Ticket 04)  
-**Assignee**: Unassigned  
-**Blocked by**: [Ticket 04: Phase 4 — Server-Side Exam Gating & Atomic Progress Completion](file:///home/suliman/Documents/courses/docs/wayfinder/04-exam-gating-and-atomic-completion.md)  
+**Status**: Ready for Implementation  
+**Spec**: [Spec: Phase 5](file:///home/suliman/Documents/courses/frontend-course/docs/spec/05-frontend-shell-and-playback-contract.md)  
+**Governing ADRs**:
+- [ADR 0016: Instructor CoursePolicy and IDOR Prevention](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0016-instructor-course-policy-and-idor-prevention.md)
+- [ADR 0017: Pluggable Video Delivery Driver](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0017-video-provider-driver-and-curriculum-publication-contract.md)
+- [ADR 0021: Discriminated Video Playback Contract, Secure Delivery Gating, and Instructor Route Shell](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0021-discriminated-video-playback-and-instructor-route-shell.md)  
+**Assignee**: Antigravity  
+**Sub-Tickets (Tracer Bullets)**:
+1. `01: Types & Auth Contracts (VideoPlaybackPayload, Lesson, User.role)` (`pending`)
+2. `02: Backend Delivery Manager & Authorized Playback Serialization` (`pending`)
+3. `03: Unified Frontend Video Player (YouTube, HLS & Processing Placeholder)` (`pending`)
+4. `04: Server-Side Route Guard Matrix ((instructor), (admin), (student))` (`pending`)
+5. `05: Instructor Shell UI & Landing Dashboard (DESIGN.md Tokens)` (`pending`)
+  
 
 ## Question
 
