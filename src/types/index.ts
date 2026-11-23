@@ -165,7 +165,7 @@ export interface Instructor {
   bio?: string;
   avatar_url?: string;
   cover_url?: string;
-  specializations?: string;
+  specializations?: string | string[];
   years_experience?: number;
   rating?: number;
   total_reviews?: number;

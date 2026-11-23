@@ -23,7 +23,7 @@ import ConfirmModal from "@/components/shared/ConfirmModal";
 import InstructorFormModal from "./InstructorFormModal";
 import { instructorQueries } from "../queries/instructor.queries";
 import { useInstructorMutations } from "../queries/instructor.mutations";
-import type { Instructor, InstructorFormData } from "../types";
+import { type Instructor, type InstructorFormData, parseSpecializations } from "../types";
 
 function formatInstructorsCount(count: number): string {
   if (count === 0) return "لا يوجد مدربون";
@@ -119,13 +119,7 @@ export default function ManageInstructorsTab() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
           {instructors.map((ins) => {
-            const specs = ins.specializations
-              ? ins.specializations
-                  .split(",")
-                  .map((s) => s.trim())
-                  .filter(Boolean)
-                  .slice(0, 3)
-              : [];
+            const specs = parseSpecializations(ins.specializations).slice(0, 3);
 
             return (
               <Card

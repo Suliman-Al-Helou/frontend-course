@@ -8,7 +8,7 @@ import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { instructorQueries, type Instructor } from "@/features/instructors";
+import { instructorQueries, type Instructor, parseSpecializations } from "@/features/instructors";
 
 function SkeletonCard() {
   return (
@@ -36,12 +36,7 @@ function SkeletonCard() {
 }
 
 function InstructorCard({ ins, index }: { ins: Instructor; index: number }) {
-  const specs = ins.specializations
-    ? ins.specializations
-        .split(",")
-        .map((s) => s.trim())
-        .slice(0, 3)
-    : [];
+  const specs = parseSpecializations(ins.specializations).slice(0, 3);
 
   const rating = Number(ins.rating ?? 4.5);
 
