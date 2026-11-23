@@ -293,3 +293,17 @@ _Avoid_: Teacher tab, Admin subpage, Faculty view
 **Pluggable Video Delivery Driver**:
 A backend strategy pattern decoupling lesson entities from specific streaming infrastructure, dynamically resolving YouTube or signed HLS URLs based on lesson configuration with a global environment fallback.
 _Avoid_: Hardcoded player, YouTube helper, Video switch
+
+## Full-Stack Contracts & Schema Sync Domain
+
+**Contract Drift**:
+The gradual, undetected divergence between backend JSON serialization (Laravel API Resources) and frontend TypeScript interfaces, causing silent runtime failures in production.
+_Avoid_: Type mismatch, Schema bug, Out-of-sync types
+
+**Generated Schema Contract**:
+The immutable, authoritative TypeScript definitions (`src/types/api.generated.ts`) generated via OpenAPI reflection from backend routes and FormRequests, serving as the single source of truth for full-stack data exchange.
+_Avoid_: Manual types, Fake schema, Hand-written interface
+
+**Boundary Adapter**:
+A pure normalization function located strictly at the frontend network boundary (`src/features/*/api/*.ts`) that transforms raw backend payloads (`snake_case`) into standardized frontend models before entering state management or component lifecycles.
+_Avoid_: Component mapper, Inline transform, Selector mutation
