@@ -57,9 +57,9 @@ export default function InstructorLayoutClient({ user, children }: InstructorLay
   return (
     <div className="min-h-screen bg-background text-foreground font-arabic" dir="rtl">
       <div className="flex">
-        {/* Desktop Sidebar — Fixed Right */}
-        <aside className="hidden lg:block w-64 flex-shrink-0 border-l border-border bg-card">
-          <div className="fixed right-0 top-0 h-screen w-64 z-30 flex flex-col justify-between p-4 bg-card border-l border-border">
+        {/* Desktop Sidebar — Fixed Right in RTL */}
+        <aside className="hidden lg:block w-64 flex-shrink-0 border-e border-border bg-card">
+          <div className="fixed start-0 top-0 h-screen w-64 z-30 flex flex-col justify-between p-4 bg-card border-e border-border">
             <div className="space-y-6">
               {/* Brand Header */}
               <div className="flex items-center gap-3 px-2 py-3 border-b border-border">
@@ -87,9 +87,9 @@ export default function InstructorLayoutClient({ user, children }: InstructorLay
                     <Link
                       key={item.href}
                       href={item.href}
-                      className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors min-h-[44px] ${
+                      className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-normal transition-colors min-h-[44px] ${
                         isActive
-                          ? "bg-primary/10 text-primary font-semibold border-r-2 border-primary"
+                          ? "bg-primary/10 text-primary font-bold border-s-2 border-primary"
                           : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                       }`}
                     >
@@ -108,8 +108,8 @@ export default function InstructorLayoutClient({ user, children }: InstructorLay
                   {user.name.charAt(0)}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs font-semibold text-foreground truncate">{user.name}</p>
-                  <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-medium bg-primary/10 text-primary">
+                  <p className="text-xs font-bold text-foreground truncate">{user.name}</p>
+                  <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-normal bg-primary/10 text-primary">
                     مدرب معتمد
                   </span>
                 </div>
@@ -171,7 +171,7 @@ export default function InstructorLayoutClient({ user, children }: InstructorLay
         </main>
       </div>
 
-      {/* Mobile Drawer (RTL Slide-in from right) */}
+      {/* Mobile Drawer (RTL Slide-in from start/right) */}
       {mobileDrawerOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           {/* Backdrop */}
@@ -186,7 +186,7 @@ export default function InstructorLayoutClient({ user, children }: InstructorLay
             role="dialog"
             aria-modal="true"
             aria-label="قائمة التنقل للمدرب"
-            className="fixed inset-y-0 right-0 w-72 max-w-[85vw] bg-card border-l border-border p-5 flex flex-col justify-between shadow-2xl z-50 animate-in slide-in-from-right duration-200"
+            className="fixed inset-y-0 start-0 w-72 max-w-[85vw] bg-card border-e border-border p-5 flex flex-col justify-between shadow-2xl z-50 animate-in slide-in-from-right duration-200"
           >
             <div className="space-y-6">
               <div className="flex items-center justify-between pb-4 border-b border-border">
@@ -222,9 +222,9 @@ export default function InstructorLayoutClient({ user, children }: InstructorLay
                     <button
                       key={item.href}
                       onClick={() => handleNavigate(item.href)}
-                      className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition-colors text-right min-h-[44px] ${
+                      className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-normal transition-colors text-right min-h-[44px] ${
                         isActive
-                          ? "bg-primary/10 text-primary font-semibold border-r-2 border-primary"
+                          ? "bg-primary/10 text-primary font-bold border-s-2 border-primary"
                           : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                       }`}
                     >

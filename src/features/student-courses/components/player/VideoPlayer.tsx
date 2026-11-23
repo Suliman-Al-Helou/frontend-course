@@ -52,6 +52,7 @@ export function VideoPlayer({
   const intervalRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
   const watchedMaxRef = useRef<number>(0);
   const completedRef = useRef<boolean>(false);
+  const savedTimeRef = useRef<number>(0);
   const [watermarkPos, setWatermarkPos] = useState<number>(0);
 
   const activeTarget = useMemo(() => resolvePlaybackTarget(playback, videoId), [playback, videoId]);
@@ -96,6 +97,9 @@ export function VideoPlayer({
             hls.on(Hls.Events.ERROR, (_event, data) => {
               if (data.fatal) {
                 if (data.response?.code === 403 || isStreamExpired(activeTarget.expires_at)) {
+                  if (videoRef.current) {
+                    savedTimeRef.current = videoRef.current.currentTime;
+                  }
                   onTokenExpired?.();
                 }
               }
@@ -181,6 +185,22 @@ export function VideoPlayer({
     }
   };
 
+  const handleHlsError = () => {
+    if (activeTarget?.provider === "hls" && isStreamExpired(activeTarget.expires_at)) {
+      if (videoRef.current) {
+        savedTimeRef.current = videoRef.current.currentTime;
+      }
+      onTokenExpired?.();
+    }
+  };
+
+  const handleHlsLoadedMetadata = () => {
+    if (savedTimeRef.current > 0 && videoRef.current) {
+      videoRef.current.currentTime = savedTimeRef.current;
+      savedTimeRef.current = 0;
+    }
+  };
+
   // إذا لم يتوفر أي فيديو أو كان قيد الرفع والمعالجة
   if (!activeTarget) {
     return (
@@ -192,7 +212,7 @@ export function VideoPlayer({
         <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
           <Loader2 className="w-6 h-6 animate-spin" aria-hidden="true" />
         </div>
-        <p className="text-base font-semibold text-foreground">الفيديو قيد الرفع والمعالجة</p>
+        <p className="text-base font-bold text-foreground">الفيديو قيد الرفع والمعالجة</p>
         <p className="text-xs text-muted-foreground max-w-sm">
           يتم حالياً تجهيز وإعداد ملفات الدرس بأعلى دقة. يمكنك مراجعة المحتوى والمهام ريثما يكتمل
           الرفع.
@@ -234,6 +254,8 @@ export function VideoPlayer({
           className="w-full h-full object-contain"
           onTimeUpdate={handleHlsTimeUpdate}
           onEnded={handleHlsEnded}
+          onError={handleHlsError}
+          onLoadedMetadata={handleHlsLoadedMetadata}
         />
       )}
 
@@ -244,7 +266,7 @@ export function VideoPlayer({
           aria-hidden="true"
           className={`absolute ${WATERMARK_POSITIONS[watermarkPos]} pointer-events-none select-none z-10 bg-black/40 text-white/70 backdrop-blur-xs px-2.5 py-1 rounded-md border border-white/10 shadow-xs transition-all duration-700 motion-reduce:transition-none`}
         >
-          <p className="text-xs font-mono font-medium tracking-tight">
+          <p className="text-xs font-mono font-normal tracking-tight">
             {user.name} • {user.email}
           </p>
         </div>

@@ -76,13 +76,13 @@ export interface Lesson {
   id: number;
   title: string;
   description?: string | null;
-  playback?: VideoPlaybackPayload | null;
-  video_provider?: "youtube" | "hls";
+  playback: VideoPlaybackPayload | null;
+  video_provider: "youtube" | "hls";
   video_id?: string;
   duration: number;
   order: number;
   is_preview: boolean;
-  is_published?: boolean;
+  is_published: boolean;
   task?: Task;
 }
 

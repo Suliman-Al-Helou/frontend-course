@@ -20,7 +20,7 @@ export default async function InstructorDashboardPage() {
       {/* Welcome Banner */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-l from-primary/15 via-primary/5 to-transparent border border-primary/20 p-6 sm:p-8">
         <div className="relative z-10 max-w-2xl space-y-2">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold border border-primary/20">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold border border-primary/20">
             <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
             <span>بوابة الهيئة التدريسية المعتمدة</span>
           </div>
@@ -38,7 +38,7 @@ export default async function InstructorDashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <div className="p-5 rounded-2xl bg-card border border-border space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-muted-foreground">الكورسات الموكلة</span>
+            <span className="text-xs font-normal text-muted-foreground">الكورسات الموكلة</span>
             <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
               <BookOpen className="w-4 h-4" aria-hidden="true" />
             </div>
@@ -49,7 +49,7 @@ export default async function InstructorDashboardPage() {
 
         <div className="p-5 rounded-2xl bg-card border border-border space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-muted-foreground">إجمالي الطلاب</span>
+            <span className="text-xs font-normal text-muted-foreground">إجمالي الطلاب</span>
             <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center text-success">
               <Users className="w-4 h-4" aria-hidden="true" />
             </div>
@@ -60,7 +60,7 @@ export default async function InstructorDashboardPage() {
 
         <div className="p-5 rounded-2xl bg-card border border-border space-y-2 sm:col-span-2 lg:col-span-1">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-muted-foreground">حالة الحساب</span>
+            <span className="text-xs font-normal text-muted-foreground">حالة الحساب</span>
             <div className="w-8 h-8 rounded-lg bg-warning/10 flex items-center justify-center text-warning">
               <GraduationCap className="w-4 h-4" aria-hidden="true" />
             </div>
@@ -76,7 +76,7 @@ export default async function InstructorDashboardPage() {
           <h2 className="text-base sm:text-lg font-bold text-foreground">الكورسات الموكلة إليك</h2>
           <Link
             href="/instructor/courses"
-            className="text-xs font-semibold text-primary hover:text-primary-hover transition-colors inline-flex items-center gap-1 min-h-[44px]"
+            className="text-xs font-bold text-primary hover:text-primary-hover transition-colors inline-flex items-center gap-1 min-h-[44px]"
           >
             <span>عرض الكل</span>
             <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />

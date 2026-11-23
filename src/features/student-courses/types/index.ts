@@ -39,12 +39,12 @@ export interface LessonDetail {
   title: string;
   description?: string;
   video_id?: string;
-  playback?: VideoPlaybackPayload | null;
-  video_provider?: "youtube" | "hls";
+  playback: VideoPlaybackPayload | null;
+  video_provider: "youtube" | "hls";
   duration?: number;
   order: number;
   is_preview?: boolean;
-  is_published?: boolean;
+  is_published: boolean;
 }
 
 export interface CourseProgressSummary {
