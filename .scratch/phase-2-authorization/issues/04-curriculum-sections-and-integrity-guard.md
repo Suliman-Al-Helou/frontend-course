@@ -4,12 +4,12 @@
 
 **Blocked by:** 03: Course Mutation & Prohibited Attributes Guard Slice
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] Implement `InstructorSectionController@index` returning the curriculum sections and lessons tree for an authorized course.
-- [ ] Implement `InstructorSectionController@store` creating a section under an authorized course.
-- [ ] Implement `InstructorSectionController@update` authorizing via `$section->course` and updating title and order.
-- [ ] Implement `InstructorSectionController@destroy` authorizing via `$section->course` and enforcing the Deletion Integrity Guard.
-- [ ] Reject deletion requests with `422 Unprocessable Entity` if any lesson in the section has student completion records.
-- [ ] Cross-tenant attempts to add, rename, or delete sections on another instructor's course return `403 Forbidden`.
-- [ ] Feature test verifies section CRUD, parent traversal authorization, and progress integrity protection.
+- [x] Implement `InstructorSectionController@index` returning the curriculum sections and lessons tree for an authorized course.
+- [x] Implement `InstructorSectionController@store` creating a section under an authorized course.
+- [x] Implement `InstructorSectionController@update` authorizing via `$section->course` and updating title and order.
+- [x] Implement `InstructorSectionController@destroy` authorizing via `$section->course` and enforcing the Deletion Integrity Guard.
+- [x] Reject deletion requests with `422 Unprocessable Entity` if any lesson in the section has student completion records.
+- [x] Cross-tenant attempts to add, rename, or delete sections on another instructor's course return `403 Forbidden`.
+- [x] Feature test verifies section CRUD, parent traversal authorization, and progress integrity protection.

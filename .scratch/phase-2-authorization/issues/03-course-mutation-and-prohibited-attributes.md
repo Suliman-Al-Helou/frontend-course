@@ -4,11 +4,11 @@
 
 **Blocked by:** 02: CoursePolicy Engine & Scoped Course Listing Slice
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] Create `InstructorUpdateCourseRequest` with an `authorize()` method enforcing `$this->user()->can('manageAsInstructor', $this->route('course'))`.
-- [ ] In `InstructorUpdateCourseRequest`, enforce `prohibited` validation rules on `price`, `youtube_playlist_id`, `instructor_id`, `is_public`, and `status`.
-- [ ] Implement `InstructorCourseController@update` applying validated educational updates to the assigned course.
-- [ ] Sending a `PUT` request targeting another instructor's course with an empty or malformed payload returns `403 Forbidden` (proving authorization precedes validation).
-- [ ] Attempting to modify `price` or other prohibited fields on an owned course returns `422 Unprocessable Entity`.
-- [ ] Feature test verifies educational updates, prohibited attribute blocks, and zero information leak on cross-tenant updates.
+- [x] Create `InstructorUpdateCourseRequest` with an `authorize()` method enforcing `$this->user()->can('manageAsInstructor', $this->route('course'))`.
+- [x] In `InstructorUpdateCourseRequest`, enforce `prohibited` validation rules on `price`, `youtube_playlist_id`, `instructor_id`, `is_public`, and `status`.
+- [x] Implement `InstructorCourseController@update` applying validated educational updates to the assigned course.
+- [x] Sending a `PUT` request targeting another instructor's course with an empty or malformed payload returns `403 Forbidden` (proving authorization precedes validation).
+- [x] Attempting to modify `price` or other prohibited fields on an owned course returns `422 Unprocessable Entity`.
+- [x] Feature test verifies educational updates, prohibited attribute blocks, and zero information leak on cross-tenant updates.
