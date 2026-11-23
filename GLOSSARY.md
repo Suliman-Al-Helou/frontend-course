@@ -204,6 +204,22 @@ _Avoid_: Loose role, Dangling permission, Unsynchronized role
 A contextual status badge and muted visual style applied to videos within the Curriculum Video Picker that are already assigned to existing lessons in the course, preventing duplicate lesson creation while preserving a complete overview of the playlist.
 _Avoid_: Used badge, Disabled row, Grey card
 
+**Educational Metadata**:
+The subset of pedagogical and informational course properties (title, description, cover image, difficulty level, learning outcomes, requirements, target audience) authored and updated by instructors in real time, segregated from administrative and financial parameters.
+_Avoid_: Course details, Course settings, Course config
+
+**Commercial Course Attributes**:
+Protected financial, publication, and administrative course properties (`price`, `status`, `is_public`, `instructor_id`, `rating`, `is_popular`, `youtube_playlist_id`) governed exclusively by platform administrators and strictly immune to instructor mutation.
+_Avoid_: Course money, Course state, Admin flags
+
+**Course Activity Log**:
+An append-only, immutable historical audit trail recording discrete educational and structural modifications to a course, capturing before-and-after attribute diffs, acting user identity, timestamps, and network IP addresses for forensic accountability.
+_Avoid_: System log, Error log, History table, Course tracking
+
+**Silent Attribute Stripping**:
+A defensive API security pattern wherein incoming unauthorized, commercial, or privileged fields in mutation payloads are silently discarded by the validation whitelist without returning error statuses, preventing attacker probing while fulfilling legitimate educational updates.
+_Avoid_: Silent fail, Hidden error, Ignored input
+
 **Playlist Batch Hydration**:
 A backend aggregation pattern that fetches playlist items and executes a single batched `videos:list` call for up to 50 video IDs, minimizing YouTube Data API v3 quota consumption to exactly 2 units while resolving full content details and ISO 8601 durations.
 _Avoid_: Loop fetch, Single video API call, Direct frontend API call
