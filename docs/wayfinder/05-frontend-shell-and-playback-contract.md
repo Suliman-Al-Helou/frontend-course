@@ -10,11 +10,17 @@
 - [ADR 0021: Discriminated Video Playback Contract, Secure Delivery Gating, and Instructor Route Shell](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0021-discriminated-video-playback-and-instructor-route-shell.md)  
 **Assignee**: Antigravity  
 **Sub-Tickets (Tracer Bullets)**:
-1. [01: Types & Auth Contracts](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/01-types-and-auth-contracts.md) (`ready-for-agent`)
-2. [02: Backend Delivery Manager & Authorized Playback](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/02-backend-delivery-manager-and-authorized-playback.md) (`ready-for-agent`)
-3. [03: Dual-Engine Video Player & Lifecycle Guard](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/03-dual-engine-video-player-and-lifecycle-guard.md) (`ready-for-agent`)
-4. [04: Server Route Guard & Session Revalidation](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/04-server-route-guard-and-session-revalidation.md) (`ready-for-agent`)
-5. [05: Instructor Shell UI & Landing Dashboard](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/05-instructor-shell-ui-and-landing-dashboard.md) (`ready-for-agent`)
+1. [01: Discriminated Playback & Lesson Schema Contract](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/01-discriminated-playback-and-lesson-schema.md) (`ready-for-agent`)
+2. [02: Role Extension & Post-Login Redirection](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/02-role-extension-and-post-login-redirection.md) (`ready-for-agent`)
+3. [03: Pluggable Video Delivery Driver & Authorized Gate](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/03-pluggable-video-delivery-driver-and-authorized-gate.md) (`ready-for-agent`)
+4. [04: Canonical Lesson Detail Serialization & Draft 404 Guard](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/04-canonical-lesson-detail-and-draft-404-guard.md) (`ready-for-agent`)
+5. [05: Video Player Lifecycle Isolation & State Reset Guard](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/05-player-lifecycle-isolation-and-state-reset.md) (`ready-for-agent`)
+6. [06: Dual-Engine Streaming Switcher (YouTube & HLS)](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/06-dual-engine-streaming-switcher.md) (`ready-for-agent`)
+7. [07: Uniform Forensic Watermark, Processing Placeholder & Expiry Recovery](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/07-forensic-watermark-placeholder-and-expiry-recovery.md) (`ready-for-agent`)
+8. [08: Server-Side Instructor Route Guard & Cross-Role Redirection](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/08-server-route-guard-and-session-revalidation.md) (`ready-for-agent`)
+9. [09: Instructor Client Shell Navigation & RTL Mobile Drawer](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/09-instructor-shell-navigation-and-mobile-drawer.md) (`ready-for-agent`)
+10. [10: Instructor Dashboard Overview & Welcoming Empty State](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/10-instructor-dashboard-and-empty-state.md) (`ready-for-agent`)
+
 
   
 
