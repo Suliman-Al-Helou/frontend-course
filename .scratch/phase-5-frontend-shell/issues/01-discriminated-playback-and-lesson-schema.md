@@ -4,8 +4,8 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] Export `VideoPlaybackPayload` in `src/types/index.ts`.
-- [ ] Extend `Lesson` and `LessonDetail` with `playback`, `video_provider`, and `is_published`.
-- [ ] Run `vp check` / `tsc --noEmit` and confirm zero compilation errors.
+- [x] Export `VideoPlaybackPayload` in `src/types/index.ts`.
+- [x] Extend `Lesson` and `LessonDetail` with `playback`, `video_provider`, and `is_published`.
+- [x] Run `vp check` / `tsc --noEmit` and confirm zero compilation errors.

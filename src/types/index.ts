@@ -60,16 +60,34 @@ export interface Section {
   lessons: Lesson[];
 }
 
+export type VideoPlaybackPayload =
+  | {
+      provider: "youtube";
+      source: string; // YouTube Video ID
+      expires_at: null;
+    }
+  | {
+      provider: "hls";
+      url: string; // Signed HLS .m3u8 stream URL
+      expires_at: string; // ISO 8601 expiry timestamp
+    };
+
 export interface Lesson {
   id: number;
   title: string;
+  description?: string | null;
+  playback?: VideoPlaybackPayload | null;
+  video_provider?: "youtube" | "hls";
+  video_id?: string;
   duration: number;
   order: number;
   is_preview: boolean;
+  is_published?: boolean;
+  task?: Task;
 }
 
 export interface LessonDetail extends Lesson {
-  video_id: string;
+  video_id?: string;
   task?: Task;
 }
 

@@ -293,4 +293,3 @@ _Avoid_: Teacher tab, Admin subpage, Faculty view
 **Pluggable Video Delivery Driver**:
 A backend strategy pattern decoupling lesson entities from specific streaming infrastructure, dynamically resolving YouTube or signed HLS URLs based on lesson configuration with a global environment fallback.
 _Avoid_: Hardcoded player, YouTube helper, Video switch
-
