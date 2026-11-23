@@ -1,6 +1,7 @@
 import type { User } from "@/types";
+import type { components, operations } from "@/types/api.generated";
 
-export type UserRole = "admin" | "student";
+export type UserRole = "admin" | "student" | "instructor";
 
 export type AuthUser = User;
 
@@ -9,28 +10,14 @@ export interface SessionData {
   user?: AuthUser;
 }
 
-export interface LoginPayload {
-  email: string;
-  password: string;
-}
+export type LoginPayload = components["schemas"]["LoginRequest"];
+export type RegisterPayload = components["schemas"]["RegisterRequest"];
 
-export interface RegisterPayload {
-  name: string;
-  email: string;
-  password: string;
-  password_confirmation: string;
-}
+export type ForgotPasswordPayload =
+  operations["passwordReset.forgotPassword"]["requestBody"]["content"]["application/json"];
 
-export interface ForgotPasswordPayload {
-  email: string;
-}
-
-export interface ResetPasswordPayload {
-  token: string;
-  email: string;
-  password: string;
-  password_confirmation: string;
-}
+export type ResetPasswordPayload =
+  operations["passwordReset.resetPassword"]["requestBody"]["content"]["application/json"];
 
 export interface AuthResponse {
   message?: string;

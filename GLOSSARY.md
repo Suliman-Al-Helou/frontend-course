@@ -276,6 +276,10 @@ _Avoid_: Lesson unlock, Video pass, Quiz reveal
 A strict numeric and type validation pattern preventing PHP falsy evaluations of option index `0` from misclassifying first-option answers as missing or blank submissions.
 _Avoid_: Empty check, Truthy check, Loose null check
 
+**Task Integrity Guard**:
+A backend and frontend defensive policy safeguarding academic history by strictly prohibiting the deletion of tasks with existing student attempts (`task->attempts()->exists()`), while ensuring pedagogical question updates apply strictly to future attempts without altering historical scores.
+_Avoid_: Question freeze, Blind task delete, Cascade wipe
+
 ## Delivery, Roles & Faculty Shell Domain
 
 **Video Playback Payload**:
@@ -293,3 +297,29 @@ _Avoid_: Teacher tab, Admin subpage, Faculty view
 **Pluggable Video Delivery Driver**:
 A backend strategy pattern decoupling lesson entities from specific streaming infrastructure, dynamically resolving YouTube or signed HLS URLs based on lesson configuration with a global environment fallback.
 _Avoid_: Hardcoded player, YouTube helper, Video switch
+
+**Curriculum Tree Workspace**:
+The dedicated instructor course management view (`/instructor/courses/[id]`) organizing syllabus sections, lesson rows, educational metadata, and student enrollments into ergonomic horizontal tabs.
+_Avoid_: Course popup, Section modal, All-in-one form
+
+**Directional Arrow Ordering**:
+A zero-dependency, accessible ordering mechanism using discrete up/down action buttons with boundary disabling to sequence sections and lessons without heavy drag-and-drop bundle overhead or touch collisions.
+_Avoid_: Drag handle, DnD canvas, Heavy sorter
+
+**Dual-Mode Video Ingestion**:
+A flexible video attachment architecture in the curriculum editor supporting both instant, unlisted direct YouTube URL parsing and course playlist gallery selection with graceful fallback when playlists are unlinked.
+_Avoid_: Single-path attachment, Forced OAuth picker, Manual-only link
+
+## Full-Stack Contracts & Schema Sync Domain
+
+**Contract Drift**:
+The gradual, undetected divergence between backend JSON serialization (Laravel API Resources) and frontend TypeScript interfaces, causing silent runtime failures in production.
+_Avoid_: Type mismatch, Schema bug, Out-of-sync types
+
+**Generated Schema Contract**:
+The immutable, authoritative TypeScript definitions (`src/types/api.generated.ts`) generated via OpenAPI reflection from backend routes and FormRequests, serving as the single source of truth for full-stack data exchange.
+_Avoid_: Manual types, Fake schema, Hand-written interface
+
+**Boundary Adapter**:
+A pure normalization function located strictly at the frontend network boundary (`src/features/*/api/*.ts`) that transforms raw backend payloads (`snake_case`) into standardized frontend models before entering state management or component lifecycles.
+_Avoid_: Component mapper, Inline transform, Selector mutation

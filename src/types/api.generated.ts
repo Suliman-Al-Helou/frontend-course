@@ -4,4921 +4,4906 @@
  */
 
 export interface paths {
-  "/health": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: {
-      parameters: {
-        query?: never;
-        header?: never;
-        path?: never;
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            "application/json": {
-              /** @constant */
-              status: "ok";
-            };
-          };
+    "/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-    };
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/stats": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Dashboard counters */
-    get: operations["admin.stats"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/users": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lists non-admin users with enrollment counts */
-    get: operations["admin.users"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/students": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lists students only with enrollment counts */
-    get: operations["admin.students"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/users/{user}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** Deletes a non-admin user safely */
-    delete: operations["admin.destroyUser"];
-    options?: never;
-    head?: never;
-    /** Updates user role */
-    patch: operations["admin.updateUserRole"];
-    trace?: never;
-  };
-  "/admin/courses": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Admin course list with instructor and counts */
-    get: operations["adminCourse.index"];
-    put?: never;
-    /** Creates a course */
-    post: operations["adminCourse.store"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/courses/{course}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Single course with instructor and counts for the edit modal */
-    get: operations["adminCourse.show"];
-    /** Updates a course */
-    put: operations["adminCourse.update"];
-    post?: never;
-    /** Deletes a course */
-    delete: operations["adminCourse.destroy"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/video-assets": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lists video assets, with optional filtering by course, zoom meeting, or type */
-    get: operations["adminVideoAsset.index"];
-    put?: never;
-    /** Creates a new video asset via direct metadata */
-    post: operations["adminVideoAsset.store"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/video-assets/upload-chunk": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Receives chunked file uploads and stitches them into a video file */
-    post: operations["adminVideoAsset.uploadChunk"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/video-assets/{videoAsset}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Shows a single video asset */
-    get: operations["adminVideoAsset.show"];
-    /** Updates a video asset */
-    put: operations["adminVideoAsset.update"];
-    post?: never;
-    /** Deletes a video asset */
-    delete: operations["adminVideoAsset.destroy"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/youtube/status": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Returns YouTube connection status */
-    get: operations["adminVideoAsset.youtubeStatus"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/youtube/auth-url": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Returns Google OAuth Auth URL with CSRF state protection */
-    get: operations["adminVideoAsset.youtubeAuthUrl"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/youtube/callback": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Handles OAuth callback code from Google with state validation */
-    post: operations["adminVideoAsset.youtubeCallback"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/youtube/disconnect": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Disconnects YouTube channel and revokes active token upstream on Google servers */
-    post: operations["adminVideoAsset.youtubeDisconnect"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/zoom-meetings": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lists all meetings (newest first) with course info and attendance counts */
-    get: operations["adminZoomMeeting.index"];
-    put?: never;
-    /** Creates a Zoom meeting */
-    post: operations["adminZoomMeeting.store"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/zoom-meetings/{zoomMeeting}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /** Updates a Zoom meeting */
-    put: operations["adminZoomMeeting.update"];
-    post?: never;
-    /** Deletes a Zoom meeting (cascade removes attendances) */
-    delete: operations["adminZoomMeeting.destroy"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/zoom-meetings/{zoomMeeting}/attendances": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lists attendances for a specific meeting */
-    get: operations["adminZoomMeeting.attendances"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/zoom-meetings/{zoomMeeting}/roster": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** All approved students in the course with their attendance status (for manual marking) */
-    get: operations["adminZoomMeeting.roster"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/zoom-meetings/{zoomMeeting}/attendances/{user}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /** Manually confirms or revokes a student's attendance */
-    put: operations["adminZoomMeeting.setAttendance"];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/auth/register": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["auth.register"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/auth/login": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["auth.login"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/auth/google": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["auth.googleLogin"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/auth/me": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["auth.me"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/auth/logout": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["auth.logout"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/courses": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Public published courses list with optional level filter, limit, and caching */
-    get: operations["course.index"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/courses/{course}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Single course public view with curriculum (sections & lessons) */
-    get: operations["course.show"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/dashboard/stats": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["dashboard.stats"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/courses/{course}/enroll": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["enrollment.enroll"];
-    delete: operations["enrollment.unenroll"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/courses/{course}/enrollment": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["enrollment.checkEnrollment"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/my-courses": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["enrollment.myCourses"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/enrollments": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lists all enrollments with user and course (eager-loaded) */
-    get: operations["enrollment.index"];
-    put?: never;
-    /** Manually registers a student into a course */
-    post: operations["enrollment.store"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/enrollments/{enrollment}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** Delegates the status transition (rules + lock) to the service */
-    patch: operations["enrollment.update"];
-    trace?: never;
-  };
-  "/faqs": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Ordered FAQ list with long-term caching (24 hours) */
-    get: operations["admin.faq.index_10"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/faqs": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Ordered FAQ list with long-term caching (24 hours) */
-    get: operations["admin.faq.index_69"];
-    put?: never;
-    /** Creates a FAQ */
-    post: operations["faq.store"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/faqs/{faq}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /** Updates a FAQ */
-    put: operations["faq.update"];
-    post?: never;
-    /** Deletes a FAQ */
-    delete: operations["faq.destroy"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/instructors": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lists instructors with course counts, cached for 24 hours for public visitors */
-    get: operations["admin.instructor.index_8"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/instructors/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Instructor profile with course summaries */
-    get: operations["admin.instructor.show_9"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/instructors": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lists instructors with course counts, cached for 24 hours for public visitors */
-    get: operations["admin.instructor.index_64"];
-    put?: never;
-    /** Creates an instructor */
-    post: operations["instructor.store"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/instructors/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Instructor profile with course summaries */
-    get: operations["admin.instructor.show_66"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/instructors/{instructor}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /** Updates an instructor */
-    put: operations["instructor.update"];
-    post?: never;
-    /** Deletes an instructor */
-    delete: operations["instructor.destroy"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/instructor/courses": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lists courses assigned to the authenticated instructor or all courses for administrators */
-    get: operations["instructorCourse.index"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/instructor/courses/{course}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Shows course educational details, strictly authorized via CoursePolicy::manageAsInstructor */
-    get: operations["instructorCourse.show"];
-    /** Updates assigned course educational metadata with silent commercial stripping and audit logging */
-    put: operations["instructorCourse.update"];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/instructor/sections/{section}/lessons": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Creates a lesson under an authorized section */
-    post: operations["instructorLesson.store"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/instructor/lessons/{lesson}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /** Updates an authorized lesson */
-    put: operations["instructorLesson.update"];
-    post?: never;
-    /** Deletes a lesson after verifying no completed student progress records exist */
-    delete: operations["instructorLesson.destroy"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/instructor/profile": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Returns the authenticated instructor's profile with read-only metrics (pure GET) */
-    get: operations["instructorProfile.show"];
-    /** Updates personal dossier and atomically updates users.name if changed */
-    put: operations["instructorProfile.update"];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/instructor/courses/{course}/sections": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lists curriculum sections and lessons for an authorized course */
-    get: operations["instructorSection.index"];
-    put?: never;
-    /** Adds a section to an authorized course */
-    post: operations["instructorSection.store"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/instructor/sections/{section}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /** Updates an authorized section */
-    put: operations["instructorSection.update"];
-    post?: never;
-    /** Deletes a section after verifying no completed student progress records exist */
-    delete: operations["instructorSection.destroy"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/lessons/{lesson}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["lesson.show"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/sections/{section}/lessons": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Adds a lesson to a section */
-    post: operations["lesson.store"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/lessons/{lesson}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /** Updates a lesson */
-    put: operations["lesson.update"];
-    post?: never;
-    /** Deletes a lesson */
-    delete: operations["lesson.destroy"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/lessons/{lesson}/task": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Returns the lesson's task or 404 */
-    get: operations["lesson.getTask"];
-    /** Updates the lesson's task */
-    put: operations["lesson.updateTask"];
-    /** Creates the lesson's task (one per lesson) */
-    post: operations["lesson.storeTask"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/auth/forgot-password": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** إرسال رابط إعادة التعيين (مؤمن بالكامل ضد ثغرات Enumeration) */
-    post: operations["passwordReset.forgotPassword"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/auth/reset-password": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** إعادة تعيين كلمة المرور وتطهير كافة الجلسات السابقة للحساب لضمان الحماية */
-    post: operations["passwordReset.resetPassword"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/lessons/in-progress": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * GET /api/lessons/in-progress
-     *     يجلب الدروس قيد المتابعة للطالب (غير مكتملة ونسبة مشاهدتها > 0) دفعة واحدة
-     */
-    get: operations["progress.inProgress"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/lessons/{lessonId}/progress": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * GET /api/lessons/{id}/progress
-     *     يجلب آخر تقدم للمستخدم في هذا الدرس
-     */
-    get: operations["progress.show"];
-    put?: never;
-    /**
-     * POST /api/lessons/{id}/progress
-     *     يحفظ تقدم المستخدم في الفيديو
-     */
-    post: operations["progress.update"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/courses/{course}/progress-summary": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * GET /api/courses/{id}/progress-summary
-     *     ملخص تقدم المستخدم في كورس كامل
-     */
-    get: operations["progress.courseSummary"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/courses/{course}/sections": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Sections + lessons of a course; shape `{sections: [...]}` consumed by frontend */
-    get: operations["section.index"];
-    put?: never;
-    /** Adds a section to a course */
-    post: operations["section.store"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/sections/{section}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** Deletes a section (lessons cascade) */
-    delete: operations["section.destroy"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/lessons/{lesson}/task": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * GET /api/lessons/{lesson}/task
-     *     عرض مهمة الدرس — يتحقق أن الفيديو اكتمل أولاً
-     */
-    get: operations["task.show"];
-    put?: never;
-    /**
-     * POST /api/lessons/{lesson}/task
-     *     تسليم إجابات المهمة
-     */
-    post: operations["task.submit"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/users/{user}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put: operations["user.update"];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/zoom-meetings": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * GET /api/zoom-meetings?month=2026-09
-     *     لقاءات الشهر للتقويم لكورسات الطالب المقبول فيها فقط
-     */
-    get: operations["zoomMeeting.index"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/zoom-meetings/attendance-summary": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * GET /api/zoom-meetings/attendance-summary
-     *     نسبة حضور وغياب الطالب الإجمالية لكل الكورسات المشترك بها
-     */
-    get: operations["zoomMeeting.attendanceSummary"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/zoom-meetings/attendance": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * GET /api/zoom-meetings/attendance?course_id=1
-     *     سجل تفصيلي يوضح حالة الحضور والغياب في كل اللقاءات السابقة لكورس معين
-     */
-    get: operations["zoomMeeting.attendanceRecord"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/zoom-meetings/{zoomMeeting}/attend": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * POST /api/zoom-meetings/{zoomMeeting}/attend
-     *     يسجّل أن الطالب ضغط زر الدخول (تسجيل الحضور فوراً) ويرجّع رابط زووم
-     */
-    post: operations["zoomMeeting.attend"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @constant */
+                            status: "ok";
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Dashboard counters */
+        get: operations["admin.stats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lists non-admin users with enrollment counts */
+        get: operations["admin.users"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/students": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lists students only with enrollment counts */
+        get: operations["admin.students"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/users/{user}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Deletes a non-admin user safely */
+        delete: operations["admin.destroyUser"];
+        options?: never;
+        head?: never;
+        /** Updates user role */
+        patch: operations["admin.updateUserRole"];
+        trace?: never;
+    };
+    "/admin/courses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Admin course list with instructor and counts */
+        get: operations["adminCourse.index"];
+        put?: never;
+        /** Creates a course */
+        post: operations["adminCourse.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/courses/{course}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Single course with instructor and counts for the edit modal */
+        get: operations["adminCourse.show"];
+        /** Updates a course */
+        put: operations["adminCourse.update"];
+        post?: never;
+        /** Deletes a course */
+        delete: operations["adminCourse.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/video-assets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lists video assets, with optional filtering by course, zoom meeting, or type */
+        get: operations["adminVideoAsset.index"];
+        put?: never;
+        /** Creates a new video asset via direct metadata */
+        post: operations["adminVideoAsset.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/video-assets/upload-chunk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Receives chunked file uploads and stitches them into a video file */
+        post: operations["adminVideoAsset.uploadChunk"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/video-assets/{videoAsset}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Shows a single video asset */
+        get: operations["adminVideoAsset.show"];
+        /** Updates a video asset */
+        put: operations["adminVideoAsset.update"];
+        post?: never;
+        /** Deletes a video asset */
+        delete: operations["adminVideoAsset.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/youtube/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Returns YouTube connection status */
+        get: operations["adminVideoAsset.youtubeStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/youtube/auth-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Returns Google OAuth Auth URL with CSRF state protection */
+        get: operations["adminVideoAsset.youtubeAuthUrl"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/youtube/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Handles OAuth callback code from Google with state validation */
+        post: operations["adminVideoAsset.youtubeCallback"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/youtube/disconnect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Disconnects YouTube channel and revokes active token upstream on Google servers */
+        post: operations["adminVideoAsset.youtubeDisconnect"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/zoom-meetings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lists all meetings (newest first) with course info and attendance counts */
+        get: operations["adminZoomMeeting.index"];
+        put?: never;
+        /** Creates a Zoom meeting */
+        post: operations["adminZoomMeeting.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/zoom-meetings/{zoomMeeting}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Updates a Zoom meeting */
+        put: operations["adminZoomMeeting.update"];
+        post?: never;
+        /** Deletes a Zoom meeting (cascade removes attendances) */
+        delete: operations["adminZoomMeeting.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/zoom-meetings/{zoomMeeting}/attendances": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lists attendances for a specific meeting */
+        get: operations["adminZoomMeeting.attendances"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/zoom-meetings/{zoomMeeting}/roster": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** All approved students in the course with their attendance status (for manual marking) */
+        get: operations["adminZoomMeeting.roster"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/zoom-meetings/{zoomMeeting}/attendances/{user}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Manually confirms or revokes a student's attendance */
+        put: operations["adminZoomMeeting.setAttendance"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["auth.register"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["auth.login"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/google": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["auth.googleLogin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["auth.me"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["auth.logout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/courses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Public published courses list with optional level filter, limit, and caching */
+        get: operations["course.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/courses/{course}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Single course public view with curriculum (sections & lessons) */
+        get: operations["course.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/dashboard/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["dashboard.stats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/courses/{course}/enroll": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["enrollment.enroll"];
+        delete: operations["enrollment.unenroll"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/courses/{course}/enrollment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["enrollment.checkEnrollment"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/my-courses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["enrollment.myCourses"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/enrollments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lists all enrollments with user and course (eager-loaded) */
+        get: operations["enrollment.index"];
+        put?: never;
+        /** Manually registers a student into a course */
+        post: operations["enrollment.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/enrollments/{enrollment}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Delegates the status transition (rules + lock) to the service */
+        patch: operations["enrollment.update"];
+        trace?: never;
+    };
+    "/faqs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ordered FAQ list with long-term caching (24 hours) */
+        get: operations["admin.faq.index_10"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/faqs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ordered FAQ list with long-term caching (24 hours) */
+        get: operations["admin.faq.index_69"];
+        put?: never;
+        /** Creates a FAQ */
+        post: operations["faq.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/faqs/{faq}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Updates a FAQ */
+        put: operations["faq.update"];
+        post?: never;
+        /** Deletes a FAQ */
+        delete: operations["faq.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/instructors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lists instructors with course counts, cached for 24 hours for public visitors */
+        get: operations["admin.instructor.index_8"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/instructors/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Instructor profile with course summaries */
+        get: operations["admin.instructor.show_9"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/instructors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lists instructors with course counts, cached for 24 hours for public visitors */
+        get: operations["admin.instructor.index_64"];
+        put?: never;
+        /** Creates an instructor */
+        post: operations["instructor.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/instructors/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Instructor profile with course summaries */
+        get: operations["admin.instructor.show_66"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/instructors/{instructor}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Updates an instructor */
+        put: operations["instructor.update"];
+        post?: never;
+        /** Deletes an instructor */
+        delete: operations["instructor.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/instructor/courses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lists courses assigned to the authenticated instructor or all courses for administrators */
+        get: operations["instructorCourse.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/instructor/courses/{course}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Shows course educational details, strictly authorized via CoursePolicy::manageAsInstructor */
+        get: operations["instructorCourse.show"];
+        /** Updates assigned course educational metadata with silent commercial stripping and audit logging */
+        put: operations["instructorCourse.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/instructor/sections/{section}/lessons": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Creates a lesson under an authorized section */
+        post: operations["instructorLesson.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/instructor/lessons/{lesson}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Updates an authorized lesson */
+        put: operations["instructorLesson.update"];
+        post?: never;
+        /** Deletes a lesson after verifying no completed student progress records exist */
+        delete: operations["instructorLesson.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/instructor/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Returns the authenticated instructor's profile with read-only metrics (pure GET) */
+        get: operations["instructorProfile.show"];
+        /** Updates personal dossier and atomically updates users.name if changed */
+        put: operations["instructorProfile.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/instructor/courses/{course}/sections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lists curriculum sections and lessons for an authorized course */
+        get: operations["instructorSection.index"];
+        put?: never;
+        /** Adds a section to an authorized course */
+        post: operations["instructorSection.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/instructor/sections/{section}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Updates an authorized section */
+        put: operations["instructorSection.update"];
+        post?: never;
+        /** Deletes a section after verifying no completed student progress records exist */
+        delete: operations["instructorSection.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/lessons/{lesson}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["lesson.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/sections/{section}/lessons": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Adds a lesson to a section */
+        post: operations["lesson.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/lessons/{lesson}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Updates a lesson */
+        put: operations["lesson.update"];
+        post?: never;
+        /** Deletes a lesson */
+        delete: operations["lesson.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/lessons/{lesson}/task": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Returns the lesson's task or 404 */
+        get: operations["lesson.getTask"];
+        /** Updates the lesson's task */
+        put: operations["lesson.updateTask"];
+        /** Creates the lesson's task (one per lesson) */
+        post: operations["lesson.storeTask"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/forgot-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** إرسال رابط إعادة التعيين (مؤمن بالكامل ضد ثغرات Enumeration) */
+        post: operations["passwordReset.forgotPassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/reset-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** إعادة تعيين كلمة المرور وتطهير كافة الجلسات السابقة للحساب لضمان الحماية */
+        post: operations["passwordReset.resetPassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/lessons/in-progress": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * GET /api/lessons/in-progress
+         *     يجلب الدروس قيد المتابعة للطالب (غير مكتملة ونسبة مشاهدتها > 0) دفعة واحدة
+         */
+        get: operations["progress.inProgress"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/lessons/{lessonId}/progress": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * GET /api/lessons/{id}/progress
+         *     يجلب آخر تقدم للمستخدم في هذا الدرس
+         */
+        get: operations["progress.show"];
+        put?: never;
+        /**
+         * POST /api/lessons/{id}/progress
+         *     يحفظ تقدم المستخدم في الفيديو
+         */
+        post: operations["progress.update"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/courses/{course}/progress-summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * GET /api/courses/{id}/progress-summary
+         *     ملخص تقدم المستخدم في كورس كامل
+         */
+        get: operations["progress.courseSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/courses/{course}/sections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Sections + lessons of a course; shape `{sections: [...]}` consumed by frontend */
+        get: operations["section.index"];
+        put?: never;
+        /** Adds a section to a course */
+        post: operations["section.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/sections/{section}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Deletes a section (lessons cascade) */
+        delete: operations["section.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/lessons/{lesson}/task": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * GET /api/lessons/{lesson}/task
+         *     عرض مهمة الدرس — يتحقق أن الفيديو اكتمل أولاً
+         */
+        get: operations["task.show"];
+        put?: never;
+        /**
+         * POST /api/lessons/{lesson}/task
+         *     تسليم إجابات المهمة
+         */
+        post: operations["task.submit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{user}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["user.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/zoom-meetings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * GET /api/zoom-meetings?month=2026-09
+         *     لقاءات الشهر للتقويم لكورسات الطالب المقبول فيها فقط
+         */
+        get: operations["zoomMeeting.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/zoom-meetings/attendance-summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * GET /api/zoom-meetings/attendance-summary
+         *     نسبة حضور وغياب الطالب الإجمالية لكل الكورسات المشترك بها
+         */
+        get: operations["zoomMeeting.attendanceSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/zoom-meetings/attendance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * GET /api/zoom-meetings/attendance?course_id=1
+         *     سجل تفصيلي يوضح حالة الحضور والغياب في كل اللقاءات السابقة لكورس معين
+         */
+        get: operations["zoomMeeting.attendanceRecord"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/zoom-meetings/{zoomMeeting}/attend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * POST /api/zoom-meetings/{zoomMeeting}/attend
+         *     يسجّل أن الطالب ضغط زر الدخول (تسجيل الحضور فوراً) ويرجّع رابط زووم
+         */
+        post: operations["zoomMeeting.attend"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    /** ChunkUploadRequest */
-    ChunkUploadRequest: {
-      chunk: string;
-      chunk_index: number;
-      total_chunks: number;
-      upload_id: string;
-      file_name: string;
-      course_id: number;
-      zoom_meeting_id?: number | null;
-      title: string;
-      description?: string | null;
-      /** @enum {string|null} */
-      type?: "recording" | "lesson" | null;
-    };
-    /** CourseAdminResource */
-    CourseAdminResource: {
-      id: string;
-      title: string;
-      description: string;
-      cover_image: string;
-      level: string;
-      status: string;
-      total_duration: string;
-      requirements: string | string[];
-      target_audience: string | string[];
-      what_you_learn: string | string[];
-      students_count: string | 0;
-      enrollments_count: string | 0;
-      rating: string;
-      is_popular: string;
-      price: string;
-      is_public: string;
-      youtube_playlist_id: string;
-      instructor?: {
-        id: string;
-        name: string;
-      } | null;
-      created_at: string;
-      updated_at: string;
-    };
-    /** CourseDetailResource */
-    CourseDetailResource: {
-      id: string;
-      title: string;
-      description: string;
-      cover_image: string;
-      level: string;
-      status: string;
-      total_duration: string;
-      what_you_learn: string | string[];
-      requirements: string | string[];
-      target_audience: string | string[];
-      students_count: string | 0;
-      instructor_name: string;
-      rating: string;
-      is_popular: string;
-      price: string;
-      is_public: string;
-      instructor_id: string;
-      created_at: string;
-      updated_at: string;
-      sections?: components["schemas"]["SectionResource"][];
-    };
-    /** CourseInstructorProfileResource */
-    CourseInstructorProfileResource: {
-      id: number;
-      name: string;
-      title: string | null;
-      bio: string | null;
-      avatar_url: string | null;
-      cover_url: string | null;
-      specializations: string | null;
-      years_experience: number;
-      rating: number;
-      total_reviews: number;
-      students_count: number;
-      achievements: unknown[];
-      twitter: string | null;
-      linkedin: string | null;
-      youtube: string | null;
-      user: {
-        name: string;
-        email: string | null;
-      };
-    };
-    /** CourseInstructorResource */
-    CourseInstructorResource: {
-      id: number;
-      title: string;
-      description: string;
-      cover_image: string | null;
-      level: string;
-      total_duration: number;
-      requirements: unknown[];
-      target_audience: unknown[];
-      what_you_learn: unknown[];
-      rating: number;
-      students_count: string | number;
-      instructor?: {
-        id: number;
-        name: string;
-      } | null;
-    };
-    /** CourseSummaryResource */
-    CourseSummaryResource: {
-      id: string;
-      title: string;
-      cover_image: string;
-      level: string;
-      total_duration: string;
-      rating: string | 0;
-      students_count: string | 0;
-    };
-    /** Enrollment */
-    Enrollment: {
-      id: number;
-      user_id: number;
-      course_id: number;
-      status: string;
-      /** Format: date-time */
-      enrolled_at: string;
-      /** Format: date-time */
-      completed_at: string | null;
-      /** Format: date-time */
-      deleted_at: string | null;
-      /** Format: date-time */
-      created_at: string | null;
-      /** Format: date-time */
-      updated_at: string | null;
-    };
-    /** EnrollmentResource */
-    EnrollmentResource: {
-      id: number;
-      status: string;
-      payment_confirmed: boolean;
-      /** Format: date-time */
-      created_at: string | null;
-      student_name: string;
-      student_email: string;
-      course_title: string;
-      user: {
-        id: number;
-        name: string;
-        email: string;
-      } | null;
-      course: {
-        id: number;
-        title: string;
-        price: number;
-        level: string;
-      } | null;
-    };
-    /** FaqRequest */
-    FaqRequest: {
-      question: string;
-      answer: string;
-      order?: number | null;
-    };
-    /** FaqResource */
-    FaqResource: {
-      id: number;
-      question: string;
-      answer: string;
-      order: number;
-    };
-    /** InstructorDetailResource */
-    InstructorDetailResource: {
-      id: number;
-      user_id?: number | null;
-      is_display_only?: boolean;
-      user?: {
-        id: number;
-        name: string;
-        email: string;
-      } | null;
-      name: string;
-      title: string | null;
-      bio: string | null;
-      avatar_url: string | null;
-      cover_url: string | null;
-      specializations: string | null;
-      years_experience: number;
-      rating: number;
-      total_reviews: number;
-      students_count: number;
-      achievements: unknown[];
-      twitter: string | null;
-      linkedin: string | null;
-      youtube: string | null;
-      courses_count: string | 0;
-      courses?: components["schemas"]["CourseSummaryResource"][];
-    };
-    /** InstructorLessonRequest */
-    InstructorLessonRequest: {
-      title: string;
-      description?: string | null;
-      duration?: number | null;
-      order?: number | null;
-      is_preview?: boolean | null;
-      is_published?: boolean | null;
-      video_id?: string | null;
-      video_provider?: string | null;
-    };
-    /** InstructorProfileRequest */
-    InstructorProfileRequest: {
-      name?: string;
-      title?: string | null;
-      bio?: string | null;
-      avatar_url?: string | null;
-      cover_url?: string | null;
-      specializations?: string | null;
-      years_experience?: number | null;
-      achievements?: string[] | null;
-      twitter?: string | null;
-      linkedin?: string | null;
-      youtube?: string | null;
-      /** @description Strictly prohibited metrics & identifiers (Zero-tampering guard) */
-      rating?: string;
-      total_reviews?: string;
-      students_count?: string;
-      user_id?: string;
-    };
-    /** InstructorRequest */
-    InstructorRequest: {
-      user_id?: number | null;
-      name: string;
-      title?: string | null;
-      bio?: string | null;
-      avatar_url?: string | null;
-      cover_url?: string | null;
-      specializations?: string | null;
-      years_experience?: number | null;
-      rating?: number | null;
-      total_reviews?: number | null;
-      students_count?: number | null;
-      achievements?: string[] | null;
-      twitter?: string | null;
-      linkedin?: string | null;
-      youtube?: string | null;
-      courses?: number[] | null;
-    };
-    /** InstructorResource */
-    InstructorResource: {
-      id: number;
-      user_id?: number | null;
-      is_display_only?: boolean;
-      user?: {
-        id: number;
-        name: string;
-        email: string;
-      } | null;
-      name: string;
-      title: string | null;
-      bio: string | null;
-      avatar_url: string | null;
-      cover_url: string | null;
-      specializations: string | null;
-      years_experience: number;
-      rating: number;
-      total_reviews: number;
-      students_count: number;
-      achievements: unknown[];
-      twitter: string | null;
-      linkedin: string | null;
-      youtube: string | null;
-      courses_count: string | 0;
-    };
-    /** InstructorSectionRequest */
-    InstructorSectionRequest: {
-      title: string;
-      order?: number | null;
-    };
-    /** InstructorUpdateCourseRequest */
-    InstructorUpdateCourseRequest: {
-      title?: string;
-      description?: string;
-      /** @enum {string} */
-      level?: "beginner" | "intermediate" | "advanced";
-      what_you_learn?: string[] | null;
-      requirements?: string[] | null;
-      target_audience?: string[] | null;
-      cover_image?: string | null;
-    };
-    /** LessonRequest */
-    LessonRequest: {
-      title: string;
-      video_id?: string | null;
-      duration?: number | null;
-      order?: number | null;
-      is_preview?: boolean | null;
-    };
-    /** LessonResource */
-    LessonResource: {
-      id: number;
-      section_id: number;
-      title: string;
-      description: string | null;
-      video_id: string | null;
-      video_provider: string;
-      playback: string;
-      duration: number;
-      order: number;
-      is_preview: boolean;
-      is_published: boolean;
-    };
-    /** LoginRequest */
-    LoginRequest: {
-      /** Format: email */
-      email: string;
-      password: string;
-    };
-    /** RegisterRequest */
-    RegisterRequest: {
-      name: string;
-      /** Format: email */
-      email: string;
-      password: string;
-      password_confirmation: string;
-    };
-    /** SectionRequest */
-    SectionRequest: {
-      title: string;
-      order?: number | null;
-    };
-    /** SectionResource */
-    SectionResource: {
-      id: number;
-      course_id: number;
-      title: string;
-      order: number;
-      lessons?: components["schemas"]["LessonResource"][];
-    };
-    /** StoreCourseRequest */
-    StoreCourseRequest: {
-      title: string;
-      description: string;
-      /** Format: uri */
-      cover_image?: string | null;
-      /** @enum {string} */
-      level: "beginner" | "intermediate" | "advanced";
-      /** @enum {string} */
-      status: "published" | "draft" | "coming_soon";
-      instructor_id: number;
-      rating?: number | null;
-      is_popular?: boolean;
-      total_duration?: number | null;
-      price?: number | null;
-      is_public?: boolean;
-      what_you_learn?: string[] | null;
-      requirements?: string[] | null;
-      target_audience?: string[] | null;
-    };
-    /** StudentDashboardResource */
-    StudentDashboardResource: {
-      stats: {
-        enrolled_courses: number;
-        completed_lessons: number;
-        learning_hours: number;
-        completed_courses: number;
-        streak: number;
-      };
-      exam_results: unknown[];
-      pass_rate: number;
-    };
-    /** SubmitTaskRequest */
-    SubmitTaskRequest: {
-      answers: string[];
-    };
-    /** TaskRequest */
-    TaskRequest: {
-      questions: string[];
-      pass_percentage: number;
-      max_attempts: number;
-    };
-    /** TaskResource */
-    TaskResource: {
-      id: number;
-      lesson_id: number;
-      questions: unknown[];
-      pass_percentage: number;
-      max_attempts: number;
-    };
-    /** UpdateCourseRequest */
-    UpdateCourseRequest: {
-      title?: string;
-      description?: string;
-      /** Format: uri */
-      cover_image?: string | null;
-      /** @enum {string} */
-      level?: "beginner" | "intermediate" | "advanced";
-      /** @enum {string} */
-      status?: "published" | "draft" | "coming_soon";
-      instructor_id?: number | null;
-      rating?: number | null;
-      is_popular?: boolean;
-      total_duration?: number | null;
-      price?: number | null;
-      is_public?: boolean;
-      what_you_learn?: string[] | null;
-      requirements?: string[] | null;
-      target_audience?: string[] | null;
-    };
-    /** UpdateEnrollmentRequest */
-    UpdateEnrollmentRequest: {
-      /** @enum {string} */
-      status: "approved" | "rejected";
-      payment_confirmed?: boolean | null;
-    };
-    /** UpdateFaqRequest */
-    UpdateFaqRequest: {
-      question?: string;
-      answer?: string;
-      order?: number | null;
-    };
-    /**
-     * UpdateInstructorRequest
-     * @description Same rules as creation, but `name` is optional on update.
-     */
-    UpdateInstructorRequest: {
-      user_id?: number | null;
-      name?: string;
-      title?: string | null;
-      bio?: string | null;
-      avatar_url?: string | null;
-      cover_url?: string | null;
-      specializations?: string | null;
-      years_experience?: number | null;
-      rating?: number | null;
-      total_reviews?: number | null;
-      students_count?: number | null;
-      achievements?: string[] | null;
-      twitter?: string | null;
-      linkedin?: string | null;
-      youtube?: string | null;
-      courses?: number[] | null;
-    };
-    /** UpdateLessonProgressRequest */
-    UpdateLessonProgressRequest: {
-      watched_percent: number;
-      last_position: number;
-    };
-    /** UpdateLessonRequest */
-    UpdateLessonRequest: {
-      title?: string;
-      video_id?: string | null;
-      duration?: number | null;
-      order?: number | null;
-      is_preview?: boolean | null;
-    };
-    /** UpdateTaskRequest */
-    UpdateTaskRequest: {
-      questions: string[];
-      pass_percentage?: number;
-      max_attempts?: number;
-    };
-    /** UpdateUserRequest */
-    UpdateUserRequest: {
-      name?: string;
-      /** Format: email */
-      email?: string;
-    };
-    /** UserAdminResource */
-    UserAdminResource: {
-      id: string;
-      name: string;
-      email: string;
-      role: string;
-      is_active: string;
-      enrollments_count: string;
-      created_at: string;
-    };
-    /** UserResource */
-    UserResource: {
-      id: number;
-      name: string;
-      email: string;
-      role:
-        | {
-            relations: ["roles"];
-          }
-        | ("student" | "instructor" | "admin");
-      is_active: boolean;
-      /** Format: date-time */
-      created_at: string;
-    };
-    /** VideoAssetRequest */
-    VideoAssetRequest: {
-      course_id: number;
-      zoom_meeting_id?: number | null;
-      title: string;
-      description?: string | null;
-      /** @enum {string} */
-      provider: "youtube" | "bunny" | "cloudflare";
-      provider_video_id: string;
-      duration_seconds?: number | null;
-      /** @enum {string} */
-      type: "recording" | "lesson";
-    };
-    /** VideoAssetResource */
-    VideoAssetResource: {
-      id: number;
-      course_id: number;
-      zoom_meeting_id: number | null;
-      title: string;
-      description: string | null;
-      provider: string;
-      provider_video_id: string;
-      duration_seconds: number | null;
-      type: string;
-      status: string;
-      created_by: number | null;
-      course?: {
-        id: number;
-        title: string;
-        youtube_playlist_id: string | null;
-      };
-      zoom_meeting?: {
-        id: number;
-        title: string;
-        /** Format: date-time */
-        starts_at: string;
-      };
-      creator?: {
-        id: number;
-        name: string;
-      };
-      /** Format: date-time */
-      created_at: string | null;
-      /** Format: date-time */
-      updated_at: string | null;
-    };
-    /** ZoomAttendance */
-    ZoomAttendance: {
-      id: number;
-      zoom_meeting_id: number;
-      user_id: number;
-      /** Format: date-time */
-      attended_at: string;
-      /** Format: date-time */
-      created_at: string | null;
-      /** Format: date-time */
-      updated_at: string | null;
-    };
-    /** ZoomMeetingRequest */
-    ZoomMeetingRequest: {
-      course_id: number;
-      title: string;
-      description?: string | null;
-      /** Format: uri */
-      zoom_link: string;
-      /** Format: date-time */
-      starts_at: string;
-      duration_minutes?: number | null;
-    };
-    /** ZoomMeetingResource */
-    ZoomMeetingResource: {
-      id: number;
-      title: string;
-      description: string | null;
-      zoom_link: string;
-      /** Format: date-time */
-      starts_at: string;
-      duration_minutes: number;
-      course?: {
-        id: number;
-        title: string;
-      };
-      attendances_count?: string;
-      /** Format: date-time */
-      created_at: string | null;
-    };
-  };
-  responses: {
-    /** @description Validation error */
-    ValidationException: {
-      headers: {
-        [name: string]: unknown;
-      };
-      content: {
-        "application/json": {
-          /** @description Errors overview. */
-          message: string;
-          /** @description A detailed description of each field that failed validation. */
-          errors: {
-            [key: string]: string[];
-          };
+    schemas: {
+        /** ChunkUploadRequest */
+        ChunkUploadRequest: {
+            chunk: string;
+            chunk_index: number;
+            total_chunks: number;
+            upload_id: string;
+            file_name: string;
+            course_id: number;
+            zoom_meeting_id?: number | null;
+            title: string;
+            description?: string | null;
+            /** @enum {string|null} */
+            type?: "recording" | "lesson" | null;
         };
-      };
-    };
-    /** @description Unauthenticated */
-    AuthenticationException: {
-      headers: {
-        [name: string]: unknown;
-      };
-      content: {
-        "application/json": {
-          /** @description Error overview. */
-          message: string;
+        /** CourseAdminResource */
+        CourseAdminResource: {
+            id: string;
+            title: string;
+            description: string;
+            cover_image: string;
+            level: string;
+            status: string;
+            total_duration: string;
+            requirements: string | string[];
+            target_audience: string | string[];
+            what_you_learn: string | string[];
+            students_count: string | 0;
+            enrollments_count: string | 0;
+            rating: string;
+            is_popular: string;
+            price: string;
+            is_public: string;
+            youtube_playlist_id: string;
+            instructor?: {
+                id: string;
+                name: string;
+            } | null;
+            created_at: string;
+            updated_at: string;
         };
-      };
-    };
-    /** @description Not found */
-    ModelNotFoundException: {
-      headers: {
-        [name: string]: unknown;
-      };
-      content: {
-        "application/json": {
-          /** @description Error overview. */
-          message: string;
+        /** CourseDetailResource */
+        CourseDetailResource: {
+            id: string;
+            title: string;
+            description: string;
+            cover_image: string;
+            level: string;
+            status: string;
+            total_duration: string;
+            what_you_learn: string | string[];
+            requirements: string | string[];
+            target_audience: string | string[];
+            students_count: string | 0;
+            instructor_name: string;
+            rating: string;
+            is_popular: string;
+            price: string;
+            is_public: string;
+            instructor_id: string;
+            created_at: string;
+            updated_at: string;
+            sections?: components["schemas"]["SectionResource"][];
         };
-      };
-    };
-    /** @description Authorization error */
-    AuthorizationException: {
-      headers: {
-        [name: string]: unknown;
-      };
-      content: {
-        "application/json": {
-          /** @description Error overview. */
-          message: string;
+        /** CourseInstructorProfileResource */
+        CourseInstructorProfileResource: {
+            id: number;
+            name: string;
+            title: string | null;
+            bio: string | null;
+            avatar_url: string | null;
+            cover_url: string | null;
+            specializations: string | null;
+            years_experience: number;
+            rating: number;
+            total_reviews: number;
+            students_count: number;
+            achievements: unknown[];
+            twitter: string | null;
+            linkedin: string | null;
+            youtube: string | null;
+            user: {
+                name: string;
+                email: string | null;
+            };
         };
-      };
+        /** CourseInstructorResource */
+        CourseInstructorResource: {
+            id: number;
+            title: string;
+            description: string;
+            cover_image: string | null;
+            level: string;
+            total_duration: number;
+            requirements: unknown[];
+            target_audience: unknown[];
+            what_you_learn: unknown[];
+            rating: number;
+            students_count: string | number;
+            instructor?: {
+                id: number;
+                name: string;
+            } | null;
+        };
+        /** CourseSummaryResource */
+        CourseSummaryResource: {
+            id: string;
+            title: string;
+            cover_image: string;
+            level: string;
+            total_duration: string;
+            rating: string | 0;
+            students_count: string | 0;
+        };
+        /** Enrollment */
+        Enrollment: {
+            id: number;
+            user_id: number;
+            course_id: number;
+            status: string;
+            /** Format: date-time */
+            enrolled_at: string;
+            /** Format: date-time */
+            completed_at: string | null;
+            /** Format: date-time */
+            deleted_at: string | null;
+            /** Format: date-time */
+            created_at: string | null;
+            /** Format: date-time */
+            updated_at: string | null;
+        };
+        /** EnrollmentResource */
+        EnrollmentResource: {
+            id: number;
+            status: string;
+            payment_confirmed: boolean;
+            /** Format: date-time */
+            created_at: string | null;
+            student_name: string;
+            student_email: string;
+            course_title: string;
+            user: {
+                id: number;
+                name: string;
+                email: string;
+            } | null;
+            course: {
+                id: number;
+                title: string;
+                price: number;
+                level: string;
+            } | null;
+        };
+        /** FaqRequest */
+        FaqRequest: {
+            question: string;
+            answer: string;
+            order?: number | null;
+        };
+        /** FaqResource */
+        FaqResource: {
+            id: number;
+            question: string;
+            answer: string;
+            order: number;
+        };
+        /** InstructorDetailResource */
+        InstructorDetailResource: {
+            id: number;
+            user_id?: number | null;
+            is_display_only?: boolean;
+            user?: {
+                id: number;
+                name: string;
+                email: string;
+            } | null;
+            name: string;
+            title: string | null;
+            bio: string | null;
+            avatar_url: string | null;
+            cover_url: string | null;
+            specializations: string | null;
+            years_experience: number;
+            rating: number;
+            total_reviews: number;
+            students_count: number;
+            achievements: unknown[];
+            twitter: string | null;
+            linkedin: string | null;
+            youtube: string | null;
+            courses_count: string | 0;
+            courses?: components["schemas"]["CourseSummaryResource"][];
+        };
+        /** InstructorLessonRequest */
+        InstructorLessonRequest: {
+            title: string;
+            description?: string | null;
+            duration?: number | null;
+            order?: number | null;
+            is_preview?: boolean | null;
+            is_published?: boolean | null;
+            video_id?: string | null;
+            video_provider?: string | null;
+        };
+        /** InstructorProfileRequest */
+        InstructorProfileRequest: {
+            name?: string;
+            title?: string | null;
+            bio?: string | null;
+            avatar_url?: string | null;
+            cover_url?: string | null;
+            specializations?: string | null;
+            years_experience?: number | null;
+            achievements?: string[] | null;
+            twitter?: string | null;
+            linkedin?: string | null;
+            youtube?: string | null;
+            /** @description Strictly prohibited metrics & identifiers (Zero-tampering guard) */
+            rating?: string;
+            total_reviews?: string;
+            students_count?: string;
+            user_id?: string;
+        };
+        /** InstructorRequest */
+        InstructorRequest: {
+            user_id?: number | null;
+            name: string;
+            title?: string | null;
+            bio?: string | null;
+            avatar_url?: string | null;
+            cover_url?: string | null;
+            specializations?: string | null;
+            years_experience?: number | null;
+            rating?: number | null;
+            total_reviews?: number | null;
+            students_count?: number | null;
+            achievements?: string[] | null;
+            twitter?: string | null;
+            linkedin?: string | null;
+            youtube?: string | null;
+            courses?: number[] | null;
+        };
+        /** InstructorResource */
+        InstructorResource: {
+            id: number;
+            user_id?: number | null;
+            is_display_only?: boolean;
+            user?: {
+                id: number;
+                name: string;
+                email: string;
+            } | null;
+            name: string;
+            title: string | null;
+            bio: string | null;
+            avatar_url: string | null;
+            cover_url: string | null;
+            specializations: string | null;
+            years_experience: number;
+            rating: number;
+            total_reviews: number;
+            students_count: number;
+            achievements: unknown[];
+            twitter: string | null;
+            linkedin: string | null;
+            youtube: string | null;
+            courses_count: string | 0;
+        };
+        /** InstructorSectionRequest */
+        InstructorSectionRequest: {
+            title: string;
+            order?: number | null;
+        };
+        /** InstructorUpdateCourseRequest */
+        InstructorUpdateCourseRequest: {
+            title?: string;
+            description?: string;
+            /** @enum {string} */
+            level?: "beginner" | "intermediate" | "advanced";
+            what_you_learn?: string[] | null;
+            requirements?: string[] | null;
+            target_audience?: string[] | null;
+            cover_image?: string | null;
+        };
+        /** LessonRequest */
+        LessonRequest: {
+            title: string;
+            video_id?: string | null;
+            duration?: number | null;
+            order?: number | null;
+            is_preview?: boolean | null;
+        };
+        /** LessonResource */
+        LessonResource: {
+            id: number;
+            section_id: number;
+            title: string;
+            description: string | null;
+            video_id: string | null;
+            video_provider: string;
+            playback: string;
+            duration: number;
+            order: number;
+            is_preview: boolean;
+            is_published: boolean;
+        };
+        /** LoginRequest */
+        LoginRequest: {
+            /** Format: email */
+            email: string;
+            password: string;
+        };
+        /** RegisterRequest */
+        RegisterRequest: {
+            name: string;
+            /** Format: email */
+            email: string;
+            password: string;
+            password_confirmation: string;
+        };
+        /** SectionRequest */
+        SectionRequest: {
+            title: string;
+            order?: number | null;
+        };
+        /** SectionResource */
+        SectionResource: {
+            id: number;
+            course_id: number;
+            title: string;
+            order: number;
+            lessons?: components["schemas"]["LessonResource"][];
+        };
+        /** StoreCourseRequest */
+        StoreCourseRequest: {
+            title: string;
+            description: string;
+            /** Format: uri */
+            cover_image?: string | null;
+            /** @enum {string} */
+            level: "beginner" | "intermediate" | "advanced";
+            /** @enum {string} */
+            status: "published" | "draft" | "coming_soon";
+            instructor_id: number;
+            rating?: number | null;
+            is_popular?: boolean;
+            total_duration?: number | null;
+            price?: number | null;
+            is_public?: boolean;
+            what_you_learn?: string[] | null;
+            requirements?: string[] | null;
+            target_audience?: string[] | null;
+        };
+        /** StudentDashboardResource */
+        StudentDashboardResource: {
+            stats: {
+                enrolled_courses: number;
+                completed_lessons: number;
+                learning_hours: number;
+                completed_courses: number;
+                streak: number;
+            };
+            exam_results: unknown[];
+            pass_rate: number;
+        };
+        /** SubmitTaskRequest */
+        SubmitTaskRequest: {
+            answers: string[];
+        };
+        /** TaskRequest */
+        TaskRequest: {
+            questions: string[];
+            pass_percentage: number;
+            max_attempts: number;
+        };
+        /** TaskResource */
+        TaskResource: {
+            id: number;
+            lesson_id: number;
+            questions: unknown[];
+            pass_percentage: number;
+            max_attempts: number;
+        };
+        /** UpdateCourseRequest */
+        UpdateCourseRequest: {
+            title?: string;
+            description?: string;
+            /** Format: uri */
+            cover_image?: string | null;
+            /** @enum {string} */
+            level?: "beginner" | "intermediate" | "advanced";
+            /** @enum {string} */
+            status?: "published" | "draft" | "coming_soon";
+            instructor_id?: number | null;
+            rating?: number | null;
+            is_popular?: boolean;
+            total_duration?: number | null;
+            price?: number | null;
+            is_public?: boolean;
+            what_you_learn?: string[] | null;
+            requirements?: string[] | null;
+            target_audience?: string[] | null;
+        };
+        /** UpdateEnrollmentRequest */
+        UpdateEnrollmentRequest: {
+            /** @enum {string} */
+            status: "approved" | "rejected";
+            payment_confirmed?: boolean | null;
+        };
+        /** UpdateFaqRequest */
+        UpdateFaqRequest: {
+            question?: string;
+            answer?: string;
+            order?: number | null;
+        };
+        /**
+         * UpdateInstructorRequest
+         * @description Same rules as creation, but `name` is optional on update.
+         */
+        UpdateInstructorRequest: {
+            user_id?: number | null;
+            name?: string;
+            title?: string | null;
+            bio?: string | null;
+            avatar_url?: string | null;
+            cover_url?: string | null;
+            specializations?: string | null;
+            years_experience?: number | null;
+            rating?: number | null;
+            total_reviews?: number | null;
+            students_count?: number | null;
+            achievements?: string[] | null;
+            twitter?: string | null;
+            linkedin?: string | null;
+            youtube?: string | null;
+            courses?: number[] | null;
+        };
+        /** UpdateLessonProgressRequest */
+        UpdateLessonProgressRequest: {
+            watched_percent: number;
+            last_position: number;
+        };
+        /** UpdateLessonRequest */
+        UpdateLessonRequest: {
+            title?: string;
+            video_id?: string | null;
+            duration?: number | null;
+            order?: number | null;
+            is_preview?: boolean | null;
+        };
+        /** UpdateTaskRequest */
+        UpdateTaskRequest: {
+            questions: string[];
+            pass_percentage?: number;
+            max_attempts?: number;
+        };
+        /** UpdateUserRequest */
+        UpdateUserRequest: {
+            name?: string;
+            /** Format: email */
+            email?: string;
+        };
+        /** UserAdminResource */
+        UserAdminResource: {
+            id: string;
+            name: string;
+            email: string;
+            role: string;
+            is_active: string;
+            enrollments_count: string;
+            created_at: string;
+        };
+        /** UserResource */
+        UserResource: {
+            id: number;
+            name: string;
+            email: string;
+            role: {
+                relations: [
+                    "roles"
+                ];
+            } | ("student" | "instructor" | "admin");
+            is_active: boolean;
+            /** Format: date-time */
+            created_at: string;
+        };
+        /** VideoAssetRequest */
+        VideoAssetRequest: {
+            course_id: number;
+            zoom_meeting_id?: number | null;
+            title: string;
+            description?: string | null;
+            /** @enum {string} */
+            provider: "youtube" | "bunny" | "cloudflare";
+            provider_video_id: string;
+            duration_seconds?: number | null;
+            /** @enum {string} */
+            type: "recording" | "lesson";
+        };
+        /** VideoAssetResource */
+        VideoAssetResource: {
+            id: number;
+            course_id: number;
+            zoom_meeting_id: number | null;
+            title: string;
+            description: string | null;
+            provider: string;
+            provider_video_id: string;
+            duration_seconds: number | null;
+            type: string;
+            status: string;
+            created_by: number | null;
+            course?: {
+                id: number;
+                title: string;
+                youtube_playlist_id: string | null;
+            };
+            zoom_meeting?: {
+                id: number;
+                title: string;
+                /** Format: date-time */
+                starts_at: string;
+            };
+            creator?: {
+                id: number;
+                name: string;
+            };
+            /** Format: date-time */
+            created_at: string | null;
+            /** Format: date-time */
+            updated_at: string | null;
+        };
+        /** ZoomAttendance */
+        ZoomAttendance: {
+            id: number;
+            zoom_meeting_id: number;
+            user_id: number;
+            /** Format: date-time */
+            attended_at: string;
+            /** Format: date-time */
+            created_at: string | null;
+            /** Format: date-time */
+            updated_at: string | null;
+        };
+        /** ZoomMeetingRequest */
+        ZoomMeetingRequest: {
+            course_id: number;
+            title: string;
+            description?: string | null;
+            /** Format: uri */
+            zoom_link: string;
+            /** Format: date-time */
+            starts_at: string;
+            duration_minutes?: number | null;
+        };
+        /** ZoomMeetingResource */
+        ZoomMeetingResource: {
+            id: number;
+            title: string;
+            description: string | null;
+            zoom_link: string;
+            /** Format: date-time */
+            starts_at: string;
+            duration_minutes: number;
+            course?: {
+                id: number;
+                title: string;
+            };
+            attendances_count?: string;
+            /** Format: date-time */
+            created_at: string | null;
+        };
     };
-  };
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    responses: {
+        /** @description Validation error */
+        ValidationException: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": {
+                    /** @description Errors overview. */
+                    message: string;
+                    /** @description A detailed description of each field that failed validation. */
+                    errors: {
+                        [key: string]: string[];
+                    };
+                };
+            };
+        };
+        /** @description Unauthenticated */
+        AuthenticationException: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": {
+                    /** @description Error overview. */
+                    message: string;
+                };
+            };
+        };
+        /** @description Not found */
+        ModelNotFoundException: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": {
+                    /** @description Error overview. */
+                    message: string;
+                };
+            };
+        };
+        /** @description Authorization error */
+        AuthorizationException: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": {
+                    /** @description Error overview. */
+                    message: string;
+                };
+            };
+        };
+    };
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  "admin.stats": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    "admin.stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": {
-            total_students: number;
-            total_courses: number;
-            total_enrollments: number;
-            total_instructors: number;
-          };
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-    };
-  };
-  "admin.users": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Paginated set of `UserAdminResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            data: components["schemas"]["UserAdminResource"][];
-            links: {
-              first: string | null;
-              last: string | null;
-              prev: string | null;
-              next: string | null;
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        total_students: number;
+                        total_courses: number;
+                        total_enrollments: number;
+                        total_instructors: number;
+                    };
+                };
             };
-            meta: {
-              current_page: number;
-              from: number | null;
-              last_page: number;
-              /** @description Generated paginator links. */
-              links: {
-                url: string | null;
-                label: string;
-                active: boolean;
-              }[];
-              /** @description Base path for paginator generated URLs. */
-              path: string | null;
-              /** @description Number of items shown per page. */
-              per_page: number;
-              /** @description Number of the last item in the slice. */
-              to: number | null;
-              /** @description Total number of items being paginated. */
-              total: number;
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "admin.users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `UserAdminResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["UserAdminResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
             };
-          };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
         };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
     };
-  };
-  "admin.students": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Paginated set of `UserAdminResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    "admin.students": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": {
-            data: components["schemas"]["UserAdminResource"][];
-            links: {
-              first: string | null;
-              last: string | null;
-              prev: string | null;
-              next: string | null;
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `UserAdminResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["UserAdminResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
             };
-            meta: {
-              current_page: number;
-              from: number | null;
-              last_page: number;
-              /** @description Generated paginator links. */
-              links: {
-                url: string | null;
-                label: string;
-                active: boolean;
-              }[];
-              /** @description Base path for paginator generated URLs. */
-              path: string | null;
-              /** @description Number of items shown per page. */
-              per_page: number;
-              /** @description Number of the last item in the slice. */
-              to: number | null;
-              /** @description Total number of items being paginated. */
-              total: number;
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "admin.destroyUser": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The user ID */
+                user: number;
             };
-          };
+            cookie?: never;
         };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-    };
-  };
-  "admin.destroyUser": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The user ID */
-        user: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @constant */
-            message: "تم حذف المستخدم بنجاح";
-          };
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-    };
-  };
-  "admin.updateUserRole": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The user ID */
-        user: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          /** @enum {string} */
-          role: "student" | "instructor" | "admin";
-        };
-      };
-    };
-    responses: {
-      /** @description `UserAdminResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            data: components["schemas"]["UserAdminResource"];
-          };
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      422: components["responses"]["ValidationException"];
-    };
-  };
-  "adminCourse.index": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Array of `CourseAdminResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            data: components["schemas"]["CourseAdminResource"][];
-          };
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "adminCourse.store": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["StoreCourseRequest"];
-      };
-    };
-    responses: {
-      /** @description `CourseAdminResource` */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CourseAdminResource"] & Record<string, never>;
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      422: components["responses"]["ValidationException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "adminCourse.show": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The course ID */
-        course: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description `CourseAdminResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CourseAdminResource"] & Record<string, never>;
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "adminCourse.update": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The course ID */
-        course: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        "application/json": components["schemas"]["UpdateCourseRequest"];
-      };
-    };
-    responses: {
-      /** @description `CourseAdminResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CourseAdminResource"] & Record<string, never>;
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      422: components["responses"]["ValidationException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "adminCourse.destroy": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The course ID */
-        course: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description No content */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json":
-            | {
-                message: string;
-              }
-            | {
-                /** @constant */
-                message: "Cannot delete course because students are enrolled.";
-              };
-        };
-      };
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "adminVideoAsset.index": {
-    parameters: {
-      query?: {
-        per_page?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Paginated set of `VideoAssetResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            data: components["schemas"]["VideoAssetResource"][];
-            links: {
-              first: string | null;
-              last: string | null;
-              prev: string | null;
-              next: string | null;
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "تم حذف المستخدم بنجاح";
+                    };
+                };
             };
-            meta: {
-              current_page: number;
-              from: number | null;
-              last_page: number;
-              /** @description Generated paginator links. */
-              links: {
-                url: string | null;
-                label: string;
-                active: boolean;
-              }[];
-              /** @description Base path for paginator generated URLs. */
-              path: string | null;
-              /** @description Number of items shown per page. */
-              per_page: number;
-              /** @description Number of the last item in the slice. */
-              to: number | null;
-              /** @description Total number of items being paginated. */
-              total: number;
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "admin.updateUserRole": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The user ID */
+                user: number;
             };
-          };
+            cookie?: never;
         };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-    };
-  };
-  "adminVideoAsset.store": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["VideoAssetRequest"];
-      };
-    };
-    responses: {
-      /** @description `VideoAssetResource` */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["VideoAssetResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      422: components["responses"]["ValidationException"];
-    };
-  };
-  "adminVideoAsset.uploadChunk": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ChunkUploadRequest"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            completed: boolean;
-            chunk_index: number;
-            progress: number;
-          };
-        };
-      };
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            completed: boolean;
-            /** @constant */
-            progress: 100;
-            video_asset: components["schemas"]["VideoAssetResource"];
-          };
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      422: components["responses"]["ValidationException"];
-    };
-  };
-  "adminVideoAsset.show": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The video asset ID */
-        videoAsset: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description `VideoAssetResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["VideoAssetResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-    };
-  };
-  "adminVideoAsset.update": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The video asset ID */
-        videoAsset: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["VideoAssetRequest"];
-      };
-    };
-    responses: {
-      /** @description `VideoAssetResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["VideoAssetResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      422: components["responses"]["ValidationException"];
-    };
-  };
-  "adminVideoAsset.destroy": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The video asset ID */
-        videoAsset: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description No content */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-    };
-  };
-  "adminVideoAsset.youtubeStatus": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            connected: boolean;
-            channel_title: string | null;
-            message: string | "قناة YouTube غير مربوطة. يرجى ربط القناة أولاً لتفعيل الرفع.";
-          };
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-    };
-  };
-  "adminVideoAsset.youtubeAuthUrl": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            url: string;
-            state: string;
-          };
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-    };
-  };
-  "adminVideoAsset.youtubeCallback": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          code: string;
-          state?: string | null;
-        };
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @constant */
-            status: "connected";
-            channel_title: string;
-          };
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      422: components["responses"]["ValidationException"];
-    };
-  };
-  "adminVideoAsset.youtubeDisconnect": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @constant */
-            status: "disconnected";
-          };
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-    };
-  };
-  "adminZoomMeeting.index": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Array of `ZoomMeetingResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            data: components["schemas"]["ZoomMeetingResource"][];
-          };
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-    };
-  };
-  "adminZoomMeeting.store": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ZoomMeetingRequest"];
-      };
-    };
-    responses: {
-      /** @description `ZoomMeetingResource` */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ZoomMeetingResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      422: components["responses"]["ValidationException"];
-    };
-  };
-  "adminZoomMeeting.update": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The zoom meeting ID */
-        zoomMeeting: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ZoomMeetingRequest"];
-      };
-    };
-    responses: {
-      /** @description `ZoomMeetingResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ZoomMeetingResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      422: components["responses"]["ValidationException"];
-    };
-  };
-  "adminZoomMeeting.destroy": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The zoom meeting ID */
-        zoomMeeting: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description No content */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-    };
-  };
-  "adminZoomMeeting.attendances": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The zoom meeting ID */
-        zoomMeeting: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ZoomAttendance"][];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-    };
-  };
-  "adminZoomMeeting.roster": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The zoom meeting ID */
-        zoomMeeting: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            user: {
-              id: number;
-              name: string;
-              email: string;
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    role: "student" | "instructor" | "admin";
+                };
             };
-            attended_at: string | null;
-            attended: boolean;
-          }[];
         };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-    };
-  };
-  "adminZoomMeeting.setAttendance": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The zoom meeting ID */
-        zoomMeeting: number;
-        /** @description The user ID */
-        user: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          attended: boolean;
-        };
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            attended: boolean;
-          };
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      422: components["responses"]["ValidationException"];
-    };
-  };
-  "auth.register": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["RegisterRequest"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @constant */
-            message: "تم إنشاء الحساب بنجاح";
-            user: components["schemas"]["UserResource"];
-            token: string;
-          };
-        };
-      };
-      422: components["responses"]["ValidationException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "auth.login": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["LoginRequest"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @constant */
-            message: "تم تسجيل الدخول بنجاح";
-            user: components["schemas"]["UserResource"];
-            token: string;
-          };
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      422: components["responses"]["ValidationException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "auth.googleLogin": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          credential: string;
-        };
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @constant */
-            message: "تم تسجيل الدخول بنجاح عبر Google";
-            user: components["schemas"]["UserResource"];
-            token: string;
-          };
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @constant */
-            message: "فشل التحقق من حساب Google";
-            error: string | null;
-          };
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @constant */
-            message: "رمز التحقق من Google غير صالح أو منتهي الصلاحية";
-          };
-        };
-      };
-      422: components["responses"]["ValidationException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "auth.me": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description `UserResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["UserResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-    };
-  };
-  "auth.logout": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @constant */
-            message: "تم تسجيل الخروج بنجاح";
-          };
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-    };
-  };
-  "course.index": {
-    parameters: {
-      query?: {
-        /** @description تحديد الحد الأقصى للكورسات المطلوبة (مثلاً 3 لصفحة الهبوط) مع سقف أمان 50 */
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            data: unknown[];
-          };
-        };
-      };
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "course.show": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The course ID */
-        course: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description `CourseDetailResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            data: components["schemas"]["CourseDetailResource"];
-          };
-        };
-      };
-      404: components["responses"]["ModelNotFoundException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "dashboard.stats": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description `StudentDashboardResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["StudentDashboardResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-    };
-  };
-  "enrollment.enroll": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The course ID */
-        course: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @enum {string} */
-            message:
-              | "تم الانضمام للكورس المجاني بنجاح"
-              | "تم إرسال طلب الاشتراك، بانتظار موافقة الإدارة";
-            /** @enum {string} */
-            status: "approved" | "pending";
-          };
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "enrollment.unenroll": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The course ID */
-        course: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @constant */
-            message: "تم سحب التسجيل بنجاح";
-          };
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "enrollment.checkEnrollment": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The course ID */
-        course: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            enrolled: boolean;
-            status: string | null;
-            can_watch: boolean;
-            can_enroll: boolean;
-          };
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      404: components["responses"]["ModelNotFoundException"];
-    };
-  };
-  "enrollment.myCourses": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Enrollment"][];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-    };
-  };
-  "enrollment.index": {
-    parameters: {
-      query?: {
-        per_page?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Paginated set of `EnrollmentResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            data: components["schemas"]["EnrollmentResource"][];
-            links: {
-              first: string | null;
-              last: string | null;
-              prev: string | null;
-              next: string | null;
+        responses: {
+            /** @description `UserAdminResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["UserAdminResource"];
+                    };
+                };
             };
-            meta: {
-              current_page: number;
-              from: number | null;
-              last_page: number;
-              /** @description Generated paginator links. */
-              links: {
-                url: string | null;
-                label: string;
-                active: boolean;
-              }[];
-              /** @description Base path for paginator generated URLs. */
-              path: string | null;
-              /** @description Number of items shown per page. */
-              per_page: number;
-              /** @description Number of the last item in the slice. */
-              to: number | null;
-              /** @description Total number of items being paginated. */
-              total: number;
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "adminCourse.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Array of `CourseAdminResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CourseAdminResource"][];
+                    };
+                };
             };
-          };
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-    };
-  };
-  "enrollment.store": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          course_id: number;
-          /** Format: email */
-          student_email: string;
-          student_name?: string | null;
-          /** @enum {string|null} */
-          status?: "pending" | "approved" | "rejected" | null;
-          payment_confirmed?: boolean | null;
-        };
-      };
-    };
-    responses: {
-      /** @description `EnrollmentResource` */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            data: components["schemas"]["EnrollmentResource"];
-          };
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      422: components["responses"]["ValidationException"];
-    };
-  };
-  "enrollment.update": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The enrollment ID */
-        enrollment: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateEnrollmentRequest"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @constant */
-            message: "تم تحديث حالة التسجيل";
-            enrollment: components["schemas"]["EnrollmentResource"];
-          };
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      422: components["responses"]["ValidationException"];
-    };
-  };
-  "admin.faq.index_10": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            data: unknown[];
-          };
-        };
-      };
-    };
-  };
-  "admin.faq.index_69": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            data: unknown[];
-          };
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-    };
-  };
-  "faq.store": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["FaqRequest"];
-      };
-    };
-    responses: {
-      /** @description `FaqResource` */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["FaqResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      422: components["responses"]["ValidationException"];
-    };
-  };
-  "faq.update": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The faq ID */
-        faq: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        "application/json": components["schemas"]["UpdateFaqRequest"];
-      };
-    };
-    responses: {
-      /** @description `FaqResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["FaqResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      422: components["responses"]["ValidationException"];
-    };
-  };
-  "faq.destroy": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The faq ID */
-        faq: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description No content */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-    };
-  };
-  "admin.instructor.index_8": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json":
-            | {
-                data: unknown[];
-              }
-            | {
-                data: components["schemas"]["InstructorResource"][];
-              };
-        };
-      };
-    };
-  };
-  "admin.instructor.show_9": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description `InstructorDetailResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["InstructorDetailResource"];
-        };
-      };
-    };
-  };
-  "admin.instructor.index_64": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json":
-            | {
-                data: unknown[];
-              }
-            | {
-                data: components["schemas"]["InstructorResource"][];
-              };
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-    };
-  };
-  "instructor.store": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["InstructorRequest"];
-      };
-    };
-    responses: {
-      /** @description `InstructorResource` */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["InstructorResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      422: components["responses"]["ValidationException"];
-    };
-  };
-  "admin.instructor.show_66": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description `InstructorDetailResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["InstructorDetailResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-    };
-  };
-  "instructor.update": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The instructor ID */
-        instructor: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        "application/json": components["schemas"]["UpdateInstructorRequest"];
-      };
-    };
-    responses: {
-      /** @description `InstructorResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["InstructorResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      422: components["responses"]["ValidationException"];
-    };
-  };
-  "instructor.destroy": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The instructor ID */
-        instructor: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description No content */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-    };
-  };
-  "instructorCourse.index": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json":
-            | {
-                data: (components["schemas"]["CourseInstructorResource"] & Record<string, never>)[];
-                courses: (components["schemas"]["CourseInstructorResource"] &
-                  Record<string, never>)[];
-              }
-            | {
-                data: string[];
-                courses: string[];
-              };
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "instructorCourse.show": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The course ID */
-        course: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description `CourseInstructorResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CourseInstructorResource"] &
-            Record<string, never>;
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "instructorCourse.update": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The course ID */
-        course: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        "application/json": components["schemas"]["InstructorUpdateCourseRequest"];
-      };
-    };
-    responses: {
-      /** @description `CourseInstructorResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CourseInstructorResource"] &
-            Record<string, never>;
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      422: components["responses"]["ValidationException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "instructorLesson.store": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The section ID */
-        section: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["InstructorLessonRequest"];
-      };
-    };
-    responses: {
-      /** @description `LessonResource` */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["LessonResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      422: components["responses"]["ValidationException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "instructorLesson.update": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The lesson ID */
-        lesson: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["InstructorLessonRequest"];
-      };
-    };
-    responses: {
-      /** @description `LessonResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["LessonResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      422: components["responses"]["ValidationException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "instructorLesson.destroy": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The lesson ID */
-        lesson: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description No content */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      /** @description An error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /**
-             * @description Error overview.
-             * @example Cannot delete a lesson with recorded student progress.
-             */
-            message: string;
-          };
-        };
-      };
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "instructorProfile.show": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description `CourseInstructorProfileResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CourseInstructorProfileResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @constant */
-            message: "الملف التعريفي للمدرب غير موجود";
-          };
-        };
-      };
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "instructorProfile.update": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        "application/json": components["schemas"]["InstructorProfileRequest"];
-      };
-    };
-    responses: {
-      /** @description `CourseInstructorProfileResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CourseInstructorProfileResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @constant */
-            message: "الملف التعريفي للمدرب غير موجود";
-          };
-        };
-      };
-      422: components["responses"]["ValidationException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "instructorSection.index": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The course ID */
-        course: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            sections: components["schemas"]["SectionResource"][];
-          };
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "instructorSection.store": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The course ID */
-        course: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["InstructorSectionRequest"];
-      };
-    };
-    responses: {
-      /** @description `SectionResource` */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SectionResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      422: components["responses"]["ValidationException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "instructorSection.update": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The section ID */
-        section: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["InstructorSectionRequest"];
-      };
-    };
-    responses: {
-      /** @description `SectionResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SectionResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      422: components["responses"]["ValidationException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "instructorSection.destroy": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The section ID */
-        section: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description No content */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      /** @description An error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /**
-             * @description Error overview.
-             * @example Cannot delete a section with recorded student progress.
-             */
-            message: string;
-          };
-        };
-      };
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "lesson.show": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The lesson ID */
-        lesson: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description `LessonResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["LessonResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-    };
-  };
-  "lesson.store": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The section ID */
-        section: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["LessonRequest"];
-      };
-    };
-    responses: {
-      /** @description `LessonResource` */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["LessonResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      422: components["responses"]["ValidationException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "lesson.update": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The lesson ID */
-        lesson: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        "application/json": components["schemas"]["UpdateLessonRequest"];
-      };
-    };
-    responses: {
-      /** @description `LessonResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["LessonResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      422: components["responses"]["ValidationException"];
-    };
-  };
-  "lesson.destroy": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The lesson ID */
-        lesson: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description No content */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-    };
-  };
-  "lesson.getTask": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The lesson ID */
-        lesson: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description `TaskResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TaskResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-    };
-  };
-  "lesson.updateTask": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The lesson ID */
-        lesson: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateTaskRequest"];
-      };
-    };
-    responses: {
-      /** @description `TaskResource` */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TaskResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      422: components["responses"]["ValidationException"];
-    };
-  };
-  "lesson.storeTask": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The lesson ID */
-        lesson: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["TaskRequest"];
-      };
-    };
-    responses: {
-      /** @description `TaskResource` */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TaskResource"];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      422: components["responses"]["ValidationException"];
-    };
-  };
-  "passwordReset.forgotPassword": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          /** Format: email */
-          email: string;
-        };
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @constant */
-            message: "إذا كان هذا البريد مسجلاً في منصتنا، فقد أرسلنا رابط إعادة التعيين إلى بريدك الإلكتروني الحين.";
-          };
-        };
-      };
-      422: components["responses"]["ValidationException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "passwordReset.resetPassword": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          token: string;
-          /** Format: email */
-          email: string;
-          password: string;
-          password_confirmation: string;
-        };
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @constant */
-            message: "تم إعادة تعيين كلمة المرور بنجاح، يمكنك الآن تسجيل الدخول ببياناتك الجديدة.";
-          };
-        };
-      };
-      422: components["responses"]["ValidationException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  "progress.inProgress": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": ({
-            id: number;
-            title: string;
-            watched_percent: number;
-            course: {
-              id: number;
-              title: string;
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
             };
-            section: {
-              id: number;
-              title: string;
+        };
+    };
+    "adminCourse.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StoreCourseRequest"];
             };
-          } | null)[];
         };
-      };
-      401: components["responses"]["AuthenticationException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description `CourseAdminResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CourseAdminResource"] & Record<string, never>;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
         };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
     };
-  };
-  "progress.show": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        lessonId: string;
-      };
-      cookie?: never;
+    "adminCourse.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The course ID */
+                course: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `CourseAdminResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CourseAdminResource"] & Record<string, never>;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    "adminCourse.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The course ID */
+                course: number;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": {
-            watched_percent: string | 0;
-            last_position: number;
-            completed: boolean;
-          };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateCourseRequest"];
+            };
         };
-      };
-      401: components["responses"]["AuthenticationException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description `CourseAdminResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CourseAdminResource"] & Record<string, never>;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
         };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
     };
-  };
-  "progress.update": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        lessonId: string;
-      };
-      cookie?: never;
+    "adminCourse.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The course ID */
+                course: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    } | {
+                        /** @constant */
+                        message: "Cannot delete course because students are enrolled.";
+                    };
+                };
+            };
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateLessonProgressRequest"];
-      };
+    "adminVideoAsset.index": {
+        parameters: {
+            query?: {
+                per_page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `VideoAssetResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["VideoAssetResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
     };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    "adminVideoAsset.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": {
-            watched_percent: string;
-            completed: boolean;
-            task_unlocked: boolean;
-          };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VideoAssetRequest"];
+            };
         };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      422: components["responses"]["ValidationException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description `VideoAssetResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VideoAssetResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
         };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
     };
-  };
-  "progress.courseSummary": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The course ID */
-        course: number;
-      };
-      cookie?: never;
+    "adminVideoAsset.uploadChunk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChunkUploadRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        completed: boolean;
+                        chunk_index: number;
+                        progress: number;
+                    };
+                };
+            };
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        completed: boolean;
+                        /** @constant */
+                        progress: 100;
+                        video_asset: components["schemas"]["VideoAssetResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
     };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    "adminVideoAsset.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The video asset ID */
+                videoAsset: number;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": {
-            total_lessons: number;
-            completed_count: number;
-            completed_lesson_ids: unknown[];
-            percent: number;
-            course_complete: boolean;
-          };
+        requestBody?: never;
+        responses: {
+            /** @description `VideoAssetResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VideoAssetResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
         };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
     };
-  };
-  "section.index": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The course ID */
-        course: number;
-      };
-      cookie?: never;
+    "adminVideoAsset.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The video asset ID */
+                videoAsset: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VideoAssetRequest"];
+            };
+        };
+        responses: {
+            /** @description `VideoAssetResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VideoAssetResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
     };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    "adminVideoAsset.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The video asset ID */
+                videoAsset: number;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": {
-            sections: components["schemas"]["SectionResource"][];
-          };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
         };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
     };
-  };
-  "section.store": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The course ID */
-        course: number;
-      };
-      cookie?: never;
+    "adminVideoAsset.youtubeStatus": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        connected: boolean;
+                        channel_title: string | null;
+                        message: string | "قناة YouTube غير مربوطة. يرجى ربط القناة أولاً لتفعيل الرفع.";
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SectionRequest"];
-      };
+    "adminVideoAsset.youtubeAuthUrl": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        url: string;
+                        state: string;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
     };
-    responses: {
-      /** @description `SectionResource` */
-      201: {
-        headers: {
-          [name: string]: unknown;
+    "adminVideoAsset.youtubeCallback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["SectionResource"];
+        requestBody: {
+            content: {
+                "application/json": {
+                    code: string;
+                    state?: string | null;
+                };
+            };
         };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      422: components["responses"]["ValidationException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        status: "connected";
+                        channel_title: string;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
         };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
     };
-  };
-  "section.destroy": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The section ID */
-        section: number;
-      };
-      cookie?: never;
+    "adminVideoAsset.youtubeDisconnect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        status: "disconnected";
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description No content */
-      204: {
-        headers: {
-          [name: string]: unknown;
+    "adminZoomMeeting.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            /** @description Array of `ZoomMeetingResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ZoomMeetingResource"][];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
         };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
     };
-  };
-  "task.show": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The lesson ID */
-        lesson: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    "adminZoomMeeting.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": {
-            task_id: number;
-            pass_percentage: number;
-            max_attempts: number;
-            attempts_used: number;
-            attempts_remaining: unknown;
-            cooldown_minutes: number;
-            cooldown_remaining_minutes: number;
-            already_passed: boolean;
-            questions: {
-              id: string | number;
-              type: string | "mcq";
-              /** @description mcq | true_false | open */
-              text: string | "";
-              options: string | string[];
-            }[];
-          };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ZoomMeetingRequest"];
+            };
         };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-    };
-  };
-  "task.submit": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The lesson ID */
-        lesson: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SubmitTaskRequest"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description `ZoomMeetingResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ZoomMeetingResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
         };
-        content: {
-          "application/json": string;
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      422: components["responses"]["ValidationException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
     };
-  };
-  "user.update": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The user ID */
-        user: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        "application/json": components["schemas"]["UpdateUserRequest"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    "adminZoomMeeting.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The zoom meeting ID */
+                zoomMeeting: number;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": {
-            /** @constant */
-            message: "تم تحديث الملف الشخصي بنجاح";
-            user: components["schemas"]["UserResource"];
-          };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ZoomMeetingRequest"];
+            };
         };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: components["responses"]["AuthorizationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      422: components["responses"]["ValidationException"];
-    };
-  };
-  "zoomMeeting.index": {
-    parameters: {
-      query?: {
-        month?: string | null;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description `ZoomMeetingResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ZoomMeetingResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
         };
-        content: {
-          "application/json":
-            | {
+    };
+    "adminZoomMeeting.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The zoom meeting ID */
+                zoomMeeting: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "adminZoomMeeting.attendances": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The zoom meeting ID */
+                zoomMeeting: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ZoomAttendance"][];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "adminZoomMeeting.roster": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The zoom meeting ID */
+                zoomMeeting: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        user: {
+                            id: number;
+                            name: string;
+                            email: string;
+                        };
+                        attended_at: string | null;
+                        attended: boolean;
+                    }[];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "adminZoomMeeting.setAttendance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The zoom meeting ID */
+                zoomMeeting: number;
+                /** @description The user ID */
+                user: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    attended: boolean;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        attended: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "auth.register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegisterRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "تم إنشاء الحساب بنجاح";
+                        user: components["schemas"]["UserResource"];
+                        token: string;
+                    };
+                };
+            };
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "auth.login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "تم تسجيل الدخول بنجاح";
+                        user: components["schemas"]["UserResource"];
+                        token: string;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "auth.googleLogin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    credential: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "تم تسجيل الدخول بنجاح عبر Google";
+                        user: components["schemas"]["UserResource"];
+                        token: string;
+                    };
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "فشل التحقق من حساب Google";
+                        error: string | null;
+                    };
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "رمز التحقق من Google غير صالح أو منتهي الصلاحية";
+                    };
+                };
+            };
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "auth.me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `UserResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "auth.logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "تم تسجيل الخروج بنجاح";
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "course.index": {
+        parameters: {
+            query?: {
+                /** @description تحديد الحد الأقصى للكورسات المطلوبة (مثلاً 3 لصفحة الهبوط) مع سقف أمان 50 */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                };
+            };
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "course.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The course ID */
+                course: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `CourseDetailResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CourseDetailResource"];
+                    };
+                };
+            };
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "dashboard.stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `StudentDashboardResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudentDashboardResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "enrollment.enroll": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The course ID */
+                course: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        message: "تم الانضمام للكورس المجاني بنجاح" | "تم إرسال طلب الاشتراك، بانتظار موافقة الإدارة";
+                        /** @enum {string} */
+                        status: "approved" | "pending";
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "enrollment.unenroll": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The course ID */
+                course: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "تم سحب التسجيل بنجاح";
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "enrollment.checkEnrollment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The course ID */
+                course: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        enrolled: boolean;
+                        status: string | null;
+                        can_watch: boolean;
+                        can_enroll: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "enrollment.myCourses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Enrollment"][];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "enrollment.index": {
+        parameters: {
+            query?: {
+                per_page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `EnrollmentResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["EnrollmentResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "enrollment.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    course_id: number;
+                    /** Format: email */
+                    student_email: string;
+                    student_name?: string | null;
+                    /** @enum {string|null} */
+                    status?: "pending" | "approved" | "rejected" | null;
+                    payment_confirmed?: boolean | null;
+                };
+            };
+        };
+        responses: {
+            /** @description `EnrollmentResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["EnrollmentResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "enrollment.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The enrollment ID */
+                enrollment: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateEnrollmentRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "تم تحديث حالة التسجيل";
+                        enrollment: components["schemas"]["EnrollmentResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "admin.faq.index_10": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                };
+            };
+        };
+    };
+    "admin.faq.index_69": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "faq.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FaqRequest"];
+            };
+        };
+        responses: {
+            /** @description `FaqResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FaqResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "faq.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The faq ID */
+                faq: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateFaqRequest"];
+            };
+        };
+        responses: {
+            /** @description `FaqResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FaqResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "faq.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The faq ID */
+                faq: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "admin.instructor.index_8": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    } | {
+                        data: components["schemas"]["InstructorResource"][];
+                    };
+                };
+            };
+        };
+    };
+    "admin.instructor.show_9": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
                 id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `InstructorDetailResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InstructorDetailResource"];
+                };
+            };
+        };
+    };
+    "admin.instructor.index_64": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    } | {
+                        data: components["schemas"]["InstructorResource"][];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "instructor.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InstructorRequest"];
+            };
+        };
+        responses: {
+            /** @description `InstructorResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InstructorResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "admin.instructor.show_66": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `InstructorDetailResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InstructorDetailResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "instructor.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The instructor ID */
+                instructor: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateInstructorRequest"];
+            };
+        };
+        responses: {
+            /** @description `InstructorResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InstructorResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "instructor.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The instructor ID */
+                instructor: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "instructorCourse.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: (components["schemas"]["CourseInstructorResource"] & Record<string, never>)[];
+                        courses: (components["schemas"]["CourseInstructorResource"] & Record<string, never>)[];
+                    } | {
+                        data: string[];
+                        courses: string[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "instructorCourse.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The course ID */
+                course: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `CourseInstructorResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CourseInstructorResource"] & Record<string, never>;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "instructorCourse.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The course ID */
+                course: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["InstructorUpdateCourseRequest"];
+            };
+        };
+        responses: {
+            /** @description `CourseInstructorResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CourseInstructorResource"] & Record<string, never>;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "instructorLesson.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The section ID */
+                section: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InstructorLessonRequest"];
+            };
+        };
+        responses: {
+            /** @description `LessonResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LessonResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "instructorLesson.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The lesson ID */
+                lesson: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InstructorLessonRequest"];
+            };
+        };
+        responses: {
+            /** @description `LessonResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LessonResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "instructorLesson.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The lesson ID */
+                lesson: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description An error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example Cannot delete a lesson with recorded student progress.
+                         */
+                        message: string;
+                    };
+                };
+            };
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "instructorProfile.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `CourseInstructorProfileResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CourseInstructorProfileResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "الملف التعريفي للمدرب غير موجود";
+                    };
+                };
+            };
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "instructorProfile.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["InstructorProfileRequest"];
+            };
+        };
+        responses: {
+            /** @description `CourseInstructorProfileResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CourseInstructorProfileResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "الملف التعريفي للمدرب غير موجود";
+                    };
+                };
+            };
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "instructorSection.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The course ID */
+                course: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        sections: components["schemas"]["SectionResource"][];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "instructorSection.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The course ID */
+                course: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InstructorSectionRequest"];
+            };
+        };
+        responses: {
+            /** @description `SectionResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SectionResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "instructorSection.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The section ID */
+                section: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InstructorSectionRequest"];
+            };
+        };
+        responses: {
+            /** @description `SectionResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SectionResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "instructorSection.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The section ID */
+                section: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description An error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example Cannot delete a section with recorded student progress.
+                         */
+                        message: string;
+                    };
+                };
+            };
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "lesson.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The lesson ID */
+                lesson: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `LessonResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LessonResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "lesson.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The section ID */
+                section: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LessonRequest"];
+            };
+        };
+        responses: {
+            /** @description `LessonResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LessonResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "lesson.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The lesson ID */
+                lesson: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateLessonRequest"];
+            };
+        };
+        responses: {
+            /** @description `LessonResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LessonResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "lesson.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The lesson ID */
+                lesson: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "lesson.getTask": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The lesson ID */
+                lesson: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `TaskResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "lesson.updateTask": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The lesson ID */
+                lesson: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateTaskRequest"];
+            };
+        };
+        responses: {
+            /** @description `TaskResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "lesson.storeTask": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The lesson ID */
+                lesson: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TaskRequest"];
+            };
+        };
+        responses: {
+            /** @description `TaskResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "passwordReset.forgotPassword": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: email */
+                    email: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "إذا كان هذا البريد مسجلاً في منصتنا، فقد أرسلنا رابط إعادة التعيين إلى بريدك الإلكتروني الحين.";
+                    };
+                };
+            };
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "passwordReset.resetPassword": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    token: string;
+                    /** Format: email */
+                    email: string;
+                    password: string;
+                    password_confirmation: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "تم إعادة تعيين كلمة المرور بنجاح، يمكنك الآن تسجيل الدخول ببياناتك الجديدة.";
+                    };
+                };
+            };
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "progress.inProgress": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": ({
+                        id: number;
+                        title: string;
+                        watched_percent: number;
+                        course: {
+                            id: number;
+                            title: string;
+                        };
+                        section: {
+                            id: number;
+                            title: string;
+                        };
+                    } | null)[];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "progress.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lessonId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        watched_percent: string | 0;
+                        last_position: number;
+                        completed: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "progress.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lessonId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateLessonProgressRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        watched_percent: string;
+                        completed: boolean;
+                        task_unlocked: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "progress.courseSummary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The course ID */
+                course: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        total_lessons: number;
+                        completed_count: number;
+                        completed_lesson_ids: unknown[];
+                        percent: number;
+                        course_complete: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "section.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The course ID */
+                course: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        sections: components["schemas"]["SectionResource"][];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "section.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The course ID */
+                course: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SectionRequest"];
+            };
+        };
+        responses: {
+            /** @description `SectionResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SectionResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "section.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The section ID */
+                section: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "task.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The lesson ID */
+                lesson: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        task_id: number;
+                        pass_percentage: number;
+                        max_attempts: number;
+                        attempts_used: number;
+                        attempts_remaining: unknown;
+                        cooldown_minutes: number;
+                        cooldown_remaining_minutes: number;
+                        already_passed: boolean;
+                        questions: {
+                            id: string | number;
+                            type: string | "mcq";
+                            /** @description mcq | true_false | open */
+                            text: string | "";
+                            options: string | string[];
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "task.submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The lesson ID */
+                lesson: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubmitTaskRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "user.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The user ID */
+                user: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateUserRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "تم تحديث الملف الشخصي بنجاح";
+                        user: components["schemas"]["UserResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "zoomMeeting.index": {
+        parameters: {
+            query?: {
+                month?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        id: number;
+                        course_id: number;
+                        course_name: string;
+                        title: string;
+                        description: string | null;
+                        /** Format: date-time */
+                        starts_at: string;
+                        /** Format: date-time */
+                        ends_at: string;
+                        can_join: boolean;
+                        attended: boolean;
+                    }[] | string[];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "zoomMeeting.attendanceSummary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        course_id: number;
+                        course_name: string;
+                        attended: number;
+                        missed: number;
+                        total_ended: number;
+                        percent: number | null;
+                    }[];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "zoomMeeting.attendanceRecord": {
+        parameters: {
+            query: {
                 course_id: number;
-                course_name: string;
-                title: string;
-                description: string | null;
-                /** Format: date-time */
-                starts_at: string;
-                /** Format: date-time */
-                ends_at: string;
-                can_join: boolean;
-                attended: boolean;
-              }[]
-            | string[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-      401: components["responses"]["AuthenticationException"];
-      422: components["responses"]["ValidationException"];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        id: number;
+                        title: string;
+                        /** Format: date-time */
+                        starts_at: string;
+                        /** Format: date-time */
+                        ends_at: string;
+                        attended_at: string | null;
+                        attended: boolean;
+                    }[];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "غير مسجل أو غير مقبول في هذا الكورس";
+                    };
+                };
+            };
+            422: components["responses"]["ValidationException"];
+        };
     };
-  };
-  "zoomMeeting.attendanceSummary": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "zoomMeeting.attend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The zoom meeting ID */
+                zoomMeeting: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            course_id: number;
-            course_name: string;
-            attended: number;
-            missed: number;
-            total_ended: number;
-            percent: number | null;
-          }[];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-    };
-  };
-  "zoomMeeting.attendanceRecord": {
-    parameters: {
-      query: {
-        course_id: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            id: number;
-            title: string;
-            /** Format: date-time */
-            starts_at: string;
-            /** Format: date-time */
-            ends_at: string;
-            attended_at: string | null;
-            attended: boolean;
-          }[];
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @constant */
-            message: "غير مسجل أو غير مقبول في هذا الكورس";
-          };
-        };
-      };
-      422: components["responses"]["ValidationException"];
-    };
-  };
-  "zoomMeeting.attend": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description The zoom meeting ID */
-        zoomMeeting: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": Record<string, never>;
-        };
-      };
-      401: components["responses"]["AuthenticationException"];
-      404: components["responses"]["ModelNotFoundException"];
-      /** @description Too many requests */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Error overview. */
-            message: string;
-          };
-        };
-      };
-    };
-  };
 }

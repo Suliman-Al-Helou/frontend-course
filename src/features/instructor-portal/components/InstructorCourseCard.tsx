@@ -82,7 +82,7 @@ export function InstructorCourseCard({ course }: InstructorCourseCardProps) {
             variant="outline"
             className="w-full min-h-[44px] justify-between border-border text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors"
           >
-            <Link href={`/instructor/courses`}>
+            <Link href={`/instructor/courses/${course.id}`}>
               <span className="font-medium text-xs">إدارة المحتوى والدروس</span>
               <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             </Link>

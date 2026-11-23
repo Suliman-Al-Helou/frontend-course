@@ -27,6 +27,8 @@ Deliver an isolated, production-hardened full-stack Instructor Portal (`backendC
 - [ADR 0018](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0018-soft-delete-dissociation-and-curriculum-schema-readiness.md): Soft-delete dissociation guard, bidirectional role synchronization, and curriculum schema readiness.
 - [ADR 0019](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0019-educational-metadata-updates-and-immutable-activity-audit.md): Educational metadata updates, silent commercial stripping, and immutable activity audit logging.
 - [ADR 0020](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0020-dual-requirement-lesson-progression-and-atomic-task-gating.md): Dual-requirement lesson progression, formative task completion, and atomic task gating.
+- [ADR 0021](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0021-discriminated-video-playback-and-instructor-route-shell.md): Discriminated video playback contract, secure delivery gating, and instructor route shell.
+- [ADR 0023](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0023-fullstack-contract-driven-alignment-and-zero-regression-protocol.md): Full-stack contract-driven alignment, zero-regression schema sync, and boundary adapter protocol ([Spec 08](file:///home/suliman/Documents/courses/frontend-course/docs/spec/08-fullstack-contract-alignment-and-hardening-plan.md)).
 
 ## Active Frontier & Ordered Tickets
 
