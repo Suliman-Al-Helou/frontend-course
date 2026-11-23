@@ -12,7 +12,7 @@ export interface Instructor {
   bio?: string;
   avatar_url?: string;
   cover_url?: string;
-  specializations?: string;
+  specializations?: string | string[];
   years_experience?: number;
   rating?: number;
   total_reviews?: number;
@@ -25,6 +25,24 @@ export interface Instructor {
   courses?: number[];
   created_at?: string;
   updated_at?: string;
+}
+
+/**
+ * Safely parses specializations whether represented as a comma-separated string,
+ * an array of strings, or null/undefined.
+ */
+export function parseSpecializations(specializations?: string | string[] | null): string[] {
+  if (!specializations) return [];
+  if (Array.isArray(specializations)) {
+    return specializations.map((s) => String(s).trim()).filter(Boolean);
+  }
+  if (typeof specializations === "string") {
+    return specializations
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+  return [];
 }
 
 export interface InstructorWithCoursesCount extends Instructor {

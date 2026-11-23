@@ -30,7 +30,9 @@ export default function InstructorFormModal({ instructor, onClose, onSave }: Pro
     bio: instructor?.bio ?? "",
     avatar_url: instructor?.avatar_url ?? "",
     cover_url: instructor?.cover_url ?? "",
-    specializations: instructor?.specializations ?? "",
+    specializations: Array.isArray(instructor?.specializations)
+      ? instructor.specializations.join(", ")
+      : (instructor?.specializations ?? ""),
     years_experience: instructor?.years_experience?.toString() ?? "",
     rating: instructor?.rating?.toString() ?? "4.5",
     total_reviews: instructor?.total_reviews?.toString() ?? "0",

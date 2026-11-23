@@ -47,7 +47,10 @@ export function toCourseDetail(
           duration: formatDuration(l.duration),
           is_preview: Boolean(l.is_preview),
           video_id: l.video_id ?? null,
+          playback: l.playback ?? null,
+          video_provider: l.video_provider ?? "youtube",
           order: l.order,
+          is_published: l.is_published ?? true,
         }))
       : [],
   }));

@@ -1,4 +1,11 @@
-import type { Course, Question, Task, TaskResult, LessonProgress } from "@/types";
+import type {
+  Course,
+  Question,
+  Task,
+  TaskResult,
+  LessonProgress,
+  VideoPlaybackPayload,
+} from "@/types";
 
 export interface StudentEnrollment {
   id: number;
@@ -31,10 +38,13 @@ export interface LessonDetail {
   id: number;
   title: string;
   description?: string;
-  video_id: string;
+  video_id?: string;
+  playback: VideoPlaybackPayload | null;
+  video_provider: "youtube" | "hls";
   duration?: number;
   order: number;
   is_preview?: boolean;
+  is_published: boolean;
 }
 
 export interface CourseProgressSummary {
@@ -45,4 +55,4 @@ export interface CourseProgressSummary {
   course_complete: boolean;
 }
 
-export type { Course, Question, Task, TaskResult, LessonProgress };
+export type { Course, Question, Task, TaskResult, LessonProgress, VideoPlaybackPayload };

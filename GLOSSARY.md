@@ -275,3 +275,21 @@ _Avoid_: Lesson unlock, Video pass, Quiz reveal
 **Zero-Index Option Guard**:
 A strict numeric and type validation pattern preventing PHP falsy evaluations of option index `0` from misclassifying first-option answers as missing or blank submissions.
 _Avoid_: Empty check, Truthy check, Loose null check
+
+## Delivery, Roles & Faculty Shell Domain
+
+**Video Playback Payload**:
+A discriminated union contract (`provider: 'youtube' | 'hls'`) providing secure, driver-resolved streaming parameters (`source` or `url`) and temporal validity bounds (`expires_at`), preventing leakage of raw cloud storage assets.
+_Avoid_: Video link, Stream object, Video info
+
+**Authorized Playback Gate**:
+A security boundary within the video delivery layer ensuring that full streaming playback payloads are never exposed to public curriculum viewers or unauthorized learners, restricting payload resolution strictly to authorized lesson viewing sessions or preview lessons.
+_Avoid_: Public video leak, Global stream url, Open playback
+
+**Instructor Route Shell**:
+The dedicated Next.js layout and navigation structure (`(instructor)`) isolating authenticated faculty workflows (dashboard, assigned courses, support) behind server-side role verification.
+_Avoid_: Teacher tab, Admin subpage, Faculty view
+
+**Pluggable Video Delivery Driver**:
+A backend strategy pattern decoupling lesson entities from specific streaming infrastructure, dynamically resolving YouTube or signed HLS URLs based on lesson configuration with a global environment fallback.
+_Avoid_: Hardcoded player, YouTube helper, Video switch

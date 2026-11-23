@@ -24,7 +24,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/shared/states/EmptyState";
-import { instructorQueries, type InstructorDetail } from "@/features/instructors";
+import {
+  instructorQueries,
+  type InstructorDetail,
+  parseSpecializations,
+} from "@/features/instructors";
 
 const LEVEL_LABEL: Record<string, string> = {
   beginner: "مبتدئ",
@@ -65,9 +69,7 @@ export default function InstructorProfile() {
       </div>
     );
 
-  const specs = instructor.specializations
-    ? instructor.specializations.split(",").map((s) => s.trim())
-    : [];
+  const specs = parseSpecializations(instructor.specializations);
 
   const rating = Number(instructor.rating ?? 4.5);
   const totalReviews = instructor.total_reviews ?? 0;

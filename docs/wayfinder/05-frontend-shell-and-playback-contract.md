@@ -2,9 +2,28 @@
 
 **Tracker Label**: `wayfinder:task`  
 **Parent**: [Wayfinder Map](file:///home/suliman/Documents/courses/docs/wayfinder/map.md)  
-**Status**: Open (Blocked by Ticket 04)  
-**Assignee**: Unassigned  
-**Blocked by**: [Ticket 04: Phase 4 — Server-Side Exam Gating & Atomic Progress Completion](file:///home/suliman/Documents/courses/docs/wayfinder/04-exam-gating-and-atomic-completion.md)  
+**Status**: Completed  
+**Completed at**: 2026-11-23  
+**Spec**: [Spec: Phase 5](file:///home/suliman/Documents/courses/frontend-course/docs/spec/05-frontend-shell-and-playback-contract.md)  
+**Governing ADRs**:
+- [ADR 0016: Instructor CoursePolicy and IDOR Prevention](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0016-instructor-course-policy-and-idor-prevention.md)
+- [ADR 0017: Pluggable Video Delivery Driver](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0017-video-provider-driver-and-curriculum-publication-contract.md)
+- [ADR 0021: Discriminated Video Playback Contract, Secure Delivery Gating, and Instructor Route Shell](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0021-discriminated-video-playback-and-instructor-route-shell.md)  
+**Assignee**: Antigravity  
+**Sub-Tickets (Tracer Bullets)**:
+1. [01: Discriminated Playback & Lesson Schema Contract](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/01-discriminated-playback-and-lesson-schema.md) (`completed`)
+2. [02: Role Extension & Post-Login Redirection](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/02-role-extension-and-post-login-redirection.md) (`completed`)
+3. [03: Pluggable Video Delivery Driver & Authorized Gate](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/03-pluggable-video-delivery-driver-and-authorized-gate.md) (`completed`)
+4. [04: Canonical Lesson Detail Serialization & Draft 404 Guard](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/04-canonical-lesson-detail-and-draft-404-guard.md) (`completed`)
+5. [05: Video Player Lifecycle Isolation & State Reset Guard](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/05-player-lifecycle-isolation-and-state-reset.md) (`completed`)
+6. [06: Dual-Engine Streaming Switcher (YouTube & HLS)](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/06-dual-engine-streaming-switcher.md) (`completed`)
+7. [07: Uniform Forensic Watermark, Processing Placeholder & Expiry Recovery](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/07-forensic-watermark-placeholder-and-expiry-recovery.md) (`completed`)
+8. [08: Server-Side Instructor Route Guard & Cross-Role Redirection](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/08-server-route-guard-and-session-revalidation.md) (`completed`)
+9. [09: Instructor Client Shell Navigation & RTL Mobile Drawer](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/09-instructor-shell-navigation-and-mobile-drawer.md) (`completed`)
+10. [10: Instructor Dashboard Overview & Welcoming Empty State](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/10-instructor-dashboard-and-empty-state.md) (`completed`)
+
+
+  
 
 ## Question
 
@@ -50,11 +69,6 @@ How do we establish the `(instructor)` Next.js route shell, extend the frontend 
      ] : null,
      'is_published' => (bool) ($lesson->is_published ?? true),
      ```
-           'provider' => 'youtube',
-           'source' => $lesson->video_id,
-           'expires_at' => null,
-       ] : null,
-       ```
 3. **Frontend Video Player Switcher ([VideoPlayer.tsx](file:///home/suliman/Documents/courses/frontend-course/src/features/student-courses/components/player/VideoPlayer.tsx)):**
    - Accept `playback: VideoPlaybackPayload | null` (retaining optional `videoId` for fallback).
    - If `playback?.provider === "youtube"`: Render dynamic `react-youtube` component using `videoId={playback.source}` with dynamic floating watermark.

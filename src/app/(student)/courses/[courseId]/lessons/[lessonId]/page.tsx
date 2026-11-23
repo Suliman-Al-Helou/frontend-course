@@ -148,6 +148,12 @@ export default function LessonPage() {
     [numericLessonId, queryClient],
   );
 
+  const handleTokenExpired = useCallback(() => {
+    void queryClient.invalidateQueries({
+      queryKey: studentCourseQueries.lesson(numericLessonId).queryKey,
+    });
+  }, [numericLessonId, queryClient]);
+
   // شاشة التحميل الأولية
   if (courseLoading || lessonLoading) {
     return (
@@ -162,8 +168,10 @@ export default function LessonPage() {
     );
   }
 
+  const effectiveLesson = lessonDetail || currentLesson;
+
   // شاشة الخطأ في حال عدم وجود الكورس أو الدرس أو عدم امتلاك الصلاحية
-  if (courseError || lessonError || !course || !currentLesson) {
+  if (courseError || lessonError || !course || !effectiveLesson) {
     const isForbidden =
       (lessonErrorObj as { response?: { status?: number } })?.response?.status === 403;
     return (
@@ -241,18 +249,21 @@ export default function LessonPage() {
         <div className="flex-1 min-w-0 space-y-6">
           <div>
             <h1 className="text-xl sm:text-2xl font-bold text-foreground leading-snug">
-              {currentLesson.title}
+              {effectiveLesson.title}
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1.5">
-              الدرس {currentIdx + 1} من {allLessons.length}
+              الدرس {currentIdx >= 0 ? currentIdx + 1 : 1} من {allLessons.length || 1}
             </p>
           </div>
 
           {/* مشغل الفيديو المحصن */}
           <VideoPlayer
-            videoId={lessonDetail?.video_id || currentLesson.video_id || "dQw4w9WgXcQ"}
+            key={numericLessonId}
+            playback={lessonDetail?.playback ?? currentLesson?.playback ?? null}
+            videoId={lessonDetail?.video_id || currentLesson?.video_id || ""}
             onProgress={handleVideoProgress}
             onComplete={handleVideoComplete}
+            onTokenExpired={handleTokenExpired}
           />
 
           {/* شريط تأكيد إكمال الدرس */}

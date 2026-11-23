@@ -1,4 +1,4 @@
-import { Course } from "@/types";
+import { Course, VideoPlaybackPayload } from "@/types";
 
 /* ─── Types ──────────────────────────────────────────────── */
 export interface CourseLessonUI {
@@ -7,7 +7,10 @@ export interface CourseLessonUI {
   duration: string;
   is_preview: boolean;
   video_id: string | null;
+  playback?: VideoPlaybackPayload | null;
+  video_provider?: "youtube" | "hls";
   order: number;
+  is_published?: boolean;
 }
 
 export interface CourseSectionUI {

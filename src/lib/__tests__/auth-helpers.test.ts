@@ -17,6 +17,21 @@ describe("Auth Integration Helpers (ADR 0003)", () => {
       expect(target).toBe("/admin");
     });
 
+    it("routes instructor to /instructor when no redirect parameter is present", () => {
+      const target = resolvePostLoginRedirect(null, { role: "instructor" });
+      expect(target).toBe("/instructor");
+    });
+
+    it("accepts safe relative path in redirect parameter for instructor", () => {
+      const target = resolvePostLoginRedirect("/instructor/courses", { role: "instructor" });
+      expect(target).toBe("/instructor/courses");
+    });
+
+    it("rejects open redirect attacks for instructor and falls back to /instructor", () => {
+      const target = resolvePostLoginRedirect("//attacker.com", { role: "instructor" });
+      expect(target).toBe("/instructor");
+    });
+
     it("accepts safe relative path in redirect parameter", () => {
       const target = resolvePostLoginRedirect("/dashboard/courses", { role: "student" });
       expect(target).toBe("/dashboard/courses");

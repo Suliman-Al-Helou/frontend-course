@@ -41,14 +41,14 @@ export function CourseCurriculum({ sections, courseId, enrolled }: CourseCurricu
             <AccordionItem key={itemKey} value={itemKey}>
               <AccordionTrigger className="p-4 bg-muted/50 hover:bg-muted">
                 <div className="flex items-center gap-3">
-                  <span className="font-semibold text-foreground">{section.title}</span>
+                  <span className="font-bold text-foreground">{section.title}</span>
                   <span className="text-xs text-muted-foreground">{lessonCountLabel}</span>
                 </div>
               </AccordionTrigger>
 
               <AccordionContent className="divide-y divide-border">
                 {section.lessons.map((lesson) => {
-                  const canAccess = enrolled || lesson.is_preview;
+                  const canAccess = enrolled || lesson.is_preview || lesson.is_published === false;
 
                   const content = (
                     <div className="flex items-center justify-between px-4 py-3 min-h-[44px] w-full">
@@ -62,13 +62,18 @@ export function CourseCurriculum({ sections, courseId, enrolled }: CourseCurricu
                         </div>
                         <span
                           className={`text-sm ${
-                            canAccess ? "text-foreground font-medium" : "text-muted-foreground"
+                            canAccess ? "text-foreground font-normal" : "text-muted-foreground"
                           }`}
                         >
                           {lesson.title}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
+                        {lesson.is_published === false && (
+                          <Badge variant="warning" size="sm">
+                            مسودة
+                          </Badge>
+                        )}
                         {lesson.is_preview && !enrolled && (
                           <Badge variant="success" size="sm">
                             معاينة مجانية

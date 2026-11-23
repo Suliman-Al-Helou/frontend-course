@@ -171,3 +171,6 @@ Before declaring any task complete, you MUST verify:
 3. **Input Bounds**: Always enforce strict upper limits (e.g., max 20 for dropdowns, max 50 for pagination) on query parameters.
 4. **Symmetric Testing**: Every validation rule must be tested on BOTH Create (`POST`) and Update (`PUT/PATCH`) endpoints.
 5. **Self-Review**: Run `git diff` and review your own changes for security flaws before reporting completion.
+6. **Server Component Cookie Purity**: Never call `cookies().set()` or functions that mutate cookies (such as session-saving helpers) inside React Server Components (`layout.tsx`, `page.tsx`). Cookies can only be modified in a Server Action or Route Handler.
+7. **Continuous Media Event Throttling**: Never dispatch unthrottled asynchronous network requests from high-frequency media events (`timeupdate`, `scroll`, `resize`). Throttle progress updates to at most once every 5 seconds (or on completion) to prevent DoS flooding and rate-limit exhaustion.
+8. **Route Group URL Determinism**: When defining routes inside transparent route groups `(group)`, ensure the physical directory includes the slug segment (e.g., `src/app/(instructor)/instructor/page.tsx` for `/instructor`), preventing collision with the root `/`.
