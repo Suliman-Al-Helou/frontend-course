@@ -10,11 +10,12 @@
 - [ADR 0021: Discriminated Video Playback Contract, Secure Delivery Gating, and Instructor Route Shell](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0021-discriminated-video-playback-and-instructor-route-shell.md)  
 **Assignee**: Antigravity  
 **Sub-Tickets (Tracer Bullets)**:
-1. `01: Types & Auth Contracts (VideoPlaybackPayload, Lesson, User.role)` (`pending`)
-2. `02: Backend Delivery Manager & Authorized Playback Serialization` (`pending`)
-3. `03: Unified Frontend Video Player (YouTube, HLS & Processing Placeholder)` (`pending`)
-4. `04: Server-Side Route Guard Matrix ((instructor), (admin), (student))` (`pending`)
-5. `05: Instructor Shell UI & Landing Dashboard (DESIGN.md Tokens)` (`pending`)
+1. [01: Types & Auth Contracts](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/01-types-and-auth-contracts.md) (`ready-for-agent`)
+2. [02: Backend Delivery Manager & Authorized Playback](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/02-backend-delivery-manager-and-authorized-playback.md) (`ready-for-agent`)
+3. [03: Dual-Engine Video Player & Lifecycle Guard](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/03-dual-engine-video-player-and-lifecycle-guard.md) (`ready-for-agent`)
+4. [04: Server Route Guard & Session Revalidation](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/04-server-route-guard-and-session-revalidation.md) (`ready-for-agent`)
+5. [05: Instructor Shell UI & Landing Dashboard](file:///home/suliman/Documents/courses/frontend-course/.scratch/phase-5-frontend-shell/issues/05-instructor-shell-ui-and-landing-dashboard.md) (`ready-for-agent`)
+
   
 
 ## Question
