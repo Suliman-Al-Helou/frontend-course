@@ -4,10 +4,10 @@
 
 **Blocked by:** 04: Curriculum Sections & Integrity Guard Slice
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] Implement `InstructorLessonController@store` creating a lesson under an authorized section.
-- [ ] Implement `InstructorLessonController@update` authorizing via `$lesson->getCourse()` and updating lesson title, description, duration, and preview state.
-- [ ] Implement `InstructorLessonController@destroy` authorizing via `$lesson->getCourse()` and blocking deletion if student completion records exist (`422 Unprocessable Entity`).
-- [ ] Build comprehensive security test suite in `tests/Feature/Instructor/InstructorAuthorizationTest.php` covering the full matrix (Instructor A vs B, Admin override, Student/Guest rejection, prohibited fields, deletion integrity, and broken relation 404s).
-- [ ] Verify that all test cases pass cleanly with `php artisan test --filter=InstructorAuthorizationTest`.
+- [x] Implement `InstructorLessonController@store` creating a lesson under an authorized section.
+- [x] Implement `InstructorLessonController@update` authorizing via `$lesson->getCourse()` and updating lesson title, description, duration, and preview state.
+- [x] Implement `InstructorLessonController@destroy` authorizing via `$lesson->getCourse()` and blocking deletion if student completion records exist (`422 Unprocessable Entity`).
+- [x] Build comprehensive security test suite in `tests/Feature/Instructor/InstructorAuthorizationTest.php` covering the full matrix (Instructor A vs B, Admin override, Student/Guest rejection, prohibited fields, deletion integrity, and broken relation 404s).
+- [x] Verify that all test cases pass cleanly with `php artisan test --filter=InstructorAuthorizationTest`.
