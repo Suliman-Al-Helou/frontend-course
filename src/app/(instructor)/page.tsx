@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { BookOpen, Users, GraduationCap, ArrowLeft, LifeBuoy, Sparkles } from "lucide-react";
+import { BookOpen, ArrowLeft, LifeBuoy, Sparkles } from "lucide-react";
 import { getIronSessionData } from "@/lib/session";
 import { Button } from "@/components/ui/button";
 
@@ -10,13 +10,8 @@ export default async function InstructorDashboardPage() {
   const session = await getIronSessionData();
   const userName = session.user?.name ?? "المدرب";
 
-  // في هذه المرحلة (Phase 5 - Shell & Contracts)، نقوم بتمثيل الحالة النموذجية والأولية
-  // ويتم تفعيل جلب الكورسات الحية الموكلة في المرحلة 6 (Phase 6 - Assigned Courses & Syllabus CRUD)
-  const assignedCoursesCount = 0;
-  const totalStudentsCount = 0;
-
   return (
-    <div className="space-y-8 animate-in fade-in duration-300">
+    <div className="space-y-8 animate-in fade-in duration-300 motion-reduce:animate-none">
       {/* Welcome Banner */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-l from-primary/15 via-primary/5 to-transparent border border-primary/20 p-6 sm:p-8">
         <div className="relative z-10 max-w-2xl space-y-2">
@@ -34,42 +29,6 @@ export default async function InstructorDashboardPage() {
         </div>
       </div>
 
-      {/* Quick Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="p-5 rounded-2xl bg-card border border-border space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-normal text-muted-foreground">الكورسات الموكلة</span>
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-              <BookOpen className="w-4 h-4" aria-hidden="true" />
-            </div>
-          </div>
-          <p className="text-2xl font-bold text-foreground">{assignedCoursesCount}</p>
-          <p className="text-xs text-muted-foreground">مقررات تدريبية نشطة</p>
-        </div>
-
-        <div className="p-5 rounded-2xl bg-card border border-border space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-normal text-muted-foreground">إجمالي الطلاب</span>
-            <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center text-success">
-              <Users className="w-4 h-4" aria-hidden="true" />
-            </div>
-          </div>
-          <p className="text-2xl font-bold text-foreground">{totalStudentsCount}</p>
-          <p className="text-xs text-muted-foreground">طالب مسجل في دوراتك</p>
-        </div>
-
-        <div className="p-5 rounded-2xl bg-card border border-border space-y-2 sm:col-span-2 lg:col-span-1">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-normal text-muted-foreground">حالة الحساب</span>
-            <div className="w-8 h-8 rounded-lg bg-warning/10 flex items-center justify-center text-warning">
-              <GraduationCap className="w-4 h-4" aria-hidden="true" />
-            </div>
-          </div>
-          <p className="text-lg font-bold text-foreground">نشط ومعتمد</p>
-          <p className="text-xs text-muted-foreground">صلاحيات مدرب معتمد</p>
-        </div>
-      </div>
-
       {/* Main Section: Assigned Courses / Empty State */}
       <section className="space-y-4" aria-label="الكورسات الموكلة">
         <div className="flex items-center justify-between">
@@ -83,7 +42,7 @@ export default async function InstructorDashboardPage() {
           </Link>
         </div>
 
-        {/* Empty State adhering to DESIGN.md */}
+        {/* Empty State adhering to DESIGN.md and US 17 */}
         <div
           role="region"
           aria-label="حالة عدم وجود كورسات موكلة"
@@ -98,14 +57,14 @@ export default async function InstructorDashboardPage() {
             </h3>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
               أهلاً بك في الهيئة التدريسية للأكاديمية. يتم إسناد المقررات الدراسية من قِبل إدارة المنصة.
-              يمكنك التواصل مع الدعم الفني أو مراجعة الإدارة للبدء في رفع محتواك.
+              فور تكليفك بأي مقرر ستتمكن من تعديل المنهج والدروس والمهام مباشرة من هذه اللوحة.
             </p>
           </div>
           <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
             <Button asChild variant="outline" className="min-h-[44px] gap-2 border-border">
               <Link href="/instructor/support">
                 <LifeBuoy className="w-4 h-4" aria-hidden="true" />
-                <span>تواصل مع الإدارة والدعم</span>
+                <span>تواصل مع الإدارة للدعم</span>
               </Link>
             </Button>
           </div>

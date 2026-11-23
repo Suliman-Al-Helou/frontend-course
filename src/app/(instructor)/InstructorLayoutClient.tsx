@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { LayoutDashboard, BookOpen, LifeBuoy, LogOut, Menu, X, GraduationCap } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import ThemeToggle from "@/components/shared/Themetoggle";
 import { Button } from "@/components/ui/button";
 import { useCurrentUser } from "@/features/auth";
@@ -23,7 +23,6 @@ interface InstructorLayoutClientProps {
 
 export default function InstructorLayoutClient({ user, children }: InstructorLayoutClientProps) {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
-  const router = useRouter();
   const pathname = usePathname();
   const { logout } = useCurrentUser();
 
@@ -43,11 +42,6 @@ export default function InstructorLayoutClient({ user, children }: InstructorLay
     INSTRUCTOR_MENU.find((item) =>
       item.href === "/instructor" ? pathname === "/instructor" : pathname.startsWith(item.href),
     ) || INSTRUCTOR_MENU[0];
-
-  const handleNavigate = (href: string) => {
-    router.push(href);
-    setMobileDrawerOpen(false);
-  };
 
   const handleLogout = () => {
     setMobileDrawerOpen(false);
@@ -154,7 +148,7 @@ export default function InstructorLayoutClient({ user, children }: InstructorLay
 
             <div className="flex items-center gap-3">
               <ThemeToggle />
-              <div className="w-8 h-8 rounded-full bg-white overflow-hidden border border-border">
+              <div className="w-8 h-8 rounded-full bg-card overflow-hidden border border-border">
                 <Image
                   src="/logo.jpg"
                   alt="logo"
@@ -186,7 +180,7 @@ export default function InstructorLayoutClient({ user, children }: InstructorLay
             role="dialog"
             aria-modal="true"
             aria-label="قائمة التنقل للمدرب"
-            className="fixed inset-y-0 start-0 w-72 max-w-[85vw] bg-card border-e border-border p-5 flex flex-col justify-between shadow-2xl z-50 animate-in slide-in-from-right duration-200"
+            className="fixed inset-y-0 start-0 w-72 max-w-[85vw] bg-card border-e border-border p-5 flex flex-col justify-between shadow-2xl z-50 animate-in slide-in-from-right duration-200 motion-reduce:animate-none motion-reduce:transform-none"
           >
             <div className="space-y-6">
               <div className="flex items-center justify-between pb-4 border-b border-border">
@@ -219,9 +213,10 @@ export default function InstructorLayoutClient({ user, children }: InstructorLay
                       : pathname.startsWith(item.href);
 
                   return (
-                    <button
+                    <Link
                       key={item.href}
-                      onClick={() => handleNavigate(item.href)}
+                      href={item.href}
+                      onClick={() => setMobileDrawerOpen(false)}
                       className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-normal transition-colors text-right min-h-[44px] ${
                         isActive
                           ? "bg-primary/10 text-primary font-bold border-s-2 border-primary"
@@ -230,7 +225,7 @@ export default function InstructorLayoutClient({ user, children }: InstructorLay
                     >
                       <Icon className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
                       <span>{item.label}</span>
-                    </button>
+                    </Link>
                   );
                 })}
               </nav>

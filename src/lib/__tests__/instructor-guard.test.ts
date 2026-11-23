@@ -46,4 +46,13 @@ describe("Instructor Route Guard Logic (ADR 0021 / TB 08)", () => {
       role: "instructor",
     });
   });
+
+  it("promotes student to admin if live role revalidation detects admin promotion", () => {
+    const user: User = { id: 5, name: "PromotedAdmin", email: "admin@test.com", role: "student" };
+    const decision = evaluateInstructorAccess(user, "admin");
+    expect(decision).toEqual({
+      status: "allow",
+      role: "admin",
+    });
+  });
 });

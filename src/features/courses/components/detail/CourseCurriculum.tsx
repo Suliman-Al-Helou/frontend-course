@@ -41,7 +41,7 @@ export function CourseCurriculum({ sections, courseId, enrolled }: CourseCurricu
             <AccordionItem key={itemKey} value={itemKey}>
               <AccordionTrigger className="p-4 bg-muted/50 hover:bg-muted">
                 <div className="flex items-center gap-3">
-                  <span className="font-semibold text-foreground">{section.title}</span>
+                  <span className="font-bold text-foreground">{section.title}</span>
                   <span className="text-xs text-muted-foreground">{lessonCountLabel}</span>
                 </div>
               </AccordionTrigger>
@@ -62,13 +62,18 @@ export function CourseCurriculum({ sections, courseId, enrolled }: CourseCurricu
                         </div>
                         <span
                           className={`text-sm ${
-                            canAccess ? "text-foreground font-medium" : "text-muted-foreground"
+                            canAccess ? "text-foreground font-normal" : "text-muted-foreground"
                           }`}
                         >
                           {lesson.title}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
+                        {lesson.is_published === false && (
+                          <Badge variant="warning" size="sm">
+                            مسودة
+                          </Badge>
+                        )}
                         {lesson.is_preview && !enrolled && (
                           <Badge variant="success" size="sm">
                             معاينة مجانية

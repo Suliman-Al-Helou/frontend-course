@@ -50,6 +50,7 @@ export function toCourseDetail(
           playback: l.playback ?? null,
           video_provider: l.video_provider ?? "youtube",
           order: l.order,
+          is_published: l.is_published ?? true,
         }))
       : [],
   }));

@@ -10,6 +10,7 @@ export interface CourseLessonUI {
   playback?: VideoPlaybackPayload | null;
   video_provider?: "youtube" | "hls";
   order: number;
+  is_published?: boolean;
 }
 
 export interface CourseSectionUI {

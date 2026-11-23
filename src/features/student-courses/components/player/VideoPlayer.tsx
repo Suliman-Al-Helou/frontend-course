@@ -53,6 +53,11 @@ export function VideoPlayer({
   const watchedMaxRef = useRef<number>(0);
   const completedRef = useRef<boolean>(false);
   const savedTimeRef = useRef<number>(0);
+  const onTokenExpiredRef = useRef(onTokenExpired);
+  useEffect(() => {
+    onTokenExpiredRef.current = onTokenExpired;
+  }, [onTokenExpired]);
+
   const [watermarkPos, setWatermarkPos] = useState<number>(0);
 
   const activeTarget = useMemo(() => resolvePlaybackTarget(playback, videoId), [playback, videoId]);
@@ -69,9 +74,6 @@ export function VideoPlayer({
   useEffect(() => {
     let isCancelled = false;
 
-    // تصفير المراجع للدرس الجديد
-    watchedMaxRef.current = 0;
-    completedRef.current = false;
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = undefined;
@@ -100,7 +102,7 @@ export function VideoPlayer({
                   if (videoRef.current) {
                     savedTimeRef.current = videoRef.current.currentTime;
                   }
-                  onTokenExpired?.();
+                  onTokenExpiredRef.current?.();
                 }
               }
             });
@@ -122,7 +124,7 @@ export function VideoPlayer({
         intervalRef.current = undefined;
       }
     };
-  }, [activeTarget, onTokenExpired]);
+  }, [activeTarget]);
 
   // منطق تتبع التقدم لـ YouTube
   const startTracking = () => {
@@ -190,7 +192,7 @@ export function VideoPlayer({
       if (videoRef.current) {
         savedTimeRef.current = videoRef.current.currentTime;
       }
-      onTokenExpired?.();
+      onTokenExpiredRef.current?.();
     }
   };
 
