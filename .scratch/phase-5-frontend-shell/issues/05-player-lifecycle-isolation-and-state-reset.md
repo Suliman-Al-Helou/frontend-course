@@ -4,8 +4,8 @@
 
 **Blocked by:** 01: Discriminated Playback & Lesson Schema Contract
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] Mount `<VideoPlayer key={numericLessonId} ... />` in lesson page.
-- [ ] Add `isCancelled` lifecycle guard in `VideoPlayer.tsx` resetting all refs on lesson change.
-- [ ] Verify that navigating between lessons does not leak watch progress or fire premature `onComplete`.
+- [x] Mount `<VideoPlayer key={numericLessonId} ... />` in lesson page.
+- [x] Add `isCancelled` lifecycle guard in `VideoPlayer.tsx` resetting all refs on lesson change.
+- [x] Verify that navigating between lessons does not leak watch progress or fire premature `onComplete`.

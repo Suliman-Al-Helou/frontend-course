@@ -4,9 +4,9 @@
 
 **Blocked by:** 06: Dual-Engine Streaming Switcher (YouTube & HLS)
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] Render Forensic Watermark uniformly over both YouTube and HLS containers.
-- [ ] Render accessible processing placeholder when `playback === null`.
-- [ ] Add error handler for HLS 403 / network errors that refreshes lesson query and resumes playback.
-- [ ] Vitest component tests verifying watermark and placeholder rendering.
+- [x] Render Forensic Watermark uniformly over both YouTube and HLS containers.
+- [x] Render accessible processing placeholder when `playback === null`.
+- [x] Add error handler for HLS 403 / network errors that refreshes lesson query and resumes playback.
+- [x] Vitest component tests verifying watermark and placeholder rendering.

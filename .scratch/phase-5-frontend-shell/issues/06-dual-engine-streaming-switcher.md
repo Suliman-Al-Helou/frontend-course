@@ -4,9 +4,9 @@
 
 **Blocked by:** 05: Video Player Lifecycle Isolation & State Reset Guard
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] Render `react-youtube` when `playback?.provider === "youtube"`.
-- [ ] Render HTML5 `<video>` with lazy dynamic import of `hls.js` when `playback?.provider === "hls"`.
-- [ ] Implement deterministic teardown (`hls.destroy()`, `player.destroy()`) on unmount.
-- [ ] Add component tests in Vitest verifying player switching.
+- [x] Render `react-youtube` when `playback?.provider === "youtube"`.
+- [x] Render HTML5 `<video>` with lazy dynamic import of `hls.js` when `playback?.provider === "hls"`.
+- [x] Implement deterministic teardown (`hls.destroy()`, `player.destroy()`) on unmount.
+- [x] Add component tests in Vitest verifying player switching.

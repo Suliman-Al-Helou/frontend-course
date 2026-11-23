@@ -250,9 +250,16 @@ export default function LessonPage() {
 
           {/* مشغل الفيديو المحصن */}
           <VideoPlayer
-            videoId={lessonDetail?.video_id || currentLesson.video_id || "dQw4w9WgXcQ"}
+            key={numericLessonId}
+            playback={lessonDetail?.playback ?? currentLesson?.playback ?? null}
+            videoId={lessonDetail?.video_id || currentLesson?.video_id || ""}
             onProgress={handleVideoProgress}
             onComplete={handleVideoComplete}
+            onTokenExpired={() => {
+              void queryClient.invalidateQueries({
+                queryKey: studentCourseQueries.lesson(numericLessonId).queryKey,
+              });
+            }}
           />
 
           {/* شريط تأكيد إكمال الدرس */}

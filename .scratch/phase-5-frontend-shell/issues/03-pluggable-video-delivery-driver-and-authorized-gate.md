@@ -4,9 +4,9 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] Implement `App\Services\Video\VideoDeliveryManager` with driver resolution and authorization gating.
-- [ ] Configure `services.video.default` fallback to `'youtube'` in Laravel config.
-- [ ] In `SectionResource`, ensure `playback` is sanitized to `null` for non-preview lessons.
-- [ ] Write unit/feature tests for driver resolution and curriculum playback gating.
+- [x] Implement `App\Services\Video\VideoDeliveryManager` with driver resolution and authorization gating.
+- [x] Configure `services.video.default` fallback to `'youtube'` in Laravel config.
+- [x] In `SectionResource`, ensure `playback` is sanitized to `null` for non-preview lessons.
+- [x] Write unit/feature tests for driver resolution and curriculum playback gating.
