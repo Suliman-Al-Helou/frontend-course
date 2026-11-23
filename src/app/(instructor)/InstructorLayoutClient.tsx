@@ -148,6 +148,16 @@ export default function InstructorLayoutClient({ user, children }: InstructorLay
 
             <div className="flex items-center gap-3">
               <ThemeToggle />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleLogout}
+                className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 min-h-[44px] gap-1.5 px-2.5"
+                aria-label="تسجيل الخروج"
+              >
+                <LogOut className="w-4 h-4" aria-hidden="true" />
+                <span className="hidden sm:inline text-xs font-normal">خروج</span>
+              </Button>
               <div className="w-8 h-8 rounded-full bg-card overflow-hidden border border-border">
                 <Image
                   src="/logo.jpg"

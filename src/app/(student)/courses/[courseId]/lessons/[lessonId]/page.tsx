@@ -168,8 +168,10 @@ export default function LessonPage() {
     );
   }
 
+  const effectiveLesson = lessonDetail || currentLesson;
+
   // شاشة الخطأ في حال عدم وجود الكورس أو الدرس أو عدم امتلاك الصلاحية
-  if (courseError || lessonError || !course || !currentLesson) {
+  if (courseError || lessonError || !course || !effectiveLesson) {
     const isForbidden =
       (lessonErrorObj as { response?: { status?: number } })?.response?.status === 403;
     return (
@@ -247,10 +249,10 @@ export default function LessonPage() {
         <div className="flex-1 min-w-0 space-y-6">
           <div>
             <h1 className="text-xl sm:text-2xl font-bold text-foreground leading-snug">
-              {currentLesson.title}
+              {effectiveLesson.title}
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1.5">
-              الدرس {currentIdx + 1} من {allLessons.length}
+              الدرس {currentIdx >= 0 ? currentIdx + 1 : 1} من {allLessons.length || 1}
             </p>
           </div>
 

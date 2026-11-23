@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vite-plus/test";
-import { resolvePlaybackTarget, isStreamExpired } from "../components/player/video-player-helpers";
+import {
+  resolvePlaybackTarget,
+  isStreamExpired,
+  shouldThrottleProgressReport,
+  formatWatermarkText,
+} from "../components/player/video-player-helpers";
 import type { VideoPlaybackPayload } from "@/types";
 
 describe("VideoPlayer Helpers (TB 05, 06, 07)", () => {
@@ -44,6 +49,34 @@ describe("VideoPlayer Helpers (TB 05, 06, 07)", () => {
     it("returns false for ISO timestamps in the future", () => {
       const futureTime = new Date(Date.now() + 3600000).toISOString();
       expect(isStreamExpired(futureTime)).toBe(false);
+    });
+  });
+
+  describe("shouldThrottleProgressReport", () => {
+    it("throttles calls made within the minimum interval", () => {
+      const baseTime = 100000;
+      expect(shouldThrottleProgressReport(baseTime, baseTime + 1000, 5000)).toBe(true);
+      expect(shouldThrottleProgressReport(baseTime, baseTime + 4999, 5000)).toBe(true);
+    });
+
+    it("allows progress calls that meet or exceed the minimum interval", () => {
+      const baseTime = 100000;
+      expect(shouldThrottleProgressReport(baseTime, baseTime + 5000, 5000)).toBe(false);
+      expect(shouldThrottleProgressReport(baseTime, baseTime + 8000, 5000)).toBe(false);
+    });
+  });
+
+  describe("formatWatermarkText", () => {
+    it("formats user details with separator", () => {
+      expect(formatWatermarkText({ name: "Alan Turing", email: "alan@example.com" })).toBe(
+        "Alan Turing • alan@example.com",
+      );
+    });
+
+    it("returns null when user is null or missing credentials", () => {
+      expect(formatWatermarkText(null)).toBeNull();
+      expect(formatWatermarkText(undefined)).toBeNull();
+      expect(formatWatermarkText({ name: "", email: "" })).toBeNull();
     });
   });
 });

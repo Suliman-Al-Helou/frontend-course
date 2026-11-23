@@ -6,7 +6,12 @@ import type { YouTubeProps } from "react-youtube";
 import { Loader2 } from "lucide-react";
 import { useCurrentUser } from "@/features/auth";
 import type { VideoPlaybackPayload } from "@/types";
-import { resolvePlaybackTarget, isStreamExpired } from "./video-player-helpers";
+import {
+  resolvePlaybackTarget,
+  isStreamExpired,
+  shouldThrottleProgressReport,
+  formatWatermarkText,
+} from "./video-player-helpers";
 
 const WATERMARK_POSITIONS = [
   "top-4 start-4",
@@ -53,6 +58,7 @@ export function VideoPlayer({
   const watchedMaxRef = useRef<number>(0);
   const completedRef = useRef<boolean>(false);
   const savedTimeRef = useRef<number>(0);
+  const lastReportedTimeRef = useRef<number>(0);
   const onTokenExpiredRef = useRef(onTokenExpired);
   useEffect(() => {
     onTokenExpiredRef.current = onTokenExpired;
@@ -172,10 +178,17 @@ export function VideoPlayer({
     const percent = Math.round((video.currentTime / video.duration) * 100);
     watchedMaxRef.current = Math.max(watchedMaxRef.current, percent);
 
-    onProgress?.(watchedMaxRef.current, Math.round(video.currentTime));
+    const now = Date.now();
+    // تقنين الإرسال كل 5 ثوانٍ لحماية السيرفر من فيضان الطلبات المتكررة
+    if (!shouldThrottleProgressReport(lastReportedTimeRef.current, now, 5000)) {
+      lastReportedTimeRef.current = now;
+      onProgress?.(watchedMaxRef.current, Math.round(video.currentTime));
+    }
 
     if (percent >= completionThreshold && !completedRef.current) {
       completedRef.current = true;
+      lastReportedTimeRef.current = now;
+      onProgress?.(watchedMaxRef.current, Math.round(video.currentTime));
       onComplete?.();
     }
   };
@@ -262,14 +275,14 @@ export function VideoPlayer({
       )}
 
       {/* العلامة المائية الجنائية الموحدة لحماية الملكية الفكرية */}
-      {user && (
+      {user && formatWatermarkText(user) && (
         <div
           role="presentation"
           aria-hidden="true"
           className={`absolute ${WATERMARK_POSITIONS[watermarkPos]} pointer-events-none select-none z-10 bg-black/40 text-white/70 backdrop-blur-xs px-2.5 py-1 rounded-md border border-white/10 shadow-xs transition-all duration-700 motion-reduce:transition-none`}
         >
           <p className="text-xs font-mono font-normal tracking-tight">
-            {user.name} • {user.email}
+            {formatWatermarkText(user)}
           </p>
         </div>
       )}

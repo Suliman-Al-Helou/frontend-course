@@ -48,7 +48,7 @@ export function CourseCurriculum({ sections, courseId, enrolled }: CourseCurricu
 
               <AccordionContent className="divide-y divide-border">
                 {section.lessons.map((lesson) => {
-                  const canAccess = enrolled || lesson.is_preview;
+                  const canAccess = enrolled || lesson.is_preview || lesson.is_published === false;
 
                   const content = (
                     <div className="flex items-center justify-between px-4 py-3 min-h-[44px] w-full">
