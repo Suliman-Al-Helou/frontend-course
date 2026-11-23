@@ -7,6 +7,7 @@ import { Menu, X } from "lucide-react";
 import ThemeToggle from "@/components/shared/Themetoggle";
 import { Button } from "@/components/ui/button";
 import { useCurrentUser } from "@/features/auth";
+import { getDashboardHrefForRole } from "@/lib/auth-helpers";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
@@ -25,7 +26,7 @@ function AuthActions({
 }) {
   const { isAuthenticated, isLoading, logout, user } = useCurrentUser();
   const width = stacked ? "w-full" : undefined;
-  const dashboardHref = user?.role === "admin" ? "/admin" : "/dashboard";
+  const dashboardHref = getDashboardHrefForRole(user?.role);
 
   // مكان محجوز حتى لا تقفز الواجهة عند انتهاء التحقق من الجلسة
   if (isLoading) {

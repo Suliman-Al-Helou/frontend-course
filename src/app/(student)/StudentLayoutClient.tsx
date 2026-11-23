@@ -11,6 +11,8 @@ import {
   User as UserIcon,
   LifeBuoy,
   LogOut,
+  GraduationCap,
+  ArrowLeft,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -78,6 +80,19 @@ export default function StudentLayoutClient({ user, children }: StudentLayoutCli
               <p className="text-xs text-muted-foreground hidden sm:block">مرحباً {user.name}</p>
             </div>
             <div className="flex items-center gap-3">
+              {user.role === "instructor" && (
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className="min-h-[36px] gap-1.5 text-xs font-bold text-primary border-primary/30 hover:bg-primary hover:text-primary-foreground"
+                >
+                  <Link href="/instructor">
+                    <GraduationCap className="w-3.5 h-3.5" aria-hidden="true" />
+                    <span>بوابة المدربين</span>
+                  </Link>
+                </Button>
+              )}
               <div className="lg:hidden">
                 <ThemeToggle />
               </div>
@@ -120,6 +135,21 @@ export default function StudentLayoutClient({ user, children }: StudentLayoutCli
                   onClick={() => setMobileMenuOpen(false)}
                 />
                 <div className="absolute top-full right-4 left-4 mt-1 bg-card border border-border rounded-2xl shadow-xl z-50 overflow-hidden">
+                  {user.role === "instructor" && (
+                    <Button
+                      variant="secondary"
+                      asChild
+                      className="w-full justify-between h-12 px-4 text-xs font-bold text-primary bg-primary/10 hover:bg-primary/20 border-b border-border/50 rounded-none"
+                    >
+                      <Link href="/instructor" onClick={() => setMobileMenuOpen(false)}>
+                        <span className="flex items-center gap-2">
+                          <GraduationCap className="w-4 h-4 text-primary" />
+                          <span>العودة لبوابة المدربين</span>
+                        </span>
+                        <ArrowLeft className="w-3.5 h-3.5 text-primary" />
+                      </Link>
+                    </Button>
+                  )}
                   {MENU.map((item) => {
                     const Icon = item.icon;
                     const active =

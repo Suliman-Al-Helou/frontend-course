@@ -12,6 +12,8 @@ import {
   X,
   LogOut,
   LifeBuoy,
+  GraduationCap,
+  ArrowLeft,
 } from "lucide-react";
 import { useCurrentUser } from "@/features/auth";
 import ThemeToggle from "@/components/shared/Themetoggle";
@@ -34,7 +36,7 @@ interface Props {
 
 export default function DashboardSidebar({ open, onClose }: Props) {
   const pathname = usePathname();
-  const { logout, isLoading } = useCurrentUser();
+  const { logout, isLoading, user } = useCurrentUser();
 
   if (isLoading) {
     return <div className="text-gray-400 text-sm animate-pulse">جارٍ التحقق...</div>;
@@ -73,6 +75,28 @@ export default function DashboardSidebar({ open, onClose }: Props) {
             <X className="w-5 h-5" />
           </Button>
         </div>
+
+        {user?.role === "instructor" && (
+          <div className="p-3 mx-3 mt-3 rounded-xl border border-primary/30 bg-primary/10 space-y-1.5">
+            <div className="flex items-center justify-between text-[11px] text-primary font-semibold px-1">
+              <span>وضع التدريس</span>
+              <span className="text-[10px] bg-primary/20 text-primary px-1.5 py-0.5 rounded">
+                مدرب
+              </span>
+            </div>
+            <Link
+              href="/instructor"
+              onClick={onClose}
+              className="flex items-center justify-between w-full px-3 py-2 rounded-lg text-xs font-bold text-primary-foreground bg-primary hover:bg-primary-hover transition-colors min-h-[44px]"
+            >
+              <div className="flex items-center gap-2">
+                <GraduationCap className="w-4 h-4" aria-hidden="true" />
+                <span>العودة لبوابة المدربين</span>
+              </div>
+              <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
+            </Link>
+          </div>
+        )}
 
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {MENU.map((item) => {

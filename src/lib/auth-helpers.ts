@@ -52,6 +52,19 @@ export function resolvePostLoginRedirect(
 }
 
 /**
+ * Resolves the primary dashboard route for a given user role.
+ */
+export function getDashboardHrefForRole(role?: User["role"] | null): string {
+  if (role === "admin") {
+    return "/admin";
+  }
+  if (role === "instructor") {
+    return "/instructor";
+  }
+  return "/dashboard";
+}
+
+/**
  * Evaluates whether an incoming HTTP response requires deterministic
  * session purge and cookie eviction (ADR 0003 Edge Session Guard).
  */

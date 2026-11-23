@@ -1,11 +1,31 @@
 import { describe, it, expect } from "vite-plus/test";
 import {
   resolvePostLoginRedirect,
+  getDashboardHrefForRole,
   shouldEvictSession,
   extractUpdatedProfile,
 } from "../auth-helpers";
 
 describe("Auth Integration Helpers (ADR 0003)", () => {
+  describe("getDashboardHrefForRole", () => {
+    it("routes admin to /admin", () => {
+      expect(getDashboardHrefForRole("admin")).toBe("/admin");
+    });
+
+    it("routes instructor to /instructor", () => {
+      expect(getDashboardHrefForRole("instructor")).toBe("/instructor");
+    });
+
+    it("routes student to /dashboard", () => {
+      expect(getDashboardHrefForRole("student")).toBe("/dashboard");
+    });
+
+    it("defaults undefined or null role to /dashboard", () => {
+      expect(getDashboardHrefForRole(undefined)).toBe("/dashboard");
+      expect(getDashboardHrefForRole(null)).toBe("/dashboard");
+    });
+  });
+
   describe("resolvePostLoginRedirect", () => {
     it("routes student to /dashboard when no redirect parameter is present", () => {
       const target = resolvePostLoginRedirect(null, { role: "student" });

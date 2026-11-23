@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "check": "vp check"
+    "check": "vp check",
+    "sync:types": "openapi-typescript ../backendCourse/public/api.json -o src/types/api.generated.ts"
   },
   "dependencies": {
     "@ducanh2912/next-pwa": "^10.2.9",
@@ -54,6 +55,7 @@
     "autoprefixer": "^10.5.0",
     "eslint": "^9.19.0",
     "eslint-config-next": "^16.2.6",
+    "openapi-typescript": "^7.13.0",
     "postcss": "^8.5.14",
     "tailwindcss": "^4.3.3",
     "tailwindcss-animate": "^1.0.7",
