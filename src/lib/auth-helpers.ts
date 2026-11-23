@@ -1,5 +1,30 @@
 import type { User } from "@/types";
 
+export type InstructorAccessDecision =
+  | { status: "allow"; role: User["role"] }
+  | { status: "redirect"; target: string };
+
+/**
+ * Evaluates access for the (instructor) route group.
+ * Handles unauthenticated guests, live role promotion for students, and role restrictions.
+ */
+export function evaluateInstructorAccess(
+  user: User | null | undefined,
+  liveRole?: User["role"] | null,
+): InstructorAccessDecision {
+  if (!user) {
+    return { status: "redirect", target: "/login?redirect=/instructor" };
+  }
+
+  const effectiveRole = liveRole ?? user.role;
+
+  if (effectiveRole === "instructor" || effectiveRole === "admin") {
+    return { status: "allow", role: effectiveRole };
+  }
+
+  return { status: "redirect", target: "/dashboard" };
+}
+
 /**
  * Resolves the target destination URL after successful authentication.
  * Prevents Open Redirect attacks by validating that redirect starts with a single '/'.
