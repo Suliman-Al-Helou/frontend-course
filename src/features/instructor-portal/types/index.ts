@@ -104,3 +104,39 @@ export interface InstructorCourseStudentsResponse {
   per_page?: number;
   total?: number;
 }
+
+export interface InstructorProfile {
+  id: number;
+  name: string;
+  title: string | null;
+  bio: string | null;
+  avatar_url: string | null;
+  cover_url: string | null;
+  specializations: string | null;
+  years_experience: number | null;
+  rating: number | null;
+  total_reviews: number | null;
+  students_count: number | null;
+  achievements: string[];
+  twitter: string | null;
+  linkedin: string | null;
+  youtube: string | null;
+  user?: {
+    name: string;
+    email?: string | null;
+  };
+}
+
+export interface UpdateInstructorProfilePayload {
+  name?: string;
+  title?: string | null;
+  bio?: string | null;
+  avatar_url?: string | null;
+  cover_url?: string | null;
+  specializations?: string | null;
+  years_experience?: number | null;
+  achievements?: string[] | null;
+  twitter?: string | null;
+  linkedin?: string | null;
+  youtube?: string | null;
+}

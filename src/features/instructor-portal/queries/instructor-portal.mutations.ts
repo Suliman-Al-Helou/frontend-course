@@ -13,6 +13,7 @@ import {
   deleteInstructorLesson,
   saveInstructorLessonTask,
   deleteInstructorLessonTask,
+  updateInstructorProfile,
 } from "../api";
 import { instructorPortalKeys } from "./instructor-portal.queries";
 import type { InstructorCourse, InstructorLesson, InstructorTask } from "../types";
@@ -224,6 +225,19 @@ export function useDeleteInstructorTask() {
           queryKey: instructorPortalKeys.sections(variables.courseId),
         });
       }
+    },
+  });
+}
+
+export function useUpdateInstructorProfile() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: import("../types").UpdateInstructorProfilePayload) =>
+      updateInstructorProfile(payload),
+    onSuccess: (updated) => {
+      queryClient.setQueryData(instructorPortalKeys.profile(), updated);
+      void queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
     },
   });
 }

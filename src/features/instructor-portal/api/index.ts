@@ -13,6 +13,8 @@ import type {
   CourseYouTubeVideosResponse,
   InstructorCourseStudent,
   InstructorCourseStudentsResponse,
+  InstructorProfile,
+  UpdateInstructorProfilePayload,
 } from "../types";
 
 /**
@@ -311,4 +313,16 @@ export async function getInstructorCourseStudents(
   }
 
   return { data: [] };
+}
+
+export async function getInstructorProfile(): Promise<InstructorProfile> {
+  const { data } = await api.get<InstructorProfile>("/instructor/profile");
+  return data;
+}
+
+export async function updateInstructorProfile(
+  payload: UpdateInstructorProfilePayload,
+): Promise<InstructorProfile> {
+  const { data } = await api.put<InstructorProfile>("/instructor/profile", payload);
+  return data;
 }

@@ -24,6 +24,7 @@ import type { User } from "@/types";
 const INSTRUCTOR_MENU = [
   { label: "الرئيسية", href: "/instructor", icon: LayoutDashboard },
   { label: "كورساتي الموكلة", href: "/instructor/courses", icon: BookOpen },
+  { label: "الملف الشخصي", href: "/instructor/profile", icon: UserIcon },
   { label: "الدعم والمساعدة", href: "/instructor/support", icon: LifeBuoy },
 ] as const;
 

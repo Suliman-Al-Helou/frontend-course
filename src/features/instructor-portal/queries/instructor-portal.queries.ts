@@ -10,6 +10,7 @@ import {
   getInstructorLessonTask,
   getInstructorCourseYouTubeVideos,
   getInstructorCourseStudents,
+  getInstructorProfile,
 } from "../api";
 import type {
   InstructorCourse,
@@ -17,10 +18,12 @@ import type {
   InstructorTask,
   CourseYouTubeVideosResponse,
   InstructorCourseStudentsResponse,
+  InstructorProfile,
 } from "../types";
 
 export const instructorPortalKeys = {
   all: ["instructor-portal"] as const,
+  profile: () => [...instructorPortalKeys.all, "profile"] as const,
   courses: () => [...instructorPortalKeys.all, "courses"] as const,
   courseDetail: (id: number | string) =>
     [...instructorPortalKeys.all, "courses", String(id)] as const,
@@ -38,6 +41,14 @@ export const instructorPortalKeys = {
 
 export const instructorPortalQueries = {
   all: () => instructorPortalKeys.all,
+
+  profile: () =>
+    queryOptions({
+      queryKey: instructorPortalKeys.profile(),
+      queryFn: (): Promise<InstructorProfile> => getInstructorProfile(),
+      staleTime: 1000 * 60 * 5,
+      gcTime: 1000 * 60 * 30,
+    }),
 
   courses: () =>
     queryOptions({
