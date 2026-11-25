@@ -337,3 +337,11 @@ _Avoid_: Manifest-only token, IP-locked URL, Proxy stream
 **Silent Stream Renewal**:
 A single-attempt background refresh of an expired HLS playback URL that preserves and resumes the student's current timestamp, falling back to an explicit renewal prompt on repeated failure.
 _Avoid_: Infinite retry, Hard reload, Silent failure
+
+### Unified Player Controls
+
+A custom, provider-agnostic video control bar (Play/Pause, LTR Progress/Seek bar, Time display, Volume/Mute, Fullscreen) rendered uniformly over both HLS `<video>` and YouTube IFrame players, auto-hiding after 3 seconds of pointer inactivity while remaining visible when paused.
+
+### Click-Shield Overlay
+
+A transparent interaction layer positioned above the YouTube IFrame inside `VideoPlayer` to intercept clicks (toggling Play/Pause or revealing controls on touch) and block right-click or direct clicks on YouTube's channel name, title, and external links.
