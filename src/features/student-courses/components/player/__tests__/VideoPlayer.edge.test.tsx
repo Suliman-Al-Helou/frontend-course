@@ -570,16 +570,25 @@ describe("VideoPlayer Edge Cases (TDD)", () => {
     });
     expect(onTokenExpired).toHaveBeenCalledTimes(1);
 
+    const getTextContent = (node: FakeNode): string => {
+      const own =
+        (node as unknown as { nodeValue?: string | null; textContent?: string | null }).nodeValue ??
+        (node as unknown as { textContent?: string | null }).textContent ??
+        "";
+      return String(own) + node.childNodes.map(getTextContent).join("");
+    };
+
     // 2nd 403 -> loop guard stops auto-renewal and renders manual prompt
     await act(async () => {
       emit403();
+      await flushPromises();
     });
     expect(onTokenExpired).toHaveBeenCalledTimes(1);
-    expect(container.textContent).toContain("انتهت صلاحية جلسة الفيديو");
+    expect(getTextContent(container)).toContain("انتهت صلاحية جلسة الفيديو");
 
     const retryBtn = container.querySelector("button");
     expect(retryBtn).not.toBeNull();
-    expect(retryBtn!.textContent).toContain("تحديث رابط التشغيل");
+    expect(getTextContent(retryBtn!)).toContain("تحديث رابط التشغيل");
 
     // Manual retry triggers onTokenExpired again
     await act(async () => {
