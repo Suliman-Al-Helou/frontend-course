@@ -189,11 +189,13 @@ export function useSaveInstructorTask() {
     mutationFn: ({
       lessonId,
       payload,
+      isUpdate = false,
     }: {
       lessonId: number | string;
       courseId?: number | string;
       payload: Partial<InstructorTask>;
-    }) => saveInstructorLessonTask(lessonId, payload),
+      isUpdate?: boolean;
+    }) => saveInstructorLessonTask(lessonId, payload, isUpdate),
     onSuccess: (_data, variables) => {
       void queryClient.invalidateQueries({
         queryKey: instructorPortalKeys.task(variables.lessonId),

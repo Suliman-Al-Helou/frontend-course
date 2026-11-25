@@ -175,11 +175,15 @@ export function InstructorLessonTaskEditor({
     setIsSubmitting(true);
 
     try {
-      await saveInstructorLessonTask(lessonId, {
-        pass_percentage: Number(passPercentage),
-        max_attempts: Number(maxAttempts),
-        questions,
-      });
+      await saveInstructorLessonTask(
+        lessonId,
+        {
+          pass_percentage: Number(passPercentage),
+          max_attempts: Number(maxAttempts),
+          questions,
+        },
+        Boolean(existingTask),
+      );
 
       // Invalidate relevant queries
       await queryClient.invalidateQueries({
@@ -323,7 +327,7 @@ export function InstructorLessonTaskEditor({
                     size="sm"
                     variant="outline"
                     onClick={() => handleAddQuestion("mcq")}
-                    className="min-h-[38px] text-xs font-bold gap-1"
+                    className="min-h-[44px] min-w-[44px] text-xs font-bold gap-1 px-3"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>+ اختيار من متعدد</span>
@@ -334,7 +338,7 @@ export function InstructorLessonTaskEditor({
                     size="sm"
                     variant="outline"
                     onClick={() => handleAddQuestion("true_false")}
-                    className="min-h-[38px] text-xs font-bold gap-1"
+                    className="min-h-[44px] min-w-[44px] text-xs font-bold gap-1 px-3"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>+ صح / خطأ</span>
@@ -377,8 +381,9 @@ export function InstructorLessonTaskEditor({
                           size="icon"
                           variant="ghost"
                           onClick={() => handleRemoveQuestion(qIndex)}
-                          className="w-8 h-8 text-muted-foreground hover:text-destructive"
+                          className="min-h-[44px] min-w-[44px] text-muted-foreground hover:text-destructive"
                           title="حذف هذا السؤال"
+                          aria-label="حذف هذا السؤال"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -446,7 +451,7 @@ export function InstructorLessonTaskEditor({
                                     onChange={(e) =>
                                       handleOptionTextChange(qIndex, optIdx, e.target.value)
                                     }
-                                    className="min-h-[38px] text-xs flex-1 bg-background"
+                                    className="min-h-[44px] text-xs flex-1 bg-background"
                                     required
                                   />
                                 ) : (
@@ -461,7 +466,9 @@ export function InstructorLessonTaskEditor({
                                     size="icon"
                                     variant="ghost"
                                     onClick={() => handleRemoveOption(qIndex, optIdx)}
-                                    className="w-7 h-7 text-muted-foreground hover:text-destructive shrink-0"
+                                    className="min-h-[44px] min-w-[44px] text-muted-foreground hover:text-destructive shrink-0"
+                                    title="حذف هذا الخيار"
+                                    aria-label="حذف هذا الخيار"
                                   >
                                     <X className="w-3.5 h-3.5" />
                                   </Button>

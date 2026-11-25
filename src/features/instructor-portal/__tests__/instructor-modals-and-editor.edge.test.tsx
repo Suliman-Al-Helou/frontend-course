@@ -104,6 +104,24 @@ const mockDeleteInstructorLesson = vi.fn().mockResolvedValue({ message: "ok" });
 const mockDeleteInstructorLessonTask = vi.fn().mockResolvedValue({ message: "ok" });
 const mockUpdateInstructorCourse = vi.fn().mockResolvedValue({ id: 1 });
 
+vi.mock("../queries/instructor-portal.mutations", () => ({
+  useCreateInstructorSection: () => ({ mutateAsync: vi.fn() }),
+  useUpdateInstructorSection: () => ({ mutateAsync: vi.fn() }),
+  useDeleteInstructorSection: () => ({
+    mutateAsync: ({ sectionId }: { sectionId: number }) => mockDeleteInstructorSection(sectionId),
+  }),
+  useCreateInstructorLesson: () => ({ mutateAsync: vi.fn() }),
+  useUpdateInstructorLesson: () => ({ mutateAsync: vi.fn() }),
+  useDeleteInstructorLesson: () => ({
+    mutateAsync: ({ lessonId }: { lessonId: number }) => mockDeleteInstructorLesson(lessonId),
+  }),
+  useSaveInstructorTask: () => ({ mutateAsync: vi.fn() }),
+  useDeleteInstructorTask: () => ({
+    mutateAsync: ({ lessonId }: { lessonId: number }) => mockDeleteInstructorLessonTask(lessonId),
+  }),
+  useUpdateInstructorCourse: () => ({ mutateAsync: mockUpdateInstructorCourse }),
+}));
+
 vi.mock("../api", () => ({
   createInstructorSection: vi.fn(),
   updateInstructorSection: vi.fn(),
@@ -152,6 +170,18 @@ function findElements(
     if ("children" in el.props) {
       findElements(el.props.children, predicate, results);
     }
+    if (
+      typeof el.type === "function" &&
+      typeof el.type.name === "string" &&
+      el.type.name.startsWith("InstructorCurriculum")
+    ) {
+      try {
+        const rendered = (el.type as (props: unknown) => unknown)(el.props);
+        findElements(rendered, predicate, results);
+      } catch (_) {
+        // ignore if not a functional component that can execute in test
+      }
+    }
   }
   return results;
 }
@@ -196,10 +226,7 @@ describe("Instructor Modals and Content Editor (Edge Cases)", () => {
   });
 
   describe("InstructorCurriculumView ConfirmModal", () => {
-    it("opens ConfirmModal when deleting a section without calling window.confirm, and only deletes on confirm", async () => {
-      const confirmSpy = vi.fn(() => true);
-      (globalThis as unknown as { confirm: typeof confirmSpy }).confirm = confirmSpy;
-
+    it("blocks deleting a non-empty section with an error toast and does not open ConfirmModal", () => {
       mockUseQuery.mockReturnValue({
         data: sampleSections,
         isLoading: false,
@@ -216,6 +243,46 @@ describe("Instructor Modals and Content Editor (Edge Cases)", () => {
       let tree = renderView();
       const deleteSectionBtns = findElements(tree, (el) => el.props["aria-label"] === "حذف القسم");
       expect(deleteSectionBtns.length).toBe(1);
+      expect(deleteSectionBtns[0].props.disabled).toBe(true);
+
+      (deleteSectionBtns[0].props.onClick as () => void)();
+      expect(mockToastError).toHaveBeenCalledWith(
+        "لا يمكن حذف قسم يحتوي على دروس. يرجى حذف أو نقل الدروس أولاً.",
+      );
+      expect(mockDeleteInstructorSection).not.toHaveBeenCalled();
+      expect(findElements(renderView(), isOpenConfirmModal).length).toBe(0);
+    });
+
+    it("opens ConfirmModal when deleting an empty section without calling window.confirm, and only deletes on confirm", async () => {
+      const confirmSpy = vi.fn(() => true);
+      (globalThis as unknown as { confirm: typeof confirmSpy }).confirm = confirmSpy;
+
+      const sampleEmptySections: InstructorSection[] = [
+        {
+          id: 101,
+          title: "القسم الفارغ",
+          order: 1,
+          lessons: [],
+        },
+      ];
+
+      mockUseQuery.mockReturnValue({
+        data: sampleEmptySections,
+        isLoading: false,
+        isError: false,
+        error: null,
+        refetch: vi.fn(),
+      });
+
+      const renderView = () => {
+        beginRender();
+        return InstructorCurriculumView({ courseId: 10, course: sampleCourse });
+      };
+
+      let tree = renderView();
+      const deleteSectionBtns = findElements(tree, (el) => el.props["aria-label"] === "حذف القسم");
+      expect(deleteSectionBtns.length).toBe(1);
+      expect(deleteSectionBtns[0].props.disabled).toBe(false);
 
       // Click delete section
       (deleteSectionBtns[0].props.onClick as () => void)();

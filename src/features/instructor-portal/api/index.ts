@@ -218,17 +218,37 @@ export async function getInstructorLessonTask(lessonId: number | string): Promis
 export async function saveInstructorLessonTask(
   lessonId: number | string,
   payload: Partial<InstructorTask>,
+  isUpdate: boolean = false,
 ): Promise<InstructorTask> {
-  const { data } = await api.post<InstructorTask | { data: InstructorTask }>(
-    `/instructor/lessons/${lessonId}/task`,
-    payload,
-  );
+  const { data } = isUpdate
+    ? await api.put<InstructorTask | { data: InstructorTask }>(
+        `/instructor/lessons/${lessonId}/task`,
+        payload,
+      )
+    : await api.post<InstructorTask | { data: InstructorTask }>(
+        `/instructor/lessons/${lessonId}/task`,
+        payload,
+      );
 
   if (data && typeof data === "object" && "data" in data && data.data) {
     return data.data;
   }
 
   return data as InstructorTask;
+}
+
+export async function createInstructorLessonTask(
+  lessonId: number | string,
+  payload: Partial<InstructorTask>,
+): Promise<InstructorTask> {
+  return saveInstructorLessonTask(lessonId, payload, false);
+}
+
+export async function updateInstructorLessonTask(
+  lessonId: number | string,
+  payload: Partial<InstructorTask>,
+): Promise<InstructorTask> {
+  return saveInstructorLessonTask(lessonId, payload, true);
 }
 
 /**

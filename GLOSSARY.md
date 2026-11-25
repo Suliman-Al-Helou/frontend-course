@@ -323,3 +323,17 @@ _Avoid_: Manual types, Fake schema, Hand-written interface
 **Boundary Adapter**:
 A pure normalization function located strictly at the frontend network boundary (`src/features/*/api/*.ts`) that transforms raw backend payloads (`snake_case`) into standardized frontend models before entering state management or component lifecycles.
 _Avoid_: Component mapper, Inline transform, Selector mutation
+
+## Launch Gate & Video Delivery Domain
+
+**Launch Gate**:
+The mandatory pre-production verification checkpoint ensuring zero paid lessons rely on unlisted YouTube IDs and all security, token renewal, and CDN load requirements pass before accepting student payments.
+_Avoid_: Soft launch, Post-launch fix, Manual check
+
+**Path-Based Stream Token**:
+A directory-scoped CDN authorization signature granting time-limited access to an HLS manifest and all its nested quality playlists and media chunks without requiring per-segment signing or IP binding.
+_Avoid_: Manifest-only token, IP-locked URL, Proxy stream
+
+**Silent Stream Renewal**:
+A single-attempt background refresh of an expired HLS playback URL that preserves and resumes the student's current timestamp, falling back to an explicit renewal prompt on repeated failure.
+_Avoid_: Infinite retry, Hard reload, Silent failure

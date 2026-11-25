@@ -370,7 +370,7 @@ export function InstructorCurriculumVideoPickerModal({
                         disabled={video.is_already_added || isSubmitting}
                         onClick={() => handlePlaylistSelect(video)}
                         variant={video.is_already_added ? "secondary" : "default"}
-                        className="min-h-[38px] shrink-0 text-xs font-bold gap-1"
+                        className="min-h-[44px] min-w-[44px] px-3 shrink-0 text-xs font-bold gap-1"
                       >
                         {video.is_already_added ? (
                           <>
