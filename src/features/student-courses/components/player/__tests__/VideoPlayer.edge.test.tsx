@@ -464,4 +464,158 @@ describe("VideoPlayer Edge Cases (TDD)", () => {
     });
     expect(onComplete).toHaveBeenCalledTimes(1);
   });
+
+  it("preserves and restores playback position across silent token renewal for the same lessonId", async () => {
+    const onTokenExpired = vi.fn();
+
+    await act(async () => {
+      root.render(
+        <VideoPlayer
+          lessonId={10}
+          playback={makeHlsPlayback("https://cdn.test/10/playlist.m3u8?token=old")}
+          onTokenExpired={onTokenExpired}
+        />,
+      );
+    });
+    await act(async () => {
+      await flushPromises();
+    });
+
+    const video = container.querySelector("video")!;
+    video.currentTime = 142;
+
+    const hls = hlsControl.instances[0];
+    for (const fn of hls.errorHandlers) {
+      fn("hlsError", {
+        fatal: true,
+        type: hlsControl.MockHls.ErrorTypes.NETWORK_ERROR,
+        response: { code: 403 },
+      });
+    }
+    expect(onTokenExpired).toHaveBeenCalledTimes(1);
+
+    // Re-render with refreshed token URL for the SAME lessonId
+    await act(async () => {
+      root.render(
+        <VideoPlayer
+          lessonId={10}
+          playback={makeHlsPlayback("https://cdn.test/10/playlist.m3u8?token=fresh")}
+          onTokenExpired={onTokenExpired}
+        />,
+      );
+    });
+    await act(async () => {
+      await flushPromises();
+    });
+
+    const refreshedVideo = container.querySelector("video")!;
+    refreshedVideo.currentTime = 0;
+    await act(async () => {
+      refreshedVideo.dispatchEvent(new FakeEvent("loadedmetadata", { bubbles: true }));
+    });
+    expect(refreshedVideo.currentTime).toBe(142);
+
+    // Switching to a DIFFERENT lessonId must NOT carry over savedTime
+    await act(async () => {
+      root.render(
+        <VideoPlayer
+          lessonId={11}
+          playback={makeHlsPlayback("https://cdn.test/11/playlist.m3u8?token=fresh2")}
+          onTokenExpired={onTokenExpired}
+        />,
+      );
+    });
+    await act(async () => {
+      await flushPromises();
+    });
+
+    const nextVideo = container.querySelector("video")!;
+    nextVideo.currentTime = 0;
+    await act(async () => {
+      nextVideo.dispatchEvent(new FakeEvent("loadedmetadata", { bubbles: true }));
+    });
+    expect(nextVideo.currentTime).toBe(0);
+  });
+
+  it("limits silent auto-renewal to 1 attempt and shows manual renewal prompt on repeated 403", async () => {
+    const onTokenExpired = vi.fn();
+
+    await act(async () => {
+      root.render(
+        <VideoPlayer
+          lessonId={20}
+          playback={makeHlsPlayback("https://cdn.test/20/playlist.m3u8?token=old")}
+          onTokenExpired={onTokenExpired}
+        />,
+      );
+    });
+    await act(async () => {
+      await flushPromises();
+    });
+
+    const hls = hlsControl.instances[0];
+    const emit403 = () => {
+      for (const fn of hls.errorHandlers) {
+        fn("hlsError", {
+          fatal: true,
+          type: hlsControl.MockHls.ErrorTypes.NETWORK_ERROR,
+          response: { code: 403 },
+        });
+      }
+    };
+
+    // 1st 403 -> silent auto-renewal
+    await act(async () => {
+      emit403();
+    });
+    expect(onTokenExpired).toHaveBeenCalledTimes(1);
+
+    // 2nd 403 -> loop guard stops auto-renewal and renders manual prompt
+    await act(async () => {
+      emit403();
+    });
+    expect(onTokenExpired).toHaveBeenCalledTimes(1);
+    expect(container.textContent).toContain("انتهت صلاحية جلسة الفيديو");
+
+    const retryBtn = container.querySelector("button");
+    expect(retryBtn).not.toBeNull();
+    expect(retryBtn!.textContent).toContain("تحديث رابط التشغيل");
+
+    // Manual retry triggers onTokenExpired again
+    await act(async () => {
+      retryBtn!.dispatchEvent(new FakeEvent("click", { bubbles: true }));
+    });
+    expect(onTokenExpired).toHaveBeenCalledTimes(2);
+  });
+
+  it("triggers silent renewal on Safari native <video> MEDIA_ERR_NETWORK even before client expires_at", async () => {
+    const onTokenExpired = vi.fn();
+
+    await act(async () => {
+      root.render(
+        <VideoPlayer
+          lessonId={30}
+          playback={makeHlsPlayback("https://cdn.test/30/playlist.m3u8", "2099-01-01T00:00:00Z")}
+          onTokenExpired={onTokenExpired}
+        />,
+      );
+    });
+    await act(async () => {
+      await flushPromises();
+    });
+
+    const video = container.querySelector("video")! as unknown as {
+      canPlayType: (t: string) => string;
+      error: { code: number } | null;
+      dispatchEvent: (e: Event) => boolean;
+    };
+    video.canPlayType = () => "probably";
+    video.error = { code: 2 }; // MediaError.MEDIA_ERR_NETWORK
+
+    await act(async () => {
+      video.dispatchEvent(new FakeEvent("error", { bubbles: true }) as unknown as Event);
+    });
+
+    expect(onTokenExpired).toHaveBeenCalledTimes(1);
+  });
 });

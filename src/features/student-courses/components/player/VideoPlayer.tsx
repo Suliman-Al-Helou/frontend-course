@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useRef, useEffect, useState, useMemo } from "react";
+import React, { useRef, useEffect, useState, useMemo, useCallback } from "react";
 import dynamic from "next/dynamic";
 import type { YouTubeProps } from "react-youtube";
-import { Loader2 } from "lucide-react";
+import { Loader2, RefreshCw } from "lucide-react";
 import { useCurrentUser } from "@/features/auth";
 import type { VideoPlaybackPayload } from "@/types";
 import {
@@ -34,6 +34,7 @@ const YouTube = dynamic<YouTubeProps>(() => import("react-youtube").then((mod) =
 });
 
 export interface VideoPlayerProps {
+  lessonId?: string | number;
   playback?: VideoPlaybackPayload | null;
   videoId?: string;
   onProgress?: (percent: number, position: number) => void;
@@ -43,6 +44,7 @@ export interface VideoPlayerProps {
 }
 
 export function VideoPlayer({
+  lessonId,
   playback,
   videoId,
   onProgress,
@@ -60,14 +62,51 @@ export function VideoPlayer({
   const savedTimeRef = useRef<number>(0);
   const lastReportedTimeRef = useRef<number>(0);
   const attemptedErrorRecoveryRef = useRef<number>(0);
+  const renewalAttemptedRef = useRef<boolean>(false);
   const onTokenExpiredRef = useRef(onTokenExpired);
   useEffect(() => {
     onTokenExpiredRef.current = onTokenExpired;
   }, [onTokenExpired]);
 
   const [watermarkPos, setWatermarkPos] = useState<number>(0);
+  const [isTokenRenewalRequired, setIsTokenRenewalRequired] = useState<boolean>(false);
 
   const activeTarget = useMemo(() => resolvePlaybackTarget(playback, videoId), [playback, videoId]);
+
+  const targetIdentity = useMemo(() => {
+    if (lessonId !== undefined && lessonId !== null) {
+      return `lesson:${String(lessonId)}`;
+    }
+    if (!activeTarget) return "none";
+    if (activeTarget.provider === "youtube") {
+      return `yt:${activeTarget.source}`;
+    }
+    return `hls:${activeTarget.url.split("?")[0]}`;
+  }, [lessonId, activeTarget]);
+
+  const triggerTokenRenewal = useCallback(() => {
+    if (videoRef.current && videoRef.current.currentTime > 0) {
+      savedTimeRef.current = videoRef.current.currentTime;
+    }
+
+    if (renewalAttemptedRef.current) {
+      if (hlsRef.current) {
+        hlsRef.current.destroy();
+        hlsRef.current = null;
+      }
+      setIsTokenRenewalRequired(true);
+      return;
+    }
+
+    renewalAttemptedRef.current = true;
+    onTokenExpiredRef.current?.();
+  }, []);
+
+  const handleManualTokenRenewal = useCallback(() => {
+    renewalAttemptedRef.current = false;
+    setIsTokenRenewalRequired(false);
+    onTokenExpiredRef.current?.();
+  }, []);
 
   // تحديث موقع العلامة المائية دورياً بين أركان الإطار لحماية المحتوى
   useEffect(() => {
@@ -77,15 +116,20 @@ export function VideoPlayer({
     return () => clearInterval(wmInterval);
   }, []);
 
-  // إدارة دورة حياة المشغل وتصفير المؤقتات والمراجع بأمان عند تغيير الدرس
+  // تصفير موضع المشاهدة وحالة التقدم فقط عند الانتقال لدرس مختلف (وليس عند تجديد التوكن)
   useEffect(() => {
-    let isCancelled = false;
-
     watchedMaxRef.current = 0;
     completedRef.current = false;
     lastReportedTimeRef.current = 0;
     savedTimeRef.current = 0;
     attemptedErrorRecoveryRef.current = 0;
+    renewalAttemptedRef.current = false;
+    setIsTokenRenewalRequired(false);
+  }, [targetIdentity]);
+
+  // إدارة دورة حياة المشغل وتصفير المؤقتات والمراجع بأمان عند تغيير الرابط
+  useEffect(() => {
+    let isCancelled = false;
 
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -123,10 +167,7 @@ export function VideoPlayer({
                 }
                 case Hls.ErrorTypes.NETWORK_ERROR:
                   if (data.response?.code === 403 || isStreamExpired(activeTarget.expires_at)) {
-                    if (videoRef.current) {
-                      savedTimeRef.current = videoRef.current.currentTime;
-                    }
-                    onTokenExpiredRef.current?.();
+                    triggerTokenRenewal();
                   }
                   break;
                 default:
@@ -223,11 +264,13 @@ export function VideoPlayer({
   };
 
   const handleHlsError = () => {
-    if (activeTarget?.provider === "hls" && isStreamExpired(activeTarget.expires_at)) {
-      if (videoRef.current) {
-        savedTimeRef.current = videoRef.current.currentTime;
-      }
-      onTokenExpiredRef.current?.();
+    if (activeTarget?.provider !== "hls") return;
+
+    const mediaErrorCode = videoRef.current?.error?.code;
+    const isNativeMediaNetworkOrSourceError = mediaErrorCode === 2 || mediaErrorCode === 4;
+
+    if (isStreamExpired(activeTarget.expires_at) || isNativeMediaNetworkOrSourceError) {
+      triggerTokenRenewal();
     }
   };
 
@@ -294,6 +337,27 @@ export function VideoPlayer({
           onError={handleHlsError}
           onLoadedMetadata={handleHlsLoadedMetadata}
         />
+      )}
+
+      {/* واجهة تنبيه انتهاء صلاحية جلسة الفيديو عند تعذر التجديد التلقائي */}
+      {isTokenRenewalRequired && (
+        <div
+          role="alert"
+          className="absolute inset-0 z-20 bg-black/85 backdrop-blur-xs flex flex-col items-center justify-center gap-4 p-6 text-center text-white"
+        >
+          <p className="text-base font-bold">انتهت صلاحية جلسة الفيديو</p>
+          <p className="text-xs text-white/75 max-w-sm">
+            يرجى تحديث رابط التشغيل لاستئناف المشاهدة من نفس الموضع.
+          </p>
+          <button
+            type="button"
+            onClick={handleManualTokenRenewal}
+            className="inline-flex items-center justify-center gap-2 min-h-[44px] px-5 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-bold hover:opacity-90 transition-opacity cursor-pointer"
+          >
+            <RefreshCw className="w-4 h-4" aria-hidden="true" />
+            <span>تحديث رابط التشغيل</span>
+          </button>
+        </div>
       )}
 
       {/* العلامة المائية الجنائية الموحدة لحماية الملكية الفكرية */}
