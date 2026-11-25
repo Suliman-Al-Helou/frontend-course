@@ -38,7 +38,7 @@ Deliver an isolated, production-hardened full-stack Instructor Portal (`backendC
 4. [Phase 4: Server-Side Exam Gating & Atomic Progress Completion](file:///home/suliman/Documents/courses/frontend-course/docs/wayfinder/04-exam-gating-and-atomic-completion.md) ([Spec](file:///home/suliman/Documents/courses/frontend-course/docs/spec/04-exam-gating-and-atomic-completion.md)) (`wayfinder:task`, completed)
 5. [Phase 5: Frontend Shell, Role Guards & VideoDelivery Playback Contract](file:///home/suliman/Documents/courses/frontend-course/docs/wayfinder/05-frontend-shell-and-playback-contract.md) (`wayfinder:task`, completed)
 6. [Phase 6: Isolated Curriculum Tree & Auto-Graded Task Editor UI](file:///home/suliman/Documents/courses/frontend-course/docs/wayfinder/06-curriculum-tree-and-task-editor-ui.md) (`wayfinder:task`, completed)
-7. [Phase 7: Launch Gate — HLS Video Delivery & Production Release Checklist](file:///home/suliman/Documents/courses/frontend-course/docs/wayfinder/07-launch-gate-hls-video-delivery.md) (`wayfinder:task`, unblocked)
+7. [Phase 7: Launch Gate — HLS Video Delivery & Production Release Checklist](file:///home/suliman/Documents/courses/frontend-course/docs/wayfinder/07-launch-gate-hls-video-delivery.md) (`wayfinder:task`, Ready for Launch Gate - Code Complete - Pending Keys)
 
 ## Not yet specified
 
