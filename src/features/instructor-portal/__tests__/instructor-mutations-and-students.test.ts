@@ -20,17 +20,19 @@ import {
 import { EnrolledStudentsView } from "../components/InstructorCourseWorkspace";
 import type { InstructorCourse, InstructorCourseStudent } from "../types";
 
-const mockApiGet = vi.fn();
-const mockApiPost = vi.fn();
-const mockApiPut = vi.fn();
-const mockApiDelete = vi.fn();
+const { mockApiGet, mockApiPost, mockApiPut, mockApiDelete } = vi.hoisted(() => ({
+  mockApiGet: vi.fn(),
+  mockApiPost: vi.fn(),
+  mockApiPut: vi.fn(),
+  mockApiDelete: vi.fn(),
+}));
 
 vi.mock("@/lib/api", () => ({
   default: {
-    get: (...args: unknown[]) => mockApiGet(...args),
-    post: (...args: unknown[]) => mockApiPost(...args),
-    put: (...args: unknown[]) => mockApiPut(...args),
-    delete: (...args: unknown[]) => mockApiDelete(...args),
+    get: mockApiGet,
+    post: mockApiPost,
+    put: mockApiPut,
+    delete: mockApiDelete,
   },
 }));
 

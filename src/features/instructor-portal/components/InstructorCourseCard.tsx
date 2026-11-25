@@ -7,20 +7,14 @@ import { BookOpen, Users, Clock, Award, ArrowLeft } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { InstructorCourse } from "../types";
+import { getCourseLevelLabel } from "../utils";
 
 interface InstructorCourseCardProps {
   course: InstructorCourse;
 }
 
 export function InstructorCourseCard({ course }: InstructorCourseCardProps) {
-  const levelLabel =
-    course.level === "beginner"
-      ? "مبتدئ"
-      : course.level === "intermediate"
-        ? "متوسط"
-        : course.level === "advanced"
-          ? "متقدم"
-          : course.level || "عام";
+  const levelLabel = getCourseLevelLabel(course.level);
 
   return (
     <Card

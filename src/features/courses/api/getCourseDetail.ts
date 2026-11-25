@@ -13,7 +13,7 @@ export type RawCourseDetailResponse =
   | (Course & { sections?: unknown[] })
   | { data: Course & { sections?: unknown[] } };
 
-function toArray(val: unknown): string[] {
+export function toArray(val: unknown): string[] {
   if (Array.isArray(val)) return val.map(String);
   if (typeof val === "string" && val.trim()) {
     try {
@@ -26,7 +26,7 @@ function toArray(val: unknown): string[] {
   return [];
 }
 
-function normalizeLevel(level?: string | null): "beginner" | "intermediate" | "advanced" {
+export function normalizeLevel(level?: string | null): "beginner" | "intermediate" | "advanced" {
   if (level === "intermediate" || level === "advanced") return level;
   return "beginner";
 }
@@ -38,8 +38,8 @@ function normalizeStatus(status?: string | null): "draft" | "published" | "comin
 
 function formatDuration(seconds?: number | string | null): string {
   if (!seconds) return "";
-  const numSeconds = typeof seconds === "string" ? parseFloat(seconds) : seconds;
-  if (isNaN(numSeconds) || numSeconds <= 0) return "";
+  const numSeconds = typeof seconds === "string" ? Number.parseFloat(seconds) : seconds;
+  if (Number.isNaN(numSeconds) || numSeconds <= 0) return "";
   const mins = Math.round(numSeconds / 60);
   return `${mins} د`;
 }
@@ -115,7 +115,7 @@ export function toCourseDetail(rawResponse: RawCourseDetailResponse): CourseDeta
     status: normalizeStatus(data.status),
     total_duration:
       typeof rawAny.total_duration === "string"
-        ? parseFloat(rawAny.total_duration) || 0
+        ? Number.parseFloat(rawAny.total_duration) || 0
         : Number(rawAny.total_duration ?? 0),
     price: Number(rawAny.price ?? 0),
     rating: Number(rawAny.rating ?? 0),

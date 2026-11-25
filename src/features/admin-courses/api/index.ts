@@ -4,6 +4,7 @@
  */
 
 import api from "@/lib/api";
+import { toArray as toStringArray, normalizeLevel } from "@/features/courses/api/getCourseDetail";
 import type { operations } from "@/types/api.generated";
 import {
   getAdminZoomMeetings,
@@ -23,7 +24,6 @@ import {
 import type {
   AdminCourse,
   CourseFormData,
-  CourseLevel,
   CourseStatus,
   AdminSection,
   AdminLesson,
@@ -55,24 +55,6 @@ function unwrapData<T>(raw: T | { data: T }): T {
     return (raw as { data: T }).data;
   }
   return raw as T;
-}
-
-function toStringArray(val: unknown): string[] {
-  if (Array.isArray(val)) return val.map(String);
-  if (typeof val === "string" && val.trim()) {
-    try {
-      const parsed = JSON.parse(val);
-      return Array.isArray(parsed) ? parsed.map(String) : [val];
-    } catch {
-      return val.split("\n").filter(Boolean);
-    }
-  }
-  return [];
-}
-
-function normalizeLevel(val?: string | null): CourseLevel {
-  if (val === "intermediate" || val === "advanced") return val;
-  return "beginner";
 }
 
 function normalizeStatus(val?: string | null): CourseStatus {

@@ -275,6 +275,8 @@ export function VideoPlayer({
   };
 
   const handleHlsLoadedMetadata = () => {
+    renewalAttemptedRef.current = false;
+    setIsTokenRenewalRequired(false);
     if (savedTimeRef.current > 0 && videoRef.current) {
       videoRef.current.currentTime = savedTimeRef.current;
       savedTimeRef.current = 0;

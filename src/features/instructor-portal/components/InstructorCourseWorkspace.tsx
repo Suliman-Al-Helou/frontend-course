@@ -22,6 +22,8 @@ import { InstructorCurriculumView } from "./InstructorCurriculumView";
 import { InstructorCourseContentEditor } from "./InstructorCourseContentEditor";
 import type { InstructorCourse } from "../types";
 
+import { getCourseLevelLabel } from "../utils";
+
 interface InstructorCourseWorkspaceProps {
   courseId: number | string;
 }
@@ -65,14 +67,7 @@ export function InstructorCourseWorkspace({ courseId }: InstructorCourseWorkspac
     );
   }
 
-  const levelLabel =
-    course.level === "beginner"
-      ? "مبتدئ"
-      : course.level === "intermediate"
-        ? "متوسط"
-        : course.level === "advanced"
-          ? "متقدم"
-          : course.level || "عام";
+  const levelLabel = getCourseLevelLabel(course.level);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300 motion-reduce:animate-none">

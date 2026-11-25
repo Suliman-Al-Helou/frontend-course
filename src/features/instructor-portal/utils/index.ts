@@ -96,7 +96,7 @@ export function validateTaskQuestion(question: TaskQuestion): {
     correctIdx === null ||
     correctIdx === undefined ||
     typeof correctIdx !== "number" ||
-    isNaN(correctIdx) ||
+    Number.isNaN(correctIdx) ||
     correctIdx < 0 ||
     correctIdx >= question.options.length
   ) {
@@ -104,6 +104,13 @@ export function validateTaskQuestion(question: TaskQuestion): {
   }
 
   return { isValid: true };
+}
+
+export function getCourseLevelLabel(level?: string | null): string {
+  if (level === "beginner") return "مبتدئ";
+  if (level === "intermediate") return "متوسط";
+  if (level === "advanced") return "متقدم";
+  return level || "عام";
 }
 
 export * from "./navigation";

@@ -162,35 +162,7 @@ export interface AdminStats {
   pendingEnrollments: number;
 }
 
-export interface AdminVideoAsset {
-  id: number;
-  course_id: number;
-  zoom_meeting_id?: number | null;
-  title: string;
-  description?: string | null;
-  provider: "youtube" | "bunny" | "cloudflare";
-  provider_video_id: string;
-  duration_seconds: number;
-  type: "recording" | "lesson";
-  status?: "uploading" | "processing" | "ready" | "failed";
-  created_by?: number;
-  course?: { id: number; title: string };
-  zoom_meeting?: { id: number; title: string; starts_at: string } | null;
-  creator?: { id: number; name: string };
-  created_at?: string;
-  updated_at?: string;
-}
-
-export interface VideoAssetFormData {
-  course_id: number;
-  zoom_meeting_id?: number | null;
-  title: string;
-  description?: string;
-  provider: "youtube" | "bunny" | "cloudflare";
-  provider_video_id: string;
-  duration_seconds: number;
-  type: "recording" | "lesson";
-}
+export type { AdminVideoAsset, VideoAssetFormData } from "@/features/media-pipeline/types";
 
 export interface AdminZoomMeeting {
   id: number;
