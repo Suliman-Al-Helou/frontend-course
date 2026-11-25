@@ -7,20 +7,14 @@ import { BookOpen, Users, Clock, Award, ArrowLeft } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { InstructorCourse } from "../types";
+import { getCourseLevelLabel } from "../utils";
 
 interface InstructorCourseCardProps {
   course: InstructorCourse;
 }
 
 export function InstructorCourseCard({ course }: InstructorCourseCardProps) {
-  const levelLabel =
-    course.level === "beginner"
-      ? "مبتدئ"
-      : course.level === "intermediate"
-        ? "متوسط"
-        : course.level === "advanced"
-          ? "متقدم"
-          : course.level || "عام";
+  const levelLabel = getCourseLevelLabel(course.level);
 
   return (
     <Card
@@ -82,7 +76,7 @@ export function InstructorCourseCard({ course }: InstructorCourseCardProps) {
             variant="outline"
             className="w-full min-h-[44px] justify-between border-border text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors"
           >
-            <Link href={`/instructor/courses`}>
+            <Link href={`/instructor/courses/${course.id}`}>
               <span className="font-medium text-xs">إدارة المحتوى والدروس</span>
               <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             </Link>

@@ -158,24 +158,7 @@ export interface AdminUser {
   created_at: string;
 }
 
-export interface Instructor {
-  id: number;
-  name: string;
-  title?: string;
-  bio?: string;
-  avatar_url?: string;
-  cover_url?: string;
-  specializations?: string | string[];
-  years_experience?: number;
-  rating?: number;
-  total_reviews?: number;
-  students_count?: number;
-  achievements?: string[];
-  twitter?: string;
-  linkedin?: string;
-  youtube?: string;
-  courses?: number[]; // IDs of assigned courses
-}
+export type { Instructor } from "@/features/instructors/types";
 
 export interface AdminStats {
   totalStudents: number;

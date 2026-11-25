@@ -2,7 +2,7 @@
 
 **Tracker Label**: `spec:contract-alignment`  
 **Status**: Active / Approved  
-**Governing ADR**: [ADR 0022: Full-Stack Contract-Driven Alignment](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0022-fullstack-contract-driven-alignment-and-zero-regression-protocol.md)  
+**Governing ADR**: [ADR 0023: Full-Stack Contract-Driven Alignment](file:///home/suliman/Documents/courses/frontend-course/docs/adr/0023-fullstack-contract-driven-alignment-and-zero-regression-protocol.md)  
 **Parent Map**: [Wayfinder Map](file:///home/suliman/Documents/courses/frontend-course/docs/wayfinder/map.md)
 
 ---

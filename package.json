@@ -4,13 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "node scripts/check-contracts.mjs && next build",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "check": "vp check",
+    "check": "node scripts/check-contracts.mjs && vp check",
+    "check:contracts": "node scripts/check-contracts.mjs",
     "sync:types": "openapi-typescript ../backendCourse/public/api.json -o src/types/api.generated.ts"
   },
   "dependencies": {

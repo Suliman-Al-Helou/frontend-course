@@ -12,10 +12,24 @@ export default defineConfig({
     },
   },
   fmt: {
-    ignorePatterns: [".agents/**", ".impeccable/**", "docs/**", "deep-twelve/**", ".next/**"],
+    ignorePatterns: [
+      ".agents/**",
+      ".impeccable/**",
+      "docs/**",
+      "deep-twelve/**",
+      ".next/**",
+      "src/types/api.generated.ts",
+    ],
   },
   lint: {
-    ignorePatterns: [".agents/**", ".impeccable/**", "docs/**", "deep-twelve/**", ".next/**"],
+    ignorePatterns: [
+      ".agents/**",
+      ".impeccable/**",
+      "docs/**",
+      "deep-twelve/**",
+      ".next/**",
+      "src/types/api.generated.ts",
+    ],
     jsPlugins: [{ name: "vite-plus", specifier: "vite-plus/oxlint-plugin" }],
     rules: { "vite-plus/prefer-vite-plus-imports": "error" },
     options: { typeAware: true, typeCheck: true },

@@ -259,6 +259,7 @@ export default function LessonPage() {
           {/* مشغل الفيديو المحصن */}
           <VideoPlayer
             key={numericLessonId}
+            lessonId={numericLessonId}
             playback={lessonDetail?.playback ?? currentLesson?.playback ?? null}
             videoId={lessonDetail?.video_id || currentLesson?.video_id || ""}
             onProgress={handleVideoProgress}

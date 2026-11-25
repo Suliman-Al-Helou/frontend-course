@@ -8,6 +8,9 @@ import type {
   InProgressLesson,
   CourseProgressSummary,
 } from "../types";
+import type { components } from "@/types/api.generated";
+
+export type SaveLessonProgressPayload = components["schemas"]["UpdateLessonProgressRequest"];
 
 /**
  * جلب تفاصيل درس معين والفيديو المحمي
@@ -78,7 +81,7 @@ export async function getLessonProgress(lessonId: number | string): Promise<Less
  */
 export async function saveLessonProgress(
   lessonId: number | string,
-  payload: { watched_percent: number; last_position: number },
+  payload: SaveLessonProgressPayload,
 ): Promise<LessonProgress> {
   const { data } = await api.post<LessonProgress>(`/lessons/${lessonId}/progress`, payload);
   return data;

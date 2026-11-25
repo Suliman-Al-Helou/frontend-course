@@ -1,6 +1,6 @@
 /**
  * Instructor Portal Types & Contracts
- * Compliant with CourseInstructorResource (Backend) and ADR 0014
+ * Compliant with CourseInstructorResource (Backend) and ADR 0014, 0016, 0017, 0022
  */
 
 export interface InstructorCourse {
@@ -24,4 +24,83 @@ export interface InstructorCourse {
 export interface InstructorCoursesResponse {
   data?: InstructorCourse[];
   courses?: InstructorCourse[];
+}
+
+export interface TaskQuestion {
+  id: string;
+  type: "mcq" | "true_false";
+  question: string;
+  options: string[];
+  correct_answer: number;
+  explanation?: string;
+}
+
+export interface InstructorTask {
+  id?: number;
+  lesson_id?: number;
+  questions: TaskQuestion[];
+  pass_percentage: number;
+  max_attempts: number;
+  attempts_count?: number;
+}
+
+export interface InstructorLesson {
+  id: number;
+  section_id?: number;
+  title: string;
+  duration: number | null;
+  is_preview?: boolean;
+  video_id: string | null;
+  video_provider?: "youtube" | "hls";
+  is_published: boolean;
+  order: number;
+  task?: InstructorTask | null;
+}
+
+export interface InstructorSection {
+  id: number;
+  course_id?: number;
+  title: string;
+  order: number;
+  lessons: InstructorLesson[];
+}
+
+export interface CourseYouTubeVideoItem {
+  id: string;
+  title: string;
+  thumbnail?: string;
+  duration_minutes: number;
+  is_already_added: boolean;
+}
+
+export interface CourseYouTubeVideosResponse {
+  playlist_id: string | null;
+  connected: boolean;
+  videos: CourseYouTubeVideoItem[];
+}
+
+export interface InstructorCourseStudent {
+  id: number;
+  name: string;
+  email?: string;
+  enrolled_at: string;
+  progress_percent: number;
+  completed_lessons_count: number;
+  total_lessons_count: number;
+}
+
+export interface InstructorCourseStudentsPaginationMeta {
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+}
+
+export interface InstructorCourseStudentsResponse {
+  data: InstructorCourseStudent[];
+  meta?: InstructorCourseStudentsPaginationMeta;
+  current_page?: number;
+  last_page?: number;
+  per_page?: number;
+  total?: number;
 }
