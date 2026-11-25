@@ -36,9 +36,9 @@ Deliver an isolated, production-hardened full-stack Instructor Portal (`backendC
 2. [Phase 2: CoursePolicy & IDOR Prevention Tests](file:///home/suliman/Documents/courses/frontend-course/docs/wayfinder/02-course-policy-authorization.md) ([Spec](file:///home/suliman/Documents/courses/frontend-course/docs/spec/02-instructor-course-policy-and-idor-prevention.md)) (`wayfinder:task`, completed)
 3. [Phase 3: Educational Metadata Updates & Activity Audit Logging](file:///home/suliman/Documents/courses/frontend-course/docs/wayfinder/03-metadata-updates-activity-audit.md) ([Spec](file:///home/suliman/Documents/courses/frontend-course/docs/spec/03-educational-metadata-updates-and-activity-audit.md)) (`wayfinder:task`, completed)
 4. [Phase 4: Server-Side Exam Gating & Atomic Progress Completion](file:///home/suliman/Documents/courses/frontend-course/docs/wayfinder/04-exam-gating-and-atomic-completion.md) ([Spec](file:///home/suliman/Documents/courses/frontend-course/docs/spec/04-exam-gating-and-atomic-completion.md)) (`wayfinder:task`, completed)
-5. [Phase 5: Frontend Shell, Role Guards & VideoDelivery Playback Contract](file:///home/suliman/Documents/courses/docs/wayfinder/05-frontend-shell-and-playback-contract.md) (`wayfinder:task`, unblocked)
-6. [Phase 6: Isolated Curriculum Tree & Auto-Graded Task Editor UI](file:///home/suliman/Documents/courses/docs/wayfinder/06-curriculum-tree-and-task-editor-ui.md) (`wayfinder:task`, blocked by Phase 5)
-7. [Phase 7: Launch Gate — HLS Video Delivery & Production Release Checklist](file:///home/suliman/Documents/courses/docs/wayfinder/07-launch-gate-hls-video-delivery.md) (`wayfinder:task`, blocked by Phase 6)
+5. [Phase 5: Frontend Shell, Role Guards & VideoDelivery Playback Contract](file:///home/suliman/Documents/courses/frontend-course/docs/wayfinder/05-frontend-shell-and-playback-contract.md) (`wayfinder:task`, completed)
+6. [Phase 6: Isolated Curriculum Tree & Auto-Graded Task Editor UI](file:///home/suliman/Documents/courses/frontend-course/docs/wayfinder/06-curriculum-tree-and-task-editor-ui.md) (`wayfinder:task`, completed)
+7. [Phase 7: Launch Gate — HLS Video Delivery & Production Release Checklist](file:///home/suliman/Documents/courses/frontend-course/docs/wayfinder/07-launch-gate-hls-video-delivery.md) (`wayfinder:task`, unblocked)
 
 ## Not yet specified
 

@@ -5,13 +5,13 @@ Platform administrators can unlink an active instructor profile (reverting it to
 
 **Blocked by:** 02: Candidate User Autocomplete & Managed Faculty Linking
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] Unlinking an instructor profile (`user_id = null`) automatically removes the Spatie `instructor` role from the user.
-- [ ] Deleting an instructor profile automatically removes the Spatie `instructor` role from the linked user.
-- [ ] Demoting an instructor user's role via the admin users endpoint automatically sets `instructors.user_id = null`.
-- [ ] Soft-deleting a user account automatically unlinks any associated instructor profile.
-- [ ] If an unlinked or deleted instructor user possesses the `admin` role, their administrative privileges are strictly preserved without demotion.
-- [ ] When an instructor is unlinked or deleted, all assigned courses remain intact under Admin Fallback Custody without orphan states or broken student links.
-- [ ] Instructor form and deletion actions enforce double-submit concurrency locks (`useRef(false)`).
-- [ ] Automated feature tests verify unlinking, deletion role cleanup, admin lockout prevention, and course custody preservation.
+- [x] Unlinking an instructor profile (`user_id = null`) automatically removes the Spatie `instructor` role from the user.
+- [x] Deleting an instructor profile automatically removes the Spatie `instructor` role from the linked user.
+- [x] Demoting an instructor user's role via the admin users endpoint automatically sets `instructors.user_id = null`.
+- [x] Soft-deleting a user account automatically unlinks any associated instructor profile.
+- [x] If an unlinked or deleted instructor user possesses the `admin` role, their administrative privileges are strictly preserved without demotion.
+- [x] When an instructor is unlinked or deleted, all assigned courses remain intact under Admin Fallback Custody without orphan states or broken student links.
+- [x] Instructor form and deletion actions enforce double-submit concurrency locks (`useRef(false)`).
+- [x] Automated feature tests verify unlinking, deletion role cleanup, admin lockout prevention, and course custody preservation.

@@ -11,6 +11,8 @@ import type {
   InstructorLesson,
   InstructorTask,
   CourseYouTubeVideosResponse,
+  InstructorCourseStudent,
+  InstructorCourseStudentsResponse,
 } from "../types";
 
 /**
@@ -40,9 +42,7 @@ export async function getInstructorCourses(): Promise<InstructorCourse[]> {
 /**
  * جلب تفاصيل كورس معين للمدرب
  */
-export async function getInstructorCourse(
-  courseId: number | string,
-): Promise<InstructorCourse> {
+export async function getInstructorCourse(courseId: number | string): Promise<InstructorCourse> {
   const { data } = await api.get<InstructorCourse | { data: InstructorCourse }>(
     `/instructor/courses/${courseId}`,
   );
@@ -59,12 +59,19 @@ export async function getInstructorCourse(
  */
 export async function updateInstructorCourse(
   courseId: number | string,
-  payload: Partial<InstructorCourse>,
+  payload: Partial<InstructorCourse> | FormData,
 ): Promise<InstructorCourse> {
-  const { data } = await api.put<InstructorCourse | { data: InstructorCourse }>(
-    `/instructor/courses/${courseId}`,
-    payload,
-  );
+  const { data } =
+    typeof FormData !== "undefined" && payload instanceof FormData
+      ? await api.put<InstructorCourse | { data: InstructorCourse }>(
+          `/instructor/courses/${courseId}`,
+          payload,
+          { headers: { "Content-Type": "multipart/form-data" } },
+        )
+      : await api.put<InstructorCourse | { data: InstructorCourse }>(
+          `/instructor/courses/${courseId}`,
+          payload,
+        );
 
   if (data && typeof data === "object" && "data" in data && data.data) {
     return data.data;
@@ -138,9 +145,7 @@ export async function updateInstructorSection(
 export async function deleteInstructorSection(
   sectionId: number | string,
 ): Promise<{ message: string }> {
-  const { data } = await api.delete<{ message: string }>(
-    `/instructor/sections/${sectionId}`,
-  );
+  const { data } = await api.delete<{ message: string }>(`/instructor/sections/${sectionId}`);
   return data;
 }
 
@@ -188,18 +193,14 @@ export async function updateInstructorLesson(
 export async function deleteInstructorLesson(
   lessonId: number | string,
 ): Promise<{ message: string }> {
-  const { data } = await api.delete<{ message: string }>(
-    `/instructor/lessons/${lessonId}`,
-  );
+  const { data } = await api.delete<{ message: string }>(`/instructor/lessons/${lessonId}`);
   return data;
 }
 
 /**
  * جلب مهمة الدرس
  */
-export async function getInstructorLessonTask(
-  lessonId: number | string,
-): Promise<InstructorTask> {
+export async function getInstructorLessonTask(lessonId: number | string): Promise<InstructorTask> {
   const { data } = await api.get<InstructorTask | { data: InstructorTask }>(
     `/instructor/lessons/${lessonId}/task`,
   );
@@ -236,9 +237,7 @@ export async function saveInstructorLessonTask(
 export async function deleteInstructorLessonTask(
   lessonId: number | string,
 ): Promise<{ message: string }> {
-  const { data } = await api.delete<{ message: string }>(
-    `/instructor/lessons/${lessonId}/task`,
-  );
+  const { data } = await api.delete<{ message: string }>(`/instructor/lessons/${lessonId}/task`);
   return data;
 }
 
@@ -252,4 +251,44 @@ export async function getInstructorCourseYouTubeVideos(
     `/instructor/courses/${courseId}/youtube-videos`,
   );
   return data;
+}
+
+/**
+ * جلب قائمة الطلاب المسجلين في الكورس مع نسب التقدم
+ */
+export async function getInstructorCourseStudents(
+  courseId: number | string,
+  page?: number,
+): Promise<InstructorCourseStudentsResponse> {
+  const url = `/instructor/courses/${courseId}/students`;
+  const { data } =
+    page !== undefined
+      ? await api.get<InstructorCourseStudentsResponse | InstructorCourseStudent[]>(url, {
+          params: { page },
+        })
+      : await api.get<InstructorCourseStudentsResponse | InstructorCourseStudent[]>(url);
+
+  if (Array.isArray(data)) {
+    return { data };
+  }
+
+  if (data && typeof data === "object" && Array.isArray(data.data)) {
+    const meta =
+      data.meta ??
+      (data.current_page !== undefined
+        ? {
+            current_page: data.current_page,
+            last_page: data.last_page ?? 1,
+            per_page: data.per_page ?? data.data.length,
+            total: data.total ?? data.data.length,
+          }
+        : undefined);
+
+    return {
+      data: data.data,
+      ...(meta ? { meta } : {}),
+    };
+  }
+
+  return { data: [] };
 }

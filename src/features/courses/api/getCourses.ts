@@ -1,5 +1,8 @@
 import api from "@/lib/api";
 import type { Course } from "@/types";
+import type { operations } from "@/types/api.generated";
+
+export type GetCoursesQuery = operations["course.index"]["parameters"]["query"];
 
 /**
  * خيارات استعلام الكورسات العامة (الحد الأقصى أو تصفية المستوى)

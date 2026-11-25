@@ -44,9 +44,7 @@ function formatDuration(seconds?: number | string | null): string {
   return `${mins} د`;
 }
 
-export function toCourseDetail(
-  rawResponse: RawCourseDetailResponse,
-): CourseDetail {
+export function toCourseDetail(rawResponse: RawCourseDetailResponse): CourseDetail {
   // فك غلاف data في حال كان الـ API يرجع { data: { ... } }
   const data =
     rawResponse &&
@@ -115,7 +113,10 @@ export function toCourseDetail(
     cover_image: data.cover_image ?? null,
     level: normalizeLevel(data.level),
     status: normalizeStatus(data.status),
-    total_duration: typeof rawAny.total_duration === "string" ? parseFloat(rawAny.total_duration) || 0 : Number(rawAny.total_duration ?? 0),
+    total_duration:
+      typeof rawAny.total_duration === "string"
+        ? parseFloat(rawAny.total_duration) || 0
+        : Number(rawAny.total_duration ?? 0),
     price: Number(rawAny.price ?? 0),
     rating: Number(rawAny.rating ?? 0),
     is_popular: Boolean(rawAny.is_popular),

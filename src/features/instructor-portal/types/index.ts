@@ -78,3 +78,29 @@ export interface CourseYouTubeVideosResponse {
   connected: boolean;
   videos: CourseYouTubeVideoItem[];
 }
+
+export interface InstructorCourseStudent {
+  id: number;
+  name: string;
+  email?: string;
+  enrolled_at: string;
+  progress_percent: number;
+  completed_lessons_count: number;
+  total_lessons_count: number;
+}
+
+export interface InstructorCourseStudentsPaginationMeta {
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+}
+
+export interface InstructorCourseStudentsResponse {
+  data: InstructorCourseStudent[];
+  meta?: InstructorCourseStudentsPaginationMeta;
+  current_page?: number;
+  last_page?: number;
+  per_page?: number;
+  total?: number;
+}

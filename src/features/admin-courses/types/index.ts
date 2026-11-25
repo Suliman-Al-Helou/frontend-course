@@ -1,3 +1,21 @@
+import type { components, operations } from "@/types/api.generated";
+
+export type RawCourseAdmin = components["schemas"]["CourseAdminResource"];
+export type RawStoreCourseRequest = components["schemas"]["StoreCourseRequest"];
+export type RawUpdateCourseRequest = components["schemas"]["UpdateCourseRequest"];
+export type RawAdminSection = components["schemas"]["SectionResource"];
+export type RawSectionRequest = components["schemas"]["SectionRequest"];
+export type RawAdminLesson = components["schemas"]["LessonResource"];
+export type RawLessonRequest = components["schemas"]["LessonRequest"];
+export type RawUpdateLessonRequest = components["schemas"]["UpdateLessonRequest"];
+export type RawAdminTask = components["schemas"]["TaskResource"];
+export type RawTaskRequest = components["schemas"]["TaskRequest"];
+export type RawUpdateTaskRequest = components["schemas"]["UpdateTaskRequest"];
+export type RawEnrollment = components["schemas"]["EnrollmentResource"];
+export type RawCreateEnrollmentRequest =
+  operations["enrollment.store"]["requestBody"]["content"]["application/json"];
+export type RawUpdateEnrollmentRequest = components["schemas"]["UpdateEnrollmentRequest"];
+
 export type CourseLevel = "beginner" | "intermediate" | "advanced";
 export type CourseStatus = "draft" | "published" | "coming_soon";
 export type EnrollmentStatus = "pending" | "approved" | "rejected";

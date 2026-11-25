@@ -49,12 +49,7 @@ export function canMoveDown(index: number, total: number): boolean {
  * Swaps two items in an array immutably.
  */
 export function swapArrayItems<T>(items: T[], fromIndex: number, toIndex: number): T[] {
-  if (
-    fromIndex < 0 ||
-    fromIndex >= items.length ||
-    toIndex < 0 ||
-    toIndex >= items.length
-  ) {
+  if (fromIndex < 0 || fromIndex >= items.length || toIndex < 0 || toIndex >= items.length) {
     return items;
   }
 
@@ -83,9 +78,7 @@ export function validateTaskQuestion(question: TaskQuestion): {
       };
     }
 
-    const hasEmptyOption = question.options.some(
-      (opt) => typeof opt !== "string" || !opt.trim(),
-    );
+    const hasEmptyOption = question.options.some((opt) => typeof opt !== "string" || !opt.trim());
     if (hasEmptyOption) {
       return { isValid: false, error: "لا يمكن ترك أي خيار فارغاً" };
     }
@@ -115,4 +108,3 @@ export function validateTaskQuestion(question: TaskQuestion): {
 
 export * from "./navigation";
 export * from "./stats";
-

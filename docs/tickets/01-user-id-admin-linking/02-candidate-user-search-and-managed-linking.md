@@ -5,13 +5,13 @@ Platform administrators can search candidate user accounts in the Instructor Dos
 
 **Blocked by:** 01: Display-Only Faculty Baseline & Presentation
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] Candidate user search API endpoint enforces a strict upper limit of 20 results per page to guard against resource exhaustion.
-- [ ] Linking a user account to an instructor profile automatically assigns the Spatie `instructor` role to the user.
-- [ ] Linking requests reject assigning users who already possess the `admin` role with a 422 validation error.
-- [ ] Linking requests reject duplicate linkages (user already linked to another instructor) enforcing the strict 1-to-1 rule with a 422 error.
-- [ ] Linking requests reject soft-deleted or non-existent user accounts with a 422 error.
-- [ ] Instructor Dossier Form modal provides a searchable, debounced candidate user input (300ms, max 5 results) with clear selection state.
-- [ ] Admin faculty cards render the active "حساب مربوط: [الاسم]" badge with linked account details.
-- [ ] Automated feature tests verify candidate search limits, linking, role promotion, and validation rejection rules.
+- [x] Candidate user search API endpoint enforces a strict upper limit of 20 results per page to guard against resource exhaustion.
+- [x] Linking a user account to an instructor profile automatically assigns the Spatie `instructor` role to the user.
+- [x] Linking requests reject assigning users who already possess the `admin` role with a 422 validation error.
+- [x] Linking requests reject duplicate linkages (user already linked to another instructor) enforcing the strict 1-to-1 rule with a 422 error.
+- [x] Linking requests reject soft-deleted or non-existent user accounts with a 422 error.
+- [x] Instructor Dossier Form modal provides a searchable, debounced candidate user input (300ms, max 5 results) with clear selection state.
+- [x] Admin faculty cards render the active "حساب مربوط: [الاسم]" badge with linked account details.
+- [x] Automated feature tests verify candidate search limits, linking, role promotion, and validation rejection rules.

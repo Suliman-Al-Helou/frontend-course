@@ -28,11 +28,7 @@ interface InstructorCurriculumVideoPickerModalProps {
   lessonTitle?: string;
   isOpen: boolean;
   onClose: () => void;
-  onSelectVideo: (video: {
-    id: string;
-    title: string;
-    duration_minutes: number;
-  }) => Promise<void>;
+  onSelectVideo: (video: { id: string; title: string; duration_minutes: number }) => Promise<void>;
 }
 
 export function InstructorCurriculumVideoPickerModal({
@@ -62,9 +58,7 @@ export function InstructorCurriculumVideoPickerModal({
 
   const playlistVideos = playlistData?.videos ?? [];
   const filteredPlaylistVideos = playlistVideos.filter((v) =>
-    searchQuery.trim()
-      ? v.title.toLowerCase().includes(searchQuery.toLowerCase().trim())
-      : true,
+    searchQuery.trim() ? v.title.toLowerCase().includes(searchQuery.toLowerCase().trim()) : true,
   );
 
   const handleDirectSubmit = async (e: React.FormEvent) => {
@@ -193,7 +187,8 @@ export function InstructorCurriculumVideoPickerModal({
                 </div>
               </div>
               <p className="text-xs text-muted-foreground">
-                يمكنك لصق أي رابط فيديو غير مدرج (Unlisted) على YouTube، وسيتم استخراج المعرّف تلقائياً.
+                يمكنك لصق أي رابط فيديو غير مدرج (Unlisted) على YouTube، وسيتم استخراج المعرّف
+                تلقائياً.
               </p>
             </div>
 

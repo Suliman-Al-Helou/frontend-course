@@ -27,9 +27,7 @@ interface InstructorCourseWorkspaceProps {
 }
 
 export function InstructorCourseWorkspace({ courseId }: InstructorCourseWorkspaceProps) {
-  const [activeTab, setActiveTab] = useState<"curriculum" | "metadata" | "students">(
-    "curriculum",
-  );
+  const [activeTab, setActiveTab] = useState<"curriculum" | "metadata" | "students">("curriculum");
 
   const {
     data: course,
@@ -54,7 +52,9 @@ export function InstructorCourseWorkspace({ courseId }: InstructorCourseWorkspac
         <div className="space-y-1">
           <h2 className="text-lg font-bold text-foreground">تعذر تحميل بيانات المقرر</h2>
           <p className="text-sm text-muted-foreground max-w-md">
-            {error instanceof Error ? error.message : "قد يكون المقرر غير متاح أو لا تملك صلاحية إدارته."}
+            {error instanceof Error
+              ? error.message
+              : "قد يكون المقرر غير متاح أو لا تملك صلاحية إدارته."}
           </p>
         </div>
         <Button onClick={() => refetch()} variant="outline" className="min-h-[44px] gap-2">
@@ -150,10 +150,7 @@ export function InstructorCourseWorkspace({ courseId }: InstructorCourseWorkspac
 
       {/* Horizontal Tabs Navigation */}
       <div className="border-b border-border">
-        <nav
-          className="flex space-x-2 rtl:space-x-reverse"
-          aria-label="تبويبات إدارة المقرر"
-        >
+        <nav className="flex space-x-2 rtl:space-x-reverse" aria-label="تبويبات إدارة المقرر">
           <button
             type="button"
             onClick={() => setActiveTab("curriculum")}
@@ -202,34 +199,169 @@ export function InstructorCourseWorkspace({ courseId }: InstructorCourseWorkspac
         )}
 
         {activeTab === "metadata" && (
-          <InstructorCourseContentEditor
-            course={course}
-            onUpdated={() => refetch()}
-          />
+          <InstructorCourseContentEditor course={course} onUpdated={() => refetch()} />
         )}
 
-        {activeTab === "students" && (
-          <EnrolledStudentsView course={course} />
-        )}
+        {activeTab === "students" && <EnrolledStudentsView course={course} />}
       </section>
     </div>
   );
 }
 
-function EnrolledStudentsView({ course }: { course: InstructorCourse }) {
+function formatEnrollmentDate(dateString: string): string {
+  const parsed = new Date(dateString);
+  if (Number.isNaN(parsed.getTime())) {
+    return dateString;
+  }
+  return parsed.toLocaleDateString("ar-EG", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+export function EnrolledStudentsView({ course }: { course: InstructorCourse }) {
+  const [page, setPage] = useState(1);
+
+  const { data, isLoading, isError, error, refetch } = useQuery({
+    ...instructorPortalQueries.students(course.id, page),
+  });
+
+  if (isLoading) {
+    return (
+      <Card className="p-6 rounded-2xl border border-border/80 space-y-4">
+        <div className="h-6 w-48 bg-muted rounded animate-pulse" />
+        <div className="space-y-3">
+          {[1, 2, 3].map((row) => (
+            <div key={row} className="h-16 bg-muted/70 rounded-xl animate-pulse" />
+          ))}
+        </div>
+      </Card>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Card className="p-8 text-center space-y-4 rounded-2xl border border-border/80">
+        <div className="w-12 h-12 rounded-full bg-destructive/10 text-destructive flex items-center justify-center mx-auto">
+          <AlertCircle className="w-6 h-6" aria-hidden="true" />
+        </div>
+        <div className="space-y-1">
+          <h3 className="text-base font-bold text-foreground">تعذر تحميل قائمة الطلاب المسجلين</h3>
+          <p className="text-sm text-muted-foreground max-w-md mx-auto">
+            {error instanceof Error ? error.message : "حدث خطأ غير متوقع أثناء جلب بيانات الطلاب."}
+          </p>
+        </div>
+        <Button
+          type="button"
+          onClick={() => void refetch()}
+          variant="outline"
+          className="min-h-[44px] gap-2"
+        >
+          <RefreshCw className="w-4 h-4" aria-hidden="true" />
+          <span>إعادة المحاولة</span>
+        </Button>
+      </Card>
+    );
+  }
+
+  const students = data?.data ?? [];
+  const meta = data?.meta;
+
+  if (students.length === 0) {
+    return (
+      <Card className="p-8 text-center space-y-4 rounded-2xl border border-border/80">
+        <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto">
+          <Users className="w-6 h-6" aria-hidden="true" />
+        </div>
+        <div className="space-y-1">
+          <h3 className="text-base font-bold text-foreground">
+            لا يوجد طلاب مسجلون في هذا المقرر حتى الآن
+          </h3>
+          <p className="text-sm text-muted-foreground max-w-md mx-auto">
+            سيظهر هنا الطلاب المسجلون فور انضمامهم مع متابعة تقدمهم في الدروس.
+          </p>
+        </div>
+      </Card>
+    );
+  }
+
   return (
-    <Card className="p-8 text-center space-y-4 rounded-2xl border border-border/80">
-      <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto">
-        <Users className="w-6 h-6" aria-hidden="true" />
-      </div>
-      <div className="space-y-1">
+    <Card className="p-6 rounded-2xl border border-border/80 space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h3 className="text-base font-bold text-foreground">
-          الطلاب المسجلين في هذا المقرر ({course.students_count})
+          الطلاب المسجلون ({meta?.total ?? students.length})
         </h3>
-        <p className="text-sm text-muted-foreground max-w-md mx-auto">
-          يتابع هؤلاء الطلاب دراستهم ومحاولاتهم التفاعلية في هذا المقرر بشكل منتظم.
-        </p>
       </div>
+
+      <div className="divide-y divide-border/60">
+        {students.map((student) => {
+          const progress = Math.max(0, Math.min(100, Math.round(student.progress_percent)));
+          return (
+            <div
+              key={student.id}
+              className="py-4 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+            >
+              <div className="space-y-1 min-w-0">
+                <p className="text-sm font-bold text-foreground truncate">{student.name}</p>
+                <p className="text-xs text-muted-foreground">
+                  تاريخ التسجيل: {formatEnrollmentDate(student.enrolled_at)}
+                </p>
+              </div>
+
+              <div className="w-full sm:w-64 space-y-1.5 shrink-0">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">
+                    {student.completed_lessons_count} / {student.total_lessons_count} درس
+                  </span>
+                  <span className="font-bold text-primary">{progress}%</span>
+                </div>
+                <div
+                  role="progressbar"
+                  aria-valuenow={progress}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-label={`تقدم ${student.name}`}
+                  className="h-2 w-full rounded-full bg-muted overflow-hidden"
+                >
+                  <div
+                    className="h-full rounded-full bg-primary transition-all duration-300 motion-reduce:transition-none"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {meta && meta.last_page > 1 && (
+        <div className="flex items-center justify-between pt-4 border-t border-border/60">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={page <= 1}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            className="min-h-[44px]"
+          >
+            السابق
+          </Button>
+          <span className="text-xs text-muted-foreground">
+            صفحة {meta.current_page} من {meta.last_page}
+          </span>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={page >= meta.last_page}
+            onClick={() => setPage((p) => p + 1)}
+            className="min-h-[44px]"
+          >
+            التالي
+          </Button>
+        </div>
+      )}
     </Card>
   );
 }

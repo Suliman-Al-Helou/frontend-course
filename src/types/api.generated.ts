@@ -147,6 +147,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/courses/{course}/youtube-videos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Returns YouTube playlist videos for the course */
+        get: operations["adminCourse.youtubeVideos"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/video-assets": {
         parameters: {
             query?: never;
@@ -594,7 +611,7 @@ export interface paths {
             cookie?: never;
         };
         /** Ordered FAQ list with long-term caching (24 hours) */
-        get: operations["admin.faq.index_69"];
+        get: operations["admin.faq.index_75"];
         put?: never;
         /** Creates a FAQ */
         post: operations["faq.store"];
@@ -664,7 +681,7 @@ export interface paths {
             cookie?: never;
         };
         /** Lists instructors with course counts, cached for 24 hours for public visitors */
-        get: operations["admin.instructor.index_64"];
+        get: operations["admin.instructor.index_70"];
         put?: never;
         /** Creates an instructor */
         post: operations["instructor.store"];
@@ -682,7 +699,7 @@ export interface paths {
             cookie?: never;
         };
         /** Instructor profile with course summaries */
-        get: operations["admin.instructor.show_66"];
+        get: operations["admin.instructor.show_72"];
         put?: never;
         post?: never;
         delete?: never;
@@ -737,6 +754,23 @@ export interface paths {
         get: operations["instructorCourse.show"];
         /** Updates assigned course educational metadata with silent commercial stripping and audit logging */
         put: operations["instructorCourse.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/instructor/courses/{course}/youtube-videos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Returns YouTube playlist videos for the assigned course */
+        get: operations["instructorCourse.youtubeVideos"];
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -828,6 +862,26 @@ export interface paths {
         post?: never;
         /** Deletes a section after verifying no completed student progress records exist */
         delete: operations["instructorSection.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/instructor/lessons/{lesson}/task": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Returns the lesson's task or 404 */
+        get: operations["instructorTask.show"];
+        /** Updates the lesson's task */
+        put: operations["instructorTask.update"];
+        /** Creates a task for the lesson (one per lesson) */
+        post: operations["instructorTask.store"];
+        /** Deletes the lesson's task after verifying no student attempts exist (Task Integrity Guard) */
+        delete: operations["instructorTask.destroy"];
         options?: never;
         head?: never;
         patch?: never;
@@ -2186,6 +2240,57 @@ export interface operations {
             };
         };
     };
+    "adminCourse.youtubeVideos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The course ID */
+                course: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        playlist_id: string;
+                        connected: boolean;
+                        videos: {
+                            id: string | null;
+                            title: string | "بدون عنوان";
+                            thumbnail: string;
+                            /** @constant */
+                            duration_minutes: 0;
+                        }[];
+                    } | {
+                        playlist_id: null;
+                        connected: boolean;
+                        videos: string[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
     "adminVideoAsset.index": {
         parameters: {
             query?: {
@@ -3255,7 +3360,7 @@ export interface operations {
             };
         };
     };
-    "admin.faq.index_69": {
+    "admin.faq.index_75": {
         parameters: {
             query?: never;
             header?: never;
@@ -3405,7 +3510,7 @@ export interface operations {
             };
         };
     };
-    "admin.instructor.index_64": {
+    "admin.instructor.index_70": {
         parameters: {
             query?: never;
             header?: never;
@@ -3457,7 +3562,7 @@ export interface operations {
             422: components["responses"]["ValidationException"];
         };
     };
-    "admin.instructor.show_66": {
+    "admin.instructor.show_72": {
         parameters: {
             query?: never;
             header?: never;
@@ -3641,6 +3746,57 @@ export interface operations {
             403: components["responses"]["AuthorizationException"];
             404: components["responses"]["ModelNotFoundException"];
             422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "instructorCourse.youtubeVideos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The course ID */
+                course: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        playlist_id: string;
+                        connected: boolean;
+                        videos: {
+                            id: string | null;
+                            title: string | "بدون عنوان";
+                            thumbnail: string;
+                            /** @constant */
+                            duration_minutes: 0;
+                        }[];
+                    } | {
+                        playlist_id: null;
+                        connected: boolean;
+                        videos: string[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Too many requests */
             429: {
                 headers: {
@@ -4043,6 +4199,181 @@ export interface operations {
                         /**
                          * @description Error overview.
                          * @example Cannot delete a section with recorded student progress.
+                         */
+                        message: string;
+                    };
+                };
+            };
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "instructorTask.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The lesson ID */
+                lesson: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `TaskResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "instructorTask.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The lesson ID */
+                lesson: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateTaskRequest"];
+            };
+        };
+        responses: {
+            /** @description `TaskResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "instructorTask.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The lesson ID */
+                lesson: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TaskRequest"];
+            };
+        };
+        responses: {
+            /** @description `TaskResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "instructorTask.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The lesson ID */
+                lesson: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "تم حذف المهمة بنجاح";
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description An error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example Cannot delete a task with recorded student attempts.
                          */
                         message: string;
                     };

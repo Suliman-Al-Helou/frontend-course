@@ -17,6 +17,8 @@ import {
   adminVideoAssetQueries,
   adminYouTubeQueries,
 } from "../queries/adminCourses.queries";
+import { toAdminCourse, toAdminEnrollment } from "../api";
+import type { RawCourseAdmin, RawEnrollment } from "../types";
 
 describe("adminCourseQueries factory", () => {
   it("generates correct hierarchical queryKey for course list", () => {
@@ -89,5 +91,63 @@ describe("admin queryKey hierarchy integrity", () => {
     expect(listKey[0]).toBe(rootKey[0]);
     expect(detailKey[0]).toBe(rootKey[0]);
     expect(sectionsKey[0]).toBe(rootKey[0]);
+  });
+
+  it("adapts raw CourseAdminResource string fields into numeric AdminCourse fields", () => {
+    const rawCourse: RawCourseAdmin = {
+      id: "42",
+      title: "Backend Hardening",
+      description: "Deep dive into Laravel security",
+      cover_image: "https://cdn.example.com/cover.png",
+      level: "advanced",
+      status: "published",
+      total_duration: "120",
+      requirements: "PHP 8.4",
+      target_audience: "Backend Engineers",
+      what_you_learn: '["Policies","Sanctum"]',
+      students_count: "35",
+      enrollments_count: "40",
+      rating: "4.9",
+      is_popular: "1",
+      price: "199",
+      is_public: "",
+      youtube_playlist_id: "PL123",
+      instructor: { id: "5", name: "Tariq" },
+      created_at: "2026-11-01T00:00:00Z",
+      updated_at: "2026-11-02T00:00:00Z",
+    };
+
+    const adapted = toAdminCourse(rawCourse);
+    expect(adapted.id).toBe(42);
+    expect(adapted.total_duration).toBe(120);
+    expect(adapted.students_count).toBe(35);
+    expect(adapted.enrollments_count).toBe(40);
+    expect(adapted.rating).toBe(4.9);
+    expect(adapted.price).toBe(199);
+    expect(adapted.is_popular).toBe(true);
+    expect(adapted.is_public).toBe(false);
+    expect(adapted.what_you_learn).toEqual(["Policies", "Sanctum"]);
+    expect(adapted.instructor).toEqual({ id: 5, name: "Tariq" });
+  });
+
+  it("adapts wrapped EnrollmentResource update responses safely", () => {
+    const rawEnrollment: RawEnrollment = {
+      id: 88,
+      status: "approved",
+      payment_confirmed: true,
+      created_at: "2026-11-20T10:00:00Z",
+      student_name: "Omar",
+      student_email: "omar@example.com",
+      course_title: "Clean Architecture",
+      user: { id: 15, name: "Omar", email: "omar@example.com" },
+      course: { id: 42, title: "Clean Architecture", price: 199, level: "intermediate" },
+    };
+
+    const adapted = toAdminEnrollment({ enrollment: rawEnrollment });
+    expect(adapted.id).toBe(88);
+    expect(adapted.user_id).toBe(15);
+    expect(adapted.course_id).toBe(42);
+    expect(adapted.status).toBe("approved");
+    expect(adapted.course?.level).toBe("intermediate");
   });
 });

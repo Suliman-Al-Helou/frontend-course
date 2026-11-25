@@ -3,6 +3,18 @@
  * Encapsulating Live Meetings (Zoom), Video Bank Assets, and Streaming Integrations.
  */
 
+import type { components, operations } from "@/types/api.generated";
+
+export type RawZoomMeeting = components["schemas"]["ZoomMeetingResource"];
+export type RawZoomMeetingRequest = components["schemas"]["ZoomMeetingRequest"];
+export type RawZoomAttendance = components["schemas"]["ZoomAttendance"];
+export type RawVideoAsset = components["schemas"]["VideoAssetResource"];
+export type RawVideoAssetRequest = components["schemas"]["VideoAssetRequest"];
+export type RawChunkUploadRequest = components["schemas"]["ChunkUploadRequest"];
+export type RawChunkUploadResponse = operations["adminVideoAsset.uploadChunk"]["responses"][
+  | 200
+  | 201]["content"]["application/json"];
+
 export interface AttendanceRecord {
   id: number;
   attended_at: string;

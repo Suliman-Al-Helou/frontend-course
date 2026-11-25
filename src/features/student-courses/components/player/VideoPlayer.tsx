@@ -20,7 +20,7 @@ const WATERMARK_POSITIONS = [
   "bottom-16 end-4",
 ];
 
-const YouTube = dynamic(() => import("react-youtube").then((mod) => mod.default) as any, {
+const YouTube = dynamic<YouTubeProps>(() => import("react-youtube").then((mod) => mod.default), {
   ssr: false,
   loading: () => (
     <div
@@ -31,7 +31,7 @@ const YouTube = dynamic(() => import("react-youtube").then((mod) => mod.default)
       <span>جارٍ تشغيل الدرس...</span>
     </div>
   ),
-}) as React.ComponentType<YouTubeProps>;
+});
 
 export interface VideoPlayerProps {
   playback?: VideoPlaybackPayload | null;
@@ -59,6 +59,7 @@ export function VideoPlayer({
   const completedRef = useRef<boolean>(false);
   const savedTimeRef = useRef<number>(0);
   const lastReportedTimeRef = useRef<number>(0);
+  const attemptedErrorRecoveryRef = useRef<number>(0);
   const onTokenExpiredRef = useRef(onTokenExpired);
   useEffect(() => {
     onTokenExpiredRef.current = onTokenExpired;
@@ -79,6 +80,12 @@ export function VideoPlayer({
   // إدارة دورة حياة المشغل وتصفير المؤقتات والمراجع بأمان عند تغيير الدرس
   useEffect(() => {
     let isCancelled = false;
+
+    watchedMaxRef.current = 0;
+    completedRef.current = false;
+    lastReportedTimeRef.current = 0;
+    savedTimeRef.current = 0;
+    attemptedErrorRecoveryRef.current = 0;
 
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -103,13 +110,28 @@ export function VideoPlayer({
             hls.attachMedia(video);
 
             hls.on(Hls.Events.ERROR, (_event, data) => {
-              if (data.fatal) {
-                if (data.response?.code === 403 || isStreamExpired(activeTarget.expires_at)) {
-                  if (videoRef.current) {
-                    savedTimeRef.current = videoRef.current.currentTime;
+              if (!data.fatal) return;
+
+              switch (data.type) {
+                case Hls.ErrorTypes.MEDIA_ERROR: {
+                  const now = Date.now();
+                  if (now - attemptedErrorRecoveryRef.current >= 5000) {
+                    attemptedErrorRecoveryRef.current = now;
+                    hls.recoverMediaError();
                   }
-                  onTokenExpiredRef.current?.();
+                  break;
                 }
+                case Hls.ErrorTypes.NETWORK_ERROR:
+                  if (data.response?.code === 403 || isStreamExpired(activeTarget.expires_at)) {
+                    if (videoRef.current) {
+                      savedTimeRef.current = videoRef.current.currentTime;
+                    }
+                    onTokenExpiredRef.current?.();
+                  }
+                  break;
+                default:
+                  hls.destroy();
+                  break;
               }
             });
           })

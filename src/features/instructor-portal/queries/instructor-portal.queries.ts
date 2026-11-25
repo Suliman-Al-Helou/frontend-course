@@ -9,12 +9,14 @@ import {
   getInstructorSections,
   getInstructorLessonTask,
   getInstructorCourseYouTubeVideos,
+  getInstructorCourseStudents,
 } from "../api";
 import type {
   InstructorCourse,
   InstructorSection,
   InstructorTask,
   CourseYouTubeVideosResponse,
+  InstructorCourseStudentsResponse,
 } from "../types";
 
 export const instructorPortalKeys = {
@@ -28,6 +30,10 @@ export const instructorPortalKeys = {
     [...instructorPortalKeys.all, "task", String(lessonId)] as const,
   youtubeVideos: (courseId: number | string) =>
     [...instructorPortalKeys.all, "youtube-videos", String(courseId)] as const,
+  students: (courseId: number | string, page?: number) =>
+    page !== undefined
+      ? ([...instructorPortalKeys.all, "students", String(courseId), page] as const)
+      : ([...instructorPortalKeys.all, "students", String(courseId)] as const),
 };
 
 export const instructorPortalQueries = {
@@ -70,6 +76,15 @@ export const instructorPortalQueries = {
       queryKey: instructorPortalKeys.youtubeVideos(courseId),
       queryFn: (): Promise<CourseYouTubeVideosResponse> =>
         getInstructorCourseYouTubeVideos(courseId),
+      staleTime: 1000 * 60 * 5,
+      gcTime: 1000 * 60 * 30,
+    }),
+
+  students: (courseId: number | string, page?: number) =>
+    queryOptions({
+      queryKey: instructorPortalKeys.students(courseId, page),
+      queryFn: (): Promise<InstructorCourseStudentsResponse> =>
+        getInstructorCourseStudents(courseId, page),
       staleTime: 1000 * 60 * 5,
       gcTime: 1000 * 60 * 30,
     }),

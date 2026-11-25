@@ -8,7 +8,9 @@ const generatedTypesPath = path.resolve(projectRoot, "src/types/api.generated.ts
 const tmpTypesPath = path.resolve(projectRoot, "src/types/.api.generated.tmp.ts");
 
 if (!fs.existsSync(backendSpecPath)) {
-  console.warn("[CONTRACT GATE] ⚠️ backendCourse/public/api.json not found. Skipping contract parity check.");
+  console.warn(
+    "[CONTRACT GATE] ⚠️ backendCourse/public/api.json not found. Skipping contract parity check.",
+  );
   process.exit(0);
 }
 

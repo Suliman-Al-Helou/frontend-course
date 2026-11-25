@@ -10,7 +10,8 @@ vi.mock("@/lib/api", () => ({
 }));
 
 import { mediaPipelineQueries, mediaPipelineKeys } from "../queries/mediaPipeline.queries";
-import type { AdminVideoAsset } from "../types";
+import { toAdminZoomMeeting, toAdminVideoAsset } from "../api";
+import type { AdminVideoAsset, RawZoomMeeting, RawVideoAsset } from "../types";
 
 describe("Media Pipeline Query Factory & Caching", () => {
   it("generates correct queryKey and staleTime for zoom meetings", () => {
@@ -69,5 +70,49 @@ describe("Media Pipeline Query Factory & Caching", () => {
     expect(mediaPipelineQueries.zoomMeetings().queryKey[0]).toBe(rootKey);
     expect(mediaPipelineQueries.videoAssets().queryKey[0]).toBe(rootKey);
     expect(mediaPipelineQueries.youtubeStatus().queryKey[0]).toBe(rootKey);
+  });
+
+  it("adapts raw ZoomMeetingResource payload into normalized AdminZoomMeeting", () => {
+    const rawMeeting: RawZoomMeeting = {
+      id: 12,
+      title: "Live Q&A Session",
+      description: null,
+      zoom_link: "https://zoom.us/j/123456",
+      starts_at: "2026-11-25T18:00:00Z",
+      duration_minutes: 60,
+      course: { id: 7, title: "Next.js Architecture" },
+      attendances_count: "14",
+      created_at: null,
+    };
+
+    const adapted = toAdminZoomMeeting(rawMeeting);
+    expect(adapted.course_id).toBe(7);
+    expect(adapted.course_name).toBe("Next.js Architecture");
+    expect(adapted.attendances_count).toBe(14);
+    expect(adapted.created_at).toBeUndefined();
+  });
+
+  it("adapts raw VideoAssetResource payload into normalized AdminVideoAsset", () => {
+    const rawAsset: RawVideoAsset = {
+      id: 99,
+      course_id: 7,
+      zoom_meeting_id: null,
+      title: "Lesson 1 Video",
+      description: null,
+      provider: "bunny",
+      provider_video_id: "vid-abc",
+      duration_seconds: null,
+      type: "lesson",
+      status: "processing",
+      created_by: null,
+      created_at: null,
+      updated_at: null,
+    };
+
+    const adapted = toAdminVideoAsset(rawAsset);
+    expect(adapted.provider).toBe("bunny");
+    expect(adapted.duration_seconds).toBe(0);
+    expect(adapted.status).toBe("processing");
+    expect(adapted.created_by).toBeUndefined();
   });
 });

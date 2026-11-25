@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import {
   BookOpen,
@@ -33,7 +33,17 @@ export function InstructorCourseContentEditor({
   const [title, setTitle] = useState(course.title || "");
   const [description, setDescription] = useState(course.description || "");
   const [coverImage, setCoverImage] = useState(course.cover_image || "");
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverPreviewUrl, setCoverPreviewUrl] = useState<string | null>(null);
   const [level, setLevel] = useState(course.level || "beginner");
+
+  useEffect(() => {
+    return () => {
+      if (coverPreviewUrl && coverPreviewUrl.startsWith("blob:")) {
+        URL.revokeObjectURL(coverPreviewUrl);
+      }
+    };
+  }, [coverPreviewUrl]);
 
   const [whatYouLearn, setWhatYouLearn] = useState<string[]>(
     Array.isArray(course.what_you_learn) ? course.what_you_learn : [],
@@ -78,6 +88,24 @@ export function InstructorCourseContentEditor({
     setRequirements((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const handleCoverFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("حجم صورة الغلاف يجب ألا يتجاوز 2 ميجابايت");
+      e.target.value = "";
+      return;
+    }
+
+    if (coverPreviewUrl && coverPreviewUrl.startsWith("blob:")) {
+      URL.revokeObjectURL(coverPreviewUrl);
+    }
+
+    setCoverFile(file);
+    setCoverPreviewUrl(URL.createObjectURL(file));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmittingRef.current) return;
@@ -91,14 +119,28 @@ export function InstructorCourseContentEditor({
     setIsSubmitting(true);
 
     try {
-      await updateInstructorCourse(course.id, {
-        title: title.trim(),
-        description: description.trim() || null,
-        cover_image: coverImage.trim() || null,
-        level,
-        what_you_learn: whatYouLearn,
-        requirements,
-      });
+      if (coverFile) {
+        const formData = new FormData();
+        formData.append("title", title.trim());
+        if (description.trim()) {
+          formData.append("description", description.trim());
+        }
+        formData.append("level", level);
+        formData.append("cover_image", coverFile);
+        whatYouLearn.forEach((item) => formData.append("what_you_learn[]", item));
+        requirements.forEach((item) => formData.append("requirements[]", item));
+
+        await updateInstructorCourse(course.id, formData as unknown as Partial<InstructorCourse>);
+      } else {
+        await updateInstructorCourse(course.id, {
+          title: title.trim(),
+          description: description.trim() || null,
+          cover_image: coverImage.trim() || null,
+          level,
+          what_you_learn: whatYouLearn,
+          requirements,
+        });
+      }
 
       toast.success("تم تحديث البيانات التعليمية للمقرر بنجاح");
       onUpdated?.();
@@ -110,6 +152,8 @@ export function InstructorCourseContentEditor({
     }
   };
 
+  const previewSrc = coverPreviewUrl || coverImage;
+
   return (
     <Card className="p-6 sm:p-8 rounded-2xl border border-border/80 bg-card space-y-8">
       <div className="space-y-1 border-b border-border/60 pb-4">
@@ -119,7 +163,8 @@ export function InstructorCourseContentEditor({
         </div>
         <h2 className="text-xl font-bold text-foreground">تعديل بيانات المقرر</h2>
         <p className="text-xs text-muted-foreground leading-relaxed">
-          يمكنك كمدرب تحديث البيانات الوصفية والتعليمية للمقرر. يُحجب تعديل السعر وحالة النشر وحذف المقرر التزاماً بصلاحيات الإدارة المركزية (ADR 0014).
+          يمكنك كمدرب تحديث البيانات الوصفية والتعليمية للمقرر. يُحجب تعديل السعر وحالة النشر وحذف
+          المقرر التزاماً بصلاحيات الإدارة المركزية (ADR 0014).
         </p>
       </div>
 
@@ -159,14 +204,25 @@ export function InstructorCourseContentEditor({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="course-cover" className="text-xs font-bold text-foreground">
-              رابط صورة الغلاف (Cover Image URL)
+            <Label htmlFor="course-cover-file" className="text-xs font-bold text-foreground">
+              صورة الغلاف (رفع ملف أو رابط)
             </Label>
+            <input
+              id="course-cover-file"
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/jpg"
+              onChange={handleCoverFileChange}
+              className="w-full min-h-[44px] px-3 py-2 rounded-xl border border-border bg-background text-foreground text-xs file:me-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-primary/10 file:text-primary file:font-bold"
+            />
             <Input
               id="course-cover"
               type="url"
               value={coverImage}
-              onChange={(e) => setCoverImage(e.target.value)}
+              onChange={(e) => {
+                setCoverFile(null);
+                setCoverPreviewUrl(null);
+                setCoverImage(e.target.value);
+              }}
               placeholder="https://example.com/cover.jpg"
               className="min-h-[44px]"
               dir="ltr"
@@ -175,16 +231,19 @@ export function InstructorCourseContentEditor({
         </div>
 
         {/* Cover Preview if entered */}
-        {coverImage && (
+        {previewSrc && (
           <div className="relative aspect-video w-full max-w-xs overflow-hidden rounded-xl border border-border bg-muted">
-            <Image
-              src={coverImage}
-              alt="معاينة الغلاف"
-              fill
-              sizes="(max-width: 768px) 100vw, 320px"
-              className="object-cover"
-              unoptimized
-            />
+            {previewSrc.startsWith("blob:") || previewSrc.startsWith("data:") ? (
+              <img src={previewSrc} alt="معاينة الغلاف" className="w-full h-full object-cover" />
+            ) : (
+              <Image
+                src={previewSrc}
+                alt="معاينة الغلاف"
+                fill
+                sizes="(max-width: 768px) 100vw, 320px"
+                className="object-cover"
+              />
+            )}
           </div>
         )}
 
@@ -245,7 +304,7 @@ export function InstructorCourseContentEditor({
                 <button
                   type="button"
                   onClick={() => handleRemoveOutcome(index)}
-                  className="w-4 h-4 rounded-full text-muted-foreground hover:text-destructive flex items-center justify-center transition-colors"
+                  className="min-w-[44px] min-h-[44px] -my-1.5 -me-2 rounded-full text-muted-foreground hover:text-destructive flex items-center justify-center transition-colors"
                   aria-label="حذف هذا المخرج"
                 >
                   <X className="w-3 h-3" />
@@ -296,7 +355,7 @@ export function InstructorCourseContentEditor({
                 <button
                   type="button"
                   onClick={() => handleRemoveRequirement(index)}
-                  className="w-4 h-4 rounded-full text-muted-foreground hover:text-destructive flex items-center justify-center transition-colors"
+                  className="min-w-[44px] min-h-[44px] -my-1.5 -me-2 rounded-full text-muted-foreground hover:text-destructive flex items-center justify-center transition-colors"
                   aria-label="حذف هذا المتطلب"
                 >
                   <X className="w-3 h-3" />

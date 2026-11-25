@@ -19,6 +19,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from "@/components/ui/moda
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import ConfirmModal from "@/components/shared/ConfirmModal";
 import {
   instructorPortalQueries,
   instructorPortalKeys,
@@ -49,6 +50,7 @@ export function InstructorLessonTaskEditor({
   const [questions, setQuestions] = useState<TaskQuestion[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
   const isSubmittingRef = useRef(false);
 
@@ -95,15 +97,11 @@ export function InstructorLessonTaskEditor({
   };
 
   const handleQuestionTextChange = (index: number, text: string) => {
-    setQuestions((prev) =>
-      prev.map((q, i) => (i === index ? { ...q, question: text } : q)),
-    );
+    setQuestions((prev) => prev.map((q, i) => (i === index ? { ...q, question: text } : q)));
   };
 
   const handleExplanationChange = (index: number, text: string) => {
-    setQuestions((prev) =>
-      prev.map((q, i) => (i === index ? { ...q, explanation: text } : q)),
-    );
+    setQuestions((prev) => prev.map((q, i) => (i === index ? { ...q, explanation: text } : q)));
   };
 
   const handleCorrectAnswerChange = (qIndex: number, optionIndex: number) => {
@@ -112,11 +110,7 @@ export function InstructorLessonTaskEditor({
     );
   };
 
-  const handleOptionTextChange = (
-    qIndex: number,
-    optionIndex: number,
-    text: string,
-  ) => {
+  const handleOptionTextChange = (qIndex: number, optionIndex: number, text: string) => {
     setQuestions((prev) =>
       prev.map((q, i) => {
         if (i !== qIndex) return q;
@@ -205,12 +199,13 @@ export function InstructorLessonTaskEditor({
     }
   };
 
-  const handleDeleteTask = async () => {
+  const handleDeleteTask = () => {
     if (isSubmittingRef.current) return;
+    setIsDeleteConfirmOpen(true);
+  };
 
-    if (!confirm("هل أنت متأكد من حذف هذه المهمة بالكامل من الدرس؟")) {
-      return;
-    }
+  const executeDeleteTask = async () => {
+    if (isSubmittingRef.current) return;
 
     isSubmittingRef.current = true;
     setIsDeleting(true);
@@ -225,6 +220,7 @@ export function InstructorLessonTaskEditor({
       });
 
       toast.success("تم حذف المهمة من الدرس بنجاح");
+      setIsDeleteConfirmOpen(false);
       onClose();
     } catch (err) {
       toast.error(
@@ -237,321 +233,332 @@ export function InstructorLessonTaskEditor({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="lg">
-      <ModalHeader
-        title={`محرر المهمة التفاعلية: ${lessonTitle}`}
-        description="إعداد الأسئلة التقييمية ونسب النجاح لاجتياز الدرس (عقد TaskQuestion)"
-      />
+    <>
+      <Modal isOpen={isOpen} onClose={onClose} size="lg">
+        <ModalHeader
+          title={`محرر المهمة التفاعلية: ${lessonTitle}`}
+          description="إعداد الأسئلة التقييمية ونسب النجاح لاجتياز الدرس (عقد TaskQuestion)"
+        />
 
-      <ModalBody className="space-y-6 max-h-[75vh] overflow-y-auto pe-1">
-        {isLoading ? (
-          <div className="py-12 flex flex-col items-center justify-center space-y-3 text-muted-foreground">
-            <Loader2 className="w-6 h-6 animate-spin text-primary" />
-            <p className="text-xs">جاري تحميل بيانات المهمة والأسئلة...</p>
-          </div>
-        ) : (
-          <form id="task-editor-form" onSubmit={handleSave} className="space-y-6">
-            {/* Task Integrity Notice Banner */}
-            {existingTask && (existingTask.attempts_count ?? 0) > 0 && (
-              <div className="flex items-start gap-3 p-4 rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-900 dark:text-amber-200 text-xs leading-relaxed">
-                <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-                <div className="space-y-1">
-                  <p className="font-bold">تنبيه النزاهة التعليمية (Task Integrity Notice)</p>
-                  <p>
-                    أجرى الطلاب {existingTask.attempts_count} محاولة سابقة على هذه المهمة. التعديل سيسري على المحاولات المستقبلية فقط ولن يغير الدرجات والمحاولات السابقة المسجلة للطلاب.
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {/* Task Meta Settings */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl bg-muted/60 border border-border">
-              <div className="space-y-2">
-                <Label htmlFor="pass-percentage" className="text-xs font-bold text-foreground">
-                  نسبة النجاح المطلوبة (%) *
-                </Label>
-                <Input
-                  id="pass-percentage"
-                  type="number"
-                  min="1"
-                  max="100"
-                  value={passPercentage}
-                  onChange={(e) => setPassPercentage(Number(e.target.value) || 70)}
-                  className="min-h-[44px]"
-                  required
-                />
-                <p className="text-[11px] text-muted-foreground">
-                  الافتراضي: 70%. الحد الأدنى لاجتياز المهمة بنجاح.
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="max-attempts" className="text-xs font-bold text-foreground">
-                  الحد الأقصى للمحاولات المتاحة *
-                </Label>
-                <Input
-                  id="max-attempts"
-                  type="number"
-                  min="1"
-                  max="50"
-                  value={maxAttempts}
-                  onChange={(e) => setMaxAttempts(Number(e.target.value) || 3)}
-                  className="min-h-[44px]"
-                  required
-                />
-                <p className="text-[11px] text-muted-foreground">
-                  الافتراضي: 3 محاولات لكل طالب لتعزيز التعلم الذاتي.
-                </p>
-              </div>
+        <ModalBody className="space-y-6 max-h-[75vh] overflow-y-auto pe-1">
+          {isLoading ? (
+            <div className="py-12 flex flex-col items-center justify-center space-y-3 text-muted-foreground">
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
+              <p className="text-xs">جاري تحميل بيانات المهمة والأسئلة...</p>
             </div>
-
-            {/* Questions List Header */}
-            <div className="flex items-center justify-between border-b border-border/80 pb-3">
-              <div className="space-y-0.5">
-                <h3 className="text-sm font-bold text-foreground flex items-center gap-1.5">
-                  <FileQuestion className="w-4 h-4 text-primary" />
-                  <span>أسئلة التقييم ({questions.length})</span>
-                </h3>
-                <p className="text-xs text-muted-foreground">
-                  يدعم العقد أسئلة الاختيار من متعدد وأسئلة الصح والخطأ.
-                </p>
-              </div>
-
-              {/* Add Question Actions */}
-              <div className="flex items-center gap-2">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  onClick={() => handleAddQuestion("mcq")}
-                  className="min-h-[38px] text-xs font-bold gap-1"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>+ اختيار من متعدد</span>
-                </Button>
-
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  onClick={() => handleAddQuestion("true_false")}
-                  className="min-h-[38px] text-xs font-bold gap-1"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>+ صح / خطأ</span>
-                </Button>
-              </div>
-            </div>
-
-            {/* Questions Empty State */}
-            {questions.length === 0 ? (
-              <div className="py-8 text-center rounded-xl border border-dashed border-border p-6 space-y-3">
-                <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto">
-                  <HelpCircle className="w-5 h-5" />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-bold text-foreground">لا توجد أسئلة مضافة بعد</p>
-                  <p className="text-xs text-muted-foreground">
-                    أضف سؤال اختيار من متعدد أو صح/خطأ لإنشاء المهمة التفاعلية.
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-5">
-                {questions.map((q, qIndex) => (
-                  <div
-                    key={q.id || qIndex}
-                    className="p-4 rounded-xl border border-border/80 bg-card space-y-4 relative group"
-                  >
-                    <div className="flex items-center justify-between gap-2 border-b border-border/50 pb-2">
-                      <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">
-                          {qIndex + 1}
-                        </span>
-                        <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-muted text-muted-foreground">
-                          {q.type === "mcq" ? "اختيار من متعدد" : "صح / خطأ"}
-                        </span>
-                      </div>
-
-                      <Button
-                        type="button"
-                        size="icon"
-                        variant="ghost"
-                        onClick={() => handleRemoveQuestion(qIndex)}
-                        className="w-8 h-8 text-muted-foreground hover:text-destructive"
-                        title="حذف هذا السؤال"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-
-                    {/* Question Text */}
-                    <div className="space-y-1.5">
-                      <Label className="text-xs font-bold text-foreground">
-                        نص السؤال *
-                      </Label>
-                      <Input
-                        type="text"
-                        placeholder="اكتب نص السؤال هنا..."
-                        value={q.question}
-                        onChange={(e) => handleQuestionTextChange(qIndex, e.target.value)}
-                        className="min-h-[44px]"
-                        required
-                      />
-                    </div>
-
-                    {/* Options Area */}
-                    <div className="space-y-2">
-                      <Label className="text-xs font-bold text-foreground flex items-center justify-between">
-                        <span>الخيارات (حدد الدائرة بجانب الإجابة الصحيحة) *</span>
-                        {q.type === "mcq" && (
-                          <button
-                            type="button"
-                            onClick={() => handleAddOption(qIndex)}
-                            className="text-[11px] text-primary hover:underline font-bold inline-flex items-center gap-1"
-                          >
-                            <Plus className="w-3 h-3" />
-                            <span>إضافة خيار</span>
-                          </button>
-                        )}
-                      </Label>
-
-                      <div className="space-y-2">
-                        {q.options.map((opt, optIdx) => {
-                          const isCorrect = q.correct_answer === optIdx;
-
-                          return (
-                            <div
-                              key={optIdx}
-                              className={`flex items-center gap-2.5 p-2 rounded-lg border transition-colors ${
-                                isCorrect
-                                  ? "border-primary/50 bg-primary/5"
-                                  : "border-border/60 bg-muted/30"
-                              }`}
-                            >
-                              <label className="flex items-center gap-2 cursor-pointer shrink-0">
-                                <input
-                                  type="radio"
-                                  name={`correct_${q.id || qIndex}`}
-                                  checked={isCorrect}
-                                  onChange={() => handleCorrectAnswerChange(qIndex, optIdx)}
-                                  className="w-4 h-4 text-primary focus:ring-primary accent-primary"
-                                />
-                                <span className="text-xs font-bold text-muted-foreground">
-                                  {q.type === "true_false"
-                                    ? opt
-                                    : `الخيار ${optIdx + 1}`}
-                                </span>
-                              </label>
-
-                              {q.type === "mcq" ? (
-                                <Input
-                                  type="text"
-                                  value={opt}
-                                  onChange={(e) =>
-                                    handleOptionTextChange(qIndex, optIdx, e.target.value)
-                                  }
-                                  className="min-h-[38px] text-xs flex-1 bg-background"
-                                  required
-                                />
-                              ) : (
-                                <span className="text-xs font-medium text-foreground flex-1">
-                                  {opt}
-                                </span>
-                              )}
-
-                              {q.type === "mcq" && q.options.length > 2 && (
-                                <Button
-                                  type="button"
-                                  size="icon"
-                                  variant="ghost"
-                                  onClick={() => handleRemoveOption(qIndex, optIdx)}
-                                  className="w-7 h-7 text-muted-foreground hover:text-destructive shrink-0"
-                                >
-                                  <X className="w-3.5 h-3.5" />
-                                </Button>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Explanation */}
-                    <div className="space-y-1.5">
-                      <Label className="text-xs font-medium text-muted-foreground">
-                        تفسير الإجابة (يظهر للطالب بعد تسليم المهمة لتعزيز الفهم)
-                      </Label>
-                      <textarea
-                        placeholder="اشرح لماذا هذه هي الإجابة الصحيحة..."
-                        value={q.explanation || ""}
-                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                          handleExplanationChange(qIndex, e.target.value)
-                        }
-                        rows={2}
-                        className="w-full p-2.5 rounded-xl border border-border bg-background text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
-                      />
-                    </div>
+          ) : (
+            <form id="task-editor-form" onSubmit={handleSave} className="space-y-6">
+              {/* Task Integrity Notice Banner */}
+              {existingTask && (existingTask.attempts_count ?? 0) > 0 && (
+                <div className="flex items-start gap-3 p-4 rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-900 dark:text-amber-200 text-xs leading-relaxed">
+                  <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                  <div className="space-y-1">
+                    <p className="font-bold">تنبيه النزاهة التعليمية (Task Integrity Notice)</p>
+                    <p>
+                      أجرى الطلاب {existingTask.attempts_count} محاولة سابقة على هذه المهمة. التعديل
+                      سيسري على المحاولات المستقبلية فقط ولن يغير الدرجات والمحاولات السابقة المسجلة
+                      للطلاب.
+                    </p>
                   </div>
-                ))}
-              </div>
-            )}
-          </form>
-        )}
-      </ModalBody>
+                </div>
+              )}
 
-      <ModalFooter className="flex items-center justify-between">
-        <div>
-          {existingTask?.id && (
+              {/* Task Meta Settings */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl bg-muted/60 border border-border">
+                <div className="space-y-2">
+                  <Label htmlFor="pass-percentage" className="text-xs font-bold text-foreground">
+                    نسبة النجاح المطلوبة (%) *
+                  </Label>
+                  <Input
+                    id="pass-percentage"
+                    type="number"
+                    min="1"
+                    max="100"
+                    value={passPercentage}
+                    onChange={(e) => setPassPercentage(Number(e.target.value) || 70)}
+                    className="min-h-[44px]"
+                    required
+                  />
+                  <p className="text-[11px] text-muted-foreground">
+                    الافتراضي: 70%. الحد الأدنى لاجتياز المهمة بنجاح.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="max-attempts" className="text-xs font-bold text-foreground">
+                    الحد الأقصى للمحاولات المتاحة *
+                  </Label>
+                  <Input
+                    id="max-attempts"
+                    type="number"
+                    min="1"
+                    max="50"
+                    value={maxAttempts}
+                    onChange={(e) => setMaxAttempts(Number(e.target.value) || 3)}
+                    className="min-h-[44px]"
+                    required
+                  />
+                  <p className="text-[11px] text-muted-foreground">
+                    الافتراضي: 3 محاولات لكل طالب لتعزيز التعلم الذاتي.
+                  </p>
+                </div>
+              </div>
+
+              {/* Questions List Header */}
+              <div className="flex items-center justify-between border-b border-border/80 pb-3">
+                <div className="space-y-0.5">
+                  <h3 className="text-sm font-bold text-foreground flex items-center gap-1.5">
+                    <FileQuestion className="w-4 h-4 text-primary" />
+                    <span>أسئلة التقييم ({questions.length})</span>
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    يدعم العقد أسئلة الاختيار من متعدد وأسئلة الصح والخطأ.
+                  </p>
+                </div>
+
+                {/* Add Question Actions */}
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleAddQuestion("mcq")}
+                    className="min-h-[38px] text-xs font-bold gap-1"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>+ اختيار من متعدد</span>
+                  </Button>
+
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleAddQuestion("true_false")}
+                    className="min-h-[38px] text-xs font-bold gap-1"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>+ صح / خطأ</span>
+                  </Button>
+                </div>
+              </div>
+
+              {/* Questions Empty State */}
+              {questions.length === 0 ? (
+                <div className="py-8 text-center rounded-xl border border-dashed border-border p-6 space-y-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto">
+                    <HelpCircle className="w-5 h-5" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-bold text-foreground">لا توجد أسئلة مضافة بعد</p>
+                    <p className="text-xs text-muted-foreground">
+                      أضف سؤال اختيار من متعدد أو صح/خطأ لإنشاء المهمة التفاعلية.
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-5">
+                  {questions.map((q, qIndex) => (
+                    <div
+                      key={q.id || qIndex}
+                      className="p-4 rounded-xl border border-border/80 bg-card space-y-4 relative group"
+                    >
+                      <div className="flex items-center justify-between gap-2 border-b border-border/50 pb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">
+                            {qIndex + 1}
+                          </span>
+                          <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-muted text-muted-foreground">
+                            {q.type === "mcq" ? "اختيار من متعدد" : "صح / خطأ"}
+                          </span>
+                        </div>
+
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => handleRemoveQuestion(qIndex)}
+                          className="w-8 h-8 text-muted-foreground hover:text-destructive"
+                          title="حذف هذا السؤال"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+
+                      {/* Question Text */}
+                      <div className="space-y-1.5">
+                        <Label className="text-xs font-bold text-foreground">نص السؤال *</Label>
+                        <Input
+                          type="text"
+                          placeholder="اكتب نص السؤال هنا..."
+                          value={q.question}
+                          onChange={(e) => handleQuestionTextChange(qIndex, e.target.value)}
+                          className="min-h-[44px]"
+                          required
+                        />
+                      </div>
+
+                      {/* Options Area */}
+                      <div className="space-y-2">
+                        <Label className="text-xs font-bold text-foreground flex items-center justify-between">
+                          <span>الخيارات (حدد الدائرة بجانب الإجابة الصحيحة) *</span>
+                          {q.type === "mcq" && (
+                            <button
+                              type="button"
+                              onClick={() => handleAddOption(qIndex)}
+                              className="text-[11px] text-primary hover:underline font-bold inline-flex items-center gap-1"
+                            >
+                              <Plus className="w-3 h-3" />
+                              <span>إضافة خيار</span>
+                            </button>
+                          )}
+                        </Label>
+
+                        <div className="space-y-2">
+                          {q.options.map((opt, optIdx) => {
+                            const isCorrect = q.correct_answer === optIdx;
+
+                            return (
+                              <div
+                                key={optIdx}
+                                className={`flex items-center gap-2.5 p-2 rounded-lg border transition-colors ${
+                                  isCorrect
+                                    ? "border-primary/50 bg-primary/5"
+                                    : "border-border/60 bg-muted/30"
+                                }`}
+                              >
+                                <label className="flex items-center gap-2 cursor-pointer shrink-0">
+                                  <input
+                                    type="radio"
+                                    name={`correct_${q.id || qIndex}`}
+                                    checked={isCorrect}
+                                    onChange={() => handleCorrectAnswerChange(qIndex, optIdx)}
+                                    className="w-4 h-4 text-primary focus:ring-primary accent-primary"
+                                  />
+                                  <span className="text-xs font-bold text-muted-foreground">
+                                    {q.type === "true_false" ? opt : `الخيار ${optIdx + 1}`}
+                                  </span>
+                                </label>
+
+                                {q.type === "mcq" ? (
+                                  <Input
+                                    type="text"
+                                    value={opt}
+                                    onChange={(e) =>
+                                      handleOptionTextChange(qIndex, optIdx, e.target.value)
+                                    }
+                                    className="min-h-[38px] text-xs flex-1 bg-background"
+                                    required
+                                  />
+                                ) : (
+                                  <span className="text-xs font-medium text-foreground flex-1">
+                                    {opt}
+                                  </span>
+                                )}
+
+                                {q.type === "mcq" && q.options.length > 2 && (
+                                  <Button
+                                    type="button"
+                                    size="icon"
+                                    variant="ghost"
+                                    onClick={() => handleRemoveOption(qIndex, optIdx)}
+                                    className="w-7 h-7 text-muted-foreground hover:text-destructive shrink-0"
+                                  >
+                                    <X className="w-3.5 h-3.5" />
+                                  </Button>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Explanation */}
+                      <div className="space-y-1.5">
+                        <Label className="text-xs font-medium text-muted-foreground">
+                          تفسير الإجابة (يظهر للطالب بعد تسليم المهمة لتعزيز الفهم)
+                        </Label>
+                        <textarea
+                          placeholder="اشرح لماذا هذه هي الإجابة الصحيحة..."
+                          value={q.explanation || ""}
+                          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                            handleExplanationChange(qIndex, e.target.value)
+                          }
+                          rows={2}
+                          className="w-full p-2.5 rounded-xl border border-border bg-background text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </form>
+          )}
+        </ModalBody>
+
+        <ModalFooter className="flex items-center justify-between">
+          <div>
+            {existingTask?.id && (
+              <Button
+                type="button"
+                variant="destructive"
+                size="sm"
+                onClick={handleDeleteTask}
+                disabled={isDeleting || isSubmitting}
+                className="min-h-[44px] text-xs font-bold gap-1.5"
+              >
+                {isDeleting ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Trash2 className="w-3.5 h-3.5" />
+                )}
+                <span>حذف المهمة</span>
+              </Button>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2">
             <Button
               type="button"
-              variant="destructive"
-              size="sm"
-              onClick={handleDeleteTask}
-              disabled={isDeleting || isSubmitting}
-              className="min-h-[44px] text-xs font-bold gap-1.5"
+              variant="outline"
+              onClick={onClose}
+              disabled={isSubmitting || isDeleting}
+              className="min-h-[44px]"
             >
-              {isDeleting ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              ) : (
-                <Trash2 className="w-3.5 h-3.5" />
-              )}
-              <span>حذف المهمة</span>
+              إلغاء
             </Button>
-          )}
-        </div>
 
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onClose}
-            disabled={isSubmitting || isDeleting}
-            className="min-h-[44px]"
-          >
-            إلغاء
-          </Button>
+            <Button
+              type="submit"
+              form="task-editor-form"
+              disabled={isSubmitting || isDeleting || questions.length === 0}
+              className="min-h-[44px] gap-2 font-bold"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>جاري الحفظ...</span>
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  <span>حفظ المهمة التفاعلية</span>
+                </>
+              )}
+            </Button>
+          </div>
+        </ModalFooter>
+      </Modal>
 
-          <Button
-            type="submit"
-            form="task-editor-form"
-            disabled={isSubmitting || isDeleting || questions.length === 0}
-            className="min-h-[44px] gap-2 font-bold"
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>جاري الحفظ...</span>
-              </>
-            ) : (
-              <>
-                <Save className="w-4 h-4" />
-                <span>حفظ المهمة التفاعلية</span>
-              </>
-            )}
-          </Button>
-        </div>
-      </ModalFooter>
-    </Modal>
+      <ConfirmModal
+        isOpen={isDeleteConfirmOpen}
+        onClose={() => {
+          if (!isDeleting) setIsDeleteConfirmOpen(false);
+        }}
+        onConfirm={executeDeleteTask}
+        title="حذف المهمة التفاعلية"
+        description="هل أنت متأكد من حذف هذه المهمة بالكامل من الدرس؟"
+        isLoading={isDeleting}
+      />
+    </>
   );
 }

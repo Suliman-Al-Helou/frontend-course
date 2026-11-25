@@ -10,8 +10,7 @@ import type {
 } from "../types";
 import type { components } from "@/types/api.generated";
 
-export type SaveLessonProgressPayload =
-  components["schemas"]["UpdateLessonProgressRequest"];
+export type SaveLessonProgressPayload = components["schemas"]["UpdateLessonProgressRequest"];
 
 /**
  * جلب تفاصيل درس معين والفيديو المحمي

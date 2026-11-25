@@ -42,21 +42,15 @@ import {
 import { canMoveUp, canMoveDown, swapArrayItems } from "../utils";
 import { InstructorCurriculumVideoPickerModal } from "./InstructorCurriculumVideoPickerModal";
 import { InstructorLessonTaskEditor } from "./InstructorLessonTaskEditor";
-import type {
-  InstructorCourse,
-  InstructorSection,
-  InstructorLesson,
-} from "../types";
+import ConfirmModal from "@/components/shared/ConfirmModal";
+import type { InstructorCourse, InstructorSection, InstructorLesson } from "../types";
 
 interface InstructorCurriculumViewProps {
   courseId: number | string;
   course: InstructorCourse;
 }
 
-export function InstructorCurriculumView({
-  courseId,
-  course,
-}: InstructorCurriculumViewProps) {
+export function InstructorCurriculumView({ courseId, course }: InstructorCurriculumViewProps) {
   const queryClient = useQueryClient();
 
   // Accordion open/collapse map
@@ -65,6 +59,7 @@ export function InstructorCurriculumView({
   // Section Modals
   const [isAddSectionOpen, setIsAddSectionOpen] = useState(false);
   const [newSectionTitle, setNewSectionTitle] = useState("");
+  const [sectionError, setSectionError] = useState<string | null>(null);
   const [editingSection, setEditingSection] = useState<InstructorSection | null>(null);
   const [editSectionTitle, setEditSectionTitle] = useState("");
 
@@ -84,6 +79,11 @@ export function InstructorCurriculumView({
 
   // Task Editor Modal State
   const [taskEditorLesson, setTaskEditorLesson] = useState<InstructorLesson | null>(null);
+
+  // Confirm Delete Modal State
+  const [confirmDeleteTarget, setConfirmDeleteTarget] = useState<
+    { type: "section"; item: InstructorSection } | { type: "lesson"; item: InstructorLesson } | null
+  >(null);
 
   const [isMutating, setIsMutating] = useState(false);
   const isSubmittingRef = useRef(false);
@@ -111,6 +111,11 @@ export function InstructorCurriculumView({
   const handleCreateSection = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmittingRef.current || !newSectionTitle.trim()) return;
+    if (newSectionTitle.trim().length < 2) {
+      setSectionError("يجب أن يتكون عنوان الفصل من حرفين على الأقل");
+      return;
+    }
+    setSectionError(null);
     isSubmittingRef.current = true;
     setIsMutating(true);
 
@@ -126,9 +131,18 @@ export function InstructorCurriculumView({
 
       toast.success("تم إنشاء القسم بنجاح");
       setNewSectionTitle("");
+      setSectionError(null);
       setIsAddSectionOpen(false);
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "فشل إنشاء القسم");
+    } catch (err: unknown) {
+      const apiErr = err as {
+        response?: { data?: { message?: string; errors?: Record<string, string[]> } };
+      };
+      const errorMsg =
+        apiErr?.response?.data?.errors?.title?.[0] ||
+        apiErr?.response?.data?.message ||
+        (err instanceof Error ? err.message : "فشل إنشاء القسم");
+      setSectionError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       isSubmittingRef.current = false;
       setIsMutating(false);
@@ -162,22 +176,39 @@ export function InstructorCurriculumView({
   };
 
   // Section Deletion
-  const handleDeleteSection = async (section: InstructorSection) => {
+  const handleDeleteSection = (section: InstructorSection) => {
     if (isSubmittingRef.current) return;
-    if (!confirm(`هل أنت متأكد من حذف القسم "${section.title}"؟`)) return;
+    setConfirmDeleteTarget({ type: "section", item: section });
+  };
+
+  const executeConfirmDelete = async () => {
+    if (!confirmDeleteTarget || isSubmittingRef.current) return;
 
     isSubmittingRef.current = true;
     setIsMutating(true);
 
     try {
-      await deleteInstructorSection(section.id);
-      await queryClient.invalidateQueries({
-        queryKey: instructorPortalKeys.sections(courseId),
-      });
-      toast.success("تم حذف القسم بنجاح");
+      if (confirmDeleteTarget.type === "section") {
+        await deleteInstructorSection(confirmDeleteTarget.item.id);
+        await queryClient.invalidateQueries({
+          queryKey: instructorPortalKeys.sections(courseId),
+        });
+        toast.success("تم حذف القسم بنجاح");
+      } else {
+        await deleteInstructorLesson(confirmDeleteTarget.item.id);
+        await queryClient.invalidateQueries({
+          queryKey: instructorPortalKeys.sections(courseId),
+        });
+        toast.success("تم حذف الدرس بنجاح");
+      }
+      setConfirmDeleteTarget(null);
     } catch (err) {
       toast.error(
-        err instanceof Error ? err.message : "فشل حذف القسم (قد يحتوي على دروس بها تقدم للطلاب)",
+        err instanceof Error
+          ? err.message
+          : confirmDeleteTarget.type === "section"
+            ? "فشل حذف القسم (قد يحتوي على دروس بها تقدم للطلاب)"
+            : "لا يمكن حذف درس به سجلات تقدم مكتملة للطلاب",
       );
     } finally {
       isSubmittingRef.current = false;
@@ -298,9 +329,7 @@ export function InstructorCurriculumView({
         queryKey: instructorPortalKeys.sections(courseId),
       });
 
-      toast.success(
-        lesson.is_published ? "تم تحويل الدرس إلى مسودة" : "تم نشر الدرس بنجاح",
-      );
+      toast.success(lesson.is_published ? "تم تحويل الدرس إلى مسودة" : "تم نشر الدرس بنجاح");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "فشل تحديث حالة النشر");
     } finally {
@@ -309,29 +338,9 @@ export function InstructorCurriculumView({
   };
 
   // Lesson Deletion
-  const handleDeleteLesson = async (lesson: InstructorLesson) => {
+  const handleDeleteLesson = (lesson: InstructorLesson) => {
     if (isSubmittingRef.current) return;
-    if (!confirm(`هل أنت متأكد من حذف الدرس "${lesson.title}"؟`)) return;
-
-    isSubmittingRef.current = true;
-    setIsMutating(true);
-
-    try {
-      await deleteInstructorLesson(lesson.id);
-      await queryClient.invalidateQueries({
-        queryKey: instructorPortalKeys.sections(courseId),
-      });
-      toast.success("تم حذف الدرس بنجاح");
-    } catch (err) {
-      toast.error(
-        err instanceof Error
-          ? err.message
-          : "لا يمكن حذف درس به سجلات تقدم مكتملة للطلاب",
-      );
-    } finally {
-      isSubmittingRef.current = false;
-      setIsMutating(false);
-    }
+    setConfirmDeleteTarget({ type: "lesson", item: lesson });
   };
 
   // Lesson Directional Arrow Ordering
@@ -413,10 +422,7 @@ export function InstructorCurriculumView({
     );
   }
 
-  const totalLessons = sections.reduce(
-    (acc, s) => acc + (s.lessons?.length ?? 0),
-    0,
-  );
+  const totalLessons = sections.reduce((acc, s) => acc + (s.lessons?.length ?? 0), 0);
 
   return (
     <div className="space-y-6">
@@ -505,9 +511,7 @@ export function InstructorCurriculumView({
                         <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-primary/10 text-primary">
                           القسم {sIndex + 1}
                         </span>
-                        <h3 className="text-sm font-bold text-foreground">
-                          {section.title}
-                        </h3>
+                        <h3 className="text-sm font-bold text-foreground">{section.title}</h3>
                       </div>
                       <span className="text-[11px] text-muted-foreground block">
                         {lessons.length} درس متضمن
@@ -775,7 +779,10 @@ export function InstructorCurriculumView({
 
       {/* Modal: Add Section */}
       <Modal isOpen={isAddSectionOpen} onClose={() => setIsAddSectionOpen(false)}>
-        <ModalHeader title="إضافة قسم جديد في المنهج" description="أدخل عنوان القسم التعليمي الجديد" />
+        <ModalHeader
+          title="إضافة قسم جديد في المنهج"
+          description="أدخل عنوان القسم التعليمي الجديد"
+        />
         <form onSubmit={handleCreateSection}>
           <ModalBody className="space-y-4">
             <div className="space-y-2">
@@ -787,11 +794,20 @@ export function InstructorCurriculumView({
                 type="text"
                 placeholder="مثال: مقدمة في بنية المشروع والـ State"
                 value={newSectionTitle}
-                onChange={(e) => setNewSectionTitle(e.target.value)}
+                onChange={(e) => {
+                  setNewSectionTitle(e.target.value);
+                  if (sectionError) setSectionError(null);
+                }}
+                aria-invalid={Boolean(sectionError)}
                 className="min-h-[44px]"
                 autoFocus
                 required
               />
+              {sectionError && (
+                <p role="alert" className="text-xs font-medium text-destructive">
+                  {sectionError}
+                </p>
+              )}
             </div>
           </ModalBody>
           <ModalFooter>
@@ -816,7 +832,10 @@ export function InstructorCurriculumView({
 
       {/* Modal: Edit Section */}
       <Modal isOpen={Boolean(editingSection)} onClose={() => setEditingSection(null)}>
-        <ModalHeader title="تعديل عنوان القسم" description="تحديث العنوان الظاهر للطلاب في شجرة المنهج" />
+        <ModalHeader
+          title="تعديل عنوان القسم"
+          description="تحديث العنوان الظاهر للطلاب في شجرة المنهج"
+        />
         <form onSubmit={handleUpdateSection}>
           <ModalBody className="space-y-4">
             <div className="space-y-2">
@@ -859,7 +878,10 @@ export function InstructorCurriculumView({
         isOpen={Boolean(activeSectionForNewLesson)}
         onClose={() => setActiveSectionForNewLesson(null)}
       >
-        <ModalHeader title="إضافة درس جديد" description="حدد عنوان الدرس والمدة التقديرية بالدقائق" />
+        <ModalHeader
+          title="إضافة درس جديد"
+          description="حدد عنوان الدرس والمدة التقديرية بالدقائق"
+        />
         <form onSubmit={handleCreateLesson}>
           <ModalBody className="space-y-4">
             <div className="space-y-2">
@@ -989,6 +1011,24 @@ export function InstructorCurriculumView({
           onClose={() => setTaskEditorLesson(null)}
         />
       )}
+
+      {/* Confirm Delete Section / Lesson */}
+      <ConfirmModal
+        isOpen={Boolean(confirmDeleteTarget)}
+        onClose={() => {
+          if (!isMutating) setConfirmDeleteTarget(null);
+        }}
+        onConfirm={executeConfirmDelete}
+        title={confirmDeleteTarget?.type === "section" ? "حذف القسم" : "حذف الدرس"}
+        description={
+          confirmDeleteTarget
+            ? confirmDeleteTarget.type === "section"
+              ? `هل أنت متأكد من حذف القسم "${confirmDeleteTarget.item.title}"؟`
+              : `هل أنت متأكد من حذف الدرس "${confirmDeleteTarget.item.title}"؟`
+            : ""
+        }
+        isLoading={isMutating}
+      />
     </div>
   );
 }

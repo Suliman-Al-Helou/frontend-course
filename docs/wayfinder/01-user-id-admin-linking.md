@@ -1,9 +1,9 @@
 # Ticket 01: Phase 1 — User ID Migration & Admin Instructor Linking
 
-** **: `wayfinder:task`  
+**Tracker Label**: `wayfinder:task`  
 **Parent**: [Wayfinder Map](file:///home/suliman/Documents/courses/docs/wayfinder/map.md)  
-**Status**: Open (Frontier — Unblocked)  
-**Assignee**: Unassigned  
+**Status**: Completed (`completed`)  
+**Assignee**: Autonomous Agent  
 **Blocked by**: None  
 
 ## Question
@@ -13,14 +13,13 @@ How do we establish deterministic identity linkage between authentication accoun
 ## Acceptance Criteria
 
 1. **Database Schema & Eloquent Relations:**
-   - Create migration adding `user_id` (`foreignId('user_id')->nullable()->constrained('users')->nullOnDelete()`) with an index (non-unique, per ADR 0015) to the `instructors` table.
+   - Create migration adding unique `user_id` (`foreignId('user_id')->nullable()->unique()->constrained('users')->nullOnDelete()`) to the `instructors` table, enforcing a strict 1-to-1 operational relationship per ADR 0015 & Spec 01.
    - Update `app/Models/Instructor.php`:
      - Add `user_id` to `$fillable`.
      - Define `public function user(): BelongsTo { return $this->belongsTo(User::class); }`.
      - Add helper `public function isDisplayOnly(): bool { return is_null($this->user_id); }`.
    - Update `app/Models/User.php`:
-     - Define `public function instructors(): HasMany { return $this->hasMany(Instructor::class); }`.
-     - Define `public function instructor(): HasOne { return $this->hasOne(Instructor::class)->latestOfMany(); }` for primary profile convenience.
+     - Define `public function instructor(): HasOne { return $this->hasOne(Instructor::class); }`.
      - Add `public function isInstructor(): bool { return $this->hasRole('instructor'); }`.
    - Update `app/Enums/UserRole.php` to include `case INSTRUCTOR = 'instructor'`.
 2. **Admin API Updates (`backendCourse`):**
