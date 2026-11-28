@@ -15,7 +15,12 @@ export const studentCourseQueries = {
   // تفاصيل درس محدد مع رابط/معرّف الفيديو المحمي (مخزن مؤقتاً حتى يتغير updatedAt)
   lesson: (lessonId: number | string, updatedAt?: string) =>
     queryOptions({
-      queryKey: [...studentCourseQueries.all(), "lesson", String(lessonId), updatedAt ?? "v0"] as const,
+      queryKey: [
+        ...studentCourseQueries.all(),
+        "lesson",
+        String(lessonId),
+        updatedAt ?? "v0",
+      ] as const,
       queryFn: (): Promise<LessonDetail> => getLesson(lessonId),
       staleTime: Infinity,
     }),

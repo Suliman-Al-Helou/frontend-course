@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vite-plus/test";
 
 /**
  * Phase 3 (SUL-12) TDD: Edge cases first for:
@@ -8,8 +8,10 @@ import { describe, expect, it } from "vitest";
 describe("VideoSecurityAndProvider (SUL-12 Edge Cases)", () => {
   it("edge: resolves effective video provider from company setting with optional course override", () => {
     type ProviderMode = "youtube" | "protected" | "both";
-    const resolveProvider = (companyMode: ProviderMode, courseOverride?: ProviderMode | null): ProviderMode =>
-      courseOverride ?? companyMode;
+    const resolveProvider = (
+      companyMode: ProviderMode,
+      courseOverride?: ProviderMode | null,
+    ): ProviderMode => courseOverride ?? companyMode;
 
     expect(resolveProvider("youtube", null)).toBe("youtube");
     expect(resolveProvider("youtube", "protected")).toBe("protected");

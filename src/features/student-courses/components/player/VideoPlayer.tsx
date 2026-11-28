@@ -507,7 +507,7 @@ export function VideoPlayer({
           <div
             data-testid="youtube-click-shield"
             onClick={handleSurfaceClick}
-          onDoubleClick={handleToggleFullscreen}
+            onDoubleClick={handleToggleFullscreen}
             onContextMenu={(e) => e.preventDefault()}
             className="absolute inset-0 z-10 cursor-pointer"
           />
@@ -517,7 +517,7 @@ export function VideoPlayer({
             <div
               data-testid="youtube-pause-mask"
               onClick={handleSurfaceClick}
-          onDoubleClick={handleToggleFullscreen}
+              onDoubleClick={handleToggleFullscreen}
               onContextMenu={(e) => e.preventDefault()}
               className="absolute inset-0 z-10 bg-black/90 backdrop-blur-md flex items-center justify-center cursor-pointer transition-opacity duration-200 motion-reduce:transition-none"
             >
