@@ -442,19 +442,25 @@ export function VideoPlayer({
 
   // إذا لم يتوفر أي فيديو أو كان قيد الرفع والمعالجة
   if (!activeTarget) {
+    const isProcessing = Boolean(playback);
     return (
       <div
         role="status"
-        aria-label="الفيديو قيد الرفع والمعالجة"
+        aria-label={isProcessing ? "الفيديو قيد الرفع والمعالجة" : "لا يوجد فيديو لهذا الدرس"}
         className="w-full aspect-video bg-muted/50 border border-border rounded-2xl flex flex-col items-center justify-center gap-3 p-6 text-center select-none shadow-sm"
       >
-        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-          <Loader2 className="w-6 h-6 animate-spin" aria-hidden="true" />
-        </div>
-        <p className="text-base font-bold text-foreground">الفيديو قيد الرفع والمعالجة</p>
+        {isProcessing && (
+          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+            <Loader2 className="w-6 h-6 animate-spin" aria-hidden="true" />
+          </div>
+        )}
+        <p className="text-base font-bold text-foreground">
+          {isProcessing ? "الفيديو قيد الرفع والمعالجة" : "لا يوجد فيديو لهذا الدرس"}
+        </p>
         <p className="text-xs text-muted-foreground max-w-sm">
-          يتم حالياً تجهيز وإعداد ملفات الدرس بأعلى دقة. يمكنك مراجعة المحتوى والمهام ريثما يكتمل
-          الرفع.
+          {isProcessing
+            ? "يتم حالياً تجهيز وإعداد ملفات الدرس بأعلى دقة. يمكنك مراجعة المحتوى والمهام ريثما يكتمل الرفع."
+            : "لم يتم إرفاق فيديو لهذا الدرس بعد. يمكنك مراجعة المحتوى والمهام المتاحة."}
         </p>
       </div>
     );
