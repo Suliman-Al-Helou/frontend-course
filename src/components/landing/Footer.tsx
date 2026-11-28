@@ -38,6 +38,8 @@ const SUPPORT_LINKS: LinkItem[] = [
   { label: "تواصل معنا", href: "/contact" },
   { label: "الأسئلة الشائعة", href: "/#faq" },
   { label: "الدعم المباشر (واتساب)", href: WHATSAPP_URL },
+  { label: "سياسة الخصوصية", href: "/privacy" },
+  { label: "الشروط والأحكام", href: "/terms" },
 ];
 
 function Brand() {
