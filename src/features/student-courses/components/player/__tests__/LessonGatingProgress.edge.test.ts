@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vite-plus/test";
 
 /**
  * Phase 1 (SUL-10) TDD: Edge cases first for >80% watch gating,
