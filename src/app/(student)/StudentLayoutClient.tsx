@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { NotificationBell } from "@/features/notifications";
 import {
   ChevronDown,
   LayoutDashboard,
@@ -96,6 +97,7 @@ export default function StudentLayoutClient({ user, children }: StudentLayoutCli
               <div className="lg:hidden">
                 <ThemeToggle />
               </div>
+              <NotificationBell />
               <Link href="/dashboard/profile" aria-label="الملف الشخصي">
                 <div className="w-8 h-8 rounded-full bg-white overflow-hidden border border-border">
                   <Image
