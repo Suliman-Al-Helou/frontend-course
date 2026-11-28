@@ -3,7 +3,7 @@
 import React, { useRef, useEffect, useState, useMemo, useCallback } from "react";
 import dynamic from "next/dynamic";
 import type { YouTubeProps } from "react-youtube";
-import { Loader2, RefreshCw } from "lucide-react";
+import { Loader2, RefreshCw, Play } from "lucide-react";
 import { useCurrentUser } from "@/features/auth";
 import type { VideoPlaybackPayload } from "@/types";
 import {
@@ -158,7 +158,13 @@ export function VideoPlayer({
           .then(({ default: Hls }) => {
             if (isCancelled || !Hls.isSupported()) return;
 
-            const hls = new Hls({ enableWorker: true });
+            const hls = new Hls({
+              enableWorker: true,
+              maxBufferLength: 30,
+              maxMaxBufferLength: 120,
+              abrEwmaDefaultEstimate: 1_000_000,
+              startLevel: -1,
+            });
             hlsRef.current = hls;
             hls.loadSource(activeTarget.url);
             hls.attachMedia(video);
@@ -266,7 +272,20 @@ export function VideoPlayer({
     }
   };
 
+  const flushHlsProgress = useCallback(() => {
+    const video = videoRef.current;
+    if (!video || !video.duration) return;
+    const percent = Math.round((video.currentTime / video.duration) * 100);
+    watchedMaxRef.current = Math.max(watchedMaxRef.current, percent);
+    lastReportedTimeRef.current = Date.now();
+    onProgress?.(watchedMaxRef.current, Math.round(video.currentTime));
+  }, [onProgress]);
+
   const handleHlsEnded = () => {
+    const video = videoRef.current;
+    watchedMaxRef.current = 100;
+    lastReportedTimeRef.current = Date.now();
+    onProgress?.(100, Math.round(video?.duration ?? 0));
     if (!completedRef.current) {
       completedRef.current = true;
       onComplete?.();
@@ -459,6 +478,7 @@ export function VideoPlayer({
             opts={{
               width: "100%",
               height: "100%",
+              host: "https://www.youtube-nocookie.com",
               playerVars: { controls: 0, rel: 0, modestbranding: 1, disablekb: 1 },
             }}
             onReady={(e) => {
@@ -487,19 +507,44 @@ export function VideoPlayer({
           <div
             data-testid="youtube-click-shield"
             onClick={handleSurfaceClick}
+          onDoubleClick={handleToggleFullscreen}
             onContextMenu={(e) => e.preventDefault()}
             className="absolute inset-0 z-10 cursor-pointer"
           />
+
+          {/* غطاء الإيقاف المؤقت لإخفاء عنوان الفيديو واسم القناة وروابط يوتيوب */}
+          {!isPlaying && (
+            <div
+              data-testid="youtube-pause-mask"
+              onClick={handleSurfaceClick}
+          onDoubleClick={handleToggleFullscreen}
+              onContextMenu={(e) => e.preventDefault()}
+              className="absolute inset-0 z-10 bg-black/90 backdrop-blur-md flex items-center justify-center cursor-pointer transition-opacity duration-200 motion-reduce:transition-none"
+            >
+              <button
+                type="button"
+                aria-label="تشغيل الفيديو"
+                className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg hover:scale-105 transition-transform motion-reduce:transition-none cursor-pointer"
+              >
+                <Play className="w-7 h-7 fill-current ms-0.5" aria-hidden="true" />
+              </button>
+            </div>
+          )}
         </>
       ) : (
         <video
           ref={videoRef}
           playsInline
           onClick={handleSurfaceClick}
+          onDoubleClick={handleToggleFullscreen}
           onContextMenu={(e) => e.preventDefault()}
           className="w-full h-full object-contain cursor-pointer"
           onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
+          onPause={() => {
+            setIsPlaying(false);
+            flushHlsProgress();
+          }}
+          onSeeked={flushHlsProgress}
           onTimeUpdate={(e) => {
             setCurrentTime(e.currentTarget.currentTime);
             handleHlsTimeUpdate();
