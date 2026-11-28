@@ -102,13 +102,16 @@ export default function LessonPage() {
   // معالجة إتمام الفيديو وحفظ التقدم في السيرفر والكاش
   const handleVideoComplete = useCallback(async () => {
     setVideoCompleted(true);
-    setLocalCompletedIds((prev) => [...prev, numericLessonId]);
 
     try {
       await saveLessonProgress(numericLessonId, {
         watched_percent: 100,
         last_position: 0,
       });
+
+      setLocalCompletedIds((prev) =>
+        prev.includes(numericLessonId) ? prev : [...prev, numericLessonId],
+      );
 
       // إبطال كاش تقدم الدرس لتحديث الواجهة فوراً
       void queryClient.invalidateQueries({

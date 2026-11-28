@@ -3,7 +3,7 @@
 import React, { useRef, useEffect, useState, useMemo, useCallback } from "react";
 import dynamic from "next/dynamic";
 import type { YouTubeProps } from "react-youtube";
-import { Loader2, RefreshCw } from "lucide-react";
+import { Loader2, RefreshCw, Play } from "lucide-react";
 import { useCurrentUser } from "@/features/auth";
 import type { VideoPlaybackPayload } from "@/types";
 import {
@@ -12,6 +12,7 @@ import {
   shouldThrottleProgressReport,
   formatWatermarkText,
 } from "./video-player-helpers";
+import { UnifiedPlayerControls } from "./UnifiedPlayerControls";
 
 const WATERMARK_POSITIONS = [
   "top-4 start-4",
@@ -53,9 +54,11 @@ export function VideoPlayer({
   completionThreshold = 80,
 }: VideoPlayerProps) {
   const { user } = useCurrentUser();
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const playerRef = useRef<any>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const hlsRef = useRef<any>(null);
+  const hideControlsTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const intervalRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
   const watchedMaxRef = useRef<number>(0);
   const completedRef = useRef<boolean>(false);
@@ -70,6 +73,13 @@ export function VideoPlayer({
 
   const [watermarkPos, setWatermarkPos] = useState<number>(0);
   const [isTokenRenewalRequired, setIsTokenRenewalRequired] = useState<boolean>(false);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [duration, setDuration] = useState<number>(0);
+  const [volume, setVolume] = useState<number>(100);
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+  const [controlsVisible, setControlsVisible] = useState<boolean>(true);
 
   const activeTarget = useMemo(() => resolvePlaybackTarget(playback, videoId), [playback, videoId]);
 
@@ -148,7 +158,13 @@ export function VideoPlayer({
           .then(({ default: Hls }) => {
             if (isCancelled || !Hls.isSupported()) return;
 
-            const hls = new Hls({ enableWorker: true });
+            const hls = new Hls({
+              enableWorker: true,
+              maxBufferLength: 30,
+              maxMaxBufferLength: 120,
+              abrEwmaDefaultEstimate: 1_000_000,
+              startLevel: -1,
+            });
             hlsRef.current = hls;
             hls.loadSource(activeTarget.url);
             hls.attachMedia(video);
@@ -256,7 +272,20 @@ export function VideoPlayer({
     }
   };
 
+  const flushHlsProgress = useCallback(() => {
+    const video = videoRef.current;
+    if (!video || !video.duration) return;
+    const percent = Math.round((video.currentTime / video.duration) * 100);
+    watchedMaxRef.current = Math.max(watchedMaxRef.current, percent);
+    lastReportedTimeRef.current = Date.now();
+    onProgress?.(watchedMaxRef.current, Math.round(video.currentTime));
+  }, [onProgress]);
+
   const handleHlsEnded = () => {
+    const video = videoRef.current;
+    watchedMaxRef.current = 100;
+    lastReportedTimeRef.current = Date.now();
+    onProgress?.(100, Math.round(video?.duration ?? 0));
     if (!completedRef.current) {
       completedRef.current = true;
       onComplete?.();
@@ -277,11 +306,139 @@ export function VideoPlayer({
   const handleHlsLoadedMetadata = () => {
     renewalAttemptedRef.current = false;
     setIsTokenRenewalRequired(false);
-    if (savedTimeRef.current > 0 && videoRef.current) {
-      videoRef.current.currentTime = savedTimeRef.current;
-      savedTimeRef.current = 0;
+    if (videoRef.current) {
+      if (Number.isFinite(videoRef.current.duration)) {
+        setDuration(videoRef.current.duration);
+      }
+      if (savedTimeRef.current > 0) {
+        videoRef.current.currentTime = savedTimeRef.current;
+        savedTimeRef.current = 0;
+      }
     }
   };
+
+  const resetHideTimer = useCallback(() => {
+    setControlsVisible(true);
+    if (hideControlsTimerRef.current) {
+      clearTimeout(hideControlsTimerRef.current);
+    }
+    if (isPlaying) {
+      hideControlsTimerRef.current = setTimeout(() => {
+        setControlsVisible(false);
+      }, 3000);
+    }
+  }, [isPlaying]);
+
+  useEffect(() => {
+    if (!isPlaying) {
+      setControlsVisible(true);
+      if (hideControlsTimerRef.current) clearTimeout(hideControlsTimerRef.current);
+    } else {
+      resetHideTimer();
+    }
+    return () => {
+      if (hideControlsTimerRef.current) clearTimeout(hideControlsTimerRef.current);
+    };
+  }, [isPlaying, resetHideTimer]);
+
+  useEffect(() => {
+    const onFsChange = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+    };
+    document.addEventListener("fullscreenchange", onFsChange);
+    return () => document.removeEventListener("fullscreenchange", onFsChange);
+  }, []);
+
+  useEffect(() => {
+    if (activeTarget?.provider !== "youtube" || !isPlaying) return;
+    const uiTimer = setInterval(() => {
+      const p = playerRef.current;
+      if (!p) return;
+      const t = p.getCurrentTime?.();
+      const d = p.getDuration?.();
+      if (typeof t === "number" && Number.isFinite(t)) setCurrentTime(t);
+      if (typeof d === "number" && Number.isFinite(d) && d > 0) setDuration(d);
+    }, 250);
+    return () => clearInterval(uiTimer);
+  }, [activeTarget?.provider, isPlaying]);
+
+  const handleTogglePlay = useCallback(() => {
+    if (activeTarget?.provider === "youtube") {
+      const p = playerRef.current;
+      if (!p) return;
+      if (isPlaying) p.pauseVideo?.();
+      else p.playVideo?.();
+    } else if (videoRef.current) {
+      if (videoRef.current.paused) void videoRef.current.play();
+      else videoRef.current.pause();
+    }
+  }, [activeTarget?.provider, isPlaying]);
+
+  const handleSeek = useCallback(
+    (seconds: number) => {
+      setCurrentTime(seconds);
+      if (activeTarget?.provider === "youtube") {
+        playerRef.current?.seekTo?.(seconds, true);
+      } else if (videoRef.current) {
+        videoRef.current.currentTime = seconds;
+      }
+      resetHideTimer();
+    },
+    [activeTarget?.provider, resetHideTimer],
+  );
+
+  const handleVolumeChange = useCallback(
+    (nextVol: number) => {
+      setVolume(nextVol);
+      const muted = nextVol === 0;
+      setIsMuted(muted);
+      if (activeTarget?.provider === "youtube") {
+        playerRef.current?.setVolume?.(nextVol);
+        if (muted) playerRef.current?.mute?.();
+        else playerRef.current?.unMute?.();
+      } else if (videoRef.current) {
+        videoRef.current.volume = nextVol / 100;
+        videoRef.current.muted = muted;
+      }
+      resetHideTimer();
+    },
+    [activeTarget?.provider, resetHideTimer],
+  );
+
+  const handleToggleMute = useCallback(() => {
+    const nextMuted = !isMuted;
+    setIsMuted(nextMuted);
+    if (activeTarget?.provider === "youtube") {
+      if (nextMuted) playerRef.current?.mute?.();
+      else playerRef.current?.unMute?.();
+    } else if (videoRef.current) {
+      videoRef.current.muted = nextMuted;
+    }
+    resetHideTimer();
+  }, [activeTarget?.provider, isMuted, resetHideTimer]);
+
+  const handleToggleFullscreen = useCallback(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    if (document.fullscreenElement) {
+      void document.exitFullscreen?.();
+    } else {
+      void el.requestFullscreen?.();
+    }
+    resetHideTimer();
+  }, [resetHideTimer]);
+
+  const handleSurfaceClick = useCallback(
+    (e: React.MouseEvent | React.PointerEvent) => {
+      if ("pointerType" in e && e.pointerType === "touch" && !controlsVisible) {
+        resetHideTimer();
+        return;
+      }
+      handleTogglePlay();
+      resetHideTimer();
+    },
+    [controlsVisible, handleTogglePlay, resetHideTimer],
+  );
 
   // إذا لم يتوفر أي فيديو أو كان قيد الرفع والمعالجة
   if (!activeTarget) {
@@ -304,40 +461,117 @@ export function VideoPlayer({
   }
 
   return (
-    <div className="relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-border">
+    <div
+      ref={containerRef}
+      onMouseMove={resetHideTimer}
+      onMouseLeave={() => {
+        if (isPlaying) setControlsVisible(false);
+      }}
+      className="relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-border"
+    >
       {activeTarget.provider === "youtube" ? (
-        <YouTube
-          videoId={activeTarget.source}
-          className="w-full h-full"
-          iframeClassName="w-full h-full"
-          opts={{
-            width: "100%",
-            height: "100%",
-            playerVars: { rel: 0, modestbranding: 1 },
-          }}
-          onReady={(e) => {
-            playerRef.current = e.target;
-          }}
-          onPlay={startTracking}
-          onPause={stopTracking}
-          onEnd={() => {
-            stopTracking();
-            if (!completedRef.current) {
-              completedRef.current = true;
-              onComplete?.();
-            }
-          }}
-        />
+        <>
+          <YouTube
+            videoId={activeTarget.source}
+            className="w-full h-full"
+            iframeClassName="w-full h-full pointer-events-none"
+            opts={{
+              width: "100%",
+              height: "100%",
+              host: "https://www.youtube-nocookie.com",
+              playerVars: { controls: 0, rel: 0, modestbranding: 1, disablekb: 1 },
+            }}
+            onReady={(e) => {
+              playerRef.current = e.target;
+              const d = e.target.getDuration?.();
+              if (typeof d === "number" && Number.isFinite(d) && d > 0) setDuration(d);
+            }}
+            onPlay={() => {
+              setIsPlaying(true);
+              startTracking();
+            }}
+            onPause={() => {
+              setIsPlaying(false);
+              stopTracking();
+            }}
+            onEnd={() => {
+              setIsPlaying(false);
+              stopTracking();
+              if (!completedRef.current) {
+                completedRef.current = true;
+                onComplete?.();
+              }
+            }}
+          />
+          {/* طبقة الحماية الشفافة لمنع النقر المباشر على روابط يوتيوب أو القائمة السياقية */}
+          <div
+            data-testid="youtube-click-shield"
+            onClick={handleSurfaceClick}
+            onDoubleClick={handleToggleFullscreen}
+            onContextMenu={(e) => e.preventDefault()}
+            className="absolute inset-0 z-10 cursor-pointer"
+          />
+
+          {/* غطاء الإيقاف المؤقت لإخفاء عنوان الفيديو واسم القناة وروابط يوتيوب */}
+          {!isPlaying && (
+            <div
+              data-testid="youtube-pause-mask"
+              onClick={handleSurfaceClick}
+              onDoubleClick={handleToggleFullscreen}
+              onContextMenu={(e) => e.preventDefault()}
+              className="absolute inset-0 z-10 bg-black/90 backdrop-blur-md flex items-center justify-center cursor-pointer transition-opacity duration-200 motion-reduce:transition-none"
+            >
+              <button
+                type="button"
+                aria-label="تشغيل الفيديو"
+                className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg hover:scale-105 transition-transform motion-reduce:transition-none cursor-pointer"
+              >
+                <Play className="w-7 h-7 fill-current ms-0.5" aria-hidden="true" />
+              </button>
+            </div>
+          )}
+        </>
       ) : (
         <video
           ref={videoRef}
-          controls
           playsInline
-          className="w-full h-full object-contain"
-          onTimeUpdate={handleHlsTimeUpdate}
-          onEnded={handleHlsEnded}
+          onClick={handleSurfaceClick}
+          onDoubleClick={handleToggleFullscreen}
+          onContextMenu={(e) => e.preventDefault()}
+          className="w-full h-full object-contain cursor-pointer"
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => {
+            setIsPlaying(false);
+            flushHlsProgress();
+          }}
+          onSeeked={flushHlsProgress}
+          onTimeUpdate={(e) => {
+            setCurrentTime(e.currentTarget.currentTime);
+            handleHlsTimeUpdate();
+          }}
+          onEnded={() => {
+            setIsPlaying(false);
+            handleHlsEnded();
+          }}
           onError={handleHlsError}
           onLoadedMetadata={handleHlsLoadedMetadata}
+        />
+      )}
+
+      {!isTokenRenewalRequired && (
+        <UnifiedPlayerControls
+          isPlaying={isPlaying}
+          currentTime={currentTime}
+          duration={duration}
+          volume={volume}
+          isMuted={isMuted}
+          isFullscreen={isFullscreen}
+          visible={controlsVisible}
+          onTogglePlay={handleTogglePlay}
+          onSeek={handleSeek}
+          onVolumeChange={handleVolumeChange}
+          onToggleMute={handleToggleMute}
+          onToggleFullscreen={handleToggleFullscreen}
         />
       )}
 

@@ -12,12 +12,17 @@ import type { InProgressLesson, LessonDetail } from "../types";
 export const studentCourseQueries = {
   all: () => ["student-courses"] as const,
 
-  // تفاصيل درس محدد مع رابط/معرّف الفيديو المحمي
-  lesson: (lessonId: number | string) =>
+  // تفاصيل درس محدد مع رابط/معرّف الفيديو المحمي (مخزن مؤقتاً حتى يتغير updatedAt)
+  lesson: (lessonId: number | string, updatedAt?: string) =>
     queryOptions({
-      queryKey: [...studentCourseQueries.all(), "lesson", String(lessonId)] as const,
+      queryKey: [
+        ...studentCourseQueries.all(),
+        "lesson",
+        String(lessonId),
+        updatedAt ?? "v0",
+      ] as const,
       queryFn: (): Promise<LessonDetail> => getLesson(lessonId),
-      staleTime: 1000 * 60 * 5, // 5 minutes cache
+      staleTime: Infinity,
     }),
 
   // قائمة الكورسات المسجل بها الطالب

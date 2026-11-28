@@ -12,7 +12,7 @@ import { studentCourseQueries } from "../queries/studentCourses.queries";
 describe("studentCourseQueries factory", () => {
   it("generates correct query key for lesson query", () => {
     const query = studentCourseQueries.lesson(42);
-    expect(query.queryKey).toEqual(["student-courses", "lesson", "42"]);
+    expect(query.queryKey).toEqual(["student-courses", "lesson", "42", "v0"]);
   });
 
   it("generates correct query key for in-progress lessons", () => {

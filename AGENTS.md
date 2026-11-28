@@ -82,6 +82,9 @@ release. Add a tool name to select part of the graph. For example, run
 - **`security-audit`:**
   - **الشرط الإلزامي:** قبل إعلان اكتمال أي ميزة تخص المصادقة، الصلاحيات، حماية الفيديو، أو إرسال النماذج.
   - **الإجراء:** فحص أقفال الإرسال المزدوج (`useRef`)، سرية الكوكيز، وحدود الإدخال، وحماية التوكنز.
+- **`github-workflow-standard`:**
+  - **الشرط الإلزامي:** عند بدء أي ميزة جديدة، إنشاء فرع، كتابة أو رفع أي Commit، فتح Pull Request، أو عمل Tag/Release.
+  - **الإجراء:** الالتزام الصارم بـ GitHub Flow، تسمية الفروع (`<type>/<issue-id>-<short-kebab-summary>`)، رسائل Conventional Commits، فحص الجودة قبل الرفع، وترتيب الدمج (الباك إند قبل الفرونت إند).
 
 ---
 
@@ -212,3 +215,10 @@ Before declaring any task complete, you MUST verify:
 6. **Server Component Cookie Purity**: Never call `cookies().set()` or functions that mutate cookies (such as session-saving helpers) inside React Server Components (`layout.tsx`, `page.tsx`). Cookies can only be modified in a Server Action or Route Handler.
 7. **Continuous Media Event Throttling**: Never dispatch unthrottled asynchronous network requests from high-frequency media events (`timeupdate`, `scroll`, `resize`). Throttle progress updates to at most once every 5 seconds (or on completion) to prevent DoS flooding and rate-limit exhaustion.
 8. **Route Group URL Determinism**: When defining routes inside transparent route groups `(group)`, ensure the physical directory includes the slug segment (e.g., `src/app/(instructor)/instructor/page.tsx` for `/instructor`), preventing collision with the root `/`.
+
+---
+
+# 📋 FEATURE WORKFLOW RULE
+
+- **Mandatory Feature Workflow**: Every new feature MUST follow `docs/FEATURE_WORKFLOW.md` (`Grilling -> To-Spec (Project + Linear) -> To-Ticket -> TDD`).
+- **Living Workflow**: Append new workflow rules and constraints to `docs/FEATURE_WORKFLOW.md` as they are discovered during the project.
